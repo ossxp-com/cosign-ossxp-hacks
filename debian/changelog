@@ -1,0 +1,5 @@
+ossxp-cosign (2.1.0-0.1) unstable; urgency=low
+
+  * CoSign debian package initial.
+
+ -- Jiang Xin <jiangxin@foo.bar>  Tue, 02 Dec 2008 15:44:28 +0800

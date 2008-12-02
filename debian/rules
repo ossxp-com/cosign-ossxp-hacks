@@ -1,0 +1,46 @@
+#!/usr/bin/make -f
+
+##DEB_BUILDDIR = $(CURDIR)/build
+DEB_DESTDIR = $(CURDIR)/tmp
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/autotools.mk
+include /usr/share/cdbs/1/rules/patchsys-quilt.mk
+#include /usr/share/cdbs/1/rules/buildcore.mk
+#include /usr/share/cdbs/1/class/langcore.mk
+#include /usr/share/cdbs/1/class/makefile-vars.mk
+#include /usr/share/cdbs/1/rules/dpatch.mk
+
+##DEB_CONFIGURE_EXTRA_FLAGS += --enable-krb
+##DEB_CONFIGURE_EXTRA_FLAGS += --enable-mysql
+DEB_CONFIGURE_EXTRA_FLAGS += --enable-apache2=/usr/bin/apxs2 \
+    --prefix=/opt/cosign/lib \
+    --bindir=/opt/cosign/bin \
+    --sbindir=/opt/cosign/bin \
+    --mandir=/opt/cosign/man \
+    --with-cosignconf=/opt/cosign/conf/cosign.conf \
+    --with-cosigncadir=/opt/cosign/conf/certs/CA \
+    --with-cosigncert=/opt/cosign/conf/certs/cert.pem \
+    --with-cosignkey=/opt/cosign/conf/certs/key.pem \
+    --with-filterdb=/opt/cosign/db/filter \
+    --with-cosigndb=/opt/cosign/db/daemon \
+    --with-proxydb=/opt/cosign/db/proxy
+
+## DEB_CONFIGURE_SCRIPT_ENV += LDFLAGS=" -Wl,-z,defs -Wl,-O1"
+
+
+# post install
+$(patsubst %,install/%,$(DEB_ALL_PACKAGES)) ::
+	pkg=$(subst install/,,$@); \
+		script=$${pkg#ossxp-linux-}.py ;\
+		if [ -f debian/install/$$script ]; then \
+			mkdir -p debian/$$pkg/opt/ossxp/install/ ;\
+			install -m 750 debian/install/$$script debian/$$pkg/opt/ossxp/install/ ;\
+		fi
+
+# binary-fixup
+$(patsubst %,binary-fixup/%,$(DEB_ALL_PACKAGES)) ::
+	pkg=$(subst binary-fixup/,,$@); \
+		find debian/$$pkg/ \( -name .svn -o -name "*~" \) -exec rm -rf {} + 
+
+# vim: noet

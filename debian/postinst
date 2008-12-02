@@ -1,0 +1,22 @@
+#!/bin/sh -e
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin 
+
+case "$1" in
+    configure)
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+cat <<EOF
+[1mrun this command as root:
+[1m[44m	/opt/foo/install/base.py install config
+[0m
+EOF

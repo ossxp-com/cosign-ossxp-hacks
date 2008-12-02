@@ -4,6 +4,12 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
 case "$1" in
     configure)
+        # 只对新安装的版本, 修改 apache 配置
+        if [ -z "$2" ]; then
+            /usr/sbin/a2enmod cosign >/dev/null   || echo "a2enmod cosign failed, seem like cosign not installed."
+        fi
+        chmod 770 /opt/cosign/db/filter
+        chown www-data.www-data /opt/cosign/db/filter
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

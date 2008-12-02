@@ -1,1 +1,2 @@
-debian/tmp/opt/cosign/bin/mod_cosign.la  opt/cosign/bin/
+debian/tmp/opt/cosign/bin/mod_cosign.so  opt/cosign/bin/
+debian/conf/cosign.load                  etc/apache2/mods-available/

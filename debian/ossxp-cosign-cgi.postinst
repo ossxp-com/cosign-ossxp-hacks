@@ -1,9 +1,13 @@
 #!/bin/sh -e
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin 
+LIBDIR=/opt/cosign/lib
 
 case "$1" in
     configure)
+        [ ! -d $LIBDIR/templates-local ] && cp -a $LIBDIR/templates $LIBDIR/templates-local
+        [ ! -d $LIBDIR/html-local ]      && cp -a $LIBDIR/html      $LIBDIR/html-local
+        [ ! -d $LIBDIR/services-local ]  && cp -a $LIBDIR/services  $LIBDIR/services-local
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

@@ -1,0 +1,15 @@
+#!/bin/bash
+# Read login and password
+set -x
+read login
+read pass
+# Check login and password
+if [ $login = 'admin' -a $pass = 'admin' ]; then
+  # Return factor name:
+  echo "ldap"
+else
+  # The login form will print this error message:
+  echo "Wrong username or password"
+  exit 1
+fi
+

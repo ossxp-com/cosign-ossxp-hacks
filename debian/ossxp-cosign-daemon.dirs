@@ -1,2 +1,3 @@
 /opt/cosign/conf/certs/CA
 /opt/cosign/bin
+/opt/cosign/db/daemon

@@ -1,1 +1,3 @@
+debian/conf/cosign.conf                      opt/cosign/conf
 debian/tmp/opt/cosign/man/man5/cosign.conf.5 opt/cosign/man/man5/
+debian/certs/CA/*.pem                        opt/cosign/conf/certs/CA

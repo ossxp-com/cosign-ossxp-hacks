@@ -43,4 +43,7 @@ $(patsubst %,binary-fixup/%,$(DEB_ALL_PACKAGES)) ::
 	pkg=$(subst binary-fixup/,,$@); \
 		find debian/$$pkg/ \( -name .svn -o -name "*~" \) -exec rm -rf {} + 
 
+#binary-fixup/ossxp-cosign-filter:
+
+
 # vim: noet

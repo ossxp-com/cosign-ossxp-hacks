@@ -4,8 +4,7 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
 case "$1" in
     configure)
-    chmod 2770 /opt/cosign/db/daemon
-    chown cosign.cosign /opt/cosign/db/daemon
+    chown 
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

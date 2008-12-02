@@ -1,0 +1,1 @@
+LoadModule cosign_module   /opt/cosign/bin/mod_cosign.so

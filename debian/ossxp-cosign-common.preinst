@@ -1,0 +1,17 @@
+#!/bin/sh -e
+
+. /usr/share/debconf/confmodule
+
+if [ "$1" = "install" ]; then
+	if ! id -g cosign > /dev/null 2>&1 ; then
+		addgroup --system cosign
+	fi
+	if ! id -u cosign > /dev/null 2>&1 ; then
+		adduser --system --home /opt/cosign --ingroup cosign cosign
+		chsh -s /bin/false cosign
+	fi
+fi
+
+#DEBHELPER#
+
+exit 0

@@ -4,7 +4,6 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
 case "$1" in
     configure)
-    chown 
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

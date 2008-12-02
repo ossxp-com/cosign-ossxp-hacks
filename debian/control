@@ -11,10 +11,10 @@ Section: ossxp
 Priority: optional
 Depends: openssl
 Suggests: cdbs
-Description: CoSign daemons
+Description: Common files for CoSign cgi and daemon.
  CoSign is a Single Sign-On from weblogin.org
 
-Package: ossxp-cosign-daemoon
+Package: ossxp-cosign-daemon
 Architecture: any
 Section: ossxp
 Priority: optional

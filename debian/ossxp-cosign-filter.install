@@ -1,0 +1,2 @@
+#debian/base/*   opt/foo/
+#debian/install/apt.inc  opt/foo/install/

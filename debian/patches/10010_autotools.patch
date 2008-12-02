@@ -1,0 +1,205 @@
+diff -r 769c56edb894 Makefile.in
+--- a/Makefile.in	Tue Dec 02 18:10:58 2008 +0800
++++ b/Makefile.in	Tue Dec 02 21:16:58 2008 +0800
+@@ -44,12 +44,10 @@
+ 	  common/Makefile version.c filters/common/cosignpaths.h
+ 	rm -rf autom4te.cache
+ 
+-install: @FILTERS@
++install: @FILTERS@ everything
+ 	for i in ${FILTERS}; \
+-	    do (cd $$i; ${MAKE} ${MFLAGS} install); \
++	    do (cd $$i; ${MAKE} ${MFLAGS} install DESTDIR=$(DESTDIR)); \
+ 	done
+-
+-install-all : everything
+ 	for i in ${TARGETS}; \
+-	    do (cd $$i; ${MAKE} ${MFLAGS} install); \
++	    do (cd $$i; ${MAKE} ${MFLAGS} install DESTDIR=$(DESTDIR)); \
+ 	done
+diff -r 769c56edb894 cgi/Makefile.in
+--- a/cgi/Makefile.in	Tue Dec 02 18:10:58 2008 +0800
++++ b/cgi/Makefile.in	Tue Dec 02 21:16:58 2008 +0800
+@@ -16,6 +16,7 @@
+ FRIEND_MYSQL_DB = @frienddbhost@
+ FRIEND_MYSQL_LOGIN = @frienddblogin@
+ FRIEND_MYSQL_PASSWD = @frienddbpasswd@
++DESTDIR=
+ 
+ INCPATH=     @CPPFLAGS@ @KINC@ @MYSQLINC@ -I../common -I../libsnet -I../libcgi
+ OPTOPTS=     @OPTOPTS@
+@@ -76,7 +77,7 @@
+ 	/bin/rm -rf *.o ${TARGETS}
+ 
+ install : all
+-	-mkdir -p ${exec_prefix}
+-	-mkdir -p ${CGIDIR};
+-	${INSTALL} -m 0755 -c cosign.cgi ${CGIDIR}/;
+-	${INSTALL} -m 0755 -c logout ${CGIDIR}/;
++	-mkdir -p $(DESTDIR)${exec_prefix}
++	-mkdir -p $(DESTDIR)${CGIDIR};
++	${INSTALL} -m 0755 -c cosign.cgi $(DESTDIR)${CGIDIR}/;
++	${INSTALL} -m 0755 -c logout $(DESTDIR)${CGIDIR}/;
+diff -r 769c56edb894 daemon/Makefile.in
+--- a/daemon/Makefile.in	Tue Dec 02 18:10:58 2008 +0800
++++ b/daemon/Makefile.in	Tue Dec 02 21:16:58 2008 +0800
+@@ -4,6 +4,7 @@
+ exec_prefix=@exec_prefix@
+ SBINDIR=@sbindir@
+ MANDIR=@mandir@
++DESTDIR=
+ 
+ COSIGNCONF=@cosignconf@
+ COSIGNDB=@cosigndb@
+@@ -95,17 +96,16 @@
+ 	done
+ 
+ install : all man
+-	-mkdir -p ${exec_prefix}
+-	-mkdir -p ${SBINDIR}
+-	${INSTALL} -m 0755 -c cosignd ${SBINDIR}/
+-	${INSTALL} -m 0755 -c monster ${SBINDIR}/
+-	-mkdir -p ${prefix}
+-	-mkdir -p ${MANDIR}
+-	-mkdir ${MANDIR}/man5
+-	${INSTALL} -m 0644 -c tmp/man/cosign.conf.5 ${MANDIR}/man5/
+-	-mkdir ${MANDIR}/man8
+-	${INSTALL} -m 0644 -c tmp/man/cosignd.8 ${MANDIR}/man8/
+-	${INSTALL} -m 0644 -c tmp/man/monster.8 ${MANDIR}/man8/
++	-mkdir -p $(DESTDIR)${exec_prefix}
++	-mkdir -p $(DESTDIR)${SBINDIR}
++	${INSTALL} -m 0755 -c cosignd $(DESTDIR)${SBINDIR}/
++	${INSTALL} -m 0755 -c monster $(DESTDIR)${SBINDIR}/
++	-mkdir -p $(DESTDIR)${prefix}
++	-mkdir -p $(DESTDIR)${MANDIR}/man5
++	${INSTALL} -m 0644 -c tmp/man/cosign.conf.5 $(DESTDIR)${MANDIR}/man5/
++	-mkdir -p $(DESTDIR)${MANDIR}/man8
++	${INSTALL} -m 0644 -c tmp/man/cosignd.8 $(DESTDIR)${MANDIR}/man8/
++	${INSTALL} -m 0644 -c tmp/man/monster.8 $(DESTDIR)${MANDIR}/man8/
+ 
+ clean :
+ 	rm -f a.out core* *.o *.bak *[Ee]rrs tags
+diff -r 769c56edb894 filters/apache/Makefile.in
+--- a/filters/apache/Makefile.in	Tue Dec 02 18:10:58 2008 +0800
++++ b/filters/apache/Makefile.in	Tue Dec 02 21:16:58 2008 +0800
+@@ -8,6 +8,8 @@
+ APXS=          	@APXS@
+ APACHECTL=     	@APACHECTL@
+ INSTALL=       	@INSTALL@
++DESTDIR=
++SBINDIR=@sbindir@
+ 
+ 
+ #   additional user defines, includes and libraries
+@@ -37,7 +39,9 @@
+ #   install the DSO file into the Apache installation
+ #   and activate it in the Apache configuration
+ install: all
+-	$(APXS) -i -a -n 'cosign' mod_cosign.so
++	#$(APXS) -i -a -n 'cosign' mod_cosign.so
++	-mkdir -p $(DESTDIR)${SBINDIR}
++	${INSTALL} -m 0755 -c mod_cosign.la $(DESTDIR)${SBINDIR}/;
+ 
+ #   cleanup
+ clean:
+diff -r 769c56edb894 filters/apache2/Makefile.in
+--- a/filters/apache2/Makefile.in	Tue Dec 02 18:10:58 2008 +0800
++++ b/filters/apache2/Makefile.in	Tue Dec 02 21:16:58 2008 +0800
+@@ -8,6 +8,8 @@
+ APXS2=          @APXS2@
+ APACHECTL2=     @APACHECTL2@
+ INSTALL=        @INSTALL@
++DESTDIR=
++SBINDIR=@sbindir@
+ 
+ #    The apach 2 apxs build process tends to leave a lot of junk lying around.
+ APXS2JUNKFILES=	../../common/argcargv.slo ../../common/argcargv.lo \
+@@ -56,7 +58,8 @@
+ #   install the DSO file into the Apache installation
+ #   and activate it in the Apache configuration
+ install: all
+-	$(APXS2) -i -a -n 'cosign' mod_cosign.la
++	-mkdir -p $(DESTDIR)${SBINDIR}
++	${INSTALL} -m 0755 -c .libs/mod_cosign.so $(DESTDIR)${SBINDIR}/;
+ 
+ #   cleanup
+ clean:
+diff -r 769c56edb894 html/Makefile.in
+--- a/html/Makefile.in	Tue Dec 02 18:10:58 2008 +0800
++++ b/html/Makefile.in	Tue Dec 02 21:16:58 2008 +0800
+@@ -6,25 +6,26 @@
+ HTMLDIR  = @prefix@/html
+ SERVICESDIR  = @prefix@/services
+ INSTALL	=	@INSTALL@
++DESTDIR=
+ 
+ all: ${TEMPLATES}
+ 
+ install : all
+-	-mkdir -p ${exec_prefix}
+-	-mkdir -p ${TMPLDIR}
+-	-mkdir -p ${HTMLDIR}
++	-mkdir -p $(DESTDIR)${exec_prefix}
++	-mkdir -p $(DESTDIR)${TMPLDIR}
++	-mkdir -p $(DESTDIR)${HTMLDIR}
+ 	for i in ${TEMPLATES}; do \
+-	    ${INSTALL} -m 0644 -c $$i ${TMPLDIR}/; \
++	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${TMPLDIR}/; \
+ 	done
+ 	for i in ${HTML}; do \
+-	    ${INSTALL} -m 0644 -c $$i ${HTMLDIR}/; \
++	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${HTMLDIR}/; \
+ 	done
+-	-mkdir -p ${HTMLDIR}/images
+-	cp images/*.gif ${HTMLDIR}/images/
+-	cp images/*.png ${HTMLDIR}/images/
+-	-mkdir -p ${HTMLDIR}/js
+-	cp js/*.js ${HTMLDIR}/js/
+-	-mkdir -p ${SERVICESDIR}
+-	cp services/*.html ${SERVICESDIR}/
++	-mkdir -p $(DESTDIR)${HTMLDIR}/images
++	cp images/*.gif $(DESTDIR)${HTMLDIR}/images/
++	cp images/*.png $(DESTDIR)${HTMLDIR}/images/
++	-mkdir -p $(DESTDIR)${HTMLDIR}/js
++	cp js/*.js $(DESTDIR)${HTMLDIR}/js/
++	-mkdir -p $(DESTDIR)${SERVICESDIR}
++	cp services/*.html $(DESTDIR)${SERVICESDIR}/
+ 
+ clean:
+diff -r 769c56edb894 libsnet/Makefile.in
+--- a/libsnet/Makefile.in	Tue Dec 02 18:10:58 2008 +0800
++++ b/libsnet/Makefile.in	Tue Dec 02 21:16:58 2008 +0800
+@@ -6,6 +6,7 @@
+ prefix      =	@prefix@
+ libdir      =	@libdir@
+ includedir  =	@includedir@
++DESTDIR=
+ 
+ SRC  = snet.c
+ OBJ  = snet.o
+@@ -58,18 +59,18 @@
+ 	  -version-info 0:0:0 >/dev/null 2>&1 ) ; fi
+ 
+ install:	all
+-	mkdir -p $(libdir)
+-	chmod 755 $(libdir)
+-	mkdir -p $(includedir)
+-	chmod 755 $(includedir)
+-	$(INSTALL) -c -m 644 snet.h $(includedir)/snet.h
++	mkdir -p $(DESTDIR)$(libdir)
++	chmod 755 $(DESTDIR)$(libdir)
++	mkdir -p $(DESTDIR)$(includedir)
++	chmod 755 $(DESTDIR)$(includedir)
++	$(INSTALL) -c -m 644 snet.h $(DESTDIR)$(includedir)/snet.h
+ 	$(LIBTOOL) --mode=install \
+-	  $(INSTALL) -c -m 644 libsnet.la $(libdir)/libsnet.la
++	  $(INSTALL) -c -m 644 libsnet.la $(DESTDIR)$(libdir)/libsnet.la
+ 	@if test x_$(PROFILED) = x_true ; then \
+ 	  echo "installing profiled libraries" ; \
+ 	  ( cd profiled ; ../$(LIBTOOL) --mode=install \
+ 	  $(INSTALL) -c -m 644 libsnet_p.la \
+-	  $(libdir)/libsnet_p.la >/dev/null 2>&1 ) ; fi
++	  $(DESTDIR)$(libdir)/libsnet_p.la >/dev/null 2>&1 ) ; fi
+ 
+ clean:
+ 	rm -f *.o *.lo *.slo libsnet.la

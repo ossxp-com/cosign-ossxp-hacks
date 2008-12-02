@@ -1,4 +1,0 @@
-#!/bin/sh -e
-
-rm -f /opt/foo/install/base.done
-rm -f /opt/foo/install/misc.done

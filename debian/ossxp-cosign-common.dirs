@@ -1,0 +1,5 @@
+/opt/cosign/conf/certs/CA
+/opt/cosign/bin
+/opt/cosign/cgi-bin
+/opt/cosign/lib
+/opt/cosign/man

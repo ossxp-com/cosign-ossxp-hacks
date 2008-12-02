@@ -1,2 +1,1 @@
-#debian/base/*   opt/foo/
-#debian/install/apt.inc  opt/foo/install/
+debian/tmp/opt/cosign/bin/mod_cosign.la  opt/cosign/bin/

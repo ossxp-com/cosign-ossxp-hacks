@@ -1,2 +1,3 @@
-#debian/base/*   opt/foo/
-#debian/install/apt.inc  opt/foo/install/
+debian/tmp/opt/cosign/lib/cgi-ssl/logout      opt/cosign/cgi-bin
+debian/tmp/opt/cosign/lib/cgi-ssl/cosign.cgi  opt/cosign/cgi-bin
+debian/tmp/opt/cosign/lib/*                   opt/cosign/lib

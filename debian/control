@@ -5,7 +5,7 @@ Maintainer: Jiang Xin <worldhello.net@gmail.com>
 Build-Depends: cdbs, debhelper (>= 5.0), build-essential, apache2-threaded-dev | apache2-prefork-dev, libssl-dev
 Standards-Version: 1.0.0
 
-Package: ossxp-cosign-daemoon
+Package: ossxp-cosign-common
 Architecture: any
 Section: ossxp
 Priority: optional
@@ -14,11 +14,20 @@ Suggests: cdbs
 Description: CoSign daemons
  CoSign is a Single Sign-On from weblogin.org
 
+Package: ossxp-cosign-daemoon
+Architecture: any
+Section: ossxp
+Priority: optional
+Depends: openssl, ossxp-cosign-common
+Suggests: cdbs
+Description: CoSign daemons
+ CoSign is a Single Sign-On from weblogin.org
+
 Package: ossxp-cosign-cgi
 Architecture: any
 Section: ossxp
 Priority: optional
-Depends: apache2 | ossxp-apache2, openssl
+Depends: apache2 | ossxp-apache2, openssl, ossxp-cosign-common
 Suggests: cdbs
 Description: CoSign login/logout CGIs
  CoSign is a Single Sign-On from weblogin.org

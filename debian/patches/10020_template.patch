@@ -1,0 +1,87 @@
+diff -r a4b0d9fd6958 html/login.html
+--- a/html/login.html	Wed Dec 03 09:28:55 2008 +0800
++++ b/html/login.html	Wed Dec 03 15:49:36 2008 +0800
+@@ -94,7 +94,7 @@
+ 						those who know their Uniqname and Kerberos password.</p>
+ 				</div>
+ 			</div>
+-			<form action="/cosign-bin/cosign.cgi" method="post" name="factors" id="rightUIcol">
++			<form action="/cgi-bin/login" method="post" name="factors" id="rightUIcol">
+ 				<input type="hidden" name="required"
+ 				value="$f" />
+ 				<input type="hidden" name="ref"
+diff -r a4b0d9fd6958 html/login_error.html
+--- a/html/login_error.html	Wed Dec 03 09:28:55 2008 +0800
++++ b/html/login_error.html	Wed Dec 03 15:49:36 2008 +0800
+@@ -94,7 +94,7 @@
+ 						those who know their Uniqname and Kerberos password.</p>
+ 				</div>
+ 			</div>
+-			<form action="/cosign-bin/cosign.cgi" method="post" name="factors" id="rightUIcol">
++			<form action="/cgi-bin/login" method="post" name="factors" id="rightUIcol">
+ 				<input type="hidden" name="required"
+ 				value="$f" />
+ 				<input type="hidden" name="ref"
+diff -r a4b0d9fd6958 html/reauth.html
+--- a/html/reauth.html	Wed Dec 03 09:28:55 2008 +0800
++++ b/html/reauth.html	Wed Dec 03 15:49:36 2008 +0800
+@@ -58,7 +58,7 @@
+ 				<h1 id="instruct">Re-Authentication Required</h1>
+ 				<p>To protect your personal information, you must verify your password. Please type
+ 					your password and click the Re-Authenticate button to continue.</p>
+-				<p>If you are not $l, you may <a href="/cosign-bin/logout" id="switchUserL">Switch
++				<p>If you are not $l, you may <a href="/cgi-bin/logout" id="switchUserL">Switch
+ 						Users</a> and log in as yourself.</p>
+ 				<p class="jsOnly">Authentication
+ 				sections marked with a <img
+@@ -98,7 +98,7 @@
+ 						those who know their Uniqname and Kerberos password.</p>
+ 				</div>
+ 			</div>
+-			<form action="/cosign-bin/cosign.cgi" method="post" name="factors" id="rightUIcol">
++			<form action="/cgi-bin/login" method="post" name="factors" id="rightUIcol">
+ 			<input type="hidden" name="required" value="$f" />
+ 			<input type="hidden" name="ref" value="$r" />
+ 			<input type="hidden" name="service" value="$c" />
+@@ -113,7 +113,7 @@
+ 						<tr>
+ 							<td><label for="login">Login</label></td>
+ 							<td
+-							id="login">$l (<a href="/cosign-bin/logout" class="switchUser" id="switchUserR" tabindex="1">Switch
++							id="login">$l (<a href="/cgi-bin/logout" class="switchUser" id="switchUserR" tabindex="1">Switch
+ 									Users</a>)</td>
+ 						</tr>
+ 						<tr>
+@@ -164,7 +164,7 @@
+ </div>
+ <div id="foot">&copy; 2006 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
+ 		of the University of Michigan</a> </div>
+-<form name="switch" id="switchUserForm" action="/cosign-bin/logout" enctype="application/x-www-form-urlencoded" method="post">
++<form name="switch" id="switchUserForm" action="/cgi-bin/logout" enctype="application/x-www-form-urlencoded" method="post">
+ 	<input type="hidden" name="url" value="$r" />
+ 	<input type="hidden" name="service" value="$c" />
+ 	<input type="hidden" name="reauth" value="true" />
+diff -r a4b0d9fd6958 html/services/index.html
+--- a/html/services/index.html	Wed Dec 03 09:28:55 2008 +0800
++++ b/html/services/index.html	Wed Dec 03 15:49:36 2008 +0800
+@@ -2,7 +2,7 @@
+     <body>
+ 
+     <ul>
+-	<li> <a href="/cosign-bin/logout">logout</a></li> <br />
++	<li> <a href="/cgi-bin/logout">logout</a></li> <br />
+ 	    When you are finished using all authenticated web resources,
+ 	    be sure to logout.
+     </ul>
+diff -r a4b0d9fd6958 html/verify-logout.html
+--- a/html/verify-logout.html	Wed Dec 03 09:28:55 2008 +0800
++++ b/html/verify-logout.html	Wed Dec 03 15:49:36 2008 +0800
+@@ -23,7 +23,7 @@
+ 		</span> <strong>Our Home Page</strong></a> </div>
+ 	<div id="main" class="logoutUI">
+ 		<div id="uiRow">
+-		    <form name="f" method="post" action="/cosign-bin/logout">
++		    <form name="f" method="post" action="/cgi-bin/logout">
+ 			<h1>Log Out</h1>
+ 			<p>You are about to log out of <a href="/services/">all weblogin applications</a>.
+ 				Are you sure you want to do this?</p>

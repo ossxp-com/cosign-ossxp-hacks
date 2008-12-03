@@ -7,6 +7,12 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools.mk
 include /usr/share/cdbs/1/rules/patchsys-quilt.mk
 
+HGMQ=$(shell ls .hg/patches/series)
+
+ifeq ($(HGMQ),.hg/patches/series)
+	DEB_PATCHDIRS := $(CURDIR)/debian/patches.none
+endif
+
 ##DEB_CONFIGURE_EXTRA_FLAGS += --enable-krb
 ##DEB_CONFIGURE_EXTRA_FLAGS += --enable-mysql
 DEB_CONFIGURE_EXTRA_FLAGS += --enable-apache2=/usr/bin/apxs2 \

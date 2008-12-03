@@ -39,7 +39,9 @@ $(patsubst %,binary-fixup/%,$(DEB_ALL_PACKAGES)) ::
 	pkg=$(subst binary-fixup/,,$@); \
 		find debian/$$pkg/ \( -name .svn -o -name "*~" \) -exec rm -rf {} + 
 
-#binary-fixup/ossxp-cosign-filter:
+binary-fixup/ossxp-cosign-cgi::
+	mv debian/ossxp-cosign-cgi/opt/cosign/lib/cgi-ssl/* debian/ossxp-cosign-cgi/opt/cosign/cgi-bin/
+	rmdir debian/ossxp-cosign-cgi/opt/cosign/lib/cgi-ssl
 
 
 # vim: noet

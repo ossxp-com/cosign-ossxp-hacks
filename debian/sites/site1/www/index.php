@@ -1,4 +1,7 @@
 <html>
+<head>
+<link rel="stylesheet" href="common.css" type="text/css">
+</head>
 <body>
 
 <?php

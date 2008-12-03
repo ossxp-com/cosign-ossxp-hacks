@@ -1,0 +1,254 @@
+html {
+	/* font-size: 0.75em; */
+	line-height: 1.25em;
+}
+
+/* .comment css definition must be top of .red/.green/.blue or it won't work */
+.comment { color: #555555; background-color: #DDDDFF; }
+
+.red { background-color: #FFCCCC; }
+.green { background-color: #CCFFCC; }
+.blue { background-color: #CCCCFF; }
+.yellow { background-color: #FFF29F; }
+.orange { background-color: #FFD59B; }
+.gray { background-color: #D3D3D3; }
+
+.solid { border: 2px solid #000000; padding: 2px; }
+.dashed { border: 2px dashed #000000; padding: 2px; }
+.dotted { border: 2px dotted #000000; padding: 2px; }
+
+.padding1  { padding:1px; }
+.padding2  { padding:2px; }
+.padding3  { padding:3px; }
+.padding4  { padding:4px; }
+.padding5  { padding:5px; }
+.padding10 { padding:1em; }
+.margin1   { margin:1px; }
+.margin2   { margin:2px; }
+.margin3   { margin:3px; }
+.margin4   { margin:4px; }
+.margin5   { margin:5px; }
+.margin10  { margin:1em; }
+
+.zh p, p.zh {text-indent: 2em;}
+.zh li p, li p.zh {text-indent: 0;}
+.zh li.indent, .zh li.indent p {text-indent: 2em;}
+.zh td p, .nozh p, p.nozh, .en p, p.en {text-indent: 0;}
+
+ul {
+line-height: 1.5em;
+list-style-type: square;
+margin: .3em 0 0 2em;
+padding: 0;
+}
+ol {
+line-height: 1.5em;
+margin: .3em 0 0 3.5em;
+padding: 0;
+list-style-image: none;
+}
+li {
+margin-bottom: .1em;
+}
+dt {
+font-weight: bold;
+margin-bottom: .1em;
+}
+dl {
+margin-top: .2em;
+margin-bottom: .5em;
+}
+dd {
+line-height: 1.5em;
+margin-left: 2em;
+margin-bottom: .1em;
+}
+
+.tree ul, .tree ul ul, ul.tree, ul.tree ul {
+    list-style-type: none;
+    list-style-image: none;
+    background: url(tree_vline.png) repeat-y;
+    margin: 0;
+    padding: 0;
+}
+.tree ul, .tree ul ul, ul.tree, ul.tree ul {
+    margin-left: 10px; 
+}
+.tree ul ul, ul.tree ul {
+    margin-left: 10px; 
+}
+.tree ul li, ul.tree li
+{
+    margin-left: 0; 
+    padding: 0 12px; 
+    line-height: 20px;
+    background: url(tree_node.png) no-repeat;
+    color: #369;
+    font-weight: bold;
+}
+.tree li:last-child, ul.tree li:last-child {
+    background: #fff url(tree_lastnode.png) no-repeat;
+} 
+
+.tree li.last-child, ul.tree li.last-child {
+    background: #fff url(tree_lastnode.png) no-repeat;
+} 
+
+#editor-textarea, #editor-help {
+	font-size: 1em;
+}
+
+table {
+float:none;
+position:relative;
+margin: 0 0 1em 0;
+background:transparent;
+border:0;
+border-collapse: collapse;
+empty-cells: show;
+}
+
+th, td {empty-cells: show;}
+
+.left table, table.left, .left{
+float:left;
+position:relative;
+margin: 0 0.5em 0.5em 0;
+}
+
+.right table, table.right, .right{
+float:right;
+clear:right;
+position:relative;
+margin: 0 0 0.5em 0.5em;
+}
+
+div.toggle {
+font-size: 9pt;
+text-align:left;
+background:#F1F1ED;
+border: 1pt solid #C1B496;
+padding: 0.5em;
+margin: 0.5em 0.5em 1em 1em;
+}
+
+/* TableOfContents macro */
+.table-of-contents {
+font-size: 9pt;
+text-align:left;
+background:#F1F1ED;
+border: 1pt solid #C1B496;
+padding: 0.5em;
+min-width:50%;
+}
+
+.table-of-contents-left {
+position:relative;
+float:left;
+margin: 0 1em 1em 0;
+}
+
+.table-of-contents-right {
+position:relative;
+float:right;
+clear:right;
+margin: 0 0 1em 1em;
+}
+
+.table-of-contents-normal {
+margin: 0 0 1em 1em;
+}
+
+.table-of-contents ol {
+margin:0;
+margin-left:1em;
+padding-left:1em; /* for stupid IE */
+list-style-type:decimal;
+}
+.table-of-contents ul {
+margin:0;
+list-style-type:none;
+}
+.table-of-contents-heading {
+text-align:center;
+font-weight:bold;
+padding:0;
+margin:0;
+}
+.toctoggle {
+font-weight:normal;
+}
+
+/* TOC in table, not float by default */
+td div.table-of-contents-right, td div.table-of-contents-left {
+float: none;
+width:100%;
+border: 0pt;
+background:transparent;
+margin: 0;
+padding: 0.5em;
+}
+table.toc, table.toc-left, table.toc-right {
+padding: 1em;
+/* width:40%; */
+position:relative;
+background:#F1F1ED;
+}
+table.toc {
+float:none;
+clear:none;
+margin: 0 1em 1em 0;
+}
+table.toc-left {
+float:left;
+margin: 0 1em 1em 0;
+}
+table.toc-right {
+float:right;
+clear:right;
+margin: 0 0 1em 1em;
+}
+
+/* Set toggle region default not display. Not use visibility!!! */
+.hidden {
+display:none;
+}
+
+/* Include with editlink */
+.include-link {
+float:right;
+font-size: 0.75em;
+clear:right;
+position:relative;
+}
+/*
+.include-page-link {
+visibility:hidden;
+}
+*/
+/* .include-edit-link {} */
+
+.borderless, .borderless table, .borderless th,.borderless td {
+border:0;
+}
+table.borderless, table.borderless tr td, table.borderless th {
+border:0;
+}
+
+/* #credits, #version, #timings{ */
+#timings{
+color: #FFFFFF;
+}
+
+.new-subcategory-dialog, .new-subpage-dialog {
+z-index: 3;
+position:absolute;
+background-color: yellow;
+padding:.5em;
+}
+
+
+/* apply to div. */
+/* .gainlayout { zoom: 1;} */
+
+/* ****************************************************** */

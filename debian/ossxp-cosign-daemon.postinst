@@ -15,6 +15,11 @@ COSIGND_OPTS="-y /opt/cosign/conf/certs/cosignd.pem -z /opt/cosign/conf/certs/co
 MONSTER_OPTS=
 EOF
         fi
+        # 只对新安装的版本:
+        if [ -z "$2" ]; then
+           [ ! -f /opt/cosign/conf/certs/cosignd.pem ] && ln -s /opt/cosign/conf/certs/foo.bar/cosignd.foo.bar.pem /opt/cosign/conf/certs/cosignd.pem
+           [ ! -f /opt/cosign/conf/certs/cosignd.key ] && ln -s /opt/cosign/conf/certs/foo.bar/cosignd.foo.bar.key /opt/cosign/conf/certs/cosignd.key
+        fi
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

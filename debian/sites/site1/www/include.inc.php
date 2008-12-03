@@ -40,13 +40,13 @@ function show_summary()
 ?>
 
     <p>
-    <table>
+    <table class="borderless">
       <tr>
-        <th valign="center">
-          CookieName: site1
+        <th valign="middle">
+          CookieName: siteX
         </th>
         <td>
-            <table>
+            <table border='1'>
               <tr>
                 <th>
                 </th>
@@ -80,11 +80,11 @@ function show_summary()
         </td>
       </tr>
       <tr>
-        <th valign="center">
+        <th valign="middle">
           CookieName: service
         </th>
-        <td>
-            <table>
+        <td valign="middle">
+            <table border='1'>
               <tr>
                 <th>
                 </th>

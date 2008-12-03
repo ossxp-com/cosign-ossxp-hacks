@@ -1,3 +1,4 @@
 /opt/cosign/conf/certs/CA
 /opt/cosign/bin
 /opt/cosign/db/filter
+/opt/cosign/sites

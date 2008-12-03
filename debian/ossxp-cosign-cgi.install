@@ -1,3 +1,4 @@
-debian/tmp/opt/cosign/lib/*                   opt/cosign/lib
-debian/factor/ldap                            opt/cosign/factor
-debian/factor/test                            opt/cosign/factor
+debian/tmp/opt/cosign/lib/*   opt/cosign/lib
+debian/factor/ldap            opt/cosign/factor
+debian/factor/test            opt/cosign/factor
+debian/sites/cgi              opt/cosign/sites

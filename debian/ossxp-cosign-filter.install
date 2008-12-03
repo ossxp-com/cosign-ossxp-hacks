@@ -1,3 +1,5 @@
 debian/tmp/opt/cosign/bin/mod_cosign.so  opt/cosign/bin/
 debian/conf/cosign.load                  etc/apache2/mods-available/
 debian/conf/cron.d/cosign-cleanup        opt/cosign/conf/cron.d/
+debian/sites/site1                       opt/cosign/sites
+debian/sites/site2                       opt/cosign/sites

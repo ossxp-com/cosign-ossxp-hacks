@@ -1,32 +1,65 @@
-#!/bin/bash
+#! /bin/sh
+set -e
 
-HOST=<<CHANGE TO YOUR WEBLOGIN HOSTNAME>>
-COSIGND=/opt/cosign/bin/cosignd
-MONSTER=/opt/cosign/bin/monster
-DAEMON_DIR=/opt/cosign/db/daemon
+# start and stop the cosign daemons
+#HOST=CHANGE.TO.YOUR.WEBLOGIN.HOSTNAME
+COSIGND=/usr/sbin/cosignd
+MONSTER=/usr/sbin/monster
+DAEMON_DIR=/var/cosign/daemon
+COSIGND_OPTS="-y /opt/cosign/conf/certs/cosignd.crt -z /opt/cosign/conf/certs/cosignd.key"
+MONSTER_OPTS=
 
-PATH=/bin:/usr/bin
-export HOST PATH COSIGND DAEMON_DIR
+COSIGN_DEFAULTS_FILE=/etc/default/cosign
+if [ -s $COSIGN_DEFAULTS_FILE ]; then
+    . $COSIGN_DEFAULTS_FILE
+fi
+export PATH="${PATH:+$PATH:}/usr/sbin:/sbin"
 
-case $1 in
-    'start')
-        if [ -x "$COSIGND" ]; then
-            cd $DAEMON_DIR
-            echo 'Cosign daemon starting...'
-            su cosign -c "$COSIGND -h $HOST"
-            su cosign -c "nohup $MONSTER -h $HOST &"
+
+case "$1" in
+  start)
+        echo -n "Starting cosign daemons:";
+        echo -n " cosignd"
+        if [ -s /var/run/cosignd.pid ] && kill -0 $(cat /var/run/cosignd.pid) >/dev/null 2>&1; then
+            echo " apparently already running."
+            exit 0
         fi
+        start-stop-daemon --start --quiet --background\
+            --pidfile /var/run/cosignd.pid --make-pidfile \
+            --exec $COSIGND --chuid cosign \
+            -- -d $COSIGND_OPTS
+
+        echo -n " monster"
+        if [ -s /var/run/monster.pid ] && kill -0 $(cat /var/run/monster.pid) >/dev/null 2>&1; then
+            echo " apparently already running."
+            exit 0
+        fi
+        start-stop-daemon --start --quiet --background \
+            --pidfile /var/run/monster.pid --make-pidfile \
+            --exec $MONSTER --chuid cosign \
+            -- -d $MONSTER_OPTS
+        echo "."
+        ;;
+  stop)
+        echo -n "Stopping cosign daemons:"
+        echo -n " cosignd"
+        start-stop-daemon --stop --quiet --oknodo --pidfile /var/run/cosignd.pid
+        rm -f /var/run/cosignd.pid
+        echo -n " monster"
+        start-stop-daemon --stop --quiet --oknodo --pidfile /var/run/monster.pid
+        rm -f /var/run/monster.pid
+        echo "."
         ;;
 
-    'stop')
-        echo 'stopping monster...'
-        kill -9 `ps auxwww | grep "$MONSTER" | grep -v grep | awk '{print $2}'`
-        echo 'stopping cosignd...'
-        kill -9 `ps auxwww | grep "$COSIGND" | grep -v grep | awk '{print $2}'`
+  restart)
+        $0 stop
+        $0 start
         ;;
 
-    *)
-        echo 'Usage: /etc/init.d/cosignd start | stop'
-        ;;
+  *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
 esac
+
 exit 0
+

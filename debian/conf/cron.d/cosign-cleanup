@@ -1,0 +1,4 @@
+# Delete cosign files ( filter or daemon ) that are older than a day:
+0 0 * * * root find /opt/cosign/db -type f -mtime +1 | xargs rm -f
+# Done by monster:
+#10 0 * * *  root  find /opt/cosign/db/daemon -type f -mtime +1 | xargs rm -f

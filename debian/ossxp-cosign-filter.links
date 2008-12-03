@@ -1,0 +1,1 @@
+/opt/cosign/conf/cron.d/cosign-cleanup  /etc/cron.d/cosign-cleanup

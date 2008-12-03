@@ -8,6 +8,10 @@ case "$1" in
         [ ! -d $LIBDIR/templates-local ] && cp -a $LIBDIR/templates $LIBDIR/templates-local
         [ ! -d $LIBDIR/html-local ]      && cp -a $LIBDIR/html      $LIBDIR/html-local
         [ ! -d $LIBDIR/services-local ]  && cp -a $LIBDIR/services  $LIBDIR/services-local
+        chmod 640 /opt/cosign/conf/certs/foo.bar/cgi*
+        chmod 640 /opt/cosign/conf/certs/foo.bar/weblogin*
+        chgrp root.www-data /opt/cosign/conf/certs/foo.bar/cgi.*
+        chgrp root.www-data /opt/cosign/conf/certs/foo.bar/weblogin.*
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

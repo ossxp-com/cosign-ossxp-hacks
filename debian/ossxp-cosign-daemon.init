@@ -1,11 +1,19 @@
 #! /bin/sh
 set -e
+### BEGIN INIT INFO
+# Provides:          ossxp-cosign
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start CoSign daemon at boot time
+# Description:       Enable CoSign Daemon.
+### END INIT INFO
 
 # start and stop the cosign daemons
-#HOST=CHANGE.TO.YOUR.WEBLOGIN.HOSTNAME
-COSIGND=/usr/sbin/cosignd
-MONSTER=/usr/sbin/monster
-DAEMON_DIR=/var/cosign/daemon
+COSIGND=/opt/cosign/bin/cosignd
+MONSTER=/opt/cosign/bin/monster
+
 COSIGND_OPTS="-y /opt/cosign/conf/certs/cosignd.crt -z /opt/cosign/conf/certs/cosignd.key"
 MONSTER_OPTS=
 
@@ -13,7 +21,7 @@ COSIGN_DEFAULTS_FILE=/etc/default/cosign
 if [ -s $COSIGN_DEFAULTS_FILE ]; then
     . $COSIGN_DEFAULTS_FILE
 fi
-export PATH="${PATH:+$PATH:}/usr/sbin:/sbin"
+export PATH="${PATH:+$PATH:}/usr/sbin:/sbin:/opt/cosign/bin"
 
 
 case "$1" in

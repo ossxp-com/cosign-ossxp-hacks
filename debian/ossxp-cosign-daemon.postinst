@@ -7,6 +7,8 @@ case "$1" in
     configure)
         chmod 2770 /opt/cosign/db/daemon
         chown cosign.cosign /opt/cosign/db/daemon
+        chmod 640 /opt/cosign/conf/certs/foo.bar/cosignd.foo.bar.*
+        chgrp cosign /opt/cosign/conf/certs/foo.bar/cosignd.foo.bar.*
         if [ ! -f $COSIGN_DEFAULTS_FILE ]; then
             cat > $COSIGN_DEFAULTS_FILE <<EOF
 COSIGND_OPTS="-y /opt/cosign/conf/certs/cosignd.crt -z /opt/cosign/conf/certs/cosignd.key"

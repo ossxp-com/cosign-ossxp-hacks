@@ -2,3 +2,5 @@ debian/tmp/opt/cosign/lib/*   opt/cosign/lib
 debian/factor/ldap            opt/cosign/factor
 debian/factor/test            opt/cosign/factor
 debian/sites/cgi              opt/cosign/sites
+debian/certs/foo.bar/cgi-1.*  opt/cosign/conf/certs/foo.bar
+debian/certs/foo.bar/weblogin.foo.bar*  opt/cosign/conf/certs/foo.bar

@@ -3,7 +3,7 @@
 <h1>Home</h1>
 
 <?php
-require("../include.inc.php");
+require("include.inc.php");
 show_summary();
 ?>
 <hr>

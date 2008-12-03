@@ -10,8 +10,8 @@ case "$1" in
         [ ! -d $LIBDIR/services-local ]  && cp -a $LIBDIR/services  $LIBDIR/services-local
         chmod 640 /opt/cosign/conf/certs/foo.bar/cgi*
         chmod 640 /opt/cosign/conf/certs/foo.bar/weblogin*
-        chown root.www-data /opt/cosign/conf/certs/foo.bar/cgi.*
-        chown root.www-data /opt/cosign/conf/certs/foo.bar/weblogin.*
+        chown root.www-data /opt/cosign/conf/certs/foo.bar/cgi*
+        chown root.www-data /opt/cosign/conf/certs/foo.bar/weblogin*
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

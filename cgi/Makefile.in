@@ -1,0 +1,82 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+SBINDIR=@sbindir@
+CGIDIR  = @prefix@/cgi-ssl
+HTMLDIR  = @prefix@/html
+COSIGNCADIR=@cosigncadir@
+COSIGNCERT=@cosigncert@
+COSIGNKEY=@cosignkey@
+COSIGNHOST = @cosignhost@
+COSIGNLOGOUTURL = @cosignlogouturl@
+COSIGNLOOPURL = @cosignloopurl@
+COSIGNTMPLDIR = @prefix@/templates
+COSIGNTICKETCACHE = @ticketcache@
+COSIGNCONF= @cosignconf@
+KEYTABPATH = @keytabpath@
+FRIEND_MYSQL_DB = @frienddbhost@
+FRIEND_MYSQL_LOGIN = @frienddblogin@
+FRIEND_MYSQL_PASSWD = @frienddbpasswd@
+
+INCPATH=     @CPPFLAGS@ @KINC@ @MYSQLINC@ -I../common -I../libsnet -I../libcgi
+OPTOPTS=     @OPTOPTS@
+CC=          @CC@
+DEFS=        @TLSDEFS@ @SQLDEFS@ @KRBDEFS@
+LIBS=        -lsnet -lcgi @LIBS@ @KLIBS@ @MYSQLLIBS@
+LDFLAGS=     -L../libsnet/.libs -L../libcgi @LDFLAGS@ @KLDFLAGS@ @MYSQLLDFLAGS@ ${LIBS}
+INSTALL=     @INSTALL@
+
+CFLAGS=      ${DEFS} ${OPTOPTS} @CFLAGS@ ${INCPATH}
+
+
+OBJ     = network.o subfile.o ../common/mkcookie.o ../common/fbase64.o \
+	../common/config.o ../common/wildcard.o ../common/argcargv.o \
+	../version.o 
+TARGETS = logout cosign.cgi
+
+all: ${TARGETS}
+
+login.o:	login.c
+	${CC} ${CFLAGS} \
+	-D_COSIGN_TICKET_CACHE=\"${COSIGNTICKETCACHE}\" \
+	-D_KEYTAB_PATH=\"${KEYTABPATH}\" \
+	-D_FRIEND_MYSQL_DB=\"${FRIEND_MYSQL_DB}\" \
+	-D_FRIEND_MYSQL_LOGIN=\"${FRIEND_MYSQL_LOGIN}\" \
+	-D_FRIEND_MYSQL_PASSWD=\"${FRIEND_MYSQL_PASSWD}\" \
+	-c login.c
+
+cgi.o:	cgi.c
+	${CC} ${CFLAGS} \
+	-D_COSIGN_HOST=\"${COSIGNHOST}\" \
+	-D_COSIGN_LOOP_URL=\"${COSIGNLOOPURL}\" \
+	-D_COSIGN_TLS_CADIR=\"${COSIGNCADIR}\" \
+	-D_COSIGN_TLS_CERT=\"${COSIGNCERT}\" \
+	-D_COSIGN_TLS_KEY=\"${COSIGNKEY}\" \
+	-D_COSIGN_CONF=\"${COSIGNCONF}\" \
+	-D_COSIGN_TMPL_DIR=\"${COSIGNTMPLDIR}\" \
+	-c cgi.c
+
+cosign.cgi: cgi.o login.o factor.o $(OBJ)
+	${CC} -o cosign.cgi cgi.o login.o factor.o $(OBJ) $(LDFLAGS)
+
+logout.o:	logout.c
+	${CC} ${CFLAGS} \
+	-D_COSIGN_HOST=\"${COSIGNHOST}\" \
+	-D_COSIGN_LOGOUT_URL=\"${COSIGNLOGOUTURL}\" \
+	-D_COSIGN_TLS_CADIR=\"${COSIGNCADIR}\" \
+	-D_COSIGN_TLS_CERT=\"${COSIGNCERT}\" \
+	-D_COSIGN_TLS_KEY=\"${COSIGNKEY}\" \
+	-D_COSIGN_CONF=\"${COSIGNCONF}\" \
+	-D_COSIGN_TMPL_DIR=\"${COSIGNTMPLDIR}\" \
+	-c logout.c
+
+logout: logout.o $(OBJ)
+	${CC} -o logout logout.o $(OBJ) $(LDFLAGS)
+
+clean:
+	/bin/rm -rf *.o ${TARGETS}
+
+install : all
+	-mkdir -p ${exec_prefix}
+	-mkdir -p ${CGIDIR};
+	${INSTALL} -m 0755 -c cosign.cgi ${CGIDIR}/;
+	${INSTALL} -m 0755 -c logout ${CGIDIR}/;

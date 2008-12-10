@@ -1,0 +1,117 @@
+################## Some of this may need to be edited ##################
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+SBINDIR=@sbindir@
+MANDIR=@mandir@
+
+COSIGNCONF=@cosignconf@
+COSIGNDB=@cosigndb@
+COSIGNCADIR=@cosigncadir@
+COSIGNCERT=@cosigncert@
+COSIGNKEY=@cosignkey@
+COSIGNHOST = @cosignhost@
+COSIGNTICKETCACHE=@ticketcache@
+COSIGNLOGOUTURL = @cosignlogouturl@
+COSIGNLOOPURL = @cosignloopurl@
+COSIGNTMPLDIR = @prefix@/templates
+FRIEND_MYSQL_DB = @frienddbhost@
+FRIEND_MYSQL_LOGIN = @frienddblogin@
+FRIEND_MYSQL_PASSWD = @frienddbpasswd@
+
+COSIGNSYSLOG=LOG_DAEMON
+
+INCPATH=        @CPPFLAGS@ -I../common -I../libsnet 
+OPTOPTS=        @OPTOPTS@
+CC=             @CC@
+DEFS=           @TLSDEFS@ -D_COSIGN_TICKET_CACHE=\"${COSIGNTICKETCACHE}\"
+LIBS=           -lsnet @LIBS@
+LDFLAGS=        -L../libsnet/.libs @LDFLAGS@ ${LIBS}
+INSTALL=        @INSTALL@
+
+CFLAGS=         ${DEFS} ${OPTOPTS} @CFLAGS@ ${INCPATH}
+
+################ Nothing below should need editing ###################
+
+SRC= daemon.c command.c cparse.c logname.c pusher.c mnet.c
+MONSTER = monster.c cparse.c logname.c mnet.c
+MOBJ = monster.o cparse.o logname.o mnet.o ../common/argcargv.o \
+	../common/config.o  ../common/fbase64.o ../common/mkcookie.o \
+	../common/wildcard.o ../version.o
+COSIGNOBJ= daemon.o command.o cparse.o logname.o \
+	pusher.o mnet.o ../common/argcargv.o ../common/fbase64.o \
+	../common/config.o ../common/mkcookie.o ../common/rate.o \
+	../common/wildcard.o ../version.o
+TARGETS=	cosignd monster
+MANTARGETS=	cosignd.8 monster.8 cosign.conf.5
+
+all : ${TARGETS}
+
+FRC :
+
+monster.o : monster.c
+	${CC} ${CFLAGS} \
+	-D_COSIGN_CONF=\"${COSIGNCONF}\" \
+	-D_COSIGN_DIR=\"${COSIGNDB}\" \
+	-D_COSIGN_LOG=${COSIGNSYSLOG} \
+	-D_COSIGN_TLS_CADIR=\"${COSIGNCADIR}\" \
+	-D_COSIGN_TLS_CERT=\"${COSIGNCERT}\" \
+	-D_COSIGN_TLS_KEY=\"${COSIGNKEY}\" \
+	-c monster.c
+
+monster: ${MOBJ} Makefile
+	${CC} ${CFLAGS} ${LDFLAGS} -o monster ${MOBJ} ${LIBPATH} ${LIBS}
+
+daemon.o : daemon.c
+	${CC} ${CFLAGS} \
+	-D_COSIGN_CONF=\"${COSIGNCONF}\" \
+	-D_COSIGN_DIR=\"${COSIGNDB}\" \
+	-D_COSIGN_LOG=${COSIGNSYSLOG} \
+	-D_COSIGN_TLS_CADIR=\"${COSIGNCADIR}\" \
+	-D_COSIGN_TLS_CERT=\"${COSIGNCERT}\" \
+	-D_COSIGN_TLS_KEY=\"${COSIGNKEY}\" \
+	-c daemon.c
+
+cosignd : ../libsnet/libsnet.la ${COSIGNOBJ} Makefile
+	${CC} ${CFLAGS} ${LDFLAGS} -o cosignd ${COSIGNOBJ} ${LIBPATH} ${LIBS}
+
+man : FRC
+	-mkdir tmp
+	-mkdir tmp/man
+	for i in ${MANTARGETS}; do \
+	    sed -e 's@_COSIGN_CONF@${COSIGNCONF}@g'  \
+	    -e 's@_COSIGN_DIR@${COSIGNDB}@g' \
+	    -e 's@_COSIGN_TLS_CADIR@${COSIGNCADIR}@g' \
+	    -e 's@_COSIGN_TLS_CERT@${COSIGNCERT}@g' \
+	    -e 's@_COSIGN_TLS_KEY@${COSIGNKEY}@g' \
+	    -e 's@_COSIGN_TICKET_CACHE@${COSIGNTICKETCACHE}@g' \
+	    -e 's@_COSIGN_TMPL_DIR@${COSIGNTMPLDIR}@g' \
+	    -e 's@_COSIGN_LOGOUT_URL@${COSIGNLOGOUTURL}@g' \
+	    -e 's@_COSIGN_LOOP_URL@${COSIGNLOOPURL}@g' \
+	    -e 's@_FRIEND_MYSQL_DB@${FRIEND_MYSQL_DB}@g' \
+	    -e 's@_FRIEND_MYSQL_LOGIN@${FRIEND_MYSQL_LOGIN}@g' \
+	    -e 's@_FRIEND_MYSQL_PASSWD@${FRIEND_MYSQL_PASSWD}@g' \
+	    $$i > tmp/man/$$i; \
+	done
+
+install : all man
+	-mkdir -p ${exec_prefix}
+	-mkdir -p ${SBINDIR}
+	${INSTALL} -m 0755 -c cosignd ${SBINDIR}/
+	${INSTALL} -m 0755 -c monster ${SBINDIR}/
+	-mkdir -p ${prefix}
+	-mkdir -p ${MANDIR}
+	-mkdir ${MANDIR}/man5
+	${INSTALL} -m 0644 -c tmp/man/cosign.conf.5 ${MANDIR}/man5/
+	-mkdir ${MANDIR}/man8
+	${INSTALL} -m 0644 -c tmp/man/cosignd.8 ${MANDIR}/man8/
+	${INSTALL} -m 0644 -c tmp/man/monster.8 ${MANDIR}/man8/
+
+clean :
+	rm -f a.out core* *.o *.bak *[Ee]rrs tags
+	rm -f ${TARGETS}
+	rm -rf tmp
+
+
+
+

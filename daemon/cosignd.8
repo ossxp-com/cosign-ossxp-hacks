@@ -1,0 +1,185 @@
+.TH cosignd "8" "October 2005" "umweb" "System Manager's Manual"
+.SH NAME
+.B cosignd
+\- Cookie Sign-On Daemon
+.SH SYNOPSIS
+.B cosignd
+[
+.B \-dnVX
+] [
+.BI \-b\  backlog
+] [
+.BI \-c\  config-file
+] [
+.BI \-F\  syslog-facility
+] [
+.BI \-D\  db-directory
+] [
+.BI \-g\  grey-window-in-seconds
+] [
+.BI \-h\  replication-hostname
+] [
+.BI \-i\  idle-timeout-in-seconds
+] [
+.BI \-L\  syslog-level
+] [
+.BI \-p\  port
+] [
+.BI \-x\  ca-dir
+] [
+.BI \-y\  cert-pem-file
+] [ 
+.BI \-z\  private-key-file
+]
+.sp
+.SH DESCRIPTION
+Cosign clients use an smtp style protocol to communicate with cosignd.
+On startup, cosignd changes directory to _COSIGN_DIR (unless overridden by
+command line option or config file) 
+and begins listening on the cosignd port ( by default 6663 ) for
+incoming connections.
+With the
+-D option, cosignd will use
+.I db-directory
+as its working directory.
+Cosignd forks a child for each connection.
+.sp
+The file _COSIGN_CONF contains cosignd's configuration information (see
+cosign.conf(5) for more details).  With the -c option, cosignd will use
+.I config-file
+as its configuration file instead.
+.sp
+.SH STATS LOGGING
+cosignd has a few different kinds of statistic logging. All LOGIN,
+REGISTER, and LOGOUTs log command, username, realm, ip, and if
+applicable, cosign service name, as follows:
+.sp
+REGISTER siteuser UMICH.EDU 141.211.144.16 cosign-testservicename
+.sp
+. In addition, the rate per second of
+.B CHECK
+calls are logged for Pass (2xx), Fail (4xx), and Unknown(5xx). The rate per
+second of unknown (5xx)
+.B REGISTER
+s is also logged. If replication is on, the rate per second of
+replication passes (information was propgated) and fails (information
+was dropped) is logged as well. Finally, the number of cookies
+cosignd transmits information about with the
+.B TIME
+command is also logged, as well as the percentage of success.
+.SH TERMINOLOGY
+.TP 19
+.B login-cookie
+in the form of "cosign=kl32kj42b...42b4kj2k", contains the user name, ip address, realm, login time and optionally, the path to the user's Kerberos V ticket. In addition, the login cookie keeps state as to whether the user is logged in or logged out.
+.TP 19
+.B service-cookie
+in the form of "cosign-campusmail=98ad9898fdg...798dfg9as", contains a line that links to the user's login cookie.
+.sp
+.SH COSIGN PROTOCOL
+Cosignd currently supports the following protocol requests:
+.sp
+.TP 10
+QUIT
+terminate session
+.TP 10
+NOOP
+do nothing
+.TP 10
+HELP
+Display helpful message
+.TP 10
+LOGIN
+Associates a login cookie with a user, realm, IP address and timestamp. Used by the cgi once the user has authenticated.
+.TP 10
+REGISTER
+Associates a service cookie ( cosign-[servicename]= ) with a login cookie ( cosign= ). 
+.TP 10
+CHECK
+Allows clients to retrieve information about a user based on the cookie presented to cosignd.
+.TP 10
+TIME
+Allows daemons to propagate timestamp information for login cookies.
+.TP 10
+DAEMON
+Part of replication, prevents the server from replicating to itself.
+.TP 10
+LOGOUT
+Invalidates a user's login cookie, causing any future 
+.B CHECK
+commands to return the logged out status. This is a centralized logout.
+.TP 10
+RETRIEVE
+The client must be authorized to do this. Retrieve a Kerberos credential
+and/or proxy cookies for n-tier authentication.
+.TP 10
+STARTTLS [2]
+Start TLS. This command must be given before a client can send a LOGIN, REGISTER, CHECK, LOGOUT, or RETRIEVE.
+.sp
+.SH OPTIONS
+.TP 19
+.BI \-b\  backlog
+Defines the maximum queue of pending connections to
+.BR listen (2),
+by default five.
+.TP 19
+.BI \-c\  config-file
+specifies the path to cosignd's configuration file, by default
+_COSIGN_CONF. If you want to be able to re-read and survive a HUP, this
+needs to be an absolute path.
+.TP 19
+.BI \-D\  db-directory
+specifies the  directory to store the cookie database, by default _COSIGN_DIR
+.TP 19
+.B \-d
+debug mode. Does not disassociate from controlling tty.
+.TP 19
+.BI \-F\  syslog-facility
+specifies which syslog-facilty to log messages to. Default is daemon.
+.TP 19
+.BI \-g\  grey-window-in-seconds
+grey window for replication and idle logout. All cosignd's will answer
+5xx during this period (idle + grey) in case they've missed an event in
+this time period. After this grey window, a given cookie will be logged out
+(4xx), by default 1800 seconds ( 30 minutes).
+.TP 19
+.BI \-h\  replication-hostname
+hostname to replicate to. This "turns on" cosignd's replication.
+.TP 19
+.BI \-i\  idle-timeout-in-seconds
+idle timeout, after which an unused cookie will be eligible for idle logout,
+by default 7200 seconds (2 hours).
+.TP 19
+.BI \-L\  syslog-level
+specifies which syslog-level to log messages at. Default is info.
+.TP 19
+.B \-n
+don't run. Checks config file syntax and exits.
+.TP 19
+.BI \-p\  port 
+specifies the port of the cosign server, by default
+.BR 6663 .
+.TP 19
+.B \-V
+displays the version of 
+.B  cosignd
+and exits.
+.TP 19
+.B \-X
+puts cosignd in tls optional mode. Clients connecting without TLS will
+default to a faux cert subject name of "NOTLS". This name must also be permitted in _COSIGN_CONF. If not, all connections will fail immediately.
+.TP 19
+.BI \-x\  ca-dir
+Certificate authority's public certificate directory, by default _COSIGN_TLS_CADIR.
+.TP 19
+.BI \-y\  cert-pem-file
+Server's public certificate, by default _COSIGN_TLS_CERT.
+.TP 19
+.BI \-z\  private-key-file
+Server's private key, by default _COSIGN_TLS_KEY.
+.sp
+.SH FILES
+_COSIGN_CONF
+.sp
+.SH SEE ALSO
+.sp
+http://weblogin.org, cosign.conf(5)

@@ -1,0 +1,55 @@
+CC=	@CC@
+ALL=	common libsnet libcgi cgi html daemon 
+FILTERS= @FILTERS@ 
+TARGETS= cgi html daemon ${FILTERS}
+CFLAGS= @CFLAGS@
+LDFLAGS= @LDFLAGS@
+
+filters:	${FILTERS}
+all:		filters
+everything:	${ALL} filters
+
+cgi daemon:	version.o common libsnet
+cgi:	libcgi
+
+${ALL}:	version.o
+
+${ALL} filters/apache filters/apache2:	FRC
+	cd $@; ${MAKE} ${MFLAGS} all
+
+FRC:
+
+clean:
+	rm -f version.o
+	for i in ${ALL} ${FILTERS} ; \
+	    do (cd $$i; ${MAKE} ${MFLAGS} clean); \
+	done
+
+VERSION=`date +%Y%m%d`
+DISTDIR=../cosign-${VERSION}
+
+dist   : distclean
+	mkdir ${DISTDIR}
+	tar -c -f - -X EXCLUDE . | tar xpf - -C ${DISTDIR}
+	echo ${VERSION} > ${DISTDIR}/VERSION
+	sed -e "s@INTERNAL@${VERSION}@" \
+		< configure.ac > ${DISTDIR}/configure.ac
+	cd "${DISTDIR}"; autoconf
+
+distclean: clean
+	( cd libsnet ; make distclean )
+	rm -f config.log config.status config.cache Makefile \
+	  libcgi/Makefile cgi/Makefile html/Makefile daemon/Makefile \
+	  filters/apache/Makefile filters/apache2/Makefile \
+	  common/Makefile version.c filters/common/cosignpaths.h
+	rm -rf autom4te.cache
+
+install: @FILTERS@
+	for i in ${FILTERS}; \
+	    do (cd $$i; ${MAKE} ${MFLAGS} install); \
+	done
+
+install-all : everything
+	for i in ${TARGETS}; \
+	    do (cd $$i; ${MAKE} ${MFLAGS} install); \
+	done

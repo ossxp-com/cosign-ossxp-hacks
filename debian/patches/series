@@ -1,2 +1,5 @@
 10010_autotools.patch
-10020_template.patch
+10020_multiple_language_template.patch
+10030_template_cgi-bin.patch
+20010_template_i18n_zh_from_en.patch
+20020_template_i18n_zh_translated.patch

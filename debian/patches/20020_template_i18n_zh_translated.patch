@@ -1,6 +1,6 @@
 diff -r 72dc5efed878 html/zh/error.html
 --- a/html/zh/error.html	Wed Dec 10 16:21:32 2008 +0800
-+++ b/html/zh/error.html	Wed Dec 10 16:23:51 2008 +0800
++++ b/html/zh/error.html	Wed Dec 10 16:54:56 2008 +0800
 @@ -1,7 +1,7 @@
  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
  <html xmlns="http://www.w3.org/1999/xhtml">
@@ -10,7 +10,7 @@ diff -r 72dc5efed878 html/zh/error.html
  <meta http-equiv="Pragma" content="no-cache" />
  <meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
  <title>$t</title>
-@@ -18,26 +18,24 @@
+@@ -18,29 +18,27 @@
  <div id="page">
  	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
  		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
@@ -42,7 +42,11 @@ diff -r 72dc5efed878 html/zh/error.html
 +					<h2>证书</h2>
  				</div>
  				<div id="loginButton">
- 					<input type="submit" name="doLogin" value="Log In" disabled="disabled" />
+-					<input type="submit" name="doLogin" value="Log In" disabled="disabled" />
++					<input type="submit" name="doLogin" value="登录" disabled="disabled" />
+ 				</div>
+ 			</form>
+ 			<div class="clear">&nbsp;</div>
 @@ -48,7 +46,7 @@
  		<div id="uiBottom">&nbsp;</div>
  	</div>
@@ -55,7 +59,7 @@ diff -r 72dc5efed878 html/zh/error.html
  </html>
 diff -r 72dc5efed878 html/zh/login.html
 --- a/html/zh/login.html	Wed Dec 10 16:21:32 2008 +0800
-+++ b/html/zh/login.html	Wed Dec 10 16:23:51 2008 +0800
++++ b/html/zh/login.html	Wed Dec 10 16:54:56 2008 +0800
 @@ -1,7 +1,7 @@
  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
  <html xmlns="http://www.w3.org/1999/xhtml">
@@ -139,12 +143,14 @@ diff -r 72dc5efed878 html/zh/login.html
  				</div>
  			</div>
  			<form action="/cgi-bin/login" method="post" name="factors" id="rightUIcol">
-@@ -103,28 +88,28 @@
+@@ -102,29 +87,29 @@
+ 				<input type="hidden" name="service"
  				value="$c" />
  				<!--div id="error">$e</div-->
- 				<div class="factorHead"> <a href="#" tabindex="10">Help</a>
+-				<div class="factorHead"> <a href="#" tabindex="10">Help</a>
 -					<h2 id="kerbTitle"><span>&nbsp;</span>ID &amp; Password</h2>
 -					<div class="authComplete" style="display: none;">Authentication Complete</div>
++				<div class="factorHead"> <a href="#" tabindex="10">帮助</a>
 +					<h2 id="kerbTitle"><span>&nbsp;</span>用户名和口令</h2>
 +					<div class="authComplete" style="display: none;">认证完成</div>
  				</div>
@@ -166,29 +172,44 @@ diff -r 72dc5efed878 html/zh/login.html
 +							<td>大小写锁定键被打开</td>
  						</tr>
  					</table>
- 					Need <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">an account or password help?</a> </div>
- 				<div class="factorHead"> <a href="#" tabindex="11">Help</a>
+-					Need <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">an account or password help?</a> </div>
+-				<div class="factorHead"> <a href="#" tabindex="11">Help</a>
 -					<h2 id="otpTitle"><span>&nbsp;</span>One Time Passcode</h2>
 -					<div class="authComplete" style="display: none;">Authentication Complete</div>
++					需要 <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">一个帐号或者忘记口令？</a> </div>
++				<div class="factorHead"> <a href="#" tabindex="11">帮助</a>
 +					<h2 id="otpTitle"><span>&nbsp;</span>一次性口令</h2>
 +					<div class="authComplete" style="display: none;">认证完成</div>
  				</div>
  				<div class="factor" id="otp">
  					<table>
-@@ -139,8 +124,8 @@
+@@ -134,23 +119,23 @@
+ 						</tr>
+ 						<tr class="capsLock" style="display: none;">
+ 							<td>&nbsp;</td>
+-							<td>Caps Lock is on</td>
++							<td>大小写锁定键被打开</td>
+ 						</tr>
  					</table>
- 					Manage your <a href="#otpInfo" id="otpInfoShow" tabindex="8">token</a> </div>
- 				<div class="factorHead"> <a href="#" tabindex="12">Help</a>
+-					Manage your <a href="#otpInfo" id="otpInfoShow" tabindex="8">token</a> </div>
+-				<div class="factorHead"> <a href="#" tabindex="12">Help</a>
 -					<h2 id="kx509Title"><span>&nbsp;</span>Certificate</h2>
 -					<div class="authComplete" style="display: none;">Authentication Complete</div>
++					管理您的 <a href="#otpInfo" id="otpInfoShow" tabindex="8">令牌</a> </div>
++				<div class="factorHead"> <a href="#" tabindex="12">帮助</a>
 +					<h2 id="kx509Title"><span>&nbsp;</span>证书</h2>
 +					<div class="authComplete" style="display: none;">认证完成</div>
  				</div>
  				<div class="factor" id="kx509">
- 					<p class="note">You must have k.x-509 software installed and configured.</p>
-@@ -150,7 +135,7 @@
+-					<p class="note">You must have k.x-509 software installed and configured.</p>
++					<p class="note">您必须安装 k.x-509 软件并且已配置。</p>
+ 					<p>
+ 						<input name="useKX509" id="useKX509" type="checkbox" value="1" tabindex="5" />
+-						<label for="useKX509">Authenticate using a certificate</label>
++						<label for="useKX509">使用证书认证</label>
  					</p>
- 					Download <a href="#kx509Info" id="kx509InfoShow" tabindex="9">k.x-509 software</a> </div>
+-					Download <a href="#kx509Info" id="kx509InfoShow" tabindex="9">k.x-509 software</a> </div>
++					下载 <a href="#kx509Info" id="kx509InfoShow" tabindex="9">k.x-509 软件</a> </div>
  				<div id="loginButton">
 -					<input type="submit" name="doLogin" value="Log In" tabindex="6" />
 +					<input type="submit" name="doLogin" value="登录" tabindex="6" />
@@ -207,7 +228,7 @@ diff -r 72dc5efed878 html/zh/login.html
  </html>
 diff -r 72dc5efed878 html/zh/login_error.html
 --- a/html/zh/login_error.html	Wed Dec 10 16:21:32 2008 +0800
-+++ b/html/zh/login_error.html	Wed Dec 10 16:23:51 2008 +0800
++++ b/html/zh/login_error.html	Wed Dec 10 16:54:56 2008 +0800
 @@ -1,7 +1,7 @@
  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
  <html xmlns="http://www.w3.org/1999/xhtml">
@@ -291,12 +312,14 @@ diff -r 72dc5efed878 html/zh/login_error.html
  				</div>
  			</div>
  			<form action="/cgi-bin/login" method="post" name="factors" id="rightUIcol">
-@@ -103,13 +88,13 @@
+@@ -102,14 +87,14 @@
+ 				<input type="hidden" name="service"
  				value="$c" />
  				<div id="error">$e</div>
- 				<div class="factorHead"> <a href="#" tabindex="10">Help</a>
+-				<div class="factorHead"> <a href="#" tabindex="10">Help</a>
 -					<h2 id="kerbTitle"><span>&nbsp;</span>ID &amp; Password</h2>
 -					<div class="authComplete" style="display: none;">Authentication Complete</div>
++				<div class="factorHead"> <a href="#" tabindex="10">帮助</a>
 +					<h2 id="kerbTitle"><span>&nbsp;</span>用户名和口令</h2>
 +					<div class="authComplete" style="display: none;">认证完成</div>
  				</div>
@@ -322,29 +345,44 @@ diff -r 72dc5efed878 html/zh/login_error.html
 +							<td>大小写锁定键被打开</td>
  						</tr>
  					</table>
- 					Need <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">an account or password help?</a> </div>
- 				<div class="factorHead"> <a href="#" tabindex="11">Help</a>
+-					Need <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">an account or password help?</a> </div>
+-				<div class="factorHead"> <a href="#" tabindex="11">Help</a>
 -					<h2 id="otpTitle"><span>&nbsp;</span>One Time Passcode</h2>
 -					<div class="authComplete" style="display: none;">Authentication Complete</div>
++					需要 <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">一个帐号或者忘记口令？</a> </div>
++				<div class="factorHead"> <a href="#" tabindex="11">帮助</a>
 +					<h2 id="otpTitle"><span>&nbsp;</span>一次性口令</h2>
 +					<div class="authComplete" style="display: none;">认证完成</div>
  				</div>
  				<div class="factor" id="otp">
  					<table>
-@@ -143,8 +128,8 @@
+@@ -138,23 +123,23 @@
+ 						</tr>
+ 						<tr class="capsLock" style="display: none;">
+ 							<td>&nbsp;</td>
+-							<td>Caps Lock is on</td>
++							<td>大小写锁定键被打开</td>
+ 						</tr>
  					</table>
- 					Manage your <a href="#otpInfo" id="otpInfoShow" tabindex="8">token</a> </div>
- 				<div class="factorHead"> <a href="#" tabindex="12">Help</a>
+-					Manage your <a href="#otpInfo" id="otpInfoShow" tabindex="8">token</a> </div>
+-				<div class="factorHead"> <a href="#" tabindex="12">Help</a>
 -					<h2 id="kx509Title"><span>&nbsp;</span>Certificate</h2>
 -					<div class="authComplete" style="display: none;">Authentication Complete</div>
++					管理您的 <a href="#otpInfo" id="otpInfoShow" tabindex="8">令牌</a> </div>
++				<div class="factorHead"> <a href="#" tabindex="12">帮助</a>
 +					<h2 id="kx509Title"><span>&nbsp;</span>证书</h2>
 +					<div class="authComplete" style="display: none;">认证完成</div>
  				</div>
  				<div class="factor" id="kx509">
- 					<p class="note">You must have k.x-509 software installed and configured.</p>
-@@ -154,7 +139,7 @@
+-					<p class="note">You must have k.x-509 software installed and configured.</p>
++					<p class="note">您必须安装 k.x-509 软件并且已配置。</p>
+ 					<p>
+ 						<input name="useKX509" id="useKX509" type="checkbox" value="1" tabindex="5" />
+-						<label for="useKX509">Authenticate using a certificate</label>
++						<label for="useKX509">使用证书认证</label>
  					</p>
- 					Download <a href="#kx509Info" id="kx509InfoShow" tabindex="9">k.x-509 software</a> </div>
+-					Download <a href="#kx509Info" id="kx509InfoShow" tabindex="9">k.x-509 software</a> </div>
++					下载 <a href="#kx509Info" id="kx509InfoShow" tabindex="9">k.x-509 软件</a> </div>
  				<div id="loginButton">
 -					<input type="submit" name="doLogin" value="Log In" tabindex="6" />
 +					<input type="submit" name="doLogin" value="登录" tabindex="6" />
@@ -363,7 +401,7 @@ diff -r 72dc5efed878 html/zh/login_error.html
  </html>
 diff -r 72dc5efed878 html/zh/reauth.html
 --- a/html/zh/reauth.html	Wed Dec 10 16:21:32 2008 +0800
-+++ b/html/zh/reauth.html	Wed Dec 10 16:23:51 2008 +0800
++++ b/html/zh/reauth.html	Wed Dec 10 16:54:56 2008 +0800
 @@ -1,7 +1,7 @@
  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
  <html xmlns="http://www.w3.org/1999/xhtml">
@@ -451,12 +489,14 @@ diff -r 72dc5efed878 html/zh/reauth.html
  				</div>
  			</div>
  			<form action="/cgi-bin/login" method="post" name="factors" id="rightUIcol">
-@@ -105,30 +90,29 @@
+@@ -104,31 +89,30 @@
+ 			<input type="hidden" name="service" value="$c" />
  			<input type="hidden" name="reauth" value="true" />
  			<div id="error">$e</div>
- 				<div class="factorHead"> <a href="#" tabindex="10">Help</a>
+-				<div class="factorHead"> <a href="#" tabindex="10">Help</a>
 -					<h2 id="kerbTitle"><span>&nbsp;</span>ID &amp; Password</h2>
 -					<div class="authComplete" style="display: none;">Authentication Complete</div>
++				<div class="factorHead"> <a href="#" tabindex="10">帮助</a>
 +					<h2 id="kerbTitle"><span>&nbsp;</span>用户名和口令</h2>
 +					<div class="authComplete" style="display: none;">认证完成</div>
  				</div>
@@ -481,29 +521,44 @@ diff -r 72dc5efed878 html/zh/reauth.html
 +							<td>大小写锁定键被打开</td>
  						</tr>
  					</table>
- 					Need <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">an account or password help?</a> </div>
- 				<div class="factorHead"> <a href="#" tabindex="11">Help</a>
+-					Need <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">an account or password help?</a> </div>
+-				<div class="factorHead"> <a href="#" tabindex="11">Help</a>
 -					<h2 id="otpTitle"><span>&nbsp;</span>One Time Passcode</h2>
 -					<div class="authComplete" style="display: none;">Authentication Complete</div>
++					需要 <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">一个帐号或者忘记口令？</a> </div>
++				<div class="factorHead"> <a href="#" tabindex="11">帮助</a>
 +					<h2 id="otpTitle"><span>&nbsp;</span>一次性口令</h2>
 +					<div class="authComplete" style="display: none;">认证完成</div>
  				</div>
  				<div class="factor" id="otp">
  					<table>
-@@ -143,8 +127,8 @@
+@@ -138,23 +122,23 @@
+ 						</tr>
+ 						<tr class="capsLock" style="display: none;">
+ 							<td>&nbsp;</td>
+-							<td>Caps Lock is on</td>
++							<td>大小写锁定键被打开</td>
+ 						</tr>
  					</table>
- 					Manage your <a href="#otpInfo" id="otpInfoShow" tabindex="8">token</a> </div>
- 				<div class="factorHead"> <a href="#" tabindex="12">Help</a>
+-					Manage your <a href="#otpInfo" id="otpInfoShow" tabindex="8">token</a> </div>
+-				<div class="factorHead"> <a href="#" tabindex="12">Help</a>
 -					<h2 id="kx509Title"><span>&nbsp;</span>Certificate</h2>
 -					<div class="authComplete" style="display: none;">Authentication Complete</div>
++					管理您的 <a href="#otpInfo" id="otpInfoShow" tabindex="8">令牌</a> </div>
++				<div class="factorHead"> <a href="#" tabindex="12">帮助</a>
 +					<h2 id="kx509Title"><span>&nbsp;</span>证书</h2>
 +					<div class="authComplete" style="display: none;">认证完成</div>
  				</div>
  				<div class="factor" id="kx509">
- 					<p class="note">You must have k.x-509 software installed and configured.</p>
-@@ -154,7 +138,7 @@
+-					<p class="note">You must have k.x-509 software installed and configured.</p>
++					<p class="note">您必须安装 k.x-509 软件并且已配置。</p>
+ 					<p>
+ 						<input name="useKX509" id="useKX509" type="checkbox" value="1" tabindex="5" />
+-						<label for="useKX509">Authenticate using a certificate</label>
++						<label for="useKX509">使用证书认证</label>
  					</p>
- 					Download <a href="#kx509Info" id="kx509InfoShow" tabindex="9">k.x-509 software</a> </div>
+-					Download <a href="#kx509Info" id="kx509InfoShow" tabindex="9">k.x-509 software</a> </div>
++					下载 <a href="#kx509Info" id="kx509InfoShow" tabindex="9">k.x-509 软件</a> </div>
  				<div id="loginButton">
 -					<input type="submit" name="doLogin" value="Log In" tabindex="6" />
 +					<input type="submit" name="doLogin" value="登录" tabindex="6" />
@@ -523,7 +578,7 @@ diff -r 72dc5efed878 html/zh/reauth.html
  	<input type="hidden" name="service" value="$c" />
 diff -r 72dc5efed878 html/zh/verify-logout.html
 --- a/html/zh/verify-logout.html	Wed Dec 10 16:21:32 2008 +0800
-+++ b/html/zh/verify-logout.html	Wed Dec 10 16:23:51 2008 +0800
++++ b/html/zh/verify-logout.html	Wed Dec 10 16:54:56 2008 +0800
 @@ -1,7 +1,7 @@
  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
  <html xmlns="http://www.w3.org/1999/xhtml">

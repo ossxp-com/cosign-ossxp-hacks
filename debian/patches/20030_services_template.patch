@@ -1,0 +1,413 @@
+diff -r 99fb938a34ff html/Makefile.in
+--- a/html/Makefile.in	Wed Dec 10 16:54:56 2008 +0800
++++ b/html/Makefile.in	Thu Dec 11 02:56:37 2008 +0800
+@@ -30,6 +30,6 @@
+ 	-mkdir -p $(DESTDIR)${HTMLDIR}/js
+ 	cp js/*.js $(DESTDIR)${HTMLDIR}/js/
+ 	-mkdir -p $(DESTDIR)${SERVICESDIR}
+-	cp services/*.html $(DESTDIR)${SERVICESDIR}/
++	cp services/*.html services/*.php $(DESTDIR)${SERVICESDIR}/
+ 
+ clean:
+diff -r 99fb938a34ff html/services/config_inc.php
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/html/services/config_inc.php	Thu Dec 11 02:56:37 2008 +0800
+@@ -0,0 +1,26 @@
++<?php
++
++$url_gosa = "https://svn.foo.bar/members/?login";
++$url_wiki = "http://list.foo.bar/nic/action/login/Main/action/login?action=login&login=1";
++$url_websvn = "http://svn.foo.bar/websvn/";
++$url_statsvn = "http://svn.foo.bar/statsvn/";
++$url_bugs = "http://bugs.foo.bar/";
++$url_mailman = "http://list.foo.bar/mailman/listinfo/";
++
++$url_logout = "https://svn.foo.bar/cgi-bin/logout";
++$url_lostpwd = 'https://svn.foo.bar/members/lostpwd.php';
++$url_signup = 'https://svn.foo.bar/members/signup.php';
++
++#############################
++# LDAP Settings
++#############################
++
++$g_ldap_server		= 'ldap://localhost/';
++#$g_ldap_port		= '389';
++$g_ldap_root_dn		= 'dc=foo,dc=bar';
++$g_ldap_organizatio	= '(ossxpConfirmed=TRUE)';
++$g_ldap_uid_field	= 'uid';
++#$g_ldap_bind_dn	= 'cn=admin,dc=foo,dc=bar';
++#$g_ldap_bind_passwd	= 'guess';
++
++?>
+diff -r 99fb938a34ff html/services/index.php
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/html/services/index.php	Thu Dec 11 02:56:37 2008 +0800
+@@ -0,0 +1,274 @@
++<?php
++
++require_once("config_inc.php");
++require_once("ldap_api.php");
++
++$uid = $_SERVER["REMOTE_USER"];
++if (!$uid)
++{
++  die("Not login yet.");
++}
++
++$info=ldap_brief_info($uid);
++if ($info['givenname'] == $info['sn'] && $info['sn']!='')
++{
++  $username = $info['sn'];
++}
++else
++{
++  $username = $info['sn'] . " " .  $info['givenname'];
++}
++if (!$username)
++  $username = $uid;
++
++if ($info['cn'])
++  $aliasname = $info['cn'];
++else
++  $aliasname = $username;
++
++$mail = $info['mail'];
++
++?>
++<html><head>
++<meta http-equiv="content-type" content="text/html; charset=UTF-8">
++<meta http-equiv="Pragma" content="no-cache" />
++<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
++<title>欢迎, <?php echo $username; ?></title>
++<script><!--
++function gaia_setFocus() {
++  var f = null;
++  if (document.getElementById) { 
++    f = document.getElementById("gaia_loginform");
++  } else if (window.gaia_loginform) { 
++    f = window.gaia_loginform;
++  } 
++  if (f) {
++    if (f.login && (f.login.value == null || f.login.value == "")) {
++      f.login.focus();
++    } else if (f.password) {
++      f.password.focus();
++    } 
++  }
++}
++--></script>
++<style type="text/css">
++  <!--
++  body { font-family: arial,sans-serif; background-color: #fff; margin-top: 2; }
++  .c { width: 4; height: 4; } 
++  a:link { color: #00c; } 
++  a:visited { color: #551a8b; }
++  a:active { color: #f00; }
++  .form-noindent { background-color: #fff; border: 1px solid #c3d9ff; }
++  -->
++</style>
++<style type="text/css"><!--
++.gaia.le.lbl { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
++.gaia.le.fpwd { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
++.gaia.le.chusr { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
++.gaia.le.val { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
++.gaia.le.button { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
++.gaia.le.rem { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
++
++.gaia.captchahtml.desc { font-family: arial, sans-serif; font-size: smaller; } 
++.gaia.captchahtml.cmt { font-family: arial, sans-serif; font-size: smaller; font-style: italic; }
++  
++--></style>
++<style type="text/css"><!--
++  div.errormsg { color: red; font-size: smaller; font-family:arial,sans-serif; }
++  font.errormsg { color: red; font-size: smaller; font-family:arial,sans-serif; }  
++--></style>
++<style type="text/css"><!--
++.gaia.le.lbl { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
++.gaia.le.fpwd { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
++.gaia.le.chusr { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
++.gaia.le.val { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
++.gaia.le.button { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
++.gaia.le.rem { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
++
++.gaia.captchahtml.desc { font-family: arial, sans-serif; font-size: smaller; } 
++.gaia.captchahtml.cmt { font-family: arial, sans-serif; font-size: smaller; font-style: italic; }
++  
++--></style>
++ 
++<style type="text/css"><!--
++    .body { margin-left: 3em;
++            margin-right: 5em;
++            font-family: arial,sans-serif; }
++
++    div.errorbox-good {}
++
++    div.errorbox-bad {} 
++
++    div.errormsg { color: red; font-size: smaller; font-family: arial,sans-serif;}
++    font.errormsg { color: red; font-size: smaller; font-family: arial,sans-serif;}
++    
++    hr {
++      border: 0;
++      background-color:#DDDDDD;
++      height: 1px;
++      width: 100%;
++      text-align: left;
++      margin: 5px;
++    }
++    
++--></style>
++<style type="text/css"><!--
++#error {
++	border: 1px dotted #cc9999;
++	margin-bottom: 10px;
++	padding: 6px 8px 6px 28px;
++	background: url(images/icon_alert.gif) left center no-repeat;
++	background-color: #fcfcfc;
++	color: #cc0000;
++}
++#foot {
++	width: 760px;
++	margin: 20px auto;
++	text-align: center;
++	padding: 5px;
++	font-size: 108%;
++	border-top: 1px solid #ccc;
++}
++
++#foot,
++#foot a {
++	background-color: inherit;
++	color: #999;
++}
++
++#foot a:hover {
++	background-color: inherit;
++	color: #70a8f1;
++}
++--></style>
++
++</head>
++<body dir="ltr" onload="gaia_setFocus();">
++<div id="main">
++  <table border="0" cellpadding="2" cellspacing="0" width="100%">
++    <tbody>
++      <tr>
++        <td colspan="2"><img alt="" height="2" width="1"></td>
++      </tr>
++      <tr>
++        <td valign="top" width="1%">
++          <img src="/cosign/images/services/Cosign_3d.gif" alt="CoSign" align="left" border="0">
++        </td>
++        <td valign="bottom">
++          <table border="0" cellpadding="0" cellspacing="0" width="100%">
++            <tbody>
++              <tr>
++                <td colspan="2"><img alt="" height="15" width="1"></td>
++              </tr>
++              <tr bgcolor="#3366cc">
++                <td><img alt="" height="1" width="1"></td>
++              </tr>
++              <tr bgcolor="#e5ecf9">
++                <td style="padding-left: 4px; padding-bottom: 3px; padding-top: 2px; font-family: arial,sans-serif;">
++                  <b><?php echo $username; ?> 的帐户</b>
++                </td>
++              </tr>
++              <tr>
++                <td colspan="2"><img alt="" height="5" width="1"></td>
++              </tr>
++            </tbody>
++          </table>
++        </td>
++      </tr>
++    </tbody>
++  </table>
++  <br>
++  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
++    <tbody>
++      <tr>
++        <td style="padding-left: 10px;" align="left" valign="top">
++          <b>个人信息</b>
++          <hr color="#dddddd" noshade="noshade" size="1">
++          <br>
++          <ul>
++            <li><?php echo $username; ?></li>
++            <li><?php echo "$uid ($aliasname)"; ?></li>
++            <li><?php echo "$mail"; ?></li>
++            <li><a href="<?php echo $url_gosa; ?>">修改口令</a></li>
++          </ul>
++        </td>
++        <td valign="top" width="55%">
++          <b>Web 服务</b>
++          <hr color="#dddddd" noshade="noshade" size="1">
++          <div style="font-size: 83%;">
++            <br><br>
++            <table border="0" cellpadding="4">
++              <tbody>
++                <tr>
++                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
++                  <td aligh='right' vliagn='middle'>
++                    <img src="/cosign/images/services/moinmoin.gif" alt="Wiki">
++                  </td>
++                  <td style="font-size: 83%;">
++                    <a href="<?php echo $url_wiki; ?>">维基</a>
++                    <br>
++                    提供了协同工作平台和强大的社区网站，您可以成为网站重要的贡献者
++                  </td>
++                </tr>
++                <tr>
++                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
++                  <td aligh='right' vliagn='middle'>
++                    <img src="/cosign/images/services/subversion.gif" alt="Subversion">
++                  </td>
++                  <td style="font-size: 83%;">
++                    Subversion <a href="<?php echo $url_websvn; ?>">Web 界面</a> 以及 
++                    <a href="<?php echo $statsvn; ?>">统计</a>
++                    <br>
++                    最通行的版本控制系统，是团队开发比不可少的代码管理平台，也应该成为程序员一生的朋友
++                  </td>
++                </tr>
++                <tr>
++                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
++                  <td aligh='right' vliagn='middle'>
++                    <img src="/cosign/images/services/mantis.gif" alt="Mantis">
++
++                  </td>
++                  <td style="font-size: 83%;">
++                    <a href="<?php echo $url_bugs; ?>">缺陷跟踪</a>
++                    <br>
++                    Mantis 提供了一个轻量级的易用的缺陷跟踪系统，是软件测试流程管理平台
++                  </td>
++                </tr>
++                <tr>
++                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
++                  <td aligh='right' vliagn='middle'>
++                    <img src="/cosign/images/services/mailman.gif" alt="Mailman">
++                  </td>
++                  <td style="font-size: 83%;">
++                    <a href="<?php echo $url_mailman; ?>">邮件列表</a>
++                    <br>
++                    用 Mailman 管理沟通...
++                  </td>
++                </tr>
++                <tr>
++                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
++                  <td>
++                    <img src="/cosign/images/services/profile.gif" alt="Profiles">
++                  </td>
++                  <td style="font-size: 83%;">
++                    <a href="<?php echo $url_gosa; ?>">帐号管理</a>
++                    <br>
++                    管理您在 LDAP 中的个人信息、口令等
++                  </td>
++                </tr>
++              </tbody>
++            </table>
++          </div>
++        </td>
++      </tr>
++    </tbody>
++  </table>
++  <br>
++  <br>
++  <div id="foot">&copy; 2006-2008 <a href="http://www.umich.edu/~regents/" title="密歇根大学">密歇根大学</a>, 
++       <a href="http://www.ossxp.com/">群英汇技术支持</a></div>
++</body>
++</html>
++<!--
++ vim: ts=2 sw=2 et
++-->
+diff -r 99fb938a34ff html/services/ldap_api.php
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/html/services/ldap_api.php	Thu Dec 11 02:56:37 2008 +0800
+@@ -0,0 +1,90 @@
++<?php
++
++###########################################################################
++# LDAP API
++###########################################################################
++
++# force config variable from a global to avoid recursion
++function config_get( $p_option, $p_default = null ) {
++
++    if ( isset( $GLOBALS['g_' . $p_option] ) ) {
++        $t_value = $GLOBALS['g_' . $p_option];
++        if ( $t_value !== $GLOBALS['g_' . $p_option] ) {
++            $GLOBALS['g_' . $p_option] = $t_value;
++        }
++        return $t_value;
++    } else {
++        # unless we were allowing for the option not to exist by passing
++        #  a default, trigger a WARNING
++        return $p_default;
++    }
++}
++
++function is_blank( $p_var ) {
++    $p_var = trim( $p_var );
++    $str_len = strlen( $p_var );
++    if ( 0 == $str_len ) {
++        return true;
++    }
++    return false;
++}
++
++# --------------------
++# Connect and bind to the LDAP directory
++function ldap_connect_bind( $p_binddn = '', $p_password = '' ) {
++    $t_ldap_server	= config_get( 'ldap_server' );
++    $t_ldap_port	= config_get( 'ldap_port' );
++
++    $t_ds = @ldap_connect ( $t_ldap_server, $t_ldap_port );
++    if ( $t_ds > 0 ) {
++        $t_protocol_version = config_get( 'ldap_protocol_version' );
++
++        if ( $t_protocol_version > 0 ) {
++            ldap_set_option( $t_ds, LDAP_OPT_PROTOCOL_VERSION, $t_protocol_version );
++        }
++
++        # If no Bind DN and Password is set, attempt to login as the configured
++        #  Bind DN.
++        if ( is_blank( $p_binddn ) && is_blank( $p_password ) ) {
++            $p_binddn	= config_get( 'ldap_bind_dn', '' );
++            $p_password	= config_get( 'ldap_bind_passwd', '' );
++        }
++
++        if ( !is_blank( $p_binddn ) && !is_blank( $p_password ) ) {
++            $t_br = @ldap_bind( $t_ds, $p_binddn, $p_password );
++        } else {
++            # Either the Bind DN or the Password are empty, so attempt an anonymous bind.
++            $t_br = @ldap_bind( $t_ds );
++        }
++    } 
++
++    return $t_ds;
++}
++
++# --------------------
++# Return an email address from LDAP, given a username
++function ldap_brief_info( $p_username ) {
++    $t_ldap_organization	= config_get( 'ldap_organization' );
++    $t_ldap_root_dn	    	= config_get( 'ldap_root_dn' );
++
++    $t_ldap_uid_field = config_get( 'ldap_uid_field', 'uid' ) ;
++    $t_search_filter	= "(&$t_ldap_organization($t_ldap_uid_field=$p_username))";
++    $t_search_attrs		= array( $t_ldap_uid_field, 'dn', 'givenName', 'sn', 'cn', 'mail' );
++    $t_ds           	= ldap_connect_bind();
++
++    $t_sr	= ldap_search( $t_ds, $t_ldap_root_dn, $t_search_filter, $t_search_attrs );
++    $t_info	= ldap_get_entries( $t_ds, $t_sr );
++    ldap_free_result( $t_sr );
++    ldap_unbind( $t_ds );
++
++    $result = array();
++    $result['dn'] = $t_info[0]['dn'];
++    $result['givenname'] = $t_info[0]['givenname'][0];
++    $result['sn'] = $t_info[0]['sn'][0];
++    $result['cn'] = $t_info[0]['cn'][0];
++    $result['mail'] = $t_info[0]['mail'][0];
++
++    return $result;
++}
++
++?>

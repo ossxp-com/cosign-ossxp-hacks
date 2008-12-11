@@ -1,6 +1,6 @@
-diff -r 21e8f04ab943 html/Makefile.in
---- a/html/Makefile.in	Thu Dec 11 02:56:37 2008 +0800
-+++ b/html/Makefile.in	Thu Dec 11 03:19:27 2008 +0800
+diff -r 6ddcc1cb2978 html/Makefile.in
+--- a/html/Makefile.in	Thu Dec 11 17:01:29 2008 +0800
++++ b/html/Makefile.in	Thu Dec 11 17:31:05 2008 +0800
 @@ -14,6 +14,7 @@
  	-mkdir -p $(DESTDIR)${exec_prefix}
  	-mkdir -p $(DESTDIR)${TMPLDIR}
@@ -17,29 +17,9 @@ diff -r 21e8f04ab943 html/Makefile.in
  	for i in ${HTML}; do \
  	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${HTMLDIR}/; \
  	done
-diff -r 21e8f04ab943 html/images/services/Cosign_3d.gif
-Binary file html/images/services/Cosign_3d.gif has changed
-diff -r 21e8f04ab943 html/images/services/Cosign_3d_lg.gif
-Binary file html/images/services/Cosign_3d_lg.gif has changed
-diff -r 21e8f04ab943 html/images/services/mailman.gif
-Binary file html/images/services/mailman.gif has changed
-diff -r 21e8f04ab943 html/images/services/mailman.png
-Binary file html/images/services/mailman.png has changed
-diff -r 21e8f04ab943 html/images/services/mantis.gif
-Binary file html/images/services/mantis.gif has changed
-diff -r 21e8f04ab943 html/images/services/moinmoin.gif
-Binary file html/images/services/moinmoin.gif has changed
-diff -r 21e8f04ab943 html/images/services/moinmoin.png
-Binary file html/images/services/moinmoin.png has changed
-diff -r 21e8f04ab943 html/images/services/profile.gif
-Binary file html/images/services/profile.gif has changed
-diff -r 21e8f04ab943 html/images/services/profile.png
-Binary file html/images/services/profile.png has changed
-diff -r 21e8f04ab943 html/images/services/subversion.gif
-Binary file html/images/services/subversion.gif has changed
-diff -r 21e8f04ab943 html/template_google/error.html
+diff -r 6ddcc1cb2978 html/template_google/error.html
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/html/template_google/error.html	Thu Dec 11 03:19:27 2008 +0800
++++ b/html/template_google/error.html	Thu Dec 11 17:31:05 2008 +0800
 @@ -0,0 +1,54 @@
 +<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 +<html xmlns="http://www.w3.org/1999/xhtml">
@@ -95,9 +75,9 @@ diff -r 21e8f04ab943 html/template_google/error.html
 +		of the University of Michigan</a> </div>
 +</body>
 +</html>
-diff -r 21e8f04ab943 html/template_google/login.html
+diff -r 6ddcc1cb2978 html/template_google/login.html
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/html/template_google/login.html	Thu Dec 11 03:19:27 2008 +0800
++++ b/html/template_google/login.html	Thu Dec 11 17:31:05 2008 +0800
 @@ -0,0 +1,349 @@
 +<html><head>
 +<meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -273,7 +253,7 @@ diff -r 21e8f04ab943 html/template_google/login.html
 +                    <img src="/cosign/images/services/moinmoin.gif" alt="Wiki">
 +                  </td>
 +                  <td style="font-size: 83%;">
-+                    <a href="http://wiki.foo.bar/Main/action/login/">Wiki</a>
++                    <a href="http://wiki.foo.bar/wiki/action/login/Main?action=login&login=1">Wiki</a>
 +                    <br>
 +                    Collaborative and powerful community websites, you are one of the very important authors
 +                  </td>
@@ -351,7 +331,7 @@ diff -r 21e8f04ab943 html/template_google/login.html
 +                                <tbody>
 +                                  <tr>
 +                                    <td valign="top">
-+                                      GUCAS
++                                      Membership
 +                                    </td>
 +                                    <td valign="middle">
 +                                      <font size="+0"><b>Account</b></font>
@@ -448,9 +428,9 @@ diff -r 21e8f04ab943 html/template_google/login.html
 +<!--
 + vim: ts=2 sw=2 et
 +-->
-diff -r 21e8f04ab943 html/template_google/login_error.html
+diff -r 6ddcc1cb2978 html/template_google/login_error.html
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/html/template_google/login_error.html	Thu Dec 11 03:19:27 2008 +0800
++++ b/html/template_google/login_error.html	Thu Dec 11 17:31:05 2008 +0800
 @@ -0,0 +1,349 @@
 +<html><head>
 +<meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -626,7 +606,7 @@ diff -r 21e8f04ab943 html/template_google/login_error.html
 +                    <img src="/cosign/images/services/moinmoin.gif" alt="Wiki">
 +                  </td>
 +                  <td style="font-size: 83%;">
-+                    <a href="http://wiki.foo.bar/Main/action/login/">Wiki</a>
++                    <a href="http://wiki.foo.bar/wiki/action/login/Main?action=login&login=1">Wiki</a>
 +                    <br>
 +                    Collaborative and powerful community websites, you are one of the very important authors
 +                  </td>
@@ -704,7 +684,7 @@ diff -r 21e8f04ab943 html/template_google/login_error.html
 +                                <tbody>
 +                                  <tr>
 +                                    <td valign="top">
-+                                      GUCAS
++                                      Membership
 +                                    </td>
 +                                    <td valign="middle">
 +                                      <font size="+0"><b>Account</b></font>
@@ -801,9 +781,9 @@ diff -r 21e8f04ab943 html/template_google/login_error.html
 +<!--
 + vim: ts=2 sw=2 et
 +-->
-diff -r 21e8f04ab943 html/template_google/reauth.html
+diff -r 6ddcc1cb2978 html/template_google/reauth.html
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/html/template_google/reauth.html	Thu Dec 11 03:19:27 2008 +0800
++++ b/html/template_google/reauth.html	Thu Dec 11 17:31:05 2008 +0800
 @@ -0,0 +1,345 @@
 +<html><head>
 +<meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -979,7 +959,7 @@ diff -r 21e8f04ab943 html/template_google/reauth.html
 +                    <img src="/cosign/images/services/moinmoin.gif" alt="Wiki">
 +                  </td>
 +                  <td style="font-size: 83%;">
-+                    <a href="http://wiki.foo.bar/Main/action/login/">Wiki</a>
++                    <a href="http://wiki.foo.bar/wiki/action/login/Main?action=login&login=1">Wiki</a>
 +                    <br>
 +                    Collaborative and powerful community websites, you are one of the very important authors
 +                  </td>
@@ -1150,9 +1130,9 @@ diff -r 21e8f04ab943 html/template_google/reauth.html
 +<!--
 + vim: ts=2 sw=2 et
 +-->
-diff -r 21e8f04ab943 html/template_google/verify-logout.html
+diff -r 6ddcc1cb2978 html/template_google/verify-logout.html
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/html/template_google/verify-logout.html	Thu Dec 11 03:19:27 2008 +0800
++++ b/html/template_google/verify-logout.html	Thu Dec 11 17:31:05 2008 +0800
 @@ -0,0 +1,45 @@
 +<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 +<html xmlns="http://www.w3.org/1999/xhtml">
@@ -1199,9 +1179,9 @@ diff -r 21e8f04ab943 html/template_google/verify-logout.html
 +		of the University of Michigan</a> </div>
 +</body>
 +</html>
-diff -r 21e8f04ab943 html/template_google/zh/error.html
+diff -r 6ddcc1cb2978 html/template_google/zh/error.html
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/html/template_google/zh/error.html	Thu Dec 11 03:19:27 2008 +0800
++++ b/html/template_google/zh/error.html	Thu Dec 11 17:31:05 2008 +0800
 @@ -0,0 +1,52 @@
 +<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 +<html xmlns="http://www.w3.org/1999/xhtml">
@@ -1255,9 +1235,9 @@ diff -r 21e8f04ab943 html/template_google/zh/error.html
 +       <a href="http://www.ossxp.com/">群英汇技术支持</a></div>
 +</body>
 +</html>
-diff -r 21e8f04ab943 html/template_google/zh/login.html
+diff -r 6ddcc1cb2978 html/template_google/zh/login.html
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/html/template_google/zh/login.html	Thu Dec 11 03:19:27 2008 +0800
++++ b/html/template_google/zh/login.html	Thu Dec 11 17:31:05 2008 +0800
 @@ -0,0 +1,348 @@
 +<html><head>
 +<meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -1432,7 +1412,7 @@ diff -r 21e8f04ab943 html/template_google/zh/login.html
 +                    <img src="/cosign/images/services/moinmoin.gif" alt="Wiki">
 +                  </td>
 +                  <td style="font-size: 83%;">
-+                    <a href="http://wiki.foo.bar/Main/action/login/">维基</a>
++                    <a href="http://wiki.foo.bar/wiki/action/login/Main?action=login&login=1">维基</a>
 +                    <br>
 +                    提供了协同工作平台和强大的社区网站，您可以成为网站重要的贡献者
 +                  </td>
@@ -1607,9 +1587,9 @@ diff -r 21e8f04ab943 html/template_google/zh/login.html
 +<!--
 + vim: ts=2 sw=2 et
 +-->
-diff -r 21e8f04ab943 html/template_google/zh/login_error.html
+diff -r 6ddcc1cb2978 html/template_google/zh/login_error.html
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/html/template_google/zh/login_error.html	Thu Dec 11 03:19:27 2008 +0800
++++ b/html/template_google/zh/login_error.html	Thu Dec 11 17:31:05 2008 +0800
 @@ -0,0 +1,348 @@
 +<html><head>
 +<meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -1784,7 +1764,7 @@ diff -r 21e8f04ab943 html/template_google/zh/login_error.html
 +                    <img src="/cosign/images/services/moinmoin.gif" alt="Wiki">
 +                  </td>
 +                  <td style="font-size: 83%;">
-+                    <a href="http://wiki.foo.bar/Main/action/login/">维基</a>
++                    <a href="http://wiki.foo.bar/wiki/action/login/Main?action=login&login=1">维基</a>
 +                    <br>
 +                    提供了协同工作平台和强大的社区网站，您可以成为网站重要的贡献者
 +                  </td>
@@ -1959,9 +1939,9 @@ diff -r 21e8f04ab943 html/template_google/zh/login_error.html
 +<!--
 + vim: ts=2 sw=2 et
 +-->
-diff -r 21e8f04ab943 html/template_google/zh/reauth.html
+diff -r 6ddcc1cb2978 html/template_google/zh/reauth.html
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/html/template_google/zh/reauth.html	Thu Dec 11 03:19:27 2008 +0800
++++ b/html/template_google/zh/reauth.html	Thu Dec 11 17:31:05 2008 +0800
 @@ -0,0 +1,343 @@
 +<html><head>
 +<meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -2136,7 +2116,7 @@ diff -r 21e8f04ab943 html/template_google/zh/reauth.html
 +                    <img src="/cosign/images/services/moinmoin.gif" alt="Wiki">
 +                  </td>
 +                  <td style="font-size: 83%;">
-+                    <a href="http://wiki.foo.bar/Main/action/login/">维基</a>
++                    <a href="http://wiki.foo.bar/wiki/action/login/Main?action=login&login=1">维基</a>
 +                    <br>
 +                    提供了协同工作平台和强大的社区网站，您可以成为网站重要的贡献者
 +                  </td>
@@ -2306,9 +2286,9 @@ diff -r 21e8f04ab943 html/template_google/zh/reauth.html
 +<!--
 + vim: ts=2 sw=2 et
 +-->
-diff -r 21e8f04ab943 html/template_google/zh/verify-logout.html
+diff -r 6ddcc1cb2978 html/template_google/zh/verify-logout.html
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/html/template_google/zh/verify-logout.html	Thu Dec 11 03:19:27 2008 +0800
++++ b/html/template_google/zh/verify-logout.html	Thu Dec 11 17:31:05 2008 +0800
 @@ -0,0 +1,45 @@
 +<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 +<html xmlns="http://www.w3.org/1999/xhtml">

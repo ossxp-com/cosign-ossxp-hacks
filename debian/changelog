@@ -1,7 +1,8 @@
-ossxp-cosign (2.1.0-0.1.5140) unstable; urgency=low
+ossxp-cosign (2.1.0-0.1.5141) unstable; urgency=low
 
   * Support multi-language templates;
   * Add Google style templates;
+  * Fix quirk behavior for CosignHttpOnly parameter;
 
  -- Jiang Xin <jiangxin@foo.bar>  Thu, 11 Dec 2008 03:13:19 +0800
 

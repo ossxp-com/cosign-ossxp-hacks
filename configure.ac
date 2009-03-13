@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(cosign,2.1.0rc1,cosign@umich.edu) 
+AC_INIT(cosign,2.1.0,cosign@umich.edu) 
 AC_PREREQ(2.53)
 AC_COPYRIGHT([Copyright (c) 2001-2002 Regents of The University of Michigan.  All Rights Reserved.])
 AC_CONFIG_SRCDIR([version.c.in])
@@ -111,6 +111,10 @@ done
 if test x_$GCC = x_yes; then
     OPTOPTS=${OPTOPTS:-"-Wall -Wmissing-prototypes"}
 fi
+CHECK_UNIVERSAL_BINARIES
+AC_SUBST(FILTER_LINKER_OPTS)
+AC_SUBST(FILTER_COMPILER_OPTS)
+AC_SUBST(UNIVERSAL_OPTOPTS)
 AC_SUBST(OPTOPTS)
 SET_NO_SASL
 AC_CONFIG_SUBDIRS(libsnet)

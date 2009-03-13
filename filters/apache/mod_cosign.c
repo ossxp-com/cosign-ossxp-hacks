@@ -34,7 +34,6 @@
 #include "log.h"
 
 static int	set_cookie_and_redirect( request_rec *, cosign_host_config * );
-extern int	cosign_protocol;
 module 		cosign_module;
 
     static void *
@@ -125,16 +124,12 @@ set_cookie_and_redirect( request_rec *r, cosign_host_config *cfg )
 
     my_cookie = ap_psprintf( r->pool, "%s=%s", cfg->service, cookiebuf );
 
-    /* older version of IE on MacOS 9 seem to need ";;" instead of */
-    /* simply ";" as the cookie delimiter, otherwise no cookie is */
-    /* returned upon revisit. */
-
     gettimeofday( &now, NULL );
     if ( cfg->http == 1 ) { /* living dangerously */
-	full_cookie = ap_psprintf( r->pool, "%s/%lu;;path=/",
+	full_cookie = ap_psprintf( r->pool, "%s/%lu; path=/",
 		my_cookie, now.tv_sec);
     } else {
-	full_cookie = ap_psprintf( r->pool, "%s/%lu;;path=/;secure",
+	full_cookie = ap_psprintf( r->pool, "%s/%lu; path=/; secure",
 		my_cookie, now.tv_sec );
     }
 
@@ -348,9 +343,8 @@ cosign_auth( request_rec *r )
 	r->connection->ap_auth_type = "Cosign";
 	ap_table_set( r->subprocess_env, "COSIGN_SERVICE", cfg->service );
 	ap_table_set( r->subprocess_env, "REMOTE_REALM", si.si_realm );
-	if ( cosign_protocol == 2 ) {
-	    ap_table_set( r->subprocess_env, "COSIGN_FACTOR", si.si_factor );
-	}
+	ap_table_set( r->subprocess_env, "COSIGN_FACTOR", si.si_factor );
+
 #ifdef KRB
 	if ( cfg->krbtkt == 1 ) {
 	    ap_table_set( r->subprocess_env, "KRB5CCNAME", si.si_krb5tkt );
@@ -375,9 +369,11 @@ set_cookie:
     if ( cfg->public == 1 ) {
 	return( DECLINED );
     }
+#ifdef notdef
     if ( set_cookie_and_redirect( r, cfg ) != 0 ) {
 	return( HTTP_SERVICE_UNAVAILABLE );
     }
+#endif /* notdef */
     if ( ap_some_auth_required( r )) {
 	ap_table_setn( r->notes, "cosign-redirect", "true" );
 	return( DECLINED );
@@ -634,7 +630,7 @@ set_cosign_port( cmd_parms *params, void *mconfig, char *arg )
     portarg = strtol( arg, (char **)NULL, 10 );
     cfg->port = htons( portarg );
 
-    for ( cur = cfg->cl; cur != NULL; cur = cur->conn_next ) {
+    for ( cur = *(cfg->cl); cur != NULL; cur = cur->conn_next ) {
 	if ( cfg->port == 0 ) {
 	    cur->conn_sin.sin_port = htons( 6663 );
 	} else {
@@ -848,9 +844,19 @@ set_cosign_host( cmd_parms *params, void *mconfig, char *arg )
 	return( err );
     }
 
+    /* This is hairy. During operation, we re-order the connection list
+     * so that the most responsive server is at the head of the list.
+     * This requires updates to the pointer to the list head from the cfg
+     * structure. However, the cfg structure gets copied around when
+     * Apache does configuration merges, so there isn't a single cfg
+     * structure in any one process. Instead, we point to a pointer
+     * to the list head. */
+    cfg->cl = (struct connlist **)
+		ap_palloc(params->pool, sizeof(struct connlist *));
+
     /* preserve address order as returned from DNS */
     /* actually, here we will randomize for "load balancing" */
-    cur = &cfg->cl;
+    cur = cfg->cl;
     for ( i = 0; he->h_addr_list[ i ] != NULL; i++ ) {
 	new = ( struct connlist * )
 		ap_palloc( params->pool, sizeof( struct connlist ));
@@ -925,7 +931,6 @@ cosign_child_cleanup( server_rec *s, pool *p )
     if ( teardown_conn( cfg->cl, s ) != 0 ) {
 	cosign_log( APLOG_ERR, s, "mod_cosign: teardown conn err" );
     }
-    return;
 }
 
 static command_rec cosign_cmds[ ] =

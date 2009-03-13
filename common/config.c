@@ -37,6 +37,15 @@ static struct matchlist		*negotiatemap = NULL;
 static struct matchlist		*authenticatorlist = NULL;
 static struct cosigncfg 	*cfg = NULL, *new_cfg;
 
+
+static struct matchlist		defmysqlauthenticator = {
+    "mysql", "(.+@.+)", "$1", "friend", NULL,
+};
+
+static struct matchlist		defkerberosauthenticator = {
+    "kerberos", "([^@]+)", "$1", "", NULL,
+};
+
 char			*suffix = NULL;
 
     static void
@@ -182,7 +191,7 @@ matchlist_process(struct matchlist *ml, char *userstring, char **l, char **r )
     static char         login[ 130 ];   /* "64@64\0" */
     static char         realm[ 256 ];   /* big */
 
-    if (( rc = regcomp( &preg, ml->ml_regexp, 0 )) != 0 ) {
+    if (( rc = regcomp( &preg, ml->ml_regexp, REG_EXTENDED )) != 0 ) {
 	regerror( rc, &preg, error, sizeof( error ));
         fprintf( stderr, "%s: %s", ml->ml_regexp, error );
         return ( -1 );
@@ -223,8 +232,6 @@ matchlist_process(struct matchlist *ml, char *userstring, char **l, char **r )
 x509_translate( char *subject, char *issuer, char **l, char **r )
 {
     struct matchlist	*cur = NULL;
-    int			rc;
-    regmatch_t		matches[ 3 ];
 
     for ( cur = certlist; cur != NULL; cur = cur->ml_next ) {
 	if ( strcmp( cur->ml_key, issuer ) != 0 ) {
@@ -258,21 +265,9 @@ negotiate_translate( char *remote_user, char **l, char **r )
 pick_authenticator( char *login, char **type, char **l, char **r,
 	struct matchlist **pos )
 {
-    struct matchlist	*cur = NULL;
-    int			rc;
-
     if ( authenticatorlist == NULL ) {
-        if ( strchr( login, '@' ) != NULL ) {
-	   *l = login;
-	   *r = "friend";
-	   *type = "mysql";
-	} else {
-	   *l = login;
-	   *r = NULL;
-           *type = "kerberos";
-	}
-	*pos = NULL;
-	return( 0 );
+	authenticatorlist = &defmysqlauthenticator;
+	authenticatorlist->ml_next = &defkerberosauthenticator;
     }
 
     if ( *pos == NULL ) {

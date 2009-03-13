@@ -30,8 +30,6 @@
 
 #define IDLETIME	60
 
-extern int		cosign_protocol;
-
     int
 cosign_cookie_valid( cosign_host_config *cfg, char *cookie, struct sinfo *si,
 	char *ipaddr, server_rec *s )
@@ -63,6 +61,8 @@ cosign_cookie_valid( cosign_host_config *cfg, char *cookie, struct sinfo *si,
         return( COSIGN_ERROR );
     }
 
+    memset( si, 0, sizeof( struct sinfo ));
+
 retry:
     /*
      * read_scookie() return vals:
@@ -84,7 +84,22 @@ retry:
 	    goto netcheck;
 	}
 
-	if (( cosign_protocol == 2 ) && ( cfg->reqfc > 0 )) {
+	/*
+	 * to ensure that COSIGN_FACTORS is always populated,
+	 * copy the factor list before checking to see if we
+	 * meet required factors, since acav_parse is destructive.
+	 * read_scookie zeros lsi, so if there's no factor line
+	 * in the local cookie, this strcpy just sets si->si_factor
+	 * to NULL.
+	 */
+	strcpy( si->si_factor, lsi.si_factor );
+	
+	/*
+	 * check the factor list only if CosignRequireFactor is
+	 * set. reqfc > 0 requires protocol 2.
+	 */
+	si->si_protocol = lsi.si_protocol;
+	if ( cfg->reqfc > 0 && si->si_protocol == 2 ) {
 	    if (( acav = acav_alloc()) == NULL ) {
 		cosign_log( APLOG_ERR, s, "mod_cosign: cookie_valid:"
 			" acav_alloc failed" );
@@ -94,6 +109,7 @@ retry:
 	    if (( ac = acav_parse( acav, lsi.si_factor, &av )) < 0 ) {
 		cosign_log( APLOG_ERR, s, "mod_cosign: cookie_valid:"
 			" acav_parse failed" );
+		acav_free( acav );
 		return( COSIGN_ERROR );
 	    }
 
@@ -108,11 +124,11 @@ retry:
 		    break;
 		}
 	    }
+	    acav_free( acav );
 	    if ( i < cfg->reqfc ) {
 		/* we broke out before all factors were satisfied */
 		goto netcheck;
 	    }
-	    strcpy( si->si_factor, lsi.si_factor );
 	}
 
 	strcpy( si->si_ipaddr, lsi.si_ipaddr );
@@ -175,7 +191,7 @@ netcheck:
 	    goto storecookie;
 	}
 
-	if ( cosign_protocol == 2 ) {
+	if ( si->si_protocol == 2 ) {
 	    if ( strcmp( si->si_factor, lsi.si_factor ) != 0 ) {
 		goto storecookie;
 	    }
@@ -223,10 +239,11 @@ storecookie:
 	return( COSIGN_ERROR );
     }
 
+    fprintf( tmpfile, "v%d\n", si->si_protocol );
     fprintf( tmpfile, "i%s\n", si->si_ipaddr );
     fprintf( tmpfile, "p%s\n", si->si_user );
     fprintf( tmpfile, "r%s\n", si->si_realm );
-    if ( cosign_protocol == 2 ) {
+    if ( si->si_protocol == 2 ) {
 	fprintf( tmpfile, "f%s\n", si->si_factor );
     }
 

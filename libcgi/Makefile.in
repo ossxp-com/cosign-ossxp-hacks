@@ -1,6 +1,7 @@
 CC= @CC@
 DEFS= @debug@
-CFLAGS= -g $(DEFS) @CFLAGS@
+OPTOPTS= @OPTOPTS@
+CFLAGS= -g $(DEFS) ${OPTOPTS} @CFLAGS@
 LDFLAGS= @LDFLAGS@
 SRC= cgi.c
 OBJ= cgi.o
@@ -16,3 +17,6 @@ libcgi.a libcgi_p.a: $(OBJ)
 
 clean:
 	rm -f libcgi.a cgi.o
+
+distclean: clean
+	rm -f config.log config.status

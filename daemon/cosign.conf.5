@@ -242,8 +242,10 @@ per line, in the order they are listed in the configuration. If
 authentication is successful, the external authenticator writes the
 factor name on stdout (file descriptor 1) and exits with a value of 0.
 If an error occurs, the external authenticator writes an error message
-on stdout and exits with a value of 1. All other exit values are
-reserved for future use.
+on stdout and exits with a value of 1. If the user's password has
+expired, the external authenticator writes an error message on stdout
+and exits with a value of 2. All other exit values are reserved for
+future use.
 .sp
 There are currently two additional configuration options.  The -2 option
 to the factor keyword means that this factor is only checked after
@@ -365,9 +367,9 @@ The following snippet defines the normal internal password authentication rules
 .nf
 
     # Anything containing an @ is a friend request
-    passwd mysql    \\(.*@.*\\)  $1 friend
+    passwd mysql    \\\\(.*@.*\\\\)  $1 friend
     # Anything else gets handed to Kerberos
-    passwd kerberos \\([^@]\\+\\) $1 MY.REALM
+    passwd kerberos \\\\([^@]+\\\\) $1 MY.REALM
 .fi
 .RE
 .sp
@@ -376,8 +378,8 @@ allows both A.EXAMPLE.COM and B.EXAMPLE.COM to be used as supported realms.
 .sp
 .RS
 .nf
-    passwd kerberos \\(.*@A.EXAMPLE.COM\\) $1 A.EXAMPLE.COM
-    passwd kerberos \\(.*@B.EXAMPLE.COM\\) $1 B.EXAMPLE.COM
+    passwd kerberos \\\\(.*@A.EXAMPLE.COM\\\\) $1 A.EXAMPLE.COM
+    passwd kerberos \\\\(.*@B.EXAMPLE.COM\\\\) $1 B.EXAMPLE.COM
 .fi
 .RE
 .sp

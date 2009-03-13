@@ -238,7 +238,7 @@ match_factor( char *required, char *satisfied, char *suffix )
     int
 main( int argc, char *argv[] )
 {
-    int				rc, cookietime = 0, cookiecount = 0;
+    int				rc = 0, cookietime = 0, cookiecount = 0;
     int				rebasic = 0, len, server_port;
     int				reauth = 0;
     int				i, j;
@@ -655,30 +655,42 @@ main( int argc, char *argv[] )
 		&type, &username, &realm, &pos ) == 0 ) {
 #ifdef SQL_FRIEND
             if ( strcmp( type, "mysql" ) == 0 ) {
-	        if ( cosign_login_mysql( head, login, username, realm, 
-				        cl[ CL_PASSWORD ].cl_data,
-				        ip_addr, cookie, &sp ) == 0 ) {
+	        if (( rc = cosign_login_mysql( head, login, username, realm, 
+					cl[ CL_PASSWORD ].cl_data, ip_addr,
+					cookie, &sp, &msg )) == COSIGN_CGI_OK) {
 		    goto loggedin;
 	        }
 	    } else
 # endif  /* SQL_FRIEND */
 # ifdef KRB
             if ( strcmp( type, "kerberos" ) == 0 ) {
-	        if ( cosign_login_krb5( head, login, username, realm, 
-				        cl[ CL_PASSWORD ].cl_data,
-				        ip_addr, cookie, &sp ) == 0 ) {
+	        if (( rc = cosign_login_krb5( head, login, username, realm, 
+				        cl[ CL_PASSWORD ].cl_data, ip_addr,
+					cookie, &sp, &msg )) == COSIGN_CGI_OK) {
 		    goto loggedin;
-	        }
+                }
 	    } else
 #endif /* KRB5 */
 	    {
+                rc = COSIGN_CGI_ERROR;
 	        fprintf( stderr, "Unknown authentication type '%s'", type );
 	    }
         }
 
+	if ( rc == COSIGN_CGI_PASSWORD_EXPIRED ) {
+	    sl[ SL_TITLE ].sl_data = "Password Expired";
+	    sl[ SL_ERROR ].sl_data = msg;
+            subfile( EXPIRED_ERROR_HTML, sl, 0 );
+            exit( 0 ); 
+        }
+
 	sl[ SL_TITLE ].sl_data = "Authentication Required";
-	sl[ SL_ERROR ].sl_data = "Password or Account Name incorrect. "
-		"Is [caps lock] on?";
+	if ( msg != NULL && strlen( msg ) > 0 ) {
+	    sl[ SL_ERROR ].sl_data = msg;
+	} else {
+	    sl[ SL_ERROR ].sl_data = "Password or Account Name incorrect. "
+		    "Is [caps lock] on?";
+	}
 	goto loginscreen;
 
 loggedin:
@@ -711,9 +723,15 @@ loggedin:
 		    " before secondary authentication.";
 	    goto loginscreen;
 	}
-	if ( execfactor( fl, cl, &msg ) != 0 ) {
-	    sl[ SL_TITLE ].sl_data = "Authentication Required";
+	if (( rc = execfactor( fl, cl, &msg )) != COSIGN_CGI_OK ) {
 	    sl[ SL_ERROR ].sl_data = msg;
+            if ( rc == COSIGN_CGI_PASSWORD_EXPIRED ) {
+	        sl[ SL_TITLE ].sl_data = "Password Expired";
+                subfile( EXPIRED_ERROR_HTML, sl, 0 );
+                exit( 0 );
+            } else {
+	        sl[ SL_TITLE ].sl_data = "Authentication Required";
+            }
 	    goto loginscreen;
 	}
 

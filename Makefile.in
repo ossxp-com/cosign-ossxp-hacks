@@ -2,7 +2,8 @@ CC=	@CC@
 ALL=	common libsnet libcgi cgi html daemon 
 FILTERS= @FILTERS@ 
 TARGETS= cgi html daemon ${FILTERS}
-CFLAGS= @CFLAGS@
+OPTOPTS= @OPTOPTS@ @UNIVERSAL_OPTOPTS@
+CFLAGS=	${OPTOPTS} @CFLAGS@
 LDFLAGS= @LDFLAGS@
 
 filters:	${FILTERS}
@@ -25,7 +26,7 @@ clean:
 	    do (cd $$i; ${MAKE} ${MFLAGS} clean); \
 	done
 
-VERSION=`date +%Y%m%d`
+VERSION=2.1.0
 DISTDIR=../cosign-${VERSION}
 
 dist   : distclean
@@ -38,6 +39,7 @@ dist   : distclean
 
 distclean: clean
 	( cd libsnet ; make distclean )
+	( cd libcgi ; make distclean )
 	rm -f config.log config.status config.cache Makefile \
 	  libcgi/Makefile cgi/Makefile html/Makefile daemon/Makefile \
 	  filters/apache/Makefile filters/apache2/Makefile \

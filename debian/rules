@@ -7,7 +7,7 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools.mk
 include /usr/share/cdbs/1/rules/patchsys-quilt.mk
 
-HGMQ=$(shell ls .hg/patches/series)
+HGMQ=$(shell ls .hg/patches/series 2>/dev/null || true)
 
 ifeq ($(HGMQ),.hg/patches/series)
 	DEB_PATCHDIRS := $(CURDIR)/debian/patches.none
@@ -49,5 +49,10 @@ binary-fixup/ossxp-cosign-cgi::
 	mv debian/ossxp-cosign-cgi/opt/cosign/lib/cgi-ssl/* debian/ossxp-cosign-cgi/opt/cosign/cgi-bin/
 	rmdir debian/ossxp-cosign-cgi/opt/cosign/lib/cgi-ssl
 
+debian/patches/: debian/patches
+debian/patches:
+	rsync -av --exclude=.hg/ --exclude=.hgignore --exclude=status --delete ../cosign-ossxp/.hg/patches/ debian/patches/
+
+.PHONY: debian/patches debian/patches/
 
 # vim: noet

@@ -1,4 +1,11 @@
-ossxp-cosign (2.1.0-0.1.5141) unstable; urgency=low
+ossxp-cosign (2.1.0-0.2.32) unstable; urgency=low
+
+  * Cosign upgrade to 2.1.0;
+  * Trac replace mantis in services list and cosign template.
+
+ -- Jiang Xin <jiangxin@foo.bar>  Fri, 13 Mar 2009 23:39:10 +0800
+
+ossxp-cosign (2.1.0~rc1-0.1.5141) unstable; urgency=low
 
   * Support multi-language templates;
   * Add Google style templates;
@@ -6,7 +13,7 @@ ossxp-cosign (2.1.0-0.1.5141) unstable; urgency=low
 
  -- Jiang Xin <jiangxin@foo.bar>  Thu, 11 Dec 2008 03:13:19 +0800
 
-ossxp-cosign (2.1.0-0.1.5113) unstable; urgency=low
+ossxp-cosign (2.1.0~rc1-0.1.5113) unstable; urgency=low
 
   * CoSign debian package initial.
 

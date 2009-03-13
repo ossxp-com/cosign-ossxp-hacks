@@ -1,6 +1,6 @@
-diff -r 99fb938a34ff html/Makefile.in
---- a/html/Makefile.in	Wed Dec 10 16:54:56 2008 +0800
-+++ b/html/Makefile.in	Thu Dec 11 17:34:46 2008 +0800
+diff -r 44f559130b02 html/Makefile.in
+--- a/html/Makefile.in	Fri Mar 13 23:15:31 2009 +0800
++++ b/html/Makefile.in	Fri Mar 13 23:19:33 2009 +0800
 @@ -30,6 +30,6 @@
  	-mkdir -p $(DESTDIR)${HTMLDIR}/js
  	cp js/*.js $(DESTDIR)${HTMLDIR}/js/
@@ -9,17 +9,18 @@ diff -r 99fb938a34ff html/Makefile.in
 +	cp services/*.html services/*.php $(DESTDIR)${SERVICESDIR}/
  
  clean:
-diff -r 99fb938a34ff html/services/config_inc.php
+diff -r 44f559130b02 html/services/config_inc.php
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/html/services/config_inc.php	Thu Dec 11 17:34:46 2008 +0800
-@@ -0,0 +1,27 @@
++++ b/html/services/config_inc.php	Fri Mar 13 23:19:33 2009 +0800
+@@ -0,0 +1,28 @@
 +<?php
 +
 +$url_gosa = "https://weblogin.foo.bar/members/?login";
 +$url_wiki = "http://wiki.foo.bar/wiki/action/login/Main?action=login&login=1";
 +$url_websvn = "http://svn.foo.bar/websvn/";
++$url_mercurial = "http://www.foo.bar/hg/";
 +$url_statsvn = "http://svn.foo.bar/statsvn/";
-+$url_bugs = "http://bugs.foo.bar/";
++$url_bugs = "http://www.foo.bar/trac/";
 +$url_mailman = "http://list.foo.bar/mailman/listinfo/";
 +
 +$url_login = "https://weblogin.foo.bar/cgi-bin/login";
@@ -40,10 +41,10 @@ diff -r 99fb938a34ff html/services/config_inc.php
 +$g_ldap_bind_passwd	= 'guess';
 +
 +?>
-diff -r 99fb938a34ff html/services/index.php
+diff -r 44f559130b02 html/services/index.php
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/html/services/index.php	Thu Dec 11 17:34:46 2008 +0800
-@@ -0,0 +1,277 @@
++++ b/html/services/index.php	Fri Mar 13 23:19:33 2009 +0800
+@@ -0,0 +1,289 @@
 +<?php
 +
 +require_once("config_inc.php");
@@ -265,22 +266,34 @@ diff -r 99fb938a34ff html/services/index.php
 +                    <img src="/cosign/images/services/subversion.gif" alt="Subversion">
 +                  </td>
 +                  <td style="font-size: 83%;">
-+                    Subversion <a href="<?php echo $url_websvn; ?>">Web 界面</a> 以及 
++                    Subversion： <a href="<?php echo $url_websvn; ?>">Web 界面</a> 以及 
 +                    <a href="<?php echo $url_statsvn; ?>">统计</a>
 +                    <br>
-+                    最通行的版本控制系统，是团队开发比不可少的代码管理平台，也应该成为程序员一生的朋友
++                    最通行的版本控制系统，是团队开发比不可少的代码管理平台，程序员必备工具箱
 +                  </td>
 +                </tr>
 +                <tr>
 +                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 +                  <td aligh='right' vliagn='middle'>
-+                    <img src="/cosign/images/services/mantis.gif" alt="Mantis">
++                    <img src="/cosign/images/services/mercurial.png" alt="Subversion">
++                  </td>
++                  <td style="font-size: 83%;">
++                    Mercurial： 
++                    <a href="<?php echo $url_mercurial; ?>">Hg repository</a>
++                    <br>
++                    分布式版本控制系统，开源软件最适合的版本控制系统，也是个人最适合的版本控制系统，也应该成为程序员一生的朋友
++                  </td>
++                </tr>
++                <tr>
++                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
++                  <td aligh='right' vliagn='middle'>
++                    <img src="/cosign/images/services/trac.gif" alt="Trac">
 +
 +                  </td>
 +                  <td style="font-size: 83%;">
-+                    <a href="<?php echo $url_bugs; ?>">缺陷跟踪</a>
++                    <a href="<?php echo $url_bugs; ?>">项目管理</a>
 +                    <br>
-+                    Mantis 提供了一个轻量级的易用的缺陷跟踪系统，是软件测试流程管理平台
++                    Trac 提供了整合的项目管理工具，实现研发流程管理、缺陷跟踪和配置管理系统的整合
 +                  </td>
 +                </tr>
 +                <tr>
@@ -321,9 +334,9 @@ diff -r 99fb938a34ff html/services/index.php
 +<!--
 + vim: ts=2 sw=2 et
 +-->
-diff -r 99fb938a34ff html/services/ldap_api.php
+diff -r 44f559130b02 html/services/ldap_api.php
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/html/services/ldap_api.php	Thu Dec 11 17:34:46 2008 +0800
++++ b/html/services/ldap_api.php	Fri Mar 13 23:19:33 2009 +0800
 @@ -0,0 +1,90 @@
 +<?php
 +

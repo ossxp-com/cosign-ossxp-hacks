@@ -1,7 +1,7 @@
-diff -r 769c56edb894 Makefile.in
---- a/Makefile.in	Tue Dec 02 18:10:58 2008 +0800
-+++ b/Makefile.in	Wed Dec 03 09:28:55 2008 +0800
-@@ -44,12 +44,10 @@
+diff -r 8c0132564c3f Makefile.in
+--- a/Makefile.in	Fri Mar 13 23:54:37 2009 +0800
++++ b/Makefile.in	Fri Mar 13 23:54:56 2009 +0800
+@@ -46,12 +46,10 @@
  	  common/Makefile version.c filters/common/cosignpaths.h
  	rm -rf autom4te.cache
  
@@ -17,9 +17,9 @@ diff -r 769c56edb894 Makefile.in
 -	    do (cd $$i; ${MAKE} ${MFLAGS} install); \
 +	    do (cd $$i; ${MAKE} ${MFLAGS} install DESTDIR=$(DESTDIR)); \
  	done
-diff -r 769c56edb894 cgi/Makefile.in
---- a/cgi/Makefile.in	Tue Dec 02 18:10:58 2008 +0800
-+++ b/cgi/Makefile.in	Wed Dec 03 09:28:55 2008 +0800
+diff -r 8c0132564c3f cgi/Makefile.in
+--- a/cgi/Makefile.in	Fri Mar 13 23:54:37 2009 +0800
++++ b/cgi/Makefile.in	Fri Mar 13 23:54:56 2009 +0800
 @@ -16,6 +16,7 @@
  FRIEND_MYSQL_DB = @frienddbhost@
  FRIEND_MYSQL_LOGIN = @frienddblogin@
@@ -27,7 +27,7 @@ diff -r 769c56edb894 cgi/Makefile.in
 +DESTDIR=
  
  INCPATH=     @CPPFLAGS@ @KINC@ @MYSQLINC@ -I../common -I../libsnet -I../libcgi
- OPTOPTS=     @OPTOPTS@
+ OPTOPTS=     @OPTOPTS@ @UNIVERSAL_OPTOPTS@
 @@ -76,7 +77,7 @@
  	/bin/rm -rf *.o ${TARGETS}
  
@@ -40,9 +40,9 @@ diff -r 769c56edb894 cgi/Makefile.in
 +	-mkdir -p $(DESTDIR)${CGIDIR};
 +	${INSTALL} -m 0755 -c cosign.cgi $(DESTDIR)${CGIDIR}/;
 +	${INSTALL} -m 0755 -c logout $(DESTDIR)${CGIDIR}/;
-diff -r 769c56edb894 daemon/Makefile.in
---- a/daemon/Makefile.in	Tue Dec 02 18:10:58 2008 +0800
-+++ b/daemon/Makefile.in	Wed Dec 03 09:28:55 2008 +0800
+diff -r 8c0132564c3f daemon/Makefile.in
+--- a/daemon/Makefile.in	Fri Mar 13 23:54:37 2009 +0800
++++ b/daemon/Makefile.in	Fri Mar 13 23:54:56 2009 +0800
 @@ -4,6 +4,7 @@
  exec_prefix=@exec_prefix@
  SBINDIR=@sbindir@
@@ -79,9 +79,9 @@ diff -r 769c56edb894 daemon/Makefile.in
  
  clean :
  	rm -f a.out core* *.o *.bak *[Ee]rrs tags
-diff -r 769c56edb894 filters/apache/Makefile.in
---- a/filters/apache/Makefile.in	Tue Dec 02 18:10:58 2008 +0800
-+++ b/filters/apache/Makefile.in	Wed Dec 03 09:28:55 2008 +0800
+diff -r 8c0132564c3f filters/apache/Makefile.in
+--- a/filters/apache/Makefile.in	Fri Mar 13 23:54:37 2009 +0800
++++ b/filters/apache/Makefile.in	Fri Mar 13 23:54:56 2009 +0800
 @@ -8,6 +8,8 @@
  APXS=          	@APXS@
  APACHECTL=     	@APACHECTL@
@@ -102,9 +102,9 @@ diff -r 769c56edb894 filters/apache/Makefile.in
  
  #   cleanup
  clean:
-diff -r 769c56edb894 filters/apache2/Makefile.in
---- a/filters/apache2/Makefile.in	Tue Dec 02 18:10:58 2008 +0800
-+++ b/filters/apache2/Makefile.in	Wed Dec 03 09:28:55 2008 +0800
+diff -r 8c0132564c3f filters/apache2/Makefile.in
+--- a/filters/apache2/Makefile.in	Fri Mar 13 23:54:37 2009 +0800
++++ b/filters/apache2/Makefile.in	Fri Mar 13 23:54:56 2009 +0800
 @@ -8,6 +8,8 @@
  APXS2=          @APXS2@
  APACHECTL2=     @APACHECTL2@
@@ -124,9 +124,9 @@ diff -r 769c56edb894 filters/apache2/Makefile.in
  
  #   cleanup
  clean:
-diff -r 769c56edb894 html/Makefile.in
---- a/html/Makefile.in	Tue Dec 02 18:10:58 2008 +0800
-+++ b/html/Makefile.in	Wed Dec 03 09:28:55 2008 +0800
+diff -r 8c0132564c3f html/Makefile.in
+--- a/html/Makefile.in	Fri Mar 13 23:54:37 2009 +0800
++++ b/html/Makefile.in	Fri Mar 13 23:54:56 2009 +0800
 @@ -6,25 +6,26 @@
  HTMLDIR  = @prefix@/html
  SERVICESDIR  = @prefix@/services
@@ -166,9 +166,9 @@ diff -r 769c56edb894 html/Makefile.in
 +	cp services/*.html $(DESTDIR)${SERVICESDIR}/
  
  clean:
-diff -r 769c56edb894 libsnet/Makefile.in
---- a/libsnet/Makefile.in	Tue Dec 02 18:10:58 2008 +0800
-+++ b/libsnet/Makefile.in	Wed Dec 03 09:28:55 2008 +0800
+diff -r 8c0132564c3f libsnet/Makefile.in
+--- a/libsnet/Makefile.in	Fri Mar 13 23:54:37 2009 +0800
++++ b/libsnet/Makefile.in	Fri Mar 13 23:54:56 2009 +0800
 @@ -6,6 +6,7 @@
  prefix      =	@prefix@
  libdir      =	@libdir@

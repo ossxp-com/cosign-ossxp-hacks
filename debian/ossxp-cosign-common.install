@@ -3,3 +3,4 @@ debian/conf/apache.inc                       opt/cosign/conf
 debian/tmp/opt/cosign/man/man5/cosign.conf.5 opt/cosign/man/man5/
 CAcerts/*.pem                                opt/cosign/conf/certs/CA
 debian/certs/CA/*.pem                        opt/cosign/conf/certs/CA
+debian/package_info/ossxp-cosign-common.conf opt/ossxp/lib/packages/

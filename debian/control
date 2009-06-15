@@ -6,7 +6,7 @@ Build-Depends: cdbs, debhelper (>= 5.0), build-essential, apache2-threaded-dev |
 Standards-Version: 1.0.0
 
 Package: ossxp-cosign-common
-Architecture: any
+Architecture: all
 Section: ossxp
 Priority: optional
 Depends: openssl

@@ -1,7 +1,8 @@
-debian/tmp/opt/cosign/lib/*   opt/cosign/lib
-debian/factor/ldap            opt/cosign/factor
-debian/factor/test            opt/cosign/factor
-debian/sites/cgi              opt/cosign/sites
-debian/certs/foo.bar/cgi-1.*  opt/cosign/conf/certs/foo.bar
+debian/tmp/opt/cosign/lib/*             opt/cosign/lib
+debian/factor/ldap                      opt/cosign/factor
+debian/factor/test                      opt/cosign/factor
+debian/sites/cgi                        opt/cosign/sites
+debian/certs/foo.bar/cgi-1.*            opt/cosign/conf/certs/foo.bar
 debian/certs/foo.bar/weblogin.foo.bar*  opt/cosign/conf/certs/foo.bar
-debian/images/*               opt/cosign/lib/html/images/
+debian/images/*                         opt/cosign/lib/html/images/
+debian/conf/apache2/include/https/*     etc/apache2/include/https/

@@ -27,7 +27,7 @@ Package: ossxp-cosign-cgi
 Architecture: any
 Section: ossxp
 Priority: optional
-Depends: apache2 | ossxp-apache2, openssl, ossxp-cosign-common
+Depends: ossxp-apache2, openssl, ossxp-cosign-common
 Suggests: cdbs
 Description: CoSign login/logout CGIs
  CoSign is a Single Sign-On from weblogin.org
@@ -36,7 +36,7 @@ Package: ossxp-cosign-filter
 Architecture: any
 Section: ossxp
 Priority: optional
-Depends: apache2 | ossxp-apache2, openssl
+Depends: ossxp-apache2, openssl
 Suggests: cdbs
 Description: CoSign filter for apache2
  CoSign is a Single Sign-On from weblogin.org

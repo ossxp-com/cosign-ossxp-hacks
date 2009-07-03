@@ -1,3 +1,2 @@
 /opt/cosign/conf/cosign.conf
-/opt/cosign/conf/apache.inc
 /opt/cosign/conf/certs/CA/ossxp.pem

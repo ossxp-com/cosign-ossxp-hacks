@@ -1,4 +1,4 @@
-ossxp-cosign (2.1.1-0.2.42) unstable; urgency=low
+ossxp-cosign (2.1.1-0.2.44) unstable; urgency=low
 
   * add cosign.conf to /etc/apache2/mods-available
   * add /etc/apache2/include/https/cosign-cgi.conf, auto enable

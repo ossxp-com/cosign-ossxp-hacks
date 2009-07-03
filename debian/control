@@ -27,7 +27,7 @@ Package: ossxp-cosign-cgi
 Architecture: any
 Section: ossxp
 Priority: optional
-Depends: ossxp-apache2, openssl, ossxp-cosign-common
+Depends: ossxp-apache2, openssl, ossxp-cosign-common, libnet-ldap-perl, python-ldap
 Suggests: cdbs
 Description: CoSign login/logout CGIs
  CoSign is a Single Sign-On from weblogin.org

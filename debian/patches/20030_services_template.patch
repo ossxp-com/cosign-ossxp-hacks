@@ -1,6 +1,6 @@
-diff -r 44f559130b02 html/Makefile.in
---- a/html/Makefile.in	Fri Mar 13 23:15:31 2009 +0800
-+++ b/html/Makefile.in	Fri Mar 13 23:19:33 2009 +0800
+diff -r 0d8af5cfdad4 html/Makefile.in
+--- a/html/Makefile.in	Wed Jul 08 18:44:49 2009 +0800
++++ b/html/Makefile.in	Wed Jul 08 18:48:32 2009 +0800
 @@ -30,6 +30,6 @@
  	-mkdir -p $(DESTDIR)${HTMLDIR}/js
  	cp js/*.js $(DESTDIR)${HTMLDIR}/js/
@@ -9,9 +9,9 @@ diff -r 44f559130b02 html/Makefile.in
 +	cp services/*.html services/*.php $(DESTDIR)${SERVICESDIR}/
  
  clean:
-diff -r 44f559130b02 html/services/config_inc.php
+diff -r 0d8af5cfdad4 html/services/config_inc.php
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/html/services/config_inc.php	Fri Mar 13 23:19:33 2009 +0800
++++ b/html/services/config_inc.php	Wed Jul 08 18:48:32 2009 +0800
 @@ -0,0 +1,28 @@
 +<?php
 +
@@ -41,9 +41,9 @@ diff -r 44f559130b02 html/services/config_inc.php
 +$g_ldap_bind_passwd	= 'guess';
 +
 +?>
-diff -r 44f559130b02 html/services/index.php
+diff -r 0d8af5cfdad4 html/services/index.php
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/html/services/index.php	Fri Mar 13 23:19:33 2009 +0800
++++ b/html/services/index.php	Wed Jul 08 18:48:32 2009 +0800
 @@ -0,0 +1,289 @@
 +<?php
 +
@@ -334,10 +334,10 @@ diff -r 44f559130b02 html/services/index.php
 +<!--
 + vim: ts=2 sw=2 et
 +-->
-diff -r 44f559130b02 html/services/ldap_api.php
+diff -r 0d8af5cfdad4 html/services/ldap_api.php
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/html/services/ldap_api.php	Fri Mar 13 23:19:33 2009 +0800
-@@ -0,0 +1,90 @@
++++ b/html/services/ldap_api.php	Wed Jul 08 18:48:32 2009 +0800
+@@ -0,0 +1,92 @@
 +<?php
 +
 +###########################################################################
@@ -374,7 +374,9 @@ diff -r 44f559130b02 html/services/ldap_api.php
 +function ldap_connect_bind( $p_binddn = '', $p_password = '' ) {
 +    $t_ldap_server	= config_get( 'ldap_server' );
 +    $t_ldap_port	= config_get( 'ldap_port' );
-+
++    if ( is_blank( $t_ldap_port ) ) {
++        $t_ldap_port = 389;
++    }
 +    $t_ds = @ldap_connect ( $t_ldap_server, $t_ldap_port );
 +    if ( $t_ds > 0 ) {
 +        $t_protocol_version = config_get( 'ldap_protocol_version' );

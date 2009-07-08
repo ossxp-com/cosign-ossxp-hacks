@@ -1,3 +1,9 @@
+ossxp-cosign (2.1.1-0.2.48) unstable; urgency=low
+
+  * fix bug in services/ldap_api.php
+
+ -- Jiang Xin <jiangxin@foo.bar>  Wed, 08 Jul 2009 18:56:02 +0800
+
 ossxp-cosign (2.1.1-0.2.47) unstable; urgency=low
 
   * add cosign.conf to /etc/apache2/mods-available

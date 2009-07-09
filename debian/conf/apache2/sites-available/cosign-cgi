@@ -1,0 +1,5 @@
+<VirtualHost *:80>
+    ServerName  weblogin.foo.bar
+    ServerAdmin root@foo.bar
+    Redirect / https://weblogin.foo.bar/
+</VirtualHost>

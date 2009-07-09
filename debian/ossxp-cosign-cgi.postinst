@@ -23,7 +23,12 @@ case "$1" in
     ;;
 esac
 
-if [ -f /opt/cosign/lib/services-local/ldap_api.php ] && \
+# for new installed cosign-cgi, enable site
+if [ -z "$2" ]; then
+    a2ensite cosign-cgi >/dev/null || \
+    echo "a2ensite cosgin-cgi failed, seem like apache2 not installed."
+
+elif [ -f /opt/cosign/lib/services-local/ldap_api.php ] && \
         dpkg --compare-versions "$2" lt "2.1.1-0.2.47"; then
     # fix bug in ldap_api.php
     cp /opt/cosign/lib/services/ldap_api.php /opt/cosign/lib/services-local/ldap_api.php

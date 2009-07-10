@@ -1,4 +1,4 @@
-ossxp-cosign (2.1.1-0.2.53) unstable; urgency=low
+ossxp-cosign (2.1.1-0.2.54) unstable; urgency=low
 
   * fix bug in services/ldap_api.php
   * set "CosignHttpOnly On"

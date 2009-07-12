@@ -37,7 +37,7 @@ Package: ossxp-cosign-filter
 Architecture: any
 Section: ossxp
 Priority: optional
-Depends: ossxp-apache2, openssl
+Depends: ossxp-apache2, openssl, ossxp-cosign-common
 Suggests: cdbs
 Description: CoSign filter for apache2
  CoSign is a Single Sign-On from weblogin.org

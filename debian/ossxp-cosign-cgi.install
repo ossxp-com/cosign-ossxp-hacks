@@ -6,4 +6,5 @@ debian/certs/foo.bar/cgi-1.*            opt/cosign/conf/certs/foo.bar
 debian/certs/foo.bar/weblogin.foo.bar*  opt/cosign/conf/certs/foo.bar
 debian/images/*                         opt/cosign/lib/html/images/
 debian/conf/apache2/include/https/*     etc/apache2/include/https/
+debian/conf/apache2/include/http/*      etc/apache2/include/http/
 debian/conf/apache2/sites-available/cosign-cgi  etc/apache2/sites-available/

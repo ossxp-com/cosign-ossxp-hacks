@@ -1,8 +1,9 @@
-ossxp-cosign (2.1.1-0.2.57) unstable; urgency=low
+ossxp-cosign (2.1.1-0.2.58) unstable; urgency=low
 
   * fix bug in services/ldap_api.php
   * set "CosignHttpOnly On"
   * never checkip.
+  * new include file virtualhost.inf for VirtualHost
 
  -- Jiang Xin <jiangxin@foo.bar>  Fri, 10 Jul 2009 18:52:03 +0800
 

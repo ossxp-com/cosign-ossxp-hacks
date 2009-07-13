@@ -6,7 +6,7 @@ case "$1" in
     configure)
         chmod 640 /opt/cosign/conf/certs/foo.bar/filter*
         chown root.root /opt/cosign/conf/certs/foo.bar/filter*
-        # 只对新安装的版本, 修改 apache 配置
+        # for new installed package
         if [ -z "$2" ]; then
             /usr/sbin/a2enmod cosign >/dev/null   || echo "a2enmod cosign failed, seem like cosign not installed."
         fi

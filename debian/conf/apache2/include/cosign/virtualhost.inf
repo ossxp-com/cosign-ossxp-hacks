@@ -1,0 +1,15 @@
+## CoSign common settings
+Include /etc/apache2/include/cosign/*.conf
+
+## The subdirectory hash length for the Cosign filter database. 
+## valid value: 0|1|2, 0 is default
+## If set CosignFilterHashLength to 1: create 64 subdirs under
+## /opt/cosign/db/filter: 0-9,a-z,A-Z,+,-
+CosignFilterHashLength 0
+
+## CosignCookieExpireTime <time in seconds>,  Default: 86400 ( 24 hours )
+CosignCookieExpireTime 86400
+
+## Toggles whether the browser's IP is verified against cosignd's IP information. 
+## valid value: never|initial|always, initial is default
+CosignCheckIP never

@@ -14,7 +14,7 @@ set -e
 COSIGND=/opt/cosign/bin/cosignd
 MONSTER=/opt/cosign/bin/monster
 
-COSIGND_OPTS="-y /opt/cosign/conf/certs/cosignd.crt -z /opt/cosign/conf/certs/cosignd.key"
+COSIGND_OPTS="-i 43200 -y /opt/cosign/conf/certs/cosignd.crt -z /opt/cosign/conf/certs/cosignd.key"
 MONSTER_OPTS=
 
 COSIGN_DEFAULTS_FILE=/etc/default/cosign

@@ -11,7 +11,7 @@ case "$1" in
         chown root.cosign /opt/cosign/conf/certs/foo.bar/cosignd.foo.bar.*
         if [ ! -f $COSIGN_DEFAULTS_FILE ]; then
             cat > $COSIGN_DEFAULTS_FILE <<EOF
-COSIGND_OPTS="-y /opt/cosign/conf/certs/cosignd.pem -z /opt/cosign/conf/certs/cosignd.key"
+COSIGND_OPTS="-d 36000 -y /opt/cosign/conf/certs/cosignd.pem -z /opt/cosign/conf/certs/cosignd.key"
 MONSTER_OPTS=
 EOF
         fi

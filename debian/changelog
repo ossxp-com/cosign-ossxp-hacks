@@ -1,3 +1,9 @@
+ossxp-cosign (2.1.1-0.2.61) unstable; urgency=low
+
+  * set idle time for cosignd.
+
+ -- Jiang Xin <jiangxin@foo.bar>  Thu, 13 Aug 2009 14:16:42 +0800
+
 ossxp-cosign (2.1.1-0.2.59) unstable; urgency=low
 
   * fix bug in services/ldap_api.php

@@ -1,6 +1,6 @@
-ossxp-cosign (2.1.1-0.2.61) unstable; urgency=low
+ossxp-cosign (2.1.1-0.2.62) unstable; urgency=low
 
-  * set idle time for cosignd.
+  * set idle time for cosign daemon and monster.
 
  -- Jiang Xin <jiangxin@foo.bar>  Thu, 13 Aug 2009 14:16:42 +0800
 

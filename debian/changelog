@@ -1,3 +1,9 @@
+ossxp-cosign (2.1.1-0.2.63) unstable; urgency=low
+
+  * Re-generated CA cert which can be used as a root ca.
+
+ -- Jiang Xin <jiangxin@foo.bar>  Thu, 13 Aug 2009 14:16:42 +0800
+
 ossxp-cosign (2.1.1-0.2.62) unstable; urgency=low
 
   * set idle time for cosign daemon and monster.

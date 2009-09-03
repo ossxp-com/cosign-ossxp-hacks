@@ -2,5 +2,5 @@ debian/tmp/opt/cosign/bin/mod_cosign.so  opt/cosign/bin/
 debian/conf/cron.d/cosign-cleanup        opt/cosign/conf/cron.d/
 debian/sites/site1                       opt/cosign/sites
 debian/sites/site2                       opt/cosign/sites
-debian/certs/foo.bar/filter*             opt/cosign/conf/certs/foo.bar
 debian/conf/apache2/mods-available/*     etc/apache2/mods-available/
+debian/certs/filter/*                    opt/ossxp/ssl/certs/cosign-filter/

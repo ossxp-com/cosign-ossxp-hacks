@@ -22,8 +22,8 @@ DEB_CONFIGURE_EXTRA_FLAGS += --enable-apache2=/usr/bin/apxs2 \
     --mandir=/opt/cosign/man \
     --with-cosignconf=/opt/cosign/conf/cosign.conf \
     --with-cosigncadir=/opt/cosign/conf/certs/CA \
-    --with-cosigncert=/opt/cosign/conf/certs/cert.pem \
-    --with-cosignkey=/opt/cosign/conf/certs/key.pem \
+    --with-cosigncert=/opt/cosign/conf/certs/cosignd.pem \
+    --with-cosignkey=/opt/cosign/conf/certs/cosignd.key \
     --with-filterdb=/opt/cosign/db/filter \
     --with-cosigndb=/opt/cosign/db/daemon \
     --with-proxydb=/opt/cosign/db/proxy

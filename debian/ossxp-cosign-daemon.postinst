@@ -2,23 +2,24 @@
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin 
 COSIGN_DEFAULTS_FILE=/etc/default/cosign
+CERTDIR=/opt/ossxp/ssl/certs/cosign-daemon
 
 case "$1" in
     configure)
         chmod 2770 /opt/cosign/db/daemon
         chown cosign.cosign /opt/cosign/db/daemon
-        chmod 640 /opt/cosign/conf/certs/foo.bar/cosignd.foo.bar.*
-        chown root.cosign /opt/cosign/conf/certs/foo.bar/cosignd.foo.bar.*
+        chmod 640 $CERTDIR/*
+        chown root.cosign $CERTDIR/*
         if [ ! -f $COSIGN_DEFAULTS_FILE ]; then
             cat > $COSIGN_DEFAULTS_FILE <<EOF
 COSIGND_OPTS="-i 86400 -y /opt/cosign/conf/certs/cosignd.pem -z /opt/cosign/conf/certs/cosignd.key"
 MONSTER_OPTS="-H 31536000 -i 86400 -y /opt/cosign/conf/certs/cosignd.pem -z /opt/cosign/conf/certs/cosignd.key"
 EOF
         fi
-        # 只对新安装的版本:
-        if [ -z "$2" ]; then
-           [ ! -f /opt/cosign/conf/certs/cosignd.pem ] && ln -s /opt/cosign/conf/certs/foo.bar/cosignd.foo.bar.pem /opt/cosign/conf/certs/cosignd.pem
-           [ ! -f /opt/cosign/conf/certs/cosignd.key ] && ln -s /opt/cosign/conf/certs/foo.bar/cosignd.foo.bar.key /opt/cosign/conf/certs/cosignd.key
+        # 只对新安装的版本, 或者之前不兼容的版本:
+        if dpkg --compare-versions "$2" lt 2.1.1-0.2.67 ; then
+           ln -sf $CERTDIR/cosignd.pem /opt/cosign/conf/certs/cosignd.pem
+           ln -sf $CERTDIR/cosignd.key /opt/cosign/conf/certs/cosignd.key
         fi
     ;;
 

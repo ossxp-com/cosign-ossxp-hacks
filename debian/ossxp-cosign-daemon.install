@@ -2,4 +2,4 @@ debian/tmp/opt/cosign/bin/monster  opt/cosign/bin/
 debian/tmp/opt/cosign/bin/cosignd  opt/cosign/bin/
 debian/tmp/opt/cosign/man/man8/monster.8 opt/cosign/man/man8/
 debian/tmp/opt/cosign/man/man8/cosignd.8 opt/cosign/man/man8/
-debian/certs/foo.bar/cosignd.foo.bar.*   opt/cosign/conf/certs/foo.bar
+debian/certs/daemon/*                    opt/ossxp/ssl/certs/cosign-daemon

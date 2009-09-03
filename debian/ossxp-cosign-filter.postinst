@@ -1,11 +1,12 @@
 #!/bin/sh -e
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin 
+CERTDIR=/opt/ossxp/ssl/certs/cosign-filter
 
 case "$1" in
     configure)
-        chmod 640 /opt/cosign/conf/certs/foo.bar/filter*
-        chown root.root /opt/cosign/conf/certs/foo.bar/filter*
+        chmod 640 $CERTDIR/*
+        chown root.root $CERTDIR/*
         # for new installed package
         if [ -z "$2" ]; then
             /usr/sbin/a2enmod x_cosign >/dev/null   || echo "a2enmod x_cosign failed, seem like cosign not installed."

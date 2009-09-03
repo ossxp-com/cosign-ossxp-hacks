@@ -1,6 +1,9 @@
-ossxp-cosign (2.1.1-0.2.63) unstable; urgency=low
+ossxp-cosign (2.1.1-0.2.65) unstable; urgency=low
 
   * Re-generated CA cert which can be used as a root ca.
+  * Apache2.2 >= 2.2.11, if cosign module load before ssl module,
+    raise a Exception. So change cosign module name for apache2
+    to x_cosign.load and x_cosign.conf
 
  -- Jiang Xin <jiangxin@foo.bar>  Thu, 13 Aug 2009 14:16:42 +0800
 

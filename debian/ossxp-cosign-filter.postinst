@@ -8,7 +8,14 @@ case "$1" in
         chown root.root /opt/cosign/conf/certs/foo.bar/filter*
         # for new installed package
         if [ -z "$2" ]; then
-            /usr/sbin/a2enmod cosign >/dev/null   || echo "a2enmod cosign failed, seem like cosign not installed."
+            /usr/sbin/a2enmod x_cosign >/dev/null   || echo "a2enmod x_cosign failed, seem like cosign not installed."
+        elif dpkg --compare-versions "$2" lt-nl "2.1.1-0.2.65"; then
+            if [ -f /etc/apache2/mods-available/cosign.load ]; then
+                a2dismod cosign
+                rm -f /etc/apache2/mods-available/cosign.load
+                rm -f /etc/apache2/mods-available/cosign.conf
+            fi
+            /usr/sbin/a2enmod x_cosign >/dev/null   || echo "a2enmod x_cosign failed, seem like cosign not installed."
         fi
         chmod 770 /opt/cosign/db/filter
         chown www-data.www-data /opt/cosign/db/filter

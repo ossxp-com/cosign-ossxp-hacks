@@ -1,4 +1,4 @@
-ossxp-cosign (2.1.1-0.2.67) unstable; urgency=low
+ossxp-cosign (2.1.1-0.2.68) unstable; urgency=low
 
   * Deploy certs to /opt/ossxp/ssl/certs/cosign-*/
 

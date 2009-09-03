@@ -10,7 +10,6 @@ Architecture: all
 Section: ossxp
 Priority: optional
 Depends: openssl
-Conflicts: apache2.2-common (>= 2.2.11)
 Suggests: cdbs
 Description: Common files for CoSign cgi and daemon.
  CoSign is a Single Sign-On from weblogin.org

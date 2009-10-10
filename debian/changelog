@@ -1,3 +1,9 @@
+ossxp-cosign (2.1.1-0.2.70) unstable; urgency=low
+
+  * Cosign Cgi redirt / to https://weblogin/cgi-bin/login
+
+ -- Jiang Xin <jiangxin@foo.bar>  Thu, 03 Sep 2009 20:06:38 +0800
+
 ossxp-cosign (2.1.1-0.2.68) unstable; urgency=low
 
   * Deploy certs to /opt/ossxp/ssl/certs/cosign-*/

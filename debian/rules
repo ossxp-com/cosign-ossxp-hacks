@@ -7,11 +7,11 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools.mk
 include /usr/share/cdbs/1/rules/patchsys-quilt.mk
 
-HGMQ=$(shell ls .hg/patches/series 2>/dev/null || true)
-
-ifeq ($(HGMQ),.hg/patches/series)
-	DEB_PATCHDIRS := $(CURDIR)/debian/patches.none
-endif
+## HGMQ=$(shell ls .hg/patches/series 2>/dev/null || true)
+## 
+## ifeq ($(HGMQ),.hg/patches/series)
+## 	DEB_PATCHDIRS := $(CURDIR)/debian/patches.none
+## endif
 
 ##DEB_CONFIGURE_EXTRA_FLAGS += --enable-krb
 ##DEB_CONFIGURE_EXTRA_FLAGS += --enable-mysql

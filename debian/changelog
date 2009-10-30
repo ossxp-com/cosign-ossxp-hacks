@@ -1,3 +1,9 @@
+ossxp-cosign (2.1.1-0.2.73) unstable; urgency=low
+
+  * php script works with php in cgi mode.
+
+ -- Jiang Xin <jiangxin@foo.bar>  Fri, 30 Oct 2009 23:43:13 +0800
+
 ossxp-cosign (2.1.1-0.2.70) unstable; urgency=low
 
   * Cosign Cgi redirt / to https://weblogin/cgi-bin/login

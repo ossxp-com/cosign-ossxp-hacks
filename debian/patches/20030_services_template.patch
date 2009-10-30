@@ -1,6 +1,6 @@
-diff -r 0d8af5cfdad4 html/Makefile.in
---- a/html/Makefile.in	Wed Jul 08 18:44:49 2009 +0800
-+++ b/html/Makefile.in	Wed Jul 08 18:48:32 2009 +0800
+diff -r cc4176c79bb9 html/Makefile.in
+--- a/html/Makefile.in
++++ b/html/Makefile.in
 @@ -30,6 +30,6 @@
  	-mkdir -p $(DESTDIR)${HTMLDIR}/js
  	cp js/*.js $(DESTDIR)${HTMLDIR}/js/
@@ -9,9 +9,9 @@ diff -r 0d8af5cfdad4 html/Makefile.in
 +	cp services/*.html services/*.php $(DESTDIR)${SERVICESDIR}/
  
  clean:
-diff -r 0d8af5cfdad4 html/services/config_inc.php
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/html/services/config_inc.php	Wed Jul 08 18:48:32 2009 +0800
+diff -r cc4176c79bb9 html/services/config_inc.php
+--- /dev/null
++++ b/html/services/config_inc.php
 @@ -0,0 +1,28 @@
 +<?php
 +
@@ -41,16 +41,16 @@ diff -r 0d8af5cfdad4 html/services/config_inc.php
 +$g_ldap_bind_passwd	= 'guess';
 +
 +?>
-diff -r 0d8af5cfdad4 html/services/index.php
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/html/services/index.php	Wed Jul 08 18:48:32 2009 +0800
+diff -r cc4176c79bb9 html/services/index.php
+--- /dev/null
++++ b/html/services/index.php
 @@ -0,0 +1,289 @@
 +<?php
 +
 +require_once("config_inc.php");
 +require_once("ldap_api.php");
 +
-+$uid = $_SERVER["REMOTE_USER"];
++$uid = @$_SERVER["REMOTE_USER"]? @$_SERVER["REMOTE_USER"] : @$_SERVER["REDIRECT_REMOTE_USER"];
 +if (!$uid)
 +{
 +  die("Not login yet.");
@@ -334,9 +334,9 @@ diff -r 0d8af5cfdad4 html/services/index.php
 +<!--
 + vim: ts=2 sw=2 et
 +-->
-diff -r 0d8af5cfdad4 html/services/ldap_api.php
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/html/services/ldap_api.php	Wed Jul 08 18:48:32 2009 +0800
+diff -r cc4176c79bb9 html/services/ldap_api.php
+--- /dev/null
++++ b/html/services/ldap_api.php
 @@ -0,0 +1,92 @@
 +<?php
 +

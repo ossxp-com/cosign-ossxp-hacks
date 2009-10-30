@@ -1,3 +1,9 @@
+ossxp-cosign (2.1.1-0.2.72) unstable; urgency=low
+
+  * php script works with php in cgi mode.
+
+ -- Jiang Xin <jiangxin@foo.bar>  Fri, 30 Oct 2009 23:43:13 +0800
+
 ossxp-cosign (2.1.1-0.2.68) unstable; urgency=low
 
   * Deploy certs to /opt/ossxp/ssl/certs/cosign-*/

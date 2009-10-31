@@ -17,7 +17,7 @@ dir: clean
 	#sudo setfacl -Rb cosign-2.1.1
 	#sudo setfacl -Rb ../debian
 	(cd $(SOURCEDIR)/.hg/patches; hg pull ; hg up)
-	(cd $(SOURCEDIR); hg pull ; hg up ; hg qpop -a)
+	(cd $(SOURCEDIR); hg revert -a; hg pull ; hg up ; hg qpop -a)
 	(cd $(SOURCEDIR); [ -d debian ] || ln -s $$(dirname $$(dirname $$(pwd)))/debian debian; hg st)
 	sudo setfacl -Rb $(SOURCEDIR) ../debian
 

@@ -1,4 +1,4 @@
-ossxp-cosign (2.1.1-0.2.73) unstable; urgency=low
+ossxp-cosign (2.1.1-0.2.74) unstable; urgency=low
 
   * php script works with php in cgi mode.
 

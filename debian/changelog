@@ -1,3 +1,10 @@
+ossxp-cosign (2.1.1-0.2.75) unstable; urgency=low
+
+  * template now can include files, using this syntax:
+    $!include(filename*.txt)
+
+ -- Jiang Xin <jiangxin@foo.bar>  Tue, 17 Nov 2009 00:34:07 +0800
+
 ossxp-cosign (2.1.1-0.2.74) unstable; urgency=low
 
   * php script works with php in cgi mode.

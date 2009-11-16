@@ -1,6 +1,6 @@
-diff -r ca3d6558735f cgi/Makefile.in
---- a/cgi/Makefile.in	Wed Dec 10 15:28:16 2008 +0800
-+++ b/cgi/Makefile.in	Wed Dec 10 15:30:32 2008 +0800
+diff -r 475d79e77fa0 cgi/Makefile.in
+--- a/cgi/Makefile.in
++++ b/cgi/Makefile.in
 @@ -29,7 +29,7 @@
  CFLAGS=      ${DEFS} ${OPTOPTS} @CFLAGS@ ${INCPATH}
  
@@ -10,9 +10,9 @@ diff -r ca3d6558735f cgi/Makefile.in
  	../common/config.o ../common/wildcard.o ../common/argcargv.o \
  	../version.o 
  TARGETS = logout cosign.cgi
-diff -r ca3d6558735f cgi/lang.c
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/cgi/lang.c	Wed Dec 10 15:30:32 2008 +0800
+diff -r 475d79e77fa0 cgi/lang.c
+--- /dev/null
++++ b/cgi/lang.c
 @@ -0,0 +1,90 @@
 +#include <stdio.h>
 +#include <string.h>
@@ -104,9 +104,9 @@ diff -r ca3d6558735f cgi/lang.c
 +    }
 +    return lang;
 +}
-diff -r ca3d6558735f cgi/lang.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/cgi/lang.h	Wed Dec 10 15:30:32 2008 +0800
+diff -r 475d79e77fa0 cgi/lang.h
+--- /dev/null
++++ b/cgi/lang.h
 @@ -0,0 +1,11 @@
 +/*
 + * Copyright (c) 2008 JiangXin, worldhello.net AT gmail.com
@@ -119,25 +119,31 @@ diff -r ca3d6558735f cgi/lang.h
 +char ** get_accept_language();
 +
 +#endif
-diff -r ca3d6558735f cgi/subfile.c
---- a/cgi/subfile.c	Wed Dec 10 15:28:16 2008 +0800
-+++ b/cgi/subfile.c	Wed Dec 10 15:30:32 2008 +0800
-@@ -3,6 +3,8 @@
+diff -r 475d79e77fa0 cgi/subfile.c
+--- a/cgi/subfile.c
++++ b/cgi/subfile.c
+@@ -3,14 +3,50 @@
  #include <string.h>
  
  #include "subfile.h"
 +#include "lang.h"
 +#include <unistd.h>
++
++#include <libgen.h>
++#include <glob.h>
  
      void
  subfile( char *filename, struct subfile_list *sl, int nocache )
-@@ -10,6 +12,34 @@
+ {
      FILE	*fs;
++    FILE	*finc;
      int 	c, i, j;
      char	nasties[] = "<>(){}[]'`\" \\";
-+
-+    char    **lang;
-+    char *filename_i18n;
+ 
++    char	**lang;
++    char	*filename_i18n;
++    char	*pbuff = NULL;
++    char	*pdir;
 +    int tmplen = 0;
 +
 +    tmplen = strlen(filename)+5;
@@ -163,6 +169,101 @@ diff -r ca3d6558735f cgi/subfile.c
 +        }
 +        lang++;
 +    }
- 
++
      if ( nocache ) {
  	fputs( "Expires: Mon, 16 Apr 1973 13:10:00 GMT\n"
+ 		"Last-Modified: Mon, 16 Apr 1973 13:10:00 GMT\n"
+@@ -26,6 +62,9 @@
+ 	exit( 1 );
+     }
+ 
++    pbuff = strdup(filename);
++    pdir = dirname (pbuff);
++
+     while (( c = getc( fs )) != EOF ) {
+ 	if ( c == '$' ) {
+ 	    if (( c = getc( fs )) == EOF ) {
+@@ -37,6 +76,71 @@
+ 		putchar( c );
+ 		continue;
+ 	    }
++	if ( c == '!' ) {
++		char *s = malloc(9);
++		char *incfile = malloc(255);
++		fgets(s, 9, fs);
++		if (strncmp(s, "include(", 8) == 0)
++		{
++			strcpy(incfile, pdir);
++			strcat(incfile, "/");
++			i = strlen(incfile)-1;
++    			while (( c = getc( fs )) != EOF && i++ < 254 ) {
++				if (c==')')
++					break;
++				incfile[i] = c;
++			}
++			incfile[i] = '\0';
++			if (c==')')
++			{
++				if ( (access(incfile, F_OK)==0) && (finc = fopen( incfile, "r" )) != NULL ) {
++					while (( c = getc( finc )) != EOF ) {
++						putchar( c );
++					}
++					fclose(finc);
++				}
++				else
++				{
++					glob_t globfiles;
++					if ( glob(incfile, 0, NULL, &globfiles) == 0)
++					{
++						for (i=0; i< globfiles.gl_pathc; i++)
++						{
++							if ( (access(globfiles.gl_pathv[i], F_OK)==0) &&
++							     (finc = fopen( globfiles.gl_pathv[i], "r" )) != NULL )
++							{
++								while (( c = getc( finc )) != EOF ) {
++									putchar( c );
++								}
++								fclose(finc);
++							}
++						}
++						globfree(&globfiles);
++					}
++				}
++			}
++			else
++			{
++				printf ("include(%s", incfile+strlen(pdir)+1);
++				if (c != EOF)
++					putchar( c );
++			}
++		}
++		else
++		{
++			putchar( '$' );
++			putchar( c );
++			fseek(fs, -1*strlen(s), SEEK_CUR);
++		}
++		if (s != NULL)
++			free(s);
++		if (incfile != NULL)
++			free(incfile);
++		s = NULL;
++		incfile = NULL;
++		continue;
++	}
++
+ 
+ 	    for ( i = 0; sl[ i ].sl_letter != '\0'; i++ ) {
+ 		if ( sl[ i ].sl_letter == c ) {
+@@ -73,5 +177,11 @@
+ 	perror( filename );
+     }
+ 
++    if (filename_i18n != NULL)
++        free(filename_i18n);
++    if (pbuff != NULL)
++        free(pbuff);
+     return;
+ }
++
++/* vim: set noet ts=8 sw=8 : */

@@ -1,4 +1,4 @@
-ossxp-cosign (2.1.1-0.2.76) unstable; urgency=low
+ossxp-cosign (2.1.1-0.2.77) unstable; urgency=low
 
   * Template now can include files, using this syntax:
     $!include(filename*.txt)

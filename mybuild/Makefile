@@ -6,24 +6,23 @@ all:
 	@echo "build - generate config files for current dists and run dpkg-buildpackage"
 
 clean:
-	#-rm -f *changes *.deb 
-	#-rm -rf cosign-2.1.1
-	-rm -f ../../*changes ../../*.deb 
-	-rm -rf $(SOURCEDIR)/*
+	-rm -f ossxp-cosign*changes ossxp-cosign*.deb 
 	-rm -rf $(SOURCEDIR)/.pc
+	(cd $(SOURCEDIR); hg revert -a)
+	(cd $(SOURCEDIR); hg clean; hg qpop -a; hg up)
+	(cd $(SOURCEDIR)/.hg/patches; hg up; hg st;)
 
 dir: clean
-	#tar zxvf cosign-2.1.1.tar.gz
-	#sudo setfacl -Rb cosign-2.1.1
-	#sudo setfacl -Rb ../debian
-	(cd $(SOURCEDIR)/.hg/patches; hg pull ; hg up)
-	(cd $(SOURCEDIR); hg revert -a; hg pull ; hg up ; hg qpop -a)
 	(cd $(SOURCEDIR); [ -d debian ] || ln -s $$(dirname $$(dirname $$(pwd)))/debian debian; hg st)
 	sudo setfacl -Rb $(SOURCEDIR) ../debian
 
+debian/patches:
+	(cd $(SOURCEDIR); make -f debian/rules debian/patches)
+
 build:
-	(cd $(SOURCEDIR); make -f debian/rules debian/control)
-	(cd $(SOURCEDIR); dpkg-buildpackage -b -rfakeroot)
+	(cd $(SOURCEDIR); make -f debian/rules debian/control || true)
+	(cd $(SOURCEDIR); dpkg-buildpackage -b -rfakeroot || true)
+	(cd $(SOURCEDIR); mv $$(dirname $$(pwd -P))/ossxp-cosign*changes $(CURDIR); mv $$(dirname $$(pwd -P))/ossxp-cosign*deb $(CURDIR);)
 
 .PHONY: all clean dir
 # vim: noet

@@ -5,7 +5,7 @@ CERTDIR=/opt/ossxp/ssl/certs/cosign-filter
 
 case "$1" in
     configure)
-        chmod -R 640 /opt/ossxp/ssl/certs/cosign-filter
+        chmod -R 750 /opt/ossxp/ssl/certs/cosign-filter
         chown -R root.www-data /opt/ossxp/ssl/certs/cosign-filter
         # for new installed package
         if [ -z "$2" ]; then
@@ -31,8 +31,8 @@ case "$1" in
     ;;
 esac
 
-if dpkg --compare-versions "$2" lt-nl 2.1.1-0.2.76 ; then
-        chmod -R 640 /opt/ossxp/ssl/certs/cosign-filter
+if dpkg --compare-versions "$2" lt-nl 2.1.1-0.2.77 ; then
+        chmod -R 750 /opt/ossxp/ssl/certs/cosign-filter
         chown -R root.www-data /opt/ossxp/ssl/certs/cosign-filter
 fi
 

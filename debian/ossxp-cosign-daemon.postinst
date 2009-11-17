@@ -8,7 +8,7 @@ case "$1" in
     configure)
         chmod 2770 /opt/cosign/db/daemon
         chown cosign.cosign /opt/cosign/db/daemon
-        chmod -R 640 /opt/ossxp/ssl/certs/cosign-daemon
+        chmod -R 750 /opt/ossxp/ssl/certs/cosign-daemon
         chown -R root.cosign /opt/ossxp/ssl/certs/cosign-daemon
         if [ ! -f $COSIGN_DEFAULTS_FILE ]; then
             cat > $COSIGN_DEFAULTS_FILE <<EOF
@@ -32,8 +32,8 @@ EOF
     ;;
 esac
 
-if dpkg --compare-versions "$2" lt-nl 2.1.1-0.2.76 ; then
-        chmod -R 640 /opt/ossxp/ssl/certs/cosign-daemon
+if dpkg --compare-versions "$2" lt-nl 2.1.1-0.2.77 ; then
+        chmod -R 750 /opt/ossxp/ssl/certs/cosign-daemon
         chown -R root.cosign /opt/ossxp/ssl/certs/cosign-daemon
 fi
 

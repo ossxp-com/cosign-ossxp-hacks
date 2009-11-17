@@ -1,23 +1,16 @@
-diff -r 2cafad3256c0 html/Makefile.in
+diff -r e377270edb14 html/Makefile.in
 --- a/html/Makefile.in
 +++ b/html/Makefile.in
-@@ -14,6 +14,7 @@
- 	-mkdir -p $(DESTDIR)${exec_prefix}
- 	-mkdir -p $(DESTDIR)${TMPLDIR}/en
- 	-mkdir -p $(DESTDIR)${TMPLDIR}/zh
-+	-mkdir -p $(DESTDIR)${TMPLDIR}_google
- 	-mkdir -p $(DESTDIR)${HTMLDIR}
- 	for i in ${TEMPLATES}; do \
- 	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${TMPLDIR}/en; \
-@@ -21,6 +22,7 @@
- 	for i in zh/*; do \
- 	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${TMPLDIR}/zh/; \
+@@ -19,6 +19,8 @@
  	done
-+	cp -R template_google/* $(DESTDIR)${TMPLDIR}_google/; \
+ 	# Templates for zh_cn
+ 	cp -a zh $(DESTDIR)${TMPLDIR}/
++	# Templates in google style, contains both en and zh_cn style
++	cp -a template_google $(DESTDIR)${TMPLDIR}_google; \
  	for i in ${HTML}; do \
- 	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${HTMLDIR}/; \
+ 	    cp -a $$i $(DESTDIR)${HTMLDIR}/; \
  	done
-diff -r 2cafad3256c0 html/template_google/en/error.html
+diff -r e377270edb14 html/template_google/en/error.html
 --- /dev/null
 +++ b/html/template_google/en/error.html
 @@ -0,0 +1,52 @@
@@ -73,7 +66,7 @@ diff -r 2cafad3256c0 html/template_google/en/error.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r 2cafad3256c0 html/template_google/en/expired_error.html
+diff -r e377270edb14 html/template_google/en/expired_error.html
 --- /dev/null
 +++ b/html/template_google/en/expired_error.html
 @@ -0,0 +1,288 @@
@@ -365,13 +358,13 @@ diff -r 2cafad3256c0 html/template_google/en/expired_error.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r 2cafad3256c0 html/template_google/en/inc/0000.html
+diff -r e377270edb14 html/template_google/en/inc/0000.html
 --- /dev/null
 +++ b/html/template_google/en/inc/0000.html
 @@ -0,0 +1,2 @@
 +            <table border="0" cellpadding="4">
 +              <tbody>
-diff -r 2cafad3256c0 html/template_google/en/inc/0010_wiki.html
+diff -r e377270edb14 html/template_google/en/inc/0010_wiki.html
 --- /dev/null
 +++ b/html/template_google/en/inc/0010_wiki.html
 @@ -0,0 +1,11 @@
@@ -386,7 +379,7 @@ diff -r 2cafad3256c0 html/template_google/en/inc/0010_wiki.html
 +                    Collaborative and powerful community websites, you are one of the very important authors
 +                  </td>
 +                </tr>
-diff -r 2cafad3256c0 html/template_google/en/inc/0020_scm.html
+diff -r e377270edb14 html/template_google/en/inc/0020_scm.html
 --- /dev/null
 +++ b/html/template_google/en/inc/0020_scm.html
 @@ -0,0 +1,12 @@
@@ -402,7 +395,7 @@ diff -r 2cafad3256c0 html/template_google/en/inc/0020_scm.html
 +                    A very popular version control system, and a must have in programmer's toolbox.
 +                  </td>
 +                </tr>
-diff -r 2cafad3256c0 html/template_google/en/inc/0030_bugtrac.html
+diff -r e377270edb14 html/template_google/en/inc/0030_bugtrac.html
 --- /dev/null
 +++ b/html/template_google/en/inc/0030_bugtrac.html
 @@ -0,0 +1,12 @@
@@ -418,7 +411,7 @@ diff -r 2cafad3256c0 html/template_google/en/inc/0030_bugtrac.html
 +                    Trac, a bug tracking system with deep SCM integration.
 +                  </td>
 +                </tr>
-diff -r 2cafad3256c0 html/template_google/en/inc/0040_comm.html
+diff -r e377270edb14 html/template_google/en/inc/0040_comm.html
 --- /dev/null
 +++ b/html/template_google/en/inc/0040_comm.html
 @@ -0,0 +1,11 @@
@@ -433,7 +426,7 @@ diff -r 2cafad3256c0 html/template_google/en/inc/0040_comm.html
 +                    Mailman, the GNU Mailing List Manager
 +                  </td>
 +                </tr>
-diff -r 2cafad3256c0 html/template_google/en/inc/1000_account.html
+diff -r e377270edb14 html/template_google/en/inc/1000_account.html
 --- /dev/null
 +++ b/html/template_google/en/inc/1000_account.html
 @@ -0,0 +1,11 @@
@@ -448,26 +441,26 @@ diff -r 2cafad3256c0 html/template_google/en/inc/1000_account.html
 +                    Manage you profile and password in LDAP
 +                  </td>
 +                </tr>
-diff -r 2cafad3256c0 html/template_google/en/inc/9000.html
+diff -r e377270edb14 html/template_google/en/inc/9000.html
 --- /dev/null
 +++ b/html/template_google/en/inc/9000.html
 @@ -0,0 +1,2 @@
 +              </tbody>
 +            </table>
-diff -r 2cafad3256c0 html/template_google/en/inc/footer.inc
+diff -r e377270edb14 html/template_google/en/inc/footer.inc
 --- /dev/null
 +++ b/html/template_google/en/inc/footer.inc
 @@ -0,0 +1,2 @@
 +<div id="foot">&copy; 2006 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
 +		of the University of Michigan</a> </div>
-diff -r 2cafad3256c0 html/template_google/en/inc/header.inc
+diff -r e377270edb14 html/template_google/en/inc/header.inc
 --- /dev/null
 +++ b/html/template_google/en/inc/header.inc
 @@ -0,0 +1,3 @@
 +	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
 +		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
 +		</span> <strong>Our Home Page</strong></a> </div>
-diff -r 2cafad3256c0 html/template_google/en/login.html
+diff -r e377270edb14 html/template_google/en/login.html
 --- /dev/null
 +++ b/html/template_google/en/login.html
 @@ -0,0 +1,288 @@
@@ -759,7 +752,7 @@ diff -r 2cafad3256c0 html/template_google/en/login.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r 2cafad3256c0 html/template_google/en/login_error.html
+diff -r e377270edb14 html/template_google/en/login_error.html
 --- /dev/null
 +++ b/html/template_google/en/login_error.html
 @@ -0,0 +1,289 @@
@@ -1052,7 +1045,7 @@ diff -r 2cafad3256c0 html/template_google/en/login_error.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r 2cafad3256c0 html/template_google/en/reauth.html
+diff -r e377270edb14 html/template_google/en/reauth.html
 --- /dev/null
 +++ b/html/template_google/en/reauth.html
 @@ -0,0 +1,284 @@
@@ -1340,7 +1333,7 @@ diff -r 2cafad3256c0 html/template_google/en/reauth.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r 2cafad3256c0 html/template_google/en/verify-logout.html
+diff -r e377270edb14 html/template_google/en/verify-logout.html
 --- /dev/null
 +++ b/html/template_google/en/verify-logout.html
 @@ -0,0 +1,43 @@
@@ -1387,7 +1380,7 @@ diff -r 2cafad3256c0 html/template_google/en/verify-logout.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r 2cafad3256c0 html/template_google/zh/error.html
+diff -r e377270edb14 html/template_google/zh/error.html
 --- /dev/null
 +++ b/html/template_google/zh/error.html
 @@ -0,0 +1,50 @@
@@ -1441,7 +1434,7 @@ diff -r 2cafad3256c0 html/template_google/zh/error.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r 2cafad3256c0 html/template_google/zh/expired_error.html
+diff -r e377270edb14 html/template_google/zh/expired_error.html
 --- /dev/null
 +++ b/html/template_google/zh/expired_error.html
 @@ -0,0 +1,287 @@
@@ -1732,13 +1725,13 @@ diff -r 2cafad3256c0 html/template_google/zh/expired_error.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r 2cafad3256c0 html/template_google/zh/inc/0000.html
+diff -r e377270edb14 html/template_google/zh/inc/0000.html
 --- /dev/null
 +++ b/html/template_google/zh/inc/0000.html
 @@ -0,0 +1,2 @@
 +            <table border="0" cellpadding="4">
 +              <tbody>
-diff -r 2cafad3256c0 html/template_google/zh/inc/0010_wiki.html
+diff -r e377270edb14 html/template_google/zh/inc/0010_wiki.html
 --- /dev/null
 +++ b/html/template_google/zh/inc/0010_wiki.html
 @@ -0,0 +1,11 @@
@@ -1753,7 +1746,7 @@ diff -r 2cafad3256c0 html/template_google/zh/inc/0010_wiki.html
 +                    提供了协同工作平台和强大的社区网站，您可以成为网站重要的贡献者
 +                  </td>
 +                </tr>
-diff -r 2cafad3256c0 html/template_google/zh/inc/0020_scm.html
+diff -r e377270edb14 html/template_google/zh/inc/0020_scm.html
 --- /dev/null
 +++ b/html/template_google/zh/inc/0020_scm.html
 @@ -0,0 +1,12 @@
@@ -1769,7 +1762,7 @@ diff -r 2cafad3256c0 html/template_google/zh/inc/0020_scm.html
 +                    最通行的版本控制系统，是团队开发比不可少的代码管理平台，也应该成为程序员一生的朋友
 +                  </td>
 +                </tr>
-diff -r 2cafad3256c0 html/template_google/zh/inc/0030_bugtrac.html
+diff -r e377270edb14 html/template_google/zh/inc/0030_bugtrac.html
 --- /dev/null
 +++ b/html/template_google/zh/inc/0030_bugtrac.html
 @@ -0,0 +1,12 @@
@@ -1785,7 +1778,7 @@ diff -r 2cafad3256c0 html/template_google/zh/inc/0030_bugtrac.html
 +                    Trac 提供了整合的项目管理工具，实现研发流程管理、缺陷跟踪和配置管理系统的整合
 +                  </td>
 +                </tr>
-diff -r 2cafad3256c0 html/template_google/zh/inc/0040_comm.html
+diff -r e377270edb14 html/template_google/zh/inc/0040_comm.html
 --- /dev/null
 +++ b/html/template_google/zh/inc/0040_comm.html
 @@ -0,0 +1,11 @@
@@ -1800,7 +1793,7 @@ diff -r 2cafad3256c0 html/template_google/zh/inc/0040_comm.html
 +                    用 Mailman 管理沟通...
 +                  </td>
 +                </tr>
-diff -r 2cafad3256c0 html/template_google/zh/inc/1000_account.html
+diff -r e377270edb14 html/template_google/zh/inc/1000_account.html
 --- /dev/null
 +++ b/html/template_google/zh/inc/1000_account.html
 @@ -0,0 +1,11 @@
@@ -1815,26 +1808,26 @@ diff -r 2cafad3256c0 html/template_google/zh/inc/1000_account.html
 +                    管理您在 LDAP 中的个人信息、口令等
 +                  </td>
 +                </tr>
-diff -r 2cafad3256c0 html/template_google/zh/inc/9000.html
+diff -r e377270edb14 html/template_google/zh/inc/9000.html
 --- /dev/null
 +++ b/html/template_google/zh/inc/9000.html
 @@ -0,0 +1,2 @@
 +              </tbody>
 +            </table>
-diff -r 2cafad3256c0 html/template_google/zh/inc/footer.inc
+diff -r e377270edb14 html/template_google/zh/inc/footer.inc
 --- /dev/null
 +++ b/html/template_google/zh/inc/footer.inc
 @@ -0,0 +1,2 @@
 +<div id="foot">&copy; 2006-2008 <a href="http://www.umich.edu/~regents/" title="密歇根大学">密歇根大学</a>, 
 +       <a href="http://www.ossxp.com/">群英汇技术支持</a></div>
-diff -r 2cafad3256c0 html/template_google/zh/inc/header.inc
+diff -r e377270edb14 html/template_google/zh/inc/header.inc
 --- /dev/null
 +++ b/html/template_google/zh/inc/header.inc
 @@ -0,0 +1,3 @@
 +	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
 +		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
 +		</span> <strong>我们的主页</strong></a> </div>
-diff -r 2cafad3256c0 html/template_google/zh/login.html
+diff -r e377270edb14 html/template_google/zh/login.html
 --- /dev/null
 +++ b/html/template_google/zh/login.html
 @@ -0,0 +1,286 @@
@@ -2124,7 +2117,7 @@ diff -r 2cafad3256c0 html/template_google/zh/login.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r 2cafad3256c0 html/template_google/zh/login_error.html
+diff -r e377270edb14 html/template_google/zh/login_error.html
 --- /dev/null
 +++ b/html/template_google/zh/login_error.html
 @@ -0,0 +1,287 @@
@@ -2415,7 +2408,7 @@ diff -r 2cafad3256c0 html/template_google/zh/login_error.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r 2cafad3256c0 html/template_google/zh/reauth.html
+diff -r e377270edb14 html/template_google/zh/reauth.html
 --- /dev/null
 +++ b/html/template_google/zh/reauth.html
 @@ -0,0 +1,282 @@
@@ -2701,7 +2694,7 @@ diff -r 2cafad3256c0 html/template_google/zh/reauth.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r 2cafad3256c0 html/template_google/zh/verify-logout.html
+diff -r e377270edb14 html/template_google/zh/verify-logout.html
 --- /dev/null
 +++ b/html/template_google/zh/verify-logout.html
 @@ -0,0 +1,43 @@

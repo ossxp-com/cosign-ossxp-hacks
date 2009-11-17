@@ -1,0 +1,165 @@
+diff -r b53f3b0df32b html/Makefile.in
+--- a/html/Makefile.in
++++ b/html/Makefile.in
+@@ -1,4 +1,4 @@
+-TEMPLATES = error.html expired_error.html login.html login_error.html verify-logout.html reauth.html
++TEMPLATES = error.html expired_error.html login.html login_error.html verify-logout.html reauth.html inc
+ HTML = cosign_base.css cosign_js.css post_error.html looping.html
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+@@ -12,10 +12,10 @@
+ 
+ install : all
+ 	-mkdir -p $(DESTDIR)${exec_prefix}
+-	-mkdir -p $(DESTDIR)${TMPLDIR}
++	-mkdir -p $(DESTDIR)${TMPLDIR}/en
+ 	-mkdir -p $(DESTDIR)${HTMLDIR}
+ 	for i in ${TEMPLATES}; do \
+-	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${TMPLDIR}/; \
++	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${TMPLDIR}/en; \
+ 	done
+ 	for i in ${HTML}; do \
+ 	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${HTMLDIR}/; \
+diff -r b53f3b0df32b html/error.html
+--- a/html/error.html
++++ b/html/error.html
+@@ -16,9 +16,7 @@
+ </head>
+ <body>
+ <div id="page">
+-	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
+-		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
+-		</span> <strong>Our Home Page</strong></a> </div>
++  $!include(inc/header.inc)
+ 	<div id="main">
+ 		<div id="uiRow">
+ 			<div id="leftUIcol">
+@@ -48,7 +46,6 @@
+ 		<div id="uiBottom">&nbsp;</div>
+ 	</div>
+ </div>
+-<div id="foot">&copy; 2006 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
+-		of the University of Michigan</a> </div>
++$!include(inc/footer.inc)
+ </body>
+ </html>
+diff -r b53f3b0df32b html/expired_error.html
+--- a/html/expired_error.html
++++ b/html/expired_error.html
+@@ -33,9 +33,7 @@
+ </head>
+ <body>
+ <div id="page">
+-	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
+-		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
+-		</span> <strong>Our Home Page</strong></a> </div>
++  $!include(inc/header.inc)
+ 	<hr class="text" />
+ 	<ul class="text">
+ 		<li><a href="#instruct" title="Jump to the Web Login instructions [ALT + 1 Windows / CONTROL + 1 Mac]" accesskey="1">Jump
+diff -r b53f3b0df32b html/inc/footer.inc
+--- /dev/null
++++ b/html/inc/footer.inc
+@@ -0,0 +1,2 @@
++<div id="foot">&copy; 2006 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
++		of the University of Michigan</a> </div>
+diff -r b53f3b0df32b html/inc/header.inc
+--- /dev/null
++++ b/html/inc/header.inc
+@@ -0,0 +1,3 @@
++	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
++		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
++		</span> <strong>Our Home Page</strong></a> </div>
+diff -r b53f3b0df32b html/login.html
+--- a/html/login.html
++++ b/html/login.html
+@@ -33,9 +33,7 @@
+ </head>
+ <body>
+ <div id="page">
+-	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
+-		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
+-		</span> <strong>Our Home Page</strong></a> </div>
++  $!include(inc/header.inc)
+ 	<hr class="text" />
+ 	<ul class="text">
+ 		<li><a href="#instruct" title="Jump to the Web Login instructions [ALT + 1 Windows / CONTROL + 1 Mac]" accesskey="1">Jump
+@@ -158,7 +156,6 @@
+ 		<div id="uiBottom">&nbsp;</div>
+ 	</div>
+ </div>
+-<div id="foot">&copy; 2006 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
+-		of the University of Michigan</a> </div>
++$!include(inc/footer.inc)
+ </body>
+ </html>
+diff -r b53f3b0df32b html/login_error.html
+--- a/html/login_error.html
++++ b/html/login_error.html
+@@ -33,9 +33,7 @@
+ </head>
+ <body>
+ <div id="page">
+-	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
+-		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
+-		</span> <strong>Our Home Page</strong></a> </div>
++  $!include(inc/header.inc)
+ 	<hr class="text" />
+ 	<ul class="text">
+ 		<li><a href="#instruct" title="Jump to the Web Login instructions [ALT + 1 Windows / CONTROL + 1 Mac]" accesskey="1">Jump
+@@ -162,7 +160,6 @@
+ 		<div id="uiBottom">&nbsp;</div>
+ 	</div>
+ </div>
+-<div id="foot">&copy; 2006 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
+-		of the University of Michigan</a> </div>
++$!include(inc/footer.inc)
+ </body>
+ </html>
+diff -r b53f3b0df32b html/reauth.html
+--- a/html/reauth.html
++++ b/html/reauth.html
+@@ -35,9 +35,7 @@
+ </head>
+ <body>
+ <div id="page">
+-	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
+-		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
+-		</span> <strong>Our Home Page</strong></a> </div>
++  $!include(inc/header.inc)
+ 	<hr class="text" />
+ 	<ul class="text">
+ 		<li><a href="#instruct" title="Jump to the Web Login instructions [ALT + 1 Windows / CONTROL + 1 Mac]" accesskey="1">Jump
+@@ -162,8 +160,7 @@
+ 		<div id="uiBottom">&nbsp;</div>
+ 	</div>
+ </div>
+-<div id="foot">&copy; 2006 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
+-		of the University of Michigan</a> </div>
++$!include(inc/footer.inc)
+ <form name="switch" id="switchUserForm" action="/cgi-bin/logout" enctype="application/x-www-form-urlencoded" method="post">
+ 	<input type="hidden" name="url" value="$r" />
+ 	<input type="hidden" name="service" value="$c" />
+diff -r b53f3b0df32b html/verify-logout.html
+--- a/html/verify-logout.html
++++ b/html/verify-logout.html
+@@ -18,9 +18,7 @@
+ </head>
+ <body>
+ <div id="page">
+-	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
+-		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
+-		</span> <strong>Our Home Page</strong></a> </div>
++  $!include(inc/header.inc)
+ 	<div id="main" class="logoutUI">
+ 		<div id="uiRow">
+ 		    <form name="f" method="post" action="/cgi-bin/logout">
+@@ -39,7 +37,6 @@
+ 		<div id="uiBottom">&nbsp;</div>
+ 	</div>
+ </div>
+-<div id="foot">&copy; 2006 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
+-		of the University of Michigan</a> </div>
++$!include(inc/footer.inc)
+ </body>
+ </html>

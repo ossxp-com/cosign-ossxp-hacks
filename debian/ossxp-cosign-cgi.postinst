@@ -9,8 +9,8 @@ case "$1" in
         [ ! -d $LIBDIR/templates-local ] && cp -a $LIBDIR/templates $LIBDIR/templates-local
         [ ! -d $LIBDIR/html-local ]      && cp -a $LIBDIR/html      $LIBDIR/html-local
         [ ! -d $LIBDIR/services-local ]  && cp -a $LIBDIR/services  $LIBDIR/services-local
-        chmod 640 $CERTDIR/*
-        chown root.www-data $CERTDIR/*
+        chmod -R 640 /opt/ossxp/ssl/certs/cosign-cgi
+        chown -R root.www-data /opt/ossxp/ssl/certs/cosign-cgi
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
@@ -33,6 +33,11 @@ if [ -f /opt/cosign/lib/services-local/ldap_api.php ] && \
         dpkg --compare-versions "$2" lt "2.1.1-0.2.47"; then
     # fix bug in ldap_api.php
     cp /opt/cosign/lib/services/ldap_api.php /opt/cosign/lib/services-local/ldap_api.php
+fi
+
+if dpkg --compare-versions "$2" lt-nl 2.1.1-0.2.76 ; then
+        chmod -R 640 /opt/ossxp/ssl/certs/cosign-cgi
+        chown -R root.www-data /opt/ossxp/ssl/certs/cosign-cgi
 fi
 
 # dh_installdeb will replace this with shell code automatically

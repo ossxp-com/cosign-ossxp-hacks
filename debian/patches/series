@@ -2,7 +2,7 @@
 10020_multiple_language_template.patch
 10030_template_cgi-bin.patch
 10040_cosignhttponly_quirk_fix.patch
-20010_template_i18n_zh_from_en.patch
-20020_template_i18n_zh_translated.patch
+20000_template_en.patch
+20010_template_i18n_zh.patch
 20030_services_template.patch
 20040_google_style_template.patch

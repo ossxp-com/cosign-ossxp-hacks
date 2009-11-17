@@ -1,7 +1,7 @@
-diff -r cc4176c79bb9 html/Makefile.in
+diff -r e99540699f61 html/Makefile.in
 --- a/html/Makefile.in
 +++ b/html/Makefile.in
-@@ -30,6 +30,6 @@
+@@ -28,6 +28,6 @@
  	-mkdir -p $(DESTDIR)${HTMLDIR}/js
  	cp js/*.js $(DESTDIR)${HTMLDIR}/js/
  	-mkdir -p $(DESTDIR)${SERVICESDIR}
@@ -9,24 +9,14 @@ diff -r cc4176c79bb9 html/Makefile.in
 +	cp services/*.html services/*.php $(DESTDIR)${SERVICESDIR}/
  
  clean:
-diff -r cc4176c79bb9 html/services/config_inc.php
+diff -r e99540699f61 html/services/config_inc.php
 --- /dev/null
 +++ b/html/services/config_inc.php
-@@ -0,0 +1,28 @@
+@@ -0,0 +1,18 @@
 +<?php
 +
 +$url_gosa = "https://weblogin.foo.bar/members/?login";
-+$url_wiki = "http://wiki.foo.bar/wiki/action/login/Main?action=login&login=1";
-+$url_websvn = "http://svn.foo.bar/websvn/";
-+$url_mercurial = "http://www.foo.bar/hg/";
-+$url_statsvn = "http://svn.foo.bar/statsvn/";
-+$url_bugs = "http://www.foo.bar/trac/";
-+$url_mailman = "http://list.foo.bar/mailman/listinfo/";
-+
-+$url_login = "https://weblogin.foo.bar/cgi-bin/login";
 +$url_logout = "https://weblogin.foo.bar/cgi-bin/logout";
-+$url_lostpwd = 'https://weblogin.foo.bar/members/lostpwd.php';
-+$url_signup = 'https://weblogin.foo.bar/members/signup.php';
 +
 +#############################
 +# LDAP Settings
@@ -41,14 +31,26 @@ diff -r cc4176c79bb9 html/services/config_inc.php
 +$g_ldap_bind_passwd	= 'guess';
 +
 +?>
-diff -r cc4176c79bb9 html/services/index.php
+diff -r e99540699f61 html/services/index.php
 --- /dev/null
 +++ b/html/services/index.php
-@@ -0,0 +1,289 @@
+@@ -0,0 +1,259 @@
 +<?php
 +
 +require_once("config_inc.php");
 +require_once("ldap_api.php");
++
++if (array_key_exists("logout", $_REQUEST))
++{
++  if (@$_SERVER['COSIGN_SERVICE'] || @$_SERVER['REDIRECT_COSIGN_SERVICE'])
++  {
++    $cookie_name = @$_SERVER["COSIGN_SERVICE"] ? @$_SERVER["COSIGN_SERVICE"] : @$_SERVER["REDIRECT_COSIGN_SERVICE"];
++    setcookie( $cookie_name, "null", time()-1, '/', "", 0 );
++    setcookie( $cookie_name, "null", time()-1 );
++  }
++  Header( "Location: $url_logout" );
++  exit(0);
++}
 +
 +$uid = @$_SERVER["REMOTE_USER"]? @$_SERVER["REMOTE_USER"] : @$_SERVER["REDIRECT_REMOTE_USER"];
 +if (!$uid)
@@ -215,7 +217,7 @@ diff -r cc4176c79bb9 html/services/index.php
 +                  <b><?php echo $username; ?> 的帐户</b>
 +                </td>
 +                <td style="padding-left: 4px; padding-bottom: 3px; padding-top: 2px; font-family: arial,sans-serif;" align="right">
-+                  <a href="<?php echo $url_logout; ?>">退出</a>&nbsp;&nbsp;&nbsp;&nbsp;
++                  <a href="?logout">退出</a>&nbsp;&nbsp;&nbsp;&nbsp;
 +                </td>
 +              </tr>
 +              <tr>
@@ -247,79 +249,26 @@ diff -r cc4176c79bb9 html/services/index.php
 +          <hr color="#dddddd" noshade="noshade" size="1">
 +          <div style="font-size: 83%;">
 +            <br><br>
-+            <table border="0" cellpadding="4">
-+              <tbody>
-+                <tr>
-+                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-+                  <td aligh='right' vliagn='middle'>
-+                    <img src="/cosign/images/services/moinmoin.gif" alt="Wiki">
-+                  </td>
-+                  <td style="font-size: 83%;">
-+                    <a href="<?php echo $url_wiki; ?>">维基</a>
-+                    <br>
-+                    提供了协同工作平台和强大的社区网站，您可以成为网站重要的贡献者
-+                  </td>
-+                </tr>
-+                <tr>
-+                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-+                  <td aligh='right' vliagn='middle'>
-+                    <img src="/cosign/images/services/subversion.gif" alt="Subversion">
-+                  </td>
-+                  <td style="font-size: 83%;">
-+                    Subversion： <a href="<?php echo $url_websvn; ?>">Web 界面</a> 以及 
-+                    <a href="<?php echo $url_statsvn; ?>">统计</a>
-+                    <br>
-+                    最通行的版本控制系统，是团队开发比不可少的代码管理平台，程序员必备工具箱
-+                  </td>
-+                </tr>
-+                <tr>
-+                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-+                  <td aligh='right' vliagn='middle'>
-+                    <img src="/cosign/images/services/mercurial.png" alt="Subversion">
-+                  </td>
-+                  <td style="font-size: 83%;">
-+                    Mercurial： 
-+                    <a href="<?php echo $url_mercurial; ?>">Hg repository</a>
-+                    <br>
-+                    分布式版本控制系统，开源软件最适合的版本控制系统，也是个人最适合的版本控制系统，也应该成为程序员一生的朋友
-+                  </td>
-+                </tr>
-+                <tr>
-+                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-+                  <td aligh='right' vliagn='middle'>
-+                    <img src="/cosign/images/services/trac.gif" alt="Trac">
-+
-+                  </td>
-+                  <td style="font-size: 83%;">
-+                    <a href="<?php echo $url_bugs; ?>">项目管理</a>
-+                    <br>
-+                    Trac 提供了整合的项目管理工具，实现研发流程管理、缺陷跟踪和配置管理系统的整合
-+                  </td>
-+                </tr>
-+                <tr>
-+                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-+                  <td aligh='right' vliagn='middle'>
-+                    <img src="/cosign/images/services/mailman.gif" alt="Mailman">
-+                  </td>
-+                  <td style="font-size: 83%;">
-+                    <a href="<?php echo $url_mailman; ?>">邮件列表</a>
-+                    <br>
-+                    用 Mailman 管理沟通...
-+                  </td>
-+                </tr>
-+                <tr>
-+                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-+                  <td>
-+                    <img src="/cosign/images/services/profile.gif" alt="Profiles">
-+                  </td>
-+                  <td style="font-size: 83%;">
-+                    <a href="<?php echo $url_gosa; ?>">帐号管理</a>
-+                    <br>
-+                    管理您在 LDAP 中的个人信息、口令等
-+                  </td>
-+                </tr>
-+              </tbody>
-+            </table>
++<?php
++$has_services = false;
++$srvlist = dirname( dirname(__FILE__) ) . "/templates-local/zh/inc/*.html";
++foreach (glob($srvlist) as $filename) {
++  if (file_exists($filename))
++  {
++    $contents = file_get_contents($filename);
++    if ($contents)
++    {
++      $has_services = true;
++      echo ($contents);
++    }
++  }
++}
++if (! $has_services)
++{
++  echo "于下面的位置定义服务列表:<br>\n";
++  echo "<ul><li>$srvlist</li></ul>\n";
++}
++?>
 +          </div>
 +        </td>
 +      </tr>
@@ -327,14 +276,25 @@ diff -r cc4176c79bb9 html/services/index.php
 +  </table>
 +  <br>
 +  <br>
++<?php
++  $footer = dirname( dirname(__FILE__) ) . "/templates-local/zh/inc/footer.inc";
++  if (file_exists($footer))
++  {
++    $contents = file_get_contents($footer);
++    echo $contents;
++  }
++  else
++  {
++?>
 +  <div id="foot">&copy; 2006-2008 <a href="http://www.umich.edu/~regents/" title="密歇根大学">密歇根大学</a>, 
 +       <a href="http://www.ossxp.com/">群英汇技术支持</a></div>
++<?php
++  }
++?>
 +</body>
 +</html>
-+<!--
-+ vim: ts=2 sw=2 et
-+-->
-diff -r cc4176c79bb9 html/services/ldap_api.php
++<!-- vim: set ts=2 sw=2 et : -->
+diff -r e99540699f61 html/services/ldap_api.php
 --- /dev/null
 +++ b/html/services/ldap_api.php
 @@ -0,0 +1,92 @@

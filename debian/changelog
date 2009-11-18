@@ -1,7 +1,8 @@
-ossxp-cosign (2.1.1-0.2.80) unstable; urgency=low
+ossxp-cosign (2.1.1-0.2.81) unstable; urgency=low
 
   * Services now read srvlist from templates;
   * Php in services handle logout properly;
+  * English templates works;
 
  -- Jiang Xin <jiangxin@foo.bar>  Tue, 17 Nov 2009 00:34:07 +0800
 

@@ -143,27 +143,22 @@ set_cookie_and_redirect( request_rec *r, cosign_host_config *cfg )
     if ( cfg->siteentry != NULL && strcasecmp( cfg->siteentry, "none" ) != 0 ) {
 	ref = cfg->siteentry;
     } else {
-	/* live dangerously, we're redirecting to http */
-	if ( cfg->http == 1 ) {
-	    if ((( port = ap_get_server_port( r )) == 80 ) ||
-		    ( cfg->noappendport == 1 )) {
-		ref = ap_psprintf( r->pool, "http://%s%s", 
-			ap_get_server_name( r ), r->unparsed_uri );
-	    } else {
-		ref = ap_psprintf( r->pool, "http://%s:%d%s", 
-			ap_get_server_name( r ), port, r->unparsed_uri );
-	    }
-	/* live securely, redirecting to https */
-	} else {
-	    if ((( port = ap_get_server_port( r )) == 443 ) ||
-		    ( cfg->noappendport == 1 )) {
-		ref = ap_psprintf( r->pool, "https://%s%s", 
-			ap_get_server_name( r ), r->unparsed_uri );
-	    } else {
-		ref = ap_psprintf( r->pool, "https://%s:%d%s", 
-			ap_get_server_name( r ), port, r->unparsed_uri );
-	    }
-	}
+        /* always redirect to http/https if standard port. (OSSXP.COM) */
+        if (( port = ap_get_server_port( r )) == 80 ) {
+            ref = ap_psprintf( r->pool, "http://%s%s",
+                ap_get_server_name( r ), r->unparsed_uri );
+        } else if (( port = ap_get_server_port( r )) == 443 ) {
+            ref = ap_psprintf( r->pool, "https://%s%s",
+                ap_get_server_name( r ), r->unparsed_uri );
+        } else if ( cfg->http == 1 ) {
+            /* live dangerously, we're redirecting to http */
+            ref = ap_psprintf( r->pool, "http://%s:%d%s",
+                ap_get_server_name( r ), port, r->unparsed_uri );
+        } else {
+            /* live securely, redirecting to https */
+            ref = ap_psprintf( r->pool, "https://%s:%d%s",
+                ap_get_server_name( r ), port, r->unparsed_uri );
+        }
     }
 
     if ( cfg->reqfc > 0 ) {

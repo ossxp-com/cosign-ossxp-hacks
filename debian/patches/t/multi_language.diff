@@ -1,7 +1,22 @@
-diff -r c856663b483d cgi/Makefile.in
+From: Jiang Xin <worldhello.net@gmail.com>
+Subject: [PATCH] t/multi_language
+
+<patch description>
+
+Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
+
+---
+ cgi/Makefile.in |    2 +-
+ cgi/lang.c      |   92 ++++++++++++++++++++++++++++++++++++++++++++
+ cgi/lang.h      |   11 +++++
+ cgi/subfile.c   |  113 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 217 insertions(+), 1 deletions(-)
+
+diff --git a/cgi/Makefile.in b/cgi/Makefile.in
+index cefd0ec..296d729 100755
 --- a/cgi/Makefile.in
 +++ b/cgi/Makefile.in
-@@ -29,7 +29,7 @@
+@@ -28,7 +28,7 @@ INSTALL=     @INSTALL@
  CFLAGS=      ${DEFS} ${OPTOPTS} @CFLAGS@ ${INCPATH}
  
  
@@ -10,7 +25,9 @@ diff -r c856663b483d cgi/Makefile.in
  	../common/config.o ../common/wildcard.o ../common/argcargv.o \
  	../version.o 
  TARGETS = logout cosign.cgi
-diff -r c856663b483d cgi/lang.c
+diff --git a/cgi/lang.c b/cgi/lang.c
+new file mode 100644
+index 0000000..33c8939
 --- /dev/null
 +++ b/cgi/lang.c
 @@ -0,0 +1,92 @@
@@ -106,7 +123,9 @@ diff -r c856663b483d cgi/lang.c
 +    */
 +    return lang;
 +}
-diff -r c856663b483d cgi/lang.h
+diff --git a/cgi/lang.h b/cgi/lang.h
+new file mode 100644
+index 0000000..36b37dc
 --- /dev/null
 +++ b/cgi/lang.h
 @@ -0,0 +1,11 @@
@@ -121,7 +140,8 @@ diff -r c856663b483d cgi/lang.h
 +char ** get_accept_language();
 +
 +#endif
-diff -r c856663b483d cgi/subfile.c
+diff --git a/cgi/subfile.c b/cgi/subfile.c
+index d732246..fc8c2ba 100644
 --- a/cgi/subfile.c
 +++ b/cgi/subfile.c
 @@ -3,14 +3,53 @@
@@ -178,7 +198,7 @@ diff -r c856663b483d cgi/subfile.c
      if ( nocache ) {
  	fputs( "Expires: Mon, 16 Apr 1973 13:10:00 GMT\n"
  		"Last-Modified: Mon, 16 Apr 1973 13:10:00 GMT\n"
-@@ -26,6 +65,9 @@
+@@ -26,6 +65,9 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
  	exit( 1 );
      }
  
@@ -188,7 +208,7 @@ diff -r c856663b483d cgi/subfile.c
      while (( c = getc( fs )) != EOF ) {
  	if ( c == '$' ) {
  	    if (( c = getc( fs )) == EOF ) {
-@@ -37,6 +79,71 @@
+@@ -37,6 +79,71 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
  		putchar( c );
  		continue;
  	    }
@@ -260,7 +280,7 @@ diff -r c856663b483d cgi/subfile.c
  
  	    for ( i = 0; sl[ i ].sl_letter != '\0'; i++ ) {
  		if ( sl[ i ].sl_letter == c ) {
-@@ -73,5 +180,11 @@
+@@ -73,5 +180,11 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
  	perror( filename );
      }
  
@@ -272,3 +292,5 @@ diff -r c856663b483d cgi/subfile.c
  }
 +
 +/* vim: set noet ts=8 sw=8 : */
+-- 
+tg: (7da5ba0..) t/multi_language (depends on: master)

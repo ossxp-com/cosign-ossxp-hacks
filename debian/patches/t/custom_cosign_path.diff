@@ -1,6 +1,22 @@
-diff -r a4b0d9fd6958 html/login.html
---- a/html/login.html	Wed Dec 03 09:28:55 2008 +0800
-+++ b/html/login.html	Wed Dec 03 15:49:36 2008 +0800
+From: Jiang Xin <worldhello.net@gmail.com>
+Subject: [PATCH] t/custom_cosign_path
+
+<patch description>
+
+Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
+
+---
+ html/login.html          |    2 +-
+ html/login_error.html    |    2 +-
+ html/reauth.html         |    8 ++++----
+ html/services/index.html |    2 +-
+ html/verify-logout.html  |    2 +-
+ 5 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/html/login.html b/html/login.html
+index f60342b..98fa0e1 100755
+--- a/html/login.html
++++ b/html/login.html
 @@ -94,7 +94,7 @@
  						those who know their Uniqname and Kerberos password.</p>
  				</div>
@@ -10,9 +26,10 @@ diff -r a4b0d9fd6958 html/login.html
  				<input type="hidden" name="required"
  				value="$f" />
  				<input type="hidden" name="ref"
-diff -r a4b0d9fd6958 html/login_error.html
---- a/html/login_error.html	Wed Dec 03 09:28:55 2008 +0800
-+++ b/html/login_error.html	Wed Dec 03 15:49:36 2008 +0800
+diff --git a/html/login_error.html b/html/login_error.html
+index a479c2e..3cf1c94 100755
+--- a/html/login_error.html
++++ b/html/login_error.html
 @@ -94,7 +94,7 @@
  						those who know their Uniqname and Kerberos password.</p>
  				</div>
@@ -22,9 +39,10 @@ diff -r a4b0d9fd6958 html/login_error.html
  				<input type="hidden" name="required"
  				value="$f" />
  				<input type="hidden" name="ref"
-diff -r a4b0d9fd6958 html/reauth.html
---- a/html/reauth.html	Wed Dec 03 09:28:55 2008 +0800
-+++ b/html/reauth.html	Wed Dec 03 15:49:36 2008 +0800
+diff --git a/html/reauth.html b/html/reauth.html
+index 7e54572..c70b0f2 100755
+--- a/html/reauth.html
++++ b/html/reauth.html
 @@ -58,7 +58,7 @@
  				<h1 id="instruct">Re-Authentication Required</h1>
  				<p>To protect your personal information, you must verify your password. Please type
@@ -61,9 +79,10 @@ diff -r a4b0d9fd6958 html/reauth.html
  	<input type="hidden" name="url" value="$r" />
  	<input type="hidden" name="service" value="$c" />
  	<input type="hidden" name="reauth" value="true" />
-diff -r a4b0d9fd6958 html/services/index.html
---- a/html/services/index.html	Wed Dec 03 09:28:55 2008 +0800
-+++ b/html/services/index.html	Wed Dec 03 15:49:36 2008 +0800
+diff --git a/html/services/index.html b/html/services/index.html
+index 78e5507..73bb6d1 100644
+--- a/html/services/index.html
++++ b/html/services/index.html
 @@ -2,7 +2,7 @@
      <body>
  
@@ -73,9 +92,10 @@ diff -r a4b0d9fd6958 html/services/index.html
  	    When you are finished using all authenticated web resources,
  	    be sure to logout.
      </ul>
-diff -r a4b0d9fd6958 html/verify-logout.html
---- a/html/verify-logout.html	Wed Dec 03 09:28:55 2008 +0800
-+++ b/html/verify-logout.html	Wed Dec 03 15:49:36 2008 +0800
+diff --git a/html/verify-logout.html b/html/verify-logout.html
+index 001e127..ea68776 100755
+--- a/html/verify-logout.html
++++ b/html/verify-logout.html
 @@ -23,7 +23,7 @@
  		</span> <strong>Our Home Page</strong></a> </div>
  	<div id="main" class="logoutUI">
@@ -85,3 +105,5 @@ diff -r a4b0d9fd6958 html/verify-logout.html
  			<h1>Log Out</h1>
  			<p>You are about to log out of <a href="/services/">all weblogin applications</a>.
  				Are you sure you want to do this?</p>
+-- 
+tg: (717a100..) t/custom_cosign_path (depends on: master t/autotools_for_setup)

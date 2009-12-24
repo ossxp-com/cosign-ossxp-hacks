@@ -1,7 +1,20 @@
-diff -r f67003850a35 filters/apache/mod_cosign.c
---- a/filters/apache/mod_cosign.c	Wed Dec 10 16:21:32 2008 +0800
-+++ b/filters/apache/mod_cosign.c	Sun Dec 14 00:51:37 2008 +0800
-@@ -148,27 +148,22 @@
+From: Jiang Xin <worldhello.net@gmail.com>
+Subject: [PATCH] t/bugfix_cosign_httponly_quirk
+
+<patch description>
+
+Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
+
+---
+ filters/apache/mod_cosign.c  |   37 ++++++++++++++++---------------------
+ filters/apache2/mod_cosign.c |   37 ++++++++++++++++---------------------
+ 2 files changed, 32 insertions(+), 42 deletions(-)
+
+diff --git a/filters/apache/mod_cosign.c b/filters/apache/mod_cosign.c
+index c983342..97e5905 100755
+--- a/filters/apache/mod_cosign.c
++++ b/filters/apache/mod_cosign.c
+@@ -143,27 +143,22 @@ set_cookie_and_redirect( request_rec *r, cosign_host_config *cfg )
      if ( cfg->siteentry != NULL && strcasecmp( cfg->siteentry, "none" ) != 0 ) {
  	ref = cfg->siteentry;
      } else {
@@ -45,10 +58,11 @@ diff -r f67003850a35 filters/apache/mod_cosign.c
      }
  
      if ( cfg->reqfc > 0 ) {
-diff -r f67003850a35 filters/apache2/mod_cosign.c
---- a/filters/apache2/mod_cosign.c	Wed Dec 10 16:21:32 2008 +0800
-+++ b/filters/apache2/mod_cosign.c	Sun Dec 14 00:51:37 2008 +0800
-@@ -155,27 +155,22 @@
+diff --git a/filters/apache2/mod_cosign.c b/filters/apache2/mod_cosign.c
+index aa49ffb..99ae3f5 100755
+--- a/filters/apache2/mod_cosign.c
++++ b/filters/apache2/mod_cosign.c
+@@ -150,27 +150,22 @@ set_cookie_and_redirect( request_rec *r, cosign_host_config *cfg )
      if ( cfg->siteentry != NULL && strcasecmp( cfg->siteentry, "none" ) != 0 ) {
  	ref = cfg->siteentry;
      } else {
@@ -92,3 +106,5 @@ diff -r f67003850a35 filters/apache2/mod_cosign.c
      }
  
      /* we need to remove this semi-colon eventually */
+-- 
+tg: (7da5ba0..) t/bugfix_cosign_httponly_quirk (depends on: master)

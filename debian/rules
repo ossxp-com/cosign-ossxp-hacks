@@ -51,9 +51,9 @@ binary-fixup/ossxp-cosign-cgi::
 
 debian/patches/: debian/patches
 debian/patches:
-	rsync -av --exclude=.hg/ --exclude=.hgignore --exclude=status --delete ../cosign-ossxp/.hg/patches/ debian/patches/
-	# remove patches marked by qguard.
-	sed -i -e '/#[-+]/ d' debian/patches/series
+	tg export --all --quilt debian/patches.new
+	cp -a debian/patches.new/* debian/patches && rm -rf debian/patches.new
+	cd debian && git status || true
 
 .PHONY: debian/patches debian/patches/
 

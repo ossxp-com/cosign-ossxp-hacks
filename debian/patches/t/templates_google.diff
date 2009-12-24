@@ -1,16 +1,62 @@
-diff -r 3deec8d4ddb7 html/Makefile.in
+From: Jiang Xin <worldhello.net@gmail.com>
+Subject: [PATCH] t/templates_google
+
+<patch description>
+
+Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
+
+---
+ html/Makefile.in                               |    2 +
+ html/template_google/en/error.html             |   52 +++++
+ html/template_google/en/expired_error.html     |  288 +++++++++++++++++++++++
+ html/template_google/en/inc/0000.html          |    2 +
+ html/template_google/en/inc/0010_wiki.html     |   15 ++
+ html/template_google/en/inc/0020_scm.html      |   21 ++
+ html/template_google/en/inc/0030_bugtrac.html  |   19 ++
+ html/template_google/en/inc/0035_testlink.html |   15 ++
+ html/template_google/en/inc/0040_comm.html     |   15 ++
+ html/template_google/en/inc/1000_account.html  |   16 ++
+ html/template_google/en/inc/9000.html          |    2 +
+ html/template_google/en/inc/footer.inc         |    3 +
+ html/template_google/en/inc/header.inc         |    3 +
+ html/template_google/en/login.html             |  288 +++++++++++++++++++++++
+ html/template_google/en/login_error.html       |  289 ++++++++++++++++++++++++
+ html/template_google/en/reauth.html            |  284 +++++++++++++++++++++++
+ html/template_google/en/verify-logout.html     |   43 ++++
+ html/template_google/zh/error.html             |   50 ++++
+ html/template_google/zh/expired_error.html     |  287 +++++++++++++++++++++++
+ html/template_google/zh/inc/0000.html          |    2 +
+ html/template_google/zh/inc/0010_wiki.html     |   15 ++
+ html/template_google/zh/inc/0020_scm.html      |   21 ++
+ html/template_google/zh/inc/0030_bugtrac.html  |   19 ++
+ html/template_google/zh/inc/0035_testlink.html |   15 ++
+ html/template_google/zh/inc/0040_comm.html     |   15 ++
+ html/template_google/zh/inc/1000_account.html  |   16 ++
+ html/template_google/zh/inc/9000.html          |    2 +
+ html/template_google/zh/inc/footer.inc         |    2 +
+ html/template_google/zh/inc/header.inc         |    3 +
+ html/template_google/zh/login.html             |  286 +++++++++++++++++++++++
+ html/template_google/zh/login_error.html       |  287 +++++++++++++++++++++++
+ html/template_google/zh/reauth.html            |  282 +++++++++++++++++++++++
+ html/template_google/zh/verify-logout.html     |   43 ++++
+ 33 files changed, 2702 insertions(+), 0 deletions(-)
+
+diff --git a/html/Makefile.in b/html/Makefile.in
+index 99f1419..af8d9d3 100755
 --- a/html/Makefile.in
 +++ b/html/Makefile.in
-@@ -19,6 +19,8 @@
+@@ -19,6 +19,8 @@ install : all
  	done
  	# Templates for zh_cn
  	cp -a zh $(DESTDIR)${TMPLDIR}/
 +	# Templates in google style, contains both en and zh_cn style
 +	cp -a template_google $(DESTDIR)${TMPLDIR}_google; \
  	for i in ${HTML}; do \
- 	    cp -a $$i $(DESTDIR)${HTMLDIR}/; \
+ 	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${HTMLDIR}/; \
  	done
-diff -r 3deec8d4ddb7 html/template_google/en/error.html
+diff --git a/html/template_google/en/error.html b/html/template_google/en/error.html
+new file mode 100644
+index 0000000..c0acf7b
 --- /dev/null
 +++ b/html/template_google/en/error.html
 @@ -0,0 +1,52 @@
@@ -66,7 +112,9 @@ diff -r 3deec8d4ddb7 html/template_google/en/error.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r 3deec8d4ddb7 html/template_google/en/expired_error.html
+diff --git a/html/template_google/en/expired_error.html b/html/template_google/en/expired_error.html
+new file mode 100644
+index 0000000..9c733a7
 --- /dev/null
 +++ b/html/template_google/en/expired_error.html
 @@ -0,0 +1,288 @@
@@ -358,13 +406,17 @@ diff -r 3deec8d4ddb7 html/template_google/en/expired_error.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r 3deec8d4ddb7 html/template_google/en/inc/0000.html
+diff --git a/html/template_google/en/inc/0000.html b/html/template_google/en/inc/0000.html
+new file mode 100644
+index 0000000..cd6c895
 --- /dev/null
 +++ b/html/template_google/en/inc/0000.html
 @@ -0,0 +1,2 @@
 +            <table border="0" cellpadding="4">
 +              <tbody>
-diff -r 3deec8d4ddb7 html/template_google/en/inc/0010_wiki.html
+diff --git a/html/template_google/en/inc/0010_wiki.html b/html/template_google/en/inc/0010_wiki.html
+new file mode 100644
+index 0000000..846469b
 --- /dev/null
 +++ b/html/template_google/en/inc/0010_wiki.html
 @@ -0,0 +1,15 @@
@@ -383,7 +435,9 @@ diff -r 3deec8d4ddb7 html/template_google/en/inc/0010_wiki.html
 +                    </small>
 +                  </td>
 +                </tr>
-diff -r 3deec8d4ddb7 html/template_google/en/inc/0020_scm.html
+diff --git a/html/template_google/en/inc/0020_scm.html b/html/template_google/en/inc/0020_scm.html
+new file mode 100644
+index 0000000..6648764
 --- /dev/null
 +++ b/html/template_google/en/inc/0020_scm.html
 @@ -0,0 +1,21 @@
@@ -408,7 +462,9 @@ diff -r 3deec8d4ddb7 html/template_google/en/inc/0020_scm.html
 +                    </small>
 +                  </td>
 +                </tr>
-diff -r 3deec8d4ddb7 html/template_google/en/inc/0030_bugtrac.html
+diff --git a/html/template_google/en/inc/0030_bugtrac.html b/html/template_google/en/inc/0030_bugtrac.html
+new file mode 100644
+index 0000000..371b8c2
 --- /dev/null
 +++ b/html/template_google/en/inc/0030_bugtrac.html
 @@ -0,0 +1,19 @@
@@ -431,7 +487,9 @@ diff -r 3deec8d4ddb7 html/template_google/en/inc/0030_bugtrac.html
 +                    </small>
 +                  </td>
 +                </tr>
-diff -r 3deec8d4ddb7 html/template_google/en/inc/0035_testlink.html
+diff --git a/html/template_google/en/inc/0035_testlink.html b/html/template_google/en/inc/0035_testlink.html
+new file mode 100644
+index 0000000..22b623b
 --- /dev/null
 +++ b/html/template_google/en/inc/0035_testlink.html
 @@ -0,0 +1,15 @@
@@ -450,7 +508,9 @@ diff -r 3deec8d4ddb7 html/template_google/en/inc/0035_testlink.html
 +                    </small>
 +                  </td>
 +                </tr>
-diff -r 3deec8d4ddb7 html/template_google/en/inc/0040_comm.html
+diff --git a/html/template_google/en/inc/0040_comm.html b/html/template_google/en/inc/0040_comm.html
+new file mode 100644
+index 0000000..7cf153b
 --- /dev/null
 +++ b/html/template_google/en/inc/0040_comm.html
 @@ -0,0 +1,15 @@
@@ -469,7 +529,9 @@ diff -r 3deec8d4ddb7 html/template_google/en/inc/0040_comm.html
 +                    </small>
 +                  </td>
 +                </tr>
-diff -r 3deec8d4ddb7 html/template_google/en/inc/1000_account.html
+diff --git a/html/template_google/en/inc/1000_account.html b/html/template_google/en/inc/1000_account.html
+new file mode 100644
+index 0000000..d10571f
 --- /dev/null
 +++ b/html/template_google/en/inc/1000_account.html
 @@ -0,0 +1,16 @@
@@ -489,27 +551,35 @@ diff -r 3deec8d4ddb7 html/template_google/en/inc/1000_account.html
 +                    </small>
 +                  </td>
 +                </tr>
-diff -r 3deec8d4ddb7 html/template_google/en/inc/9000.html
+diff --git a/html/template_google/en/inc/9000.html b/html/template_google/en/inc/9000.html
+new file mode 100644
+index 0000000..a0203b7
 --- /dev/null
 +++ b/html/template_google/en/inc/9000.html
 @@ -0,0 +1,2 @@
 +              </tbody>
 +            </table>
-diff -r 3deec8d4ddb7 html/template_google/en/inc/footer.inc
+diff --git a/html/template_google/en/inc/footer.inc b/html/template_google/en/inc/footer.inc
+new file mode 100644
+index 0000000..ef71703
 --- /dev/null
 +++ b/html/template_google/en/inc/footer.inc
 @@ -0,0 +1,3 @@
 +<div id="foot">&copy; 2006-2009 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
 +		of the University of Michigan</a>, 
 +       <a href="http://www.ossxp.com/">OSSXP Support</a> </div>
-diff -r 3deec8d4ddb7 html/template_google/en/inc/header.inc
+diff --git a/html/template_google/en/inc/header.inc b/html/template_google/en/inc/header.inc
+new file mode 100644
+index 0000000..f0a35bc
 --- /dev/null
 +++ b/html/template_google/en/inc/header.inc
 @@ -0,0 +1,3 @@
 +	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
 +		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
 +		</span> <strong>Our Home Page</strong></a> </div>
-diff -r 3deec8d4ddb7 html/template_google/en/login.html
+diff --git a/html/template_google/en/login.html b/html/template_google/en/login.html
+new file mode 100644
+index 0000000..3f412e1
 --- /dev/null
 +++ b/html/template_google/en/login.html
 @@ -0,0 +1,288 @@
@@ -801,7 +871,9 @@ diff -r 3deec8d4ddb7 html/template_google/en/login.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r 3deec8d4ddb7 html/template_google/en/login_error.html
+diff --git a/html/template_google/en/login_error.html b/html/template_google/en/login_error.html
+new file mode 100644
+index 0000000..6c677f8
 --- /dev/null
 +++ b/html/template_google/en/login_error.html
 @@ -0,0 +1,289 @@
@@ -1094,7 +1166,9 @@ diff -r 3deec8d4ddb7 html/template_google/en/login_error.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r 3deec8d4ddb7 html/template_google/en/reauth.html
+diff --git a/html/template_google/en/reauth.html b/html/template_google/en/reauth.html
+new file mode 100644
+index 0000000..7043dee
 --- /dev/null
 +++ b/html/template_google/en/reauth.html
 @@ -0,0 +1,284 @@
@@ -1382,7 +1456,9 @@ diff -r 3deec8d4ddb7 html/template_google/en/reauth.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r 3deec8d4ddb7 html/template_google/en/verify-logout.html
+diff --git a/html/template_google/en/verify-logout.html b/html/template_google/en/verify-logout.html
+new file mode 100644
+index 0000000..2f4b222
 --- /dev/null
 +++ b/html/template_google/en/verify-logout.html
 @@ -0,0 +1,43 @@
@@ -1429,7 +1505,9 @@ diff -r 3deec8d4ddb7 html/template_google/en/verify-logout.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r 3deec8d4ddb7 html/template_google/zh/error.html
+diff --git a/html/template_google/zh/error.html b/html/template_google/zh/error.html
+new file mode 100644
+index 0000000..374781e
 --- /dev/null
 +++ b/html/template_google/zh/error.html
 @@ -0,0 +1,50 @@
@@ -1483,7 +1561,9 @@ diff -r 3deec8d4ddb7 html/template_google/zh/error.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r 3deec8d4ddb7 html/template_google/zh/expired_error.html
+diff --git a/html/template_google/zh/expired_error.html b/html/template_google/zh/expired_error.html
+new file mode 100644
+index 0000000..0cfde37
 --- /dev/null
 +++ b/html/template_google/zh/expired_error.html
 @@ -0,0 +1,287 @@
@@ -1774,13 +1854,17 @@ diff -r 3deec8d4ddb7 html/template_google/zh/expired_error.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r 3deec8d4ddb7 html/template_google/zh/inc/0000.html
+diff --git a/html/template_google/zh/inc/0000.html b/html/template_google/zh/inc/0000.html
+new file mode 100644
+index 0000000..cd6c895
 --- /dev/null
 +++ b/html/template_google/zh/inc/0000.html
 @@ -0,0 +1,2 @@
 +            <table border="0" cellpadding="4">
 +              <tbody>
-diff -r 3deec8d4ddb7 html/template_google/zh/inc/0010_wiki.html
+diff --git a/html/template_google/zh/inc/0010_wiki.html b/html/template_google/zh/inc/0010_wiki.html
+new file mode 100644
+index 0000000..bf9e081
 --- /dev/null
 +++ b/html/template_google/zh/inc/0010_wiki.html
 @@ -0,0 +1,15 @@
@@ -1799,7 +1883,9 @@ diff -r 3deec8d4ddb7 html/template_google/zh/inc/0010_wiki.html
 +                    </small>
 +                  </td>
 +                </tr>
-diff -r 3deec8d4ddb7 html/template_google/zh/inc/0020_scm.html
+diff --git a/html/template_google/zh/inc/0020_scm.html b/html/template_google/zh/inc/0020_scm.html
+new file mode 100644
+index 0000000..6ebf8f7
 --- /dev/null
 +++ b/html/template_google/zh/inc/0020_scm.html
 @@ -0,0 +1,21 @@
@@ -1824,7 +1910,9 @@ diff -r 3deec8d4ddb7 html/template_google/zh/inc/0020_scm.html
 +                    </small>
 +                  </td>
 +                </tr>
-diff -r 3deec8d4ddb7 html/template_google/zh/inc/0030_bugtrac.html
+diff --git a/html/template_google/zh/inc/0030_bugtrac.html b/html/template_google/zh/inc/0030_bugtrac.html
+new file mode 100644
+index 0000000..2b908d4
 --- /dev/null
 +++ b/html/template_google/zh/inc/0030_bugtrac.html
 @@ -0,0 +1,19 @@
@@ -1847,7 +1935,9 @@ diff -r 3deec8d4ddb7 html/template_google/zh/inc/0030_bugtrac.html
 +                    </small>
 +                  </td>
 +                </tr>
-diff -r 3deec8d4ddb7 html/template_google/zh/inc/0035_testlink.html
+diff --git a/html/template_google/zh/inc/0035_testlink.html b/html/template_google/zh/inc/0035_testlink.html
+new file mode 100644
+index 0000000..29b9c73
 --- /dev/null
 +++ b/html/template_google/zh/inc/0035_testlink.html
 @@ -0,0 +1,15 @@
@@ -1866,7 +1956,9 @@ diff -r 3deec8d4ddb7 html/template_google/zh/inc/0035_testlink.html
 +                    </small>
 +                  </td>
 +                </tr>
-diff -r 3deec8d4ddb7 html/template_google/zh/inc/0040_comm.html
+diff --git a/html/template_google/zh/inc/0040_comm.html b/html/template_google/zh/inc/0040_comm.html
+new file mode 100644
+index 0000000..bcb8fa0
 --- /dev/null
 +++ b/html/template_google/zh/inc/0040_comm.html
 @@ -0,0 +1,15 @@
@@ -1885,7 +1977,9 @@ diff -r 3deec8d4ddb7 html/template_google/zh/inc/0040_comm.html
 +                    </small>
 +                  </td>
 +                </tr>
-diff -r 3deec8d4ddb7 html/template_google/zh/inc/1000_account.html
+diff --git a/html/template_google/zh/inc/1000_account.html b/html/template_google/zh/inc/1000_account.html
+new file mode 100644
+index 0000000..ec601af
 --- /dev/null
 +++ b/html/template_google/zh/inc/1000_account.html
 @@ -0,0 +1,16 @@
@@ -1905,26 +1999,34 @@ diff -r 3deec8d4ddb7 html/template_google/zh/inc/1000_account.html
 +                    </small>
 +                  </td>
 +                </tr>
-diff -r 3deec8d4ddb7 html/template_google/zh/inc/9000.html
+diff --git a/html/template_google/zh/inc/9000.html b/html/template_google/zh/inc/9000.html
+new file mode 100644
+index 0000000..a0203b7
 --- /dev/null
 +++ b/html/template_google/zh/inc/9000.html
 @@ -0,0 +1,2 @@
 +              </tbody>
 +            </table>
-diff -r 3deec8d4ddb7 html/template_google/zh/inc/footer.inc
+diff --git a/html/template_google/zh/inc/footer.inc b/html/template_google/zh/inc/footer.inc
+new file mode 100644
+index 0000000..e1f8a0a
 --- /dev/null
 +++ b/html/template_google/zh/inc/footer.inc
 @@ -0,0 +1,2 @@
 +<div id="foot">&copy; 2006-2009 <a href="http://www.umich.edu/~regents/" title="密歇根大学">密歇根大学</a>, 
 +       <a href="http://www.ossxp.com/">群英汇技术支持</a></div>
-diff -r 3deec8d4ddb7 html/template_google/zh/inc/header.inc
+diff --git a/html/template_google/zh/inc/header.inc b/html/template_google/zh/inc/header.inc
+new file mode 100644
+index 0000000..0988c0e
 --- /dev/null
 +++ b/html/template_google/zh/inc/header.inc
 @@ -0,0 +1,3 @@
 +	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
 +		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
 +		</span> <strong>我们的主页</strong></a> </div>
-diff -r 3deec8d4ddb7 html/template_google/zh/login.html
+diff --git a/html/template_google/zh/login.html b/html/template_google/zh/login.html
+new file mode 100644
+index 0000000..8782115
 --- /dev/null
 +++ b/html/template_google/zh/login.html
 @@ -0,0 +1,286 @@
@@ -2214,7 +2316,9 @@ diff -r 3deec8d4ddb7 html/template_google/zh/login.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r 3deec8d4ddb7 html/template_google/zh/login_error.html
+diff --git a/html/template_google/zh/login_error.html b/html/template_google/zh/login_error.html
+new file mode 100644
+index 0000000..0cfde37
 --- /dev/null
 +++ b/html/template_google/zh/login_error.html
 @@ -0,0 +1,287 @@
@@ -2505,7 +2609,9 @@ diff -r 3deec8d4ddb7 html/template_google/zh/login_error.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r 3deec8d4ddb7 html/template_google/zh/reauth.html
+diff --git a/html/template_google/zh/reauth.html b/html/template_google/zh/reauth.html
+new file mode 100644
+index 0000000..9a92169
 --- /dev/null
 +++ b/html/template_google/zh/reauth.html
 @@ -0,0 +1,282 @@
@@ -2791,7 +2897,9 @@ diff -r 3deec8d4ddb7 html/template_google/zh/reauth.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r 3deec8d4ddb7 html/template_google/zh/verify-logout.html
+diff --git a/html/template_google/zh/verify-logout.html b/html/template_google/zh/verify-logout.html
+new file mode 100644
+index 0000000..f3ea7e6
 --- /dev/null
 +++ b/html/template_google/zh/verify-logout.html
 @@ -0,0 +1,43 @@
@@ -2838,3 +2946,5 @@ diff -r 3deec8d4ddb7 html/template_google/zh/verify-logout.html
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
+-- 
+tg: (c5c4d9c..) t/templates_google (depends on: t/template_standard_zh)

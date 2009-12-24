@@ -1,8 +1,8 @@
-10010_autotools.patch
-10020_multiple_language_template.patch
-10030_template_cgi-bin.patch
-10040_cosignhttponly_quirk_fix.patch
-20000_template_en.patch
-20010_template_i18n_zh.patch
-20030_services_template.patch
-20040_google_style_template.patch
+t/autotools_for_setup.diff -p1
+t/bugfix_cosign_httponly_quirk.diff -p1
+t/custom_cosign_path.diff -p1
+t/multi_language.diff -p1
+t/services_template.diff -p1
+t/template_standard_en.diff -p1
+t/template_standard_zh.diff -p1
+t/templates_google.diff -p1

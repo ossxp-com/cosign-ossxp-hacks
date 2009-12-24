@@ -1,7 +1,25 @@
-diff -r 8c0132564c3f Makefile.in
---- a/Makefile.in	Fri Mar 13 23:54:37 2009 +0800
-+++ b/Makefile.in	Fri Mar 13 23:54:56 2009 +0800
-@@ -46,12 +46,10 @@
+From: Jiang Xin <worldhello.net@gmail.com>
+Subject: [PATCH] t/autotools_for_setup
+
+<patch description>
+
+Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
+
+---
+ Makefile.in                 |    8 +++-----
+ cgi/Makefile.in             |    9 +++++----
+ daemon/Makefile.in          |   22 +++++++++++-----------
+ filters/apache/Makefile.in  |    6 +++++-
+ filters/apache2/Makefile.in |    5 ++++-
+ html/Makefile.in            |   25 +++++++++++++------------
+ libsnet/Makefile.in         |   15 ++++++++-------
+ 7 files changed, 49 insertions(+), 41 deletions(-)
+
+diff --git a/Makefile.in b/Makefile.in
+index f28f688..010b1c8 100755
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -46,12 +46,10 @@ distclean: clean
  	  common/Makefile version.c filters/common/cosignpaths.h
  	rm -rf autom4te.cache
  
@@ -17,10 +35,11 @@ diff -r 8c0132564c3f Makefile.in
 -	    do (cd $$i; ${MAKE} ${MFLAGS} install); \
 +	    do (cd $$i; ${MAKE} ${MFLAGS} install DESTDIR=$(DESTDIR)); \
  	done
-diff -r 8c0132564c3f cgi/Makefile.in
---- a/cgi/Makefile.in	Fri Mar 13 23:54:37 2009 +0800
-+++ b/cgi/Makefile.in	Fri Mar 13 23:54:56 2009 +0800
-@@ -16,6 +16,7 @@
+diff --git a/cgi/Makefile.in b/cgi/Makefile.in
+index cefd0ec..35fd652 100755
+--- a/cgi/Makefile.in
++++ b/cgi/Makefile.in
+@@ -16,6 +16,7 @@ KEYTABPATH = @keytabpath@
  FRIEND_MYSQL_DB = @frienddbhost@
  FRIEND_MYSQL_LOGIN = @frienddblogin@
  FRIEND_MYSQL_PASSWD = @frienddbpasswd@
@@ -28,7 +47,7 @@ diff -r 8c0132564c3f cgi/Makefile.in
  
  INCPATH=     @CPPFLAGS@ @KINC@ @MYSQLINC@ -I../common -I../libsnet -I../libcgi
  OPTOPTS=     @OPTOPTS@ @UNIVERSAL_OPTOPTS@
-@@ -76,7 +77,7 @@
+@@ -76,7 +77,7 @@ clean:
  	/bin/rm -rf *.o ${TARGETS}
  
  install : all
@@ -40,10 +59,11 @@ diff -r 8c0132564c3f cgi/Makefile.in
 +	-mkdir -p $(DESTDIR)${CGIDIR};
 +	${INSTALL} -m 0755 -c cosign.cgi $(DESTDIR)${CGIDIR}/;
 +	${INSTALL} -m 0755 -c logout $(DESTDIR)${CGIDIR}/;
-diff -r 8c0132564c3f daemon/Makefile.in
---- a/daemon/Makefile.in	Fri Mar 13 23:54:37 2009 +0800
-+++ b/daemon/Makefile.in	Fri Mar 13 23:54:56 2009 +0800
-@@ -4,6 +4,7 @@
+diff --git a/daemon/Makefile.in b/daemon/Makefile.in
+index fd8507f..dcb8a83 100755
+--- a/daemon/Makefile.in
++++ b/daemon/Makefile.in
+@@ -4,6 +4,7 @@ prefix=@prefix@
  exec_prefix=@exec_prefix@
  SBINDIR=@sbindir@
  MANDIR=@mandir@
@@ -51,7 +71,7 @@ diff -r 8c0132564c3f daemon/Makefile.in
  
  COSIGNCONF=@cosignconf@
  COSIGNDB=@cosigndb@
-@@ -95,17 +96,16 @@
+@@ -95,17 +96,16 @@ man : FRC
  	done
  
  install : all man
@@ -79,10 +99,11 @@ diff -r 8c0132564c3f daemon/Makefile.in
  
  clean :
  	rm -f a.out core* *.o *.bak *[Ee]rrs tags
-diff -r 8c0132564c3f filters/apache/Makefile.in
---- a/filters/apache/Makefile.in	Fri Mar 13 23:54:37 2009 +0800
-+++ b/filters/apache/Makefile.in	Fri Mar 13 23:54:56 2009 +0800
-@@ -8,6 +8,8 @@
+diff --git a/filters/apache/Makefile.in b/filters/apache/Makefile.in
+index 16cebf1..412bcda 100755
+--- a/filters/apache/Makefile.in
++++ b/filters/apache/Makefile.in
+@@ -8,6 +8,8 @@ CC=            	@CC@
  APXS=          	@APXS@
  APACHECTL=     	@APACHECTL@
  INSTALL=       	@INSTALL@
@@ -91,7 +112,7 @@ diff -r 8c0132564c3f filters/apache/Makefile.in
  
  
  #   additional user defines, includes and libraries
-@@ -37,7 +39,9 @@
+@@ -37,7 +39,9 @@ mod_cosign.so: ${SRC}
  #   install the DSO file into the Apache installation
  #   and activate it in the Apache configuration
  install: all
@@ -102,10 +123,11 @@ diff -r 8c0132564c3f filters/apache/Makefile.in
  
  #   cleanup
  clean:
-diff -r 8c0132564c3f filters/apache2/Makefile.in
---- a/filters/apache2/Makefile.in	Fri Mar 13 23:54:37 2009 +0800
-+++ b/filters/apache2/Makefile.in	Fri Mar 13 23:54:56 2009 +0800
-@@ -8,6 +8,8 @@
+diff --git a/filters/apache2/Makefile.in b/filters/apache2/Makefile.in
+index f065dbe..f13b3cf 100755
+--- a/filters/apache2/Makefile.in
++++ b/filters/apache2/Makefile.in
+@@ -8,6 +8,8 @@ CC=             @CC@
  APXS2=          @APXS2@
  APACHECTL2=     @APACHECTL2@
  INSTALL=        @INSTALL@
@@ -114,7 +136,7 @@ diff -r 8c0132564c3f filters/apache2/Makefile.in
  
  #    The apach 2 apxs build process tends to leave a lot of junk lying around.
  APXS2JUNKFILES=	../../common/argcargv.slo ../../common/argcargv.lo \
-@@ -56,7 +58,8 @@
+@@ -56,7 +58,8 @@ mod_cosign.la: ${SRC}
  #   install the DSO file into the Apache installation
  #   and activate it in the Apache configuration
  install: all
@@ -124,10 +146,11 @@ diff -r 8c0132564c3f filters/apache2/Makefile.in
  
  #   cleanup
  clean:
-diff -r 8c0132564c3f html/Makefile.in
---- a/html/Makefile.in	Fri Mar 13 23:54:37 2009 +0800
-+++ b/html/Makefile.in	Fri Mar 13 23:54:56 2009 +0800
-@@ -6,25 +6,26 @@
+diff --git a/html/Makefile.in b/html/Makefile.in
+index f72b6b5..8785b78 100755
+--- a/html/Makefile.in
++++ b/html/Makefile.in
+@@ -6,25 +6,26 @@ TMPLDIR  = @prefix@/templates
  HTMLDIR  = @prefix@/html
  SERVICESDIR  = @prefix@/services
  INSTALL	=	@INSTALL@
@@ -166,10 +189,11 @@ diff -r 8c0132564c3f html/Makefile.in
 +	cp services/*.html $(DESTDIR)${SERVICESDIR}/
  
  clean:
-diff -r 8c0132564c3f libsnet/Makefile.in
---- a/libsnet/Makefile.in	Fri Mar 13 23:54:37 2009 +0800
-+++ b/libsnet/Makefile.in	Fri Mar 13 23:54:56 2009 +0800
-@@ -6,6 +6,7 @@
+diff --git a/libsnet/Makefile.in b/libsnet/Makefile.in
+index 43205f8..8914dd9 100755
+--- a/libsnet/Makefile.in
++++ b/libsnet/Makefile.in
+@@ -6,6 +6,7 @@ VPATH=@srcdir@
  prefix      =	@prefix@
  libdir      =	@libdir@
  includedir  =	@includedir@
@@ -177,7 +201,7 @@ diff -r 8c0132564c3f libsnet/Makefile.in
  
  SRC  = snet.c
  OBJ  = snet.o
-@@ -58,18 +59,18 @@
+@@ -58,18 +59,18 @@ libsnet.la:	$(OBJ) $(LOBJ)
  	  -version-info 0:0:0 >/dev/null 2>&1 ) ; fi
  
  install:	all
@@ -203,3 +227,5 @@ diff -r 8c0132564c3f libsnet/Makefile.in
  
  clean:
  	rm -f *.o *.lo *.slo libsnet.la
+-- 
+tg: (7da5ba0..) t/autotools_for_setup (depends on: master)

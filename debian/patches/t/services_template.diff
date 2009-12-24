@@ -1,7 +1,22 @@
-diff -r e99540699f61 html/Makefile.in
+From: Jiang Xin <worldhello.net@gmail.com>
+Subject: [PATCH] t/services_template
+
+<patch description>
+
+Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
+
+---
+ html/Makefile.in             |    2 +-
+ html/services/config_inc.php |   18 +++
+ html/services/index.php      |  259 ++++++++++++++++++++++++++++++++++++++++++
+ html/services/ldap_api.php   |   92 +++++++++++++++
+ 4 files changed, 370 insertions(+), 1 deletions(-)
+
+diff --git a/html/Makefile.in b/html/Makefile.in
+index 8785b78..87cfa6e 100755
 --- a/html/Makefile.in
 +++ b/html/Makefile.in
-@@ -28,6 +28,6 @@
+@@ -26,6 +26,6 @@ install : all
  	-mkdir -p $(DESTDIR)${HTMLDIR}/js
  	cp js/*.js $(DESTDIR)${HTMLDIR}/js/
  	-mkdir -p $(DESTDIR)${SERVICESDIR}
@@ -9,7 +24,9 @@ diff -r e99540699f61 html/Makefile.in
 +	cp services/*.html services/*.php $(DESTDIR)${SERVICESDIR}/
  
  clean:
-diff -r e99540699f61 html/services/config_inc.php
+diff --git a/html/services/config_inc.php b/html/services/config_inc.php
+new file mode 100644
+index 0000000..75d61d6
 --- /dev/null
 +++ b/html/services/config_inc.php
 @@ -0,0 +1,18 @@
@@ -31,7 +48,9 @@ diff -r e99540699f61 html/services/config_inc.php
 +$g_ldap_bind_passwd	= 'guess';
 +
 +?>
-diff -r e99540699f61 html/services/index.php
+diff --git a/html/services/index.php b/html/services/index.php
+new file mode 100644
+index 0000000..0e2db31
 --- /dev/null
 +++ b/html/services/index.php
 @@ -0,0 +1,259 @@
@@ -294,7 +313,9 @@ diff -r e99540699f61 html/services/index.php
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff -r e99540699f61 html/services/ldap_api.php
+diff --git a/html/services/ldap_api.php b/html/services/ldap_api.php
+new file mode 100644
+index 0000000..c55ca05
 --- /dev/null
 +++ b/html/services/ldap_api.php
 @@ -0,0 +1,92 @@
@@ -390,3 +411,5 @@ diff -r e99540699f61 html/services/ldap_api.php
 +}
 +
 +?>
+-- 
+tg: (1d63ccf..) t/services_template (depends on: t/custom_cosign_path)

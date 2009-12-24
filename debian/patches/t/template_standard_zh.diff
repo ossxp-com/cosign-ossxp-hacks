@@ -1,16 +1,37 @@
-diff -r b51a4965626e html/Makefile.in
+From: Jiang Xin <worldhello.net@gmail.com>
+Subject: [PATCH] t/template_standard_zh
+
+<patch description>
+
+Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
+
+---
+ html/Makefile.in           |    2 +
+ html/zh/error.html         |   49 ++++++++++++++
+ html/zh/inc/footer.inc     |    1 +
+ html/zh/inc/header.inc     |    3 +
+ html/zh/login.html         |  146 +++++++++++++++++++++++++++++++++++++++++
+ html/zh/login_error.html   |  150 ++++++++++++++++++++++++++++++++++++++++++
+ html/zh/reauth.html        |  156 ++++++++++++++++++++++++++++++++++++++++++++
+ html/zh/verify-logout.html |   42 ++++++++++++
+ 8 files changed, 549 insertions(+), 0 deletions(-)
+
+diff --git a/html/Makefile.in b/html/Makefile.in
+index 8785b78..99f1419 100755
 --- a/html/Makefile.in
 +++ b/html/Makefile.in
-@@ -17,6 +17,8 @@
+@@ -17,6 +17,8 @@ install : all
  	for i in ${TEMPLATES}; do \
- 	    cp -a $$i $(DESTDIR)${TMPLDIR}/en; \
+ 	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${TMPLDIR}/; \
  	done
 +	# Templates for zh_cn
 +	cp -a zh $(DESTDIR)${TMPLDIR}/
  	for i in ${HTML}; do \
- 	    cp -a $$i $(DESTDIR)${HTMLDIR}/; \
+ 	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${HTMLDIR}/; \
  	done
-diff -r b51a4965626e html/zh/error.html
+diff --git a/html/zh/error.html b/html/zh/error.html
+new file mode 100644
+index 0000000..f102216
 --- /dev/null
 +++ b/html/zh/error.html
 @@ -0,0 +1,49 @@
@@ -63,19 +84,25 @@ diff -r b51a4965626e html/zh/error.html
 +$!include(inc/footer.inc)
 +</body>
 +</html>
-diff -r b51a4965626e html/zh/inc/footer.inc
+diff --git a/html/zh/inc/footer.inc b/html/zh/inc/footer.inc
+new file mode 100644
+index 0000000..c0db804
 --- /dev/null
 +++ b/html/zh/inc/footer.inc
-@@ -0,0 +1,1 @@
+@@ -0,0 +1 @@
 +<div id="foot">&copy; 2006-2008 <a href="http://www.umich.edu/~regents/" title="密歇根大学">密歇根大学</a>, <a href="http://www.ossxp.com/">群英汇技术支持</a></div>
-diff -r b51a4965626e html/zh/inc/header.inc
+diff --git a/html/zh/inc/header.inc b/html/zh/inc/header.inc
+new file mode 100644
+index 0000000..0988c0e
 --- /dev/null
 +++ b/html/zh/inc/header.inc
 @@ -0,0 +1,3 @@
 +	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
 +		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
 +		</span> <strong>我们的主页</strong></a> </div>
-diff -r b51a4965626e html/zh/login.html
+diff --git a/html/zh/login.html b/html/zh/login.html
+new file mode 100644
+index 0000000..f018459
 --- /dev/null
 +++ b/html/zh/login.html
 @@ -0,0 +1,146 @@
@@ -225,7 +252,9 @@ diff -r b51a4965626e html/zh/login.html
 +$!include(inc/footer.inc)
 +</body>
 +</html>
-diff -r b51a4965626e html/zh/login_error.html
+diff --git a/html/zh/login_error.html b/html/zh/login_error.html
+new file mode 100644
+index 0000000..e6da085
 --- /dev/null
 +++ b/html/zh/login_error.html
 @@ -0,0 +1,150 @@
@@ -379,7 +408,9 @@ diff -r b51a4965626e html/zh/login_error.html
 +$!include(inc/footer.inc)
 +</body>
 +</html>
-diff -r b51a4965626e html/zh/reauth.html
+diff --git a/html/zh/reauth.html b/html/zh/reauth.html
+new file mode 100644
+index 0000000..36cb9a9
 --- /dev/null
 +++ b/html/zh/reauth.html
 @@ -0,0 +1,156 @@
@@ -539,7 +570,9 @@ diff -r b51a4965626e html/zh/reauth.html
 +</form>
 +</body>
 +</html>
-diff -r b51a4965626e html/zh/verify-logout.html
+diff --git a/html/zh/verify-logout.html b/html/zh/verify-logout.html
+new file mode 100644
+index 0000000..3b32b8c
 --- /dev/null
 +++ b/html/zh/verify-logout.html
 @@ -0,0 +1,42 @@
@@ -585,3 +618,5 @@ diff -r b51a4965626e html/zh/verify-logout.html
 +$!include(inc/footer.inc)
 +</body>
 +</html>
+-- 
+tg: (1d63ccf..) t/template_standard_zh (depends on: t/custom_cosign_path)

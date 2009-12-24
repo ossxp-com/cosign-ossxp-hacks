@@ -19,6 +19,8 @@ install : all
 	done
 	# Templates for zh_cn
 	cp -a zh $(DESTDIR)${TMPLDIR}/
+	# Templates in google style, contains both en and zh_cn style
+	cp -a template_google $(DESTDIR)${TMPLDIR}_google; \
 	for i in ${HTML}; do \
 	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${HTMLDIR}/; \
 	done

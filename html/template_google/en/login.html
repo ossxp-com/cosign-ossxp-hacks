@@ -1,0 +1,288 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
+<title>$t</title>
+<script><!--
+function gaia_setFocus() {
+  var f = null;
+  if (document.getElementById) { 
+    f = document.getElementById("gaia_loginform");
+  } else if (window.gaia_loginform) { 
+    f = window.gaia_loginform;
+  } 
+  if (f) {
+    if (f.login && (f.login.value == null || f.login.value == "")) {
+      f.login.focus();
+    } else if (f.password) {
+      f.password.focus();
+    } 
+  }
+}
+--></script>
+<style type="text/css">
+  <!--
+  body { font-family: arial,sans-serif; background-color: #fff; margin-top: 2; }
+  .c { width: 4; height: 4; } 
+  a:link { color: #00c; } 
+  a:visited { color: #551a8b; }
+  a:active { color: #f00; }
+  .form-noindent { background-color: #fff; border: 1px solid #c3d9ff; }
+  -->
+</style>
+<style type="text/css"><!--
+.gaia.le.lbl { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
+.gaia.le.fpwd { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
+.gaia.le.chusr { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
+.gaia.le.val { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
+.gaia.le.button { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
+.gaia.le.rem { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
+
+.gaia.captchahtml.desc { font-family: arial, sans-serif; font-size: smaller; } 
+.gaia.captchahtml.cmt { font-family: arial, sans-serif; font-size: smaller; font-style: italic; }
+  
+--></style>
+<style type="text/css"><!--
+  div.errormsg { color: red; font-size: smaller; font-family:arial,sans-serif; }
+  font.errormsg { color: red; font-size: smaller; font-family:arial,sans-serif; }  
+--></style>
+<style type="text/css"><!--
+.gaia.le.lbl { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
+.gaia.le.fpwd { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
+.gaia.le.chusr { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
+.gaia.le.val { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
+.gaia.le.button { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
+.gaia.le.rem { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
+
+.gaia.captchahtml.desc { font-family: arial, sans-serif; font-size: smaller; } 
+.gaia.captchahtml.cmt { font-family: arial, sans-serif; font-size: smaller; font-style: italic; }
+  
+--></style>
+ 
+<style type="text/css"><!--
+    .body { margin-left: 3em;
+            margin-right: 5em;
+            font-family: arial,sans-serif; }
+
+    div.errorbox-good {}
+
+    div.errorbox-bad {} 
+
+    div.errormsg { color: red; font-size: smaller; font-family: arial,sans-serif;}
+    font.errormsg { color: red; font-size: smaller; font-family: arial,sans-serif;}
+    
+    hr {
+      border: 0;
+      background-color:#DDDDDD;
+      height: 1px;
+      width: 100%;
+      text-align: left;
+      margin: 5px;
+    }
+    
+--></style>
+<style type="text/css"><!--
+#error {
+	border: 1px dotted #cc9999;
+	margin-bottom: 10px;
+	padding: 6px 8px 6px 28px;
+	background: url(images/icon_alert.gif) left center no-repeat;
+	background-color: #fcfcfc;
+	color: #cc0000;
+}
+#foot {
+	width: 760px;
+	margin: 20px auto;
+	text-align: center;
+	padding: 5px;
+	font-size: 108%;
+	border-top: 1px solid #ccc;
+}
+
+#foot,
+#foot a {
+	background-color: inherit;
+	color: #999;
+}
+
+#foot a:hover {
+	background-color: inherit;
+	color: #70a8f1;
+}
+--></style>
+
+</head>
+<body dir="ltr" onload="gaia_setFocus();">
+<div id="main">
+  <table border="0" cellpadding="2" cellspacing="0" width="100%">
+    <tbody>
+      <tr>
+        <td colspan="2"><img alt="" height="2" width="1"></td>
+      </tr>
+      <tr>
+        <td valign="top" width="1%">
+          <a href="https://weblogin.foo.bar/">
+          <img src="/cosign/images/services/Cosign_3d.gif" alt="CoSign" align="left" border="0">
+          </a>
+        </td>
+        <td valign="bottom">
+          <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tbody>
+              <tr>
+                <td colspan="2"><img alt="" height="15" width="1"></td>
+              </tr>
+              <tr bgcolor="#3366cc">
+                <td><img alt="" height="1" width="1"></td>
+              </tr>
+              <tr bgcolor="#e5ecf9">
+                <td style="padding-left: 4px; padding-bottom: 3px; padding-top: 2px; font-family: arial,sans-serif;">
+                  <b>Single Sign-On</b>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2"><img alt="" height="5" width="1"></td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
+    <tbody>
+      <tr>
+        <td valign="top" width="75%">
+          <div style="font-size: 83%;">
+            <b>
+            Sign in before using the following services.
+            </b>
+            <br><br>
+            Without sign in, you can not access some of the services we provided, or access rights are limited.
+            After sign in, you can edit your profiles, and enjoy our services.
+            <br><br>
+            Sign in on the right, or <a href="https://weblogin.foo.bar/members/signup.php">create a new account</a>
+            if open register is allowed.
+            <br><br>
+
+            $!include(inc/*.html)
+
+          </div>
+        </td>
+        <td style="padding-left: 10px;" align="center" valign="top">
+          <form id="gaia_loginform" action="/cgi-bin/login" method="post" name="factors">
+            <input type="hidden" name="required" value="$f" />
+            <input type="hidden" name="ref" value="$r" />
+            <input type="hidden" name="service" value="$c" />
+            <!--div id="error">$e</div-->
+            <div id="gaia_loginbox">
+            <table class="form-noindent" border="0" cellpadding="5" cellspacing="3" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;" bgcolor="#e8eefa" nowrap="nowrap" valign="top">
+                    <div class="loginBox">
+                      <table id="gaia_table" align="center" border="0" cellpadding="1" cellspacing="0">
+                        <tbody>
+                          <tr>
+                            <td colspan="2" align="center">
+                              <font size="-1">
+                              Sign in with your
+                              </font>
+                              <table>
+                                <tbody>
+                                  <tr>
+                                    <td valign="top">
+                                      Membership
+                                    </td>
+                                    <td valign="middle">
+                                      <font size="+0"><b>Account</b></font>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colspan="2" align="center">
+                            </td>
+                          </tr>
+                          <tr>
+                            <td nowrap="nowrap">
+                            <div align="right">
+                            <span class="gaia le lbl">
+                            Login:
+                            </span>
+                            </div>
+                            </td>
+                            <td>
+                            <input id="login" name="login" type="text" value="" size="18" tabindex="1" />
+                            </td>
+                          </tr>
+                          <tr>
+                            <td></td>
+                            <td align="left">
+                            </td>
+                          </tr>
+                          <tr>
+                            <td align="right">
+                            <span class="gaia le lbl">
+                            Password:
+                            </span>
+                            </td>
+                            <td>
+                            <input id="password" name="password" type="password" value="" size="18" tabindex="2" />
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                            </td>
+                            <td align="left">
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                            </td>
+                            <td align="left">
+                            <input type="submit" name="doLogin" value="Log In" tabindex="6" />
+                            </td>
+                          </tr>
+                          <tr id="ga-fprow">
+                            <td colspan="2" class="gaia le fpwd" align="center" height="33" valign="bottom">
+                            <a href="https://weblogin.foo.bar/members/lostpwd.php" target="_top">
+                            Lost password?
+                            </a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+          </form>
+          <br>
+          <table class="form-noindent" border="0" cellpadding="6" cellspacing="3" width="100%">
+            <tbody>
+              <tr>
+                <td style="font-size: 83%;" align="center" bgcolor="#e8eefa">
+                  <b>Register a new account yourself ?
+                  </b><br>
+                  <a href="https://weblogin.foo.bar/members/signup.php">
+                  <b>Create an account now</b>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+  <br>
+  $!include(inc/footer.inc)
+</body>
+</html>
+<!-- vim: set ts=2 sw=2 et : -->

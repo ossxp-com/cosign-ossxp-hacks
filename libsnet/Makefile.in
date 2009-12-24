@@ -6,6 +6,7 @@ VPATH=@srcdir@
 prefix      =	@prefix@
 libdir      =	@libdir@
 includedir  =	@includedir@
+DESTDIR=
 
 SRC  = snet.c
 OBJ  = snet.o
@@ -58,18 +59,18 @@ libsnet.la:	$(OBJ) $(LOBJ)
 	  -version-info 0:0:0 >/dev/null 2>&1 ) ; fi
 
 install:	all
-	mkdir -p $(libdir)
-	chmod 755 $(libdir)
-	mkdir -p $(includedir)
-	chmod 755 $(includedir)
-	$(INSTALL) -c -m 644 snet.h $(includedir)/snet.h
+	mkdir -p $(DESTDIR)$(libdir)
+	chmod 755 $(DESTDIR)$(libdir)
+	mkdir -p $(DESTDIR)$(includedir)
+	chmod 755 $(DESTDIR)$(includedir)
+	$(INSTALL) -c -m 644 snet.h $(DESTDIR)$(includedir)/snet.h
 	$(LIBTOOL) --mode=install \
-	  $(INSTALL) -c -m 644 libsnet.la $(libdir)/libsnet.la
+	  $(INSTALL) -c -m 644 libsnet.la $(DESTDIR)$(libdir)/libsnet.la
 	@if test x_$(PROFILED) = x_true ; then \
 	  echo "installing profiled libraries" ; \
 	  ( cd profiled ; ../$(LIBTOOL) --mode=install \
 	  $(INSTALL) -c -m 644 libsnet_p.la \
-	  $(libdir)/libsnet_p.la >/dev/null 2>&1 ) ; fi
+	  $(DESTDIR)$(libdir)/libsnet_p.la >/dev/null 2>&1 ) ; fi
 
 clean:
 	rm -f *.o *.lo *.slo libsnet.la

@@ -46,12 +46,10 @@ distclean: clean
 	  common/Makefile version.c filters/common/cosignpaths.h
 	rm -rf autom4te.cache
 
-install: @FILTERS@
+install: @FILTERS@ everything
 	for i in ${FILTERS}; \
-	    do (cd $$i; ${MAKE} ${MFLAGS} install); \
+	    do (cd $$i; ${MAKE} ${MFLAGS} install DESTDIR=$(DESTDIR)); \
 	done
-
-install-all : everything
 	for i in ${TARGETS}; \
-	    do (cd $$i; ${MAKE} ${MFLAGS} install); \
+	    do (cd $$i; ${MAKE} ${MFLAGS} install DESTDIR=$(DESTDIR)); \
 	done

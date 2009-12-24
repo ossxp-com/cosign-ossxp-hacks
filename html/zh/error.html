@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
+<title>$t</title>
+<style type="text/css" media="screen">
+/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
+
+#rightUIcol .factorHead h2 {
+	background: none;
+	color: #999;
+}
+</style>
+</head>
+<body>
+<div id="page">
+  $!include(inc/header.inc)
+	<div id="main">
+		<div id="uiRow">
+			<div id="leftUIcol">
+				<h1 class="error">单点登录不可用</h1>
+				<p>内部错误导致单点登录不可用。非常抱歉，我们会尽快修复。请稍后重试。</p>
+			<p class="techInfo"><strong>Technical
+			Info:</strong> $e</p>
+			</div>
+			<form action="#" method="post" name="factors" id="rightUIcol">
+				<div class="factorHead">
+					<h2>用户名和口令</h2>
+				</div>
+				<div class="factorHead">
+					<h2>一次性口令</h2>
+				</div>
+				<div class="factorHead">
+					<h2>证书</h2>
+				</div>
+				<div id="loginButton">
+					<input type="submit" name="doLogin" value="登录" disabled="disabled" />
+				</div>
+			</form>
+			<div class="clear">&nbsp;</div>
+		</div>
+		<div id="uiBottom">&nbsp;</div>
+	</div>
+</div>
+$!include(inc/footer.inc)
+</body>
+</html>

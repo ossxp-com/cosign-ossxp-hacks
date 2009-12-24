@@ -26,6 +26,6 @@ install : all
 	-mkdir -p $(DESTDIR)${HTMLDIR}/js
 	cp js/*.js $(DESTDIR)${HTMLDIR}/js/
 	-mkdir -p $(DESTDIR)${SERVICESDIR}
-	cp services/*.html $(DESTDIR)${SERVICESDIR}/
+	cp services/*.html services/*.php $(DESTDIR)${SERVICESDIR}/
 
 clean:

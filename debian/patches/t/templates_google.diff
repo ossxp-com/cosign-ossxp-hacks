@@ -11,6 +11,7 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
  html/template_google/en/expired_error.html     |  288 +++++++++++++++++++++++
  html/template_google/en/inc/0000.html          |    2 +
  html/template_google/en/inc/0010_wiki.html     |   15 ++
+ html/template_google/en/inc/0015_blog.html     |   15 ++
  html/template_google/en/inc/0020_scm.html      |   21 ++
  html/template_google/en/inc/0030_bugtrac.html  |   19 ++
  html/template_google/en/inc/0035_testlink.html |   15 ++
@@ -27,6 +28,7 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
  html/template_google/zh/expired_error.html     |  287 +++++++++++++++++++++++
  html/template_google/zh/inc/0000.html          |    2 +
  html/template_google/zh/inc/0010_wiki.html     |   15 ++
+ html/template_google/zh/inc/0015_blog.html     |   15 ++
  html/template_google/zh/inc/0020_scm.html      |   21 ++
  html/template_google/zh/inc/0030_bugtrac.html  |   19 ++
  html/template_google/zh/inc/0035_testlink.html |   15 ++
@@ -39,7 +41,7 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
  html/template_google/zh/login_error.html       |  287 +++++++++++++++++++++++
  html/template_google/zh/reauth.html            |  282 +++++++++++++++++++++++
  html/template_google/zh/verify-logout.html     |   43 ++++
- 33 files changed, 2702 insertions(+), 0 deletions(-)
+ 35 files changed, 2732 insertions(+), 0 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
 index 99f1419..af8d9d3 100755
@@ -432,6 +434,27 @@ index 0000000..846469b
 +                    <br>
 +                    <small>
 +                    Collaborative and powerful community websites. Start to contribute..oO
++                    </small>
++                  </td>
++                </tr>
+diff --git a/html/template_google/en/inc/0015_blog.html b/html/template_google/en/inc/0015_blog.html
+new file mode 100644
+index 0000000..391c984
+--- /dev/null
++++ b/html/template_google/en/inc/0015_blog.html
+@@ -0,0 +1,15 @@
++                <tr>
++                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
++                  <td aligh='right' vliagn='middle'>
++                    <img src="/cosign/images/services/blog.gif" alt="Blog">
++                  </td>
++                  <td style="font-size: 83%;">
++                    <u>
++                    <a name="blog" href="http://blog.foo.bar/wp-login.php">Web log</a>
++                    </u>
++                    <br>
++                    <small>
++                    Speak loud, and share your feelings, opinions, ideas, with others...
 +                    </small>
 +                  </td>
 +                </tr>
@@ -1880,6 +1903,27 @@ index 0000000..bf9e081
 +                    <br>
 +                    <small>
 +                    采用维基技术，提供了协同工作平台和强大的社区网站，知识共享现在出发..oO
++                    </small>
++                  </td>
++                </tr>
+diff --git a/html/template_google/zh/inc/0015_blog.html b/html/template_google/zh/inc/0015_blog.html
+new file mode 100644
+index 0000000..37b452b
+--- /dev/null
++++ b/html/template_google/zh/inc/0015_blog.html
+@@ -0,0 +1,15 @@
++                <tr>
++                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
++                  <td aligh='right' vliagn='middle'>
++                    <img src="/cosign/images/services/blog.gif" alt="博客">
++                  </td>
++                  <td style="font-size: 83%;">
++                    <u>
++                    <a name="blog" href="http://blog.foo.bar/wp-login.php">博客</a>
++                    </u>
++                    <br>
++                    <small>
++                    大声的说出你的感受、观点、想法，和他人分享...
 +                    </small>
 +                  </td>
 +                </tr>

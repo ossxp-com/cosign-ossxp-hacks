@@ -439,7 +439,7 @@ index 0000000..846469b
 +                </tr>
 diff --git a/html/template_google/en/inc/0015_blog.html b/html/template_google/en/inc/0015_blog.html
 new file mode 100644
-index 0000000..391c984
+index 0000000..2805ea1
 --- /dev/null
 +++ b/html/template_google/en/inc/0015_blog.html
 @@ -0,0 +1,15 @@
@@ -450,7 +450,7 @@ index 0000000..391c984
 +                  </td>
 +                  <td style="font-size: 83%;">
 +                    <u>
-+                    <a name="blog" href="http://blog.foo.bar/wp-login.php">Web log</a>
++                    <a name="blog" href="http://blog.foo.bar/">Web log</a>
 +                    </u>
 +                    <br>
 +                    <small>
@@ -1908,7 +1908,7 @@ index 0000000..bf9e081
 +                </tr>
 diff --git a/html/template_google/zh/inc/0015_blog.html b/html/template_google/zh/inc/0015_blog.html
 new file mode 100644
-index 0000000..37b452b
+index 0000000..5228943
 --- /dev/null
 +++ b/html/template_google/zh/inc/0015_blog.html
 @@ -0,0 +1,15 @@
@@ -1919,7 +1919,7 @@ index 0000000..37b452b
 +                  </td>
 +                  <td style="font-size: 83%;">
 +                    <u>
-+                    <a name="blog" href="http://blog.foo.bar/wp-login.php">博客</a>
++                    <a name="blog" href="http://blog.foo.bar/">博客</a>
 +                    </u>
 +                    <br>
 +                    <small>

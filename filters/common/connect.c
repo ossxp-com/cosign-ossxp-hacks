@@ -1,7 +1,9 @@
 /*
- * Copyright (c) 2002 Regents of The University of Michigan.
+ * Copyright (c) 2009 Regents of The University of Michigan.
  * All Rights Reserved.  See COPYRIGHT.
  */
+
+#include "config.h"
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -18,8 +20,6 @@
 #include <fcntl.h>
 #include <ctype.h>
 
-#include <httpd.h>
-#include <http_log.h>
 
 #define OPENSSL_DISABLE_OLD_DES_SUPPORT
 #include <openssl/ssl.h>
@@ -27,10 +27,19 @@
 
 #include <snet.h>
 
+#ifdef LIGHTTPD
+#include "base.h"
+#include "logging.h"
+#else /* !LIGHTTPD, Apache headers */
+#include <httpd.h>
+#include <http_log.h>
+#endif /* LIGHTTPD */
+
 #include "argcargv.h"
 #include "sparse.h"
 #include "cosign.h"
 #include "mkcookie.h"
+#include "cosignproto.h"
 #include "rate.h"
 #include "log.h"
 
@@ -38,32 +47,42 @@
 #define MIN(a,b)        ((a)<(b)?(a):(b))
 #endif 
 
-static int connect_sn( struct connlist *, cosign_host_config *, server_rec * );
-static void close_sn( struct connlist *, server_rec * );
+static int connect_sn( struct connlist *, cosign_host_config *, void * );
+static void close_sn( struct connlist *, void * );
 static void (*logger)( char * ) = NULL;
 
 static struct timeval		timeout = { 10 * 60, 0 };
 
-int				cosign_protocol = 0;
 static struct rate   		checkpass = { 0 };
 static struct rate   		checkfail = { 0 };
 static struct rate   		checkunknown = { 0 };
 static double             	rate;
 
+struct capability		caps[] = {
+    /* name, name length, mask, callback */
+    { "FACTORS", 7, COSIGN_CAPA_FACTORS, NULL },
+    { "REKEY",  5, COSIGN_CAPA_REKEY, NULL },
+};
+
     static int
-netcheck_cookie( char *scookie, struct sinfo *si, struct connlist *conn,
-	server_rec *s, cosign_host_config *cfg )
+netcheck_cookie( char *scookie, char **rekey, struct sinfo *si,
+	struct connlist *conn, void *s, cosign_host_config *cfg )
 {
-    int			i, j, ac, rc, fc = cfg->reqfc;
+    int			i, j, ac, rc, mf, fc = cfg->reqfc;
     char		*p, *line, **av, **fv = cfg->reqfv;
+    char		*rekeyed_cookie = NULL;
+    char		*cmd = "CHECK";
     struct timeval      tv;
     SNET		*sn = conn->conn_sn;
     extern int		errno;
 
-    /* CHECK service-cookie */
-    if ( snet_writef( sn, "CHECK %s\r\n", scookie ) < 0 ) {
-	cosign_log( APLOG_ERR, s,
-		"mod_cosign: netcheck_cookie: snet_writef failed" );
+    /* REKEY service-cookie */
+    if ( rekey != NULL && COSIGN_CONN_SUPPORTS_REKEY( conn )) {
+	cmd = "REKEY";
+    }
+    if ( snet_writef( sn, "%s %s\r\n", cmd, scookie ) < 0 ) {
+	cosign_log( APLOG_ERR, s, "mod_cosign: netcheck_cookie: "
+		    "snet_writef %s failed", cmd );
 	return( COSIGN_ERROR );
     }
 
@@ -113,6 +132,13 @@ netcheck_cookie( char *scookie, struct sinfo *si, struct connlist *conn,
 		"mod_cosign: netcheck_cookie: wrong num of args: %s", line );
 	return( COSIGN_ERROR );
     }
+    if ( rekey != NULL && COSIGN_CONN_SUPPORTS_REKEY( conn )) {
+	/* last factor is penultimate argument */
+	mf = ac - 1;
+    } else {
+	/* last factor is last argument */
+	mf = ac;
+    }
 
     /* I guess we check some sizing here :) */
     if ( strlen( av[ 1 ] ) >= sizeof( si->si_ipaddr )) {
@@ -128,10 +154,10 @@ netcheck_cookie( char *scookie, struct sinfo *si, struct connlist *conn,
     }
     strcpy( si->si_user, av[ 2 ] );
 
-    si->si_protocol = cosign_protocol;
-    if ( cosign_protocol == 2 ) {
+    si->si_protocol = conn->conn_proto;
+    if ( COSIGN_PROTO_SUPPORTS_FACTORS( conn->conn_proto )) {
 	for ( i = 0; i < fc; i++ ) {
-	    for ( j = 3; j < ac; j++ ) {
+	    for ( j = 3; j < mf; j++ ) {
 		if ( strcmp( fv[ i ], av[ j ] ) == 0 ) {
 		    break;
 		}
@@ -157,7 +183,7 @@ netcheck_cookie( char *scookie, struct sinfo *si, struct connlist *conn,
 		}
 		    }
 	    }
-	    if ( j >= ac ) {
+	    if ( j >= mf ) {
 		/* a required factor wasn't in the check line */
 		break;
 	    }
@@ -176,7 +202,7 @@ netcheck_cookie( char *scookie, struct sinfo *si, struct connlist *conn,
 	}
 	strcpy( si->si_factor, av[ 3 ] );
 
-	for ( i = 4; i < ac; i++ ) {
+	for ( i = 4; i < mf; i++ ) {
 	    if ( strlen( av[ i ] ) + 1 + 1 >
 		    sizeof( si->si_factor ) - strlen( si->si_factor )) {
 		cosign_log( APLOG_ERR, s,
@@ -194,15 +220,31 @@ netcheck_cookie( char *scookie, struct sinfo *si, struct connlist *conn,
 	return( COSIGN_ERROR );
     }
     strcpy( si->si_realm, av[ 3 ] );
+
 #ifdef KRB
     *si->si_krb5tkt = '\0';
 #endif /* KRB */
+
+    if ( rekey != NULL && COSIGN_CONN_SUPPORTS_REKEY( conn )) {
+	if ( strncmp( av[ ac - 1 ], "cosign-", strlen( "cosign-" )) != 0 ) {
+	    cosign_log( APLOG_ERR, s, "mod_cosign: netcheck_cookie: "
+		    "bad rekeyed cookie \"%s\"", av[ ac - 1 ] );
+	    return( COSIGN_ERROR );
+	}
+	if (( rekeyed_cookie = strdup( av[ ac - 1 ] )) == NULL ) {
+	    cosign_log( APLOG_ERR, s, "mod_cosign: netcheck_cookie: "
+		    "strdup rekeyed cookie: %s", strerror( errno ));
+	    return( COSIGN_ERROR );
+	}
+	*rekey = rekeyed_cookie;
+    }
+
     return( COSIGN_OK );
 }
 
     static int
 netretr_proxy( char *scookie, struct sinfo *si, SNET *sn, char *proxydb,
-	server_rec *s )
+	void *s )
 {
     int			fd;
     char		*line;
@@ -329,7 +371,7 @@ netretr_proxy( char *scookie, struct sinfo *si, SNET *sn, char *proxydb,
 #ifdef KRB
     static int
 netretr_ticket( char *scookie, struct sinfo *si, SNET *sn, char *tkt_prefix,
-	server_rec *s )
+	void *s )
 {
     char		*line;
     char                tmpkrb[ 16 ], krbpath [ MAXPATHLEN ];
@@ -420,6 +462,12 @@ netretr_ticket( char *scookie, struct sinfo *si, SNET *sn, char *tkt_prefix,
         perror( krbpath );
         goto error1;
     }
+    if ( size != 0 ) {
+	cosign_log( APLOG_ERR, s,
+		    "mod_cosign: retrieve tickets: size from server did "
+		    "not match size read from server" );
+	goto error1;
+    }
 
     tv = timeout;
     if (( line = snet_getline( sn, &tv )) == NULL ) {
@@ -451,7 +499,7 @@ error1:
 #endif /* KRB */
 
     int
-teardown_conn( struct connlist **cur, server_rec *s )
+teardown_conn( struct connlist **cur, void *s )
 {
 
     /* close down all children on exit */
@@ -464,8 +512,8 @@ teardown_conn( struct connlist **cur, server_rec *s )
 }
 
     int
-cosign_check_cookie( char *scookie, struct sinfo *si, cosign_host_config *cfg,
-	int first, server_rec *s )
+cosign_check_cookie( char *scookie, char **rekey, struct sinfo *si,
+	cosign_host_config *cfg, int first, void *s )
 {
     struct connlist	**cur, *tmp;
     int			rc = COSIGN_ERROR, retry = 0;
@@ -478,7 +526,7 @@ cosign_check_cookie( char *scookie, struct sinfo *si, cosign_host_config *cfg,
 	    continue;
 	}
 
-	switch ( rc = netcheck_cookie( scookie, si, *cur, s, cfg )) {
+	switch ( rc = netcheck_cookie( scookie, rekey, si, *cur, s, cfg )) {
 	case COSIGN_OK :
 	case COSIGN_LOGGED_OUT :
 	    goto done;
@@ -509,7 +557,7 @@ cosign_check_cookie( char *scookie, struct sinfo *si, cosign_host_config *cfg,
 	    continue;
 	}
 
-	switch ( rc = netcheck_cookie( scookie, si, *cur, s, cfg )) {
+	switch ( rc = netcheck_cookie( scookie, rekey, si, *cur, s, cfg )) {
 	case COSIGN_OK :
 	case COSIGN_LOGGED_OUT :
 	    goto done;
@@ -543,6 +591,10 @@ done:
 	tmp->conn_next = *(cfg->cl);
 	*(cfg->cl) = tmp;
     }
+    if ( rekey && *rekey ) {
+	/* use the rekeyed cookie to request tickets and proxy cookies */
+	scookie = *rekey;
+    }
     if ( rc == COSIGN_LOGGED_OUT ) {
 	return( COSIGN_RETRY );
     } else {
@@ -566,16 +618,130 @@ done:
     }
 }
 
+/*
+ * parse and store server capabilities.
+ *
+ * cosignd capabilities are sent to client in a whitespace separated list
+ * bounded by square brackets:
+ * 
+ * "220 2 Collaborative Web Single Sign-On [COSIGNv3 FACTORS=5 REKEY ...]"
+ *
+ * the capability list must begin with "[COSIGNv<protocol_number>".
+ */
     static int
-connect_sn( struct connlist *cl, cosign_host_config *cfg, server_rec *s )
+capa_parse( int capac, char **capav, struct connlist *cl, void *s )
 {
-    int			sock, zero = 0, ac = 0;
+    char		*tmp = NULL;
+    int			i, j, len;
+    int			ncapa;
+
+    if ( capac < 1 ) {
+	cosign_log( APLOG_ERR, s, "mod_cosign: capability list "
+		    "from server" );
+	return( -1 );
+    }
+
+    if ( strncmp( capav[ 0 ], "[COSIGNv", strlen( "[COSIGNv" )) != 0 ) {
+	cosign_log( APLOG_ERR, s, "mod_cosign: unexpected output from "
+		    "server (expected \"[COSIGNv\", got \"%s\")", capav[ 0 ] );
+	return( -1 );
+    }
+
+    /* get protocol version */
+    capav[ 0 ] += strlen( "[COSIGNv" );
+    errno = 0;
+    cl->conn_proto = strtol( capav[ 0 ], &tmp, 10 );
+    if ( errno ) {
+	cosign_log( APLOG_ERR, s, "mod_cosign: unexpected output from "
+		    "server (expected integer, got \"%s\")", capav[0] );
+	return( -1 );
+    }
+    if ( tmp ) {
+	if ( *tmp != '\0' ) {
+	    if ( strcmp( tmp, "]" ) == 0 ) {
+		/* all server gave was "[COSIGNv3]" */
+		return( 0 );
+	    }
+	    cosign_log( APLOG_ERR, s, "mod_cosign: bad protocol value: "
+			"\"%s\"", tmp );
+	    return( -1 );
+	}
+
+	/*
+	 * if *tmp == '\0', the protocol was a valid integer, and
+	 * there are more capabilities to process.
+	 */
+    }
+    capac--;
+    capav++;
+
+    ncapa = sizeof( caps ) / sizeof( caps[ 0 ] );
+    for ( i = 0; i < capac; i++ ) {
+	for ( j = 0; j < ncapa; j++ ) {
+	    if ( cl->conn_capa & caps[ j ].capa_mask ) {
+		/* avoid the strncasecmp, if possible */
+		continue;
+	    }
+	    if ( strncasecmp( capav[ i ], caps[ j ].capa_name,
+			      caps[ j ].capa_nlen ) == 0 ) {
+		break;
+	    }
+	}
+	if ( j >= ncapa ) {
+	    cosign_log( APLOG_INFO, s, "mod_cosign: unrecognized capability "
+			"from server: \"%s\"", capav[ i ] );
+	    continue;
+	}
+
+	cl->conn_capa |= caps[ j ].capa_mask;
+
+	/*
+	 * check for capability list termination. capav[ i ] is at least
+	 * capa_nlen chars long, as tested by strncasecmp above.
+	 */
+	tmp = ( capav[ i ] + caps[ j ].capa_nlen );
+
+#ifdef notdef
+	/* process any attached values (CAPA=VAL) if callback is non-NULL */
+	if ( *tmp == '=' && caps[ j ].capa_cb != NULL ) {
+	    tmp++;
+	    if (( len = strlen( tmp )) > 0 ) {
+		if ( tmp[ len - 1 ] == ']' ) {
+		    len--;
+		}
+		if ( (*(caps[ j ].capa_cb))( j, tmp, len, s ) != 0 ) {
+		    cosign_log( APLOG_ERR, s, "mod_cosign: failed to "
+				"process capability pair %s", capav[ i ] );
+		    return( -1 );
+		}
+		tmp += len;
+	    }
+	}
+#endif /* notdef */
+
+	if ( *tmp == ']' ) {
+	    /* end of list */
+	    break;
+	}
+    }
+    if ( tmp == NULL || *tmp != ']' ) {
+	cosign_log( APLOG_ERR, s, "mod_cosign: warning: no terminating "
+		    "\']\' in capability list from server" );
+    }
+
+    return( 0 );
+}
+
+    static int
+connect_sn( struct connlist *cl, cosign_host_config *cfg, void *s )
+{
+    int			sock, zero = 0, ac = 0, state, i;
     char		*line, buf[ 1024 ], **av;
     X509		*peer;
     struct timeval      tv;
     struct protoent	*proto;
 
-    if (( sock = socket( PF_INET, SOCK_STREAM, (int)NULL )) < 0 ) {
+    if (( sock = socket( PF_INET, SOCK_STREAM, 0 )) < 0 ) {
 	cosign_log( APLOG_ERR, s, "mod_cosign: connect_sn: socket" );
 	return( -1 );
     }
@@ -603,11 +769,12 @@ connect_sn( struct connlist *cl, cosign_host_config *cfg, server_rec *s )
     }
 
     tv = timeout;
-    if (( line = snet_getline_multi( cl->conn_sn, logger, &tv )) == NULL ) {
+    if (( line = snet_getline( cl->conn_sn, &tv )) == NULL ) {
 	cosign_log( APLOG_ERR, s,
-		"mod_cosign: connect_sn: snet_getline_multi failed" );
+	    "mod_cosign: connect_sn: snet_getline failed" );
 	goto done;
     }
+
     if ( *line != '2' ) {
 	cosign_log( APLOG_ERR, s, "mod_cosign: connect_sn: %s", line );
 	goto done;
@@ -617,20 +784,41 @@ connect_sn( struct connlist *cl, cosign_host_config *cfg, server_rec *s )
 	cosign_log( APLOG_ERR, s, "mod_cosign: argcargv: %s", line );
 	goto done;
     }
-    if (( cosign_protocol = strtol( av[ 1 ], (char **)NULL, 10 )) != 2 ) {
-	if ( cfg->reqfc > 0  ) {
-	    cosign_log( APLOG_ERR, s,
-		    "mod_cosign: required v2 protocol unsupported by server" );
+
+    errno = 0;
+    cl->conn_proto = strtol( av[ 1 ], (char **)NULL, 10 );
+    if ( errno ) {
+	cosign_log( APLOG_ERR, s, "mod_cosign: unrecognized protocol "
+		    "version %s, falling back to protocol v0", av[1]);
+	cl->conn_proto = COSIGN_PROTO_V0;
+    }
+    if ( cfg->reqfc > 0 && !COSIGN_PROTO_SUPPORTS_FACTORS( cl->conn_proto )) {
+	cosign_log( APLOG_ERR, s, "mod_cosign: required v2 or greater "
+		    "protocol unsupported by server "
+		    "(server protocol version: %s)", av[ 1 ] );
+	goto done;
+    }
+	   
+    cl->conn_capa = COSIGN_CAPA_DEFAULTS;
+    if ( ac > 6 ) {
+	/* "220 2 Collaborative Web Single Sign-On [COSIGNv3 REKEY ...]" */
+	ac -= 6;
+	av += 6;
+	
+	if ( capa_parse( ac, av, cl, s ) < 0 ) {
+	    cosign_log( APLOG_ERR, s, "mod_cosign: failed to parse server "
+			"capabilities" );
 	    goto done;
 	}
-	cosign_log( APLOG_ERR, s, "mod_cosign: falling back to v0" );
-	cosign_protocol = 0;
     } else {
-	cosign_protocol = 2 ;
+	/* pre-3.1: "220 2 Collaborative Web Single Sign-On" */
+	if ( COSIGN_PROTO_SUPPORTS_FACTORS( cl->conn_proto )) {
+	    cl->conn_capa |= COSIGN_CAPA_FACTORS;
+	}
     }
-
-    if ( cosign_protocol == 2 ) {
-	if ( snet_writef( cl->conn_sn, "STARTTLS 2\r\n" ) < 0 ) {
+    if ( cl->conn_proto >= COSIGN_PROTO_V2 ) {
+	if ( snet_writef( cl->conn_sn, "STARTTLS %d\r\n",
+		cl->conn_proto ) < 0 ) {
 	    cosign_log( APLOG_ERR, s,
 		    "mod_cosign: connect_sn: starttls 2 failed" );
 	    goto done;
@@ -647,10 +835,6 @@ connect_sn( struct connlist *cl, cosign_host_config *cfg, server_rec *s )
     if (( line = snet_getline_multi( cl->conn_sn, logger, &tv )) == NULL ) {
 	cosign_log( APLOG_ERR, s,
 		"mod_cosign: connect_sn: snet_getline_multi failed" );
-	goto done;
-    }
-    if ( *line != '2' ) {
-	cosign_log( APLOG_ERR, s, "mod_cosign: connect_sn: %s", line );
 	goto done;
     }
 
@@ -676,7 +860,7 @@ connect_sn( struct connlist *cl, cosign_host_config *cfg, server_rec *s )
 	goto done;
     }
 
-    if ( cosign_protocol == 2 ) {
+    if ( cl->conn_proto >= COSIGN_PROTO_V2 ) {
 	tv = timeout;
 	if (( line = snet_getline_multi( cl->conn_sn, logger, &tv )) == NULL ) {
 	    cosign_log( APLOG_ERR, s,
@@ -695,13 +879,14 @@ done:
 	cosign_log( APLOG_ERR, s, "mod_cosign: connect_sn: snet_close failed" );
     }
     cl->conn_sn = NULL;
+    cl->conn_proto = COSIGN_PROTO_V0;
 
     return( -1 );
 }
 
 
     static void
-close_sn( struct connlist *cl, server_rec *s )
+close_sn( struct connlist *cl, void *s )
 {
     char		*line;
     struct timeval      tv;

@@ -3,6 +3,8 @@
  * All Rights Reserved.  See COPYRIGHT.
  */
 
+#include "config.h"
+
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/stat.h>
@@ -16,23 +18,31 @@
 #include <fcntl.h>
 #include <errno.h>
 
-#include <httpd.h>
-#include <http_log.h>
 
 #include <openssl/ssl.h>
 
 #include <snet.h>
+
+#ifdef LIGHTTPD
+#include "base.h"
+#include "logging.h"
+#else /* !LIGHTTPD */
+#include <httpd.h>
+#include <http_log.h>
+#endif /* LIGHTTPD */
+
 #include "argcargv.h"
 #include "sparse.h"
 #include "mkcookie.h"
 #include "log.h"
 #include "cosign.h"
+#include "cosignproto.h"
 
 #define IDLETIME	60
 
     int
-cosign_cookie_valid( cosign_host_config *cfg, char *cookie, struct sinfo *si,
-	char *ipaddr, server_rec *s )
+cosign_cookie_valid( cosign_host_config *cfg, char *cookie, char **rekey,
+	struct sinfo *si, char *ipaddr, void *s )
 {
     struct sinfo	lsi;
     ACAV		*acav;
@@ -40,8 +50,8 @@ cosign_cookie_valid( cosign_host_config *cfg, char *cookie, struct sinfo *si,
     int			i, j, newfile = 0;
     struct timeval	tv;
     char		path[ MAXPATHLEN ], tmppath[ MAXPATHLEN ];
-    char		**av;
-    FILE		*tmpfile;
+    char		**av, *p;
+    FILE		*tmpf;
     extern int		errno;
 
     if ( access( cfg->filterdb, R_OK | W_OK | X_OK ) != 0 ) {
@@ -99,7 +109,8 @@ retry:
 	 * set. reqfc > 0 requires protocol 2.
 	 */
 	si->si_protocol = lsi.si_protocol;
-	if ( cfg->reqfc > 0 && si->si_protocol == 2 ) {
+	if ( cfg->reqfc > 0 &&
+		COSIGN_PROTO_SUPPORTS_FACTORS( si->si_protocol )) {
 	    if (( acav = acav_alloc()) == NULL ) {
 		cosign_log( APLOG_ERR, s, "mod_cosign: cookie_valid:"
 			" acav_alloc failed" );
@@ -144,7 +155,7 @@ retry:
     }
 
 netcheck:
-    if (( rc = cosign_check_cookie( cookie, si, cfg, newfile, s ))
+    if (( rc = cosign_check_cookie( cookie, rekey, si, cfg, newfile, s ))
 	    != COSIGN_OK ) {
 	if ( rc == COSIGN_ERROR ) {
 	    cosign_log( APLOG_ERR, s, "mod_cosign: cosign_cookie_valid: "
@@ -191,7 +202,7 @@ netcheck:
 	    goto storecookie;
 	}
 
-	if ( si->si_protocol == 2 ) {
+	if ( COSIGN_PROTO_SUPPORTS_FACTORS( si->si_protocol )) {
 	    if ( strcmp( si->si_factor, lsi.si_factor ) != 0 ) {
 		goto storecookie;
 	    }
@@ -212,6 +223,19 @@ netcheck:
 
     /* store local copy of scookie (service cookie) */
 storecookie:
+    if ( rekey != NULL ) {
+	if ( *rekey == NULL ) {
+	    cosign_log( APLOG_INFO, s, "mod_cosign: cosign_cookie_valid: "
+			"rekey requested, but no rekeyed cookie returned, "
+			"using original cookie value" );
+	} else if ( mkcookiepath( cfg->filterdb, cfg->hashlen, *rekey,
+		path, sizeof( path )) < 0 ) {
+	    cosign_log( APLOG_ERR, s, "mod_cosign: cosign_cookie_valid: "
+			"new cookie path too long" );
+	    return( COSIGN_ERROR );
+	}
+    }
+
     if ( snprintf( tmppath, sizeof( tmppath ), "%s/%x%x.%i", cfg->filterdb,
 	    (int)tv.tv_sec, (int)tv.tv_usec, (int)getpid()) >=
 	    sizeof( tmppath )) {
@@ -227,7 +251,7 @@ storecookie:
 	return( COSIGN_ERROR );
     }
 
-    if (( tmpfile = fdopen( fd, "w" )) == NULL ) {
+    if (( tmpf = fdopen( fd, "w" )) == NULL ) {
 	if ( unlink( tmppath ) != 0 ) {
             cosign_log( APLOG_ERR, s, "mod_cosign: cosign_cookie_valid: "
 		"could not unlink %s", tmppath ); 
@@ -239,21 +263,21 @@ storecookie:
 	return( COSIGN_ERROR );
     }
 
-    fprintf( tmpfile, "v%d\n", si->si_protocol );
-    fprintf( tmpfile, "i%s\n", si->si_ipaddr );
-    fprintf( tmpfile, "p%s\n", si->si_user );
-    fprintf( tmpfile, "r%s\n", si->si_realm );
-    if ( si->si_protocol == 2 ) {
-	fprintf( tmpfile, "f%s\n", si->si_factor );
+    fprintf( tmpf, "v%d\n", si->si_protocol );
+    fprintf( tmpf, "i%s\n", si->si_ipaddr );
+    fprintf( tmpf, "p%s\n", si->si_user );
+    fprintf( tmpf, "r%s\n", si->si_realm );
+    if ( COSIGN_PROTO_SUPPORTS_FACTORS( si->si_protocol )) {
+	fprintf( tmpf, "f%s\n", si->si_factor );
     }
 
 #ifdef KRB
-    if ( si->si_krb5tkt ) {
-	fprintf( tmpfile, "k%s\n", si->si_krb5tkt );
+    if ( si->si_krb5tkt && *si->si_krb5tkt ) {
+	fprintf( tmpf, "k%s\n", si->si_krb5tkt );
     }
 #endif /* KRB */
 
-    if ( fclose ( tmpfile ) != 0 ) {
+    if ( fclose ( tmpf ) != 0 ) {
 	if ( unlink( tmppath ) != 0 ) {
             cosign_log( APLOG_ERR, s, "mod_cosign: cosign_cookie_valid: "
 	        "could not unlink(2) %s", tmppath ); 

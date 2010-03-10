@@ -3,6 +3,8 @@
  * All Rights Reserved.  See COPYRIGHT.
  */
 
+#include "config.h"
+
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/time.h>
@@ -26,7 +28,7 @@
 
 #include "argcargv.h"
 #include "cosigncgi.h"
-#include "config.h"
+#include "conf.h"
 #include "network.h"
 #include "mkcookie.h"
 
@@ -303,6 +305,8 @@ net_login( SNET *sn, void *vlp )
             fprintf( stderr, "login %s failed: %s\n",
 		lp->lp_user, strerror( errno ));
         }
+
+	goto error;
     }
 
 finish:

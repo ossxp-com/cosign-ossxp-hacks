@@ -762,7 +762,8 @@ cosign_redirect( server *srv, connection *con, plugin_data *p_d )
 					CONST_STR_LEN( "none" )) != 0 ) {
 	ref = buffer_init_buffer( p->conf.siteentry );
     } else {
-	if ( p->conf.http ) {
+	port = ntohs( ss->addr.ipv4.sin_port );
+	if ( port == 80 || p->conf.http ) {
 	    ref = buffer_init_string( "http://" );
 	} else {
 	    ref = buffer_init_string( "https://" );
@@ -792,7 +793,8 @@ cosign_redirect( server *srv, connection *con, plugin_data *p_d )
 
 	    buffer_append_string_buffer( ref, con->server_name );
 
-	    port = ntohs( ss->addr.ipv4.sin_port );
+	    /* Set by previous code by ossxp.com */
+            /* port = ntohs( ss->addr.ipv4.sin_port ); */
 	    if ( port != ( p->conf.http ? 80 : 443 )
 		    && !p->conf.noappendport ) {
 		snprintf( pbuf, sizeof( pbuf ) - 1, ":%d", port );

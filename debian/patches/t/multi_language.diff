@@ -13,16 +13,16 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
  4 files changed, 217 insertions(+), 1 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
-index cefd0ec..296d729 100755
+index e867410..d8baf0b 100755
 --- a/cgi/Makefile.in
 +++ b/cgi/Makefile.in
-@@ -28,7 +28,7 @@ INSTALL=     @INSTALL@
+@@ -29,7 +29,7 @@ INSTALL=     @INSTALL@
  CFLAGS=      ${DEFS} ${OPTOPTS} @CFLAGS@ ${INCPATH}
  
  
 -OBJ     = network.o subfile.o ../common/mkcookie.o ../common/fbase64.o \
 +OBJ     = network.o subfile.o lang.o ../common/mkcookie.o ../common/fbase64.o \
- 	../common/config.o ../common/wildcard.o ../common/argcargv.o \
+ 	../common/conf.o ../common/wildcard.o ../common/argcargv.o \
  	../version.o 
  TARGETS = logout cosign.cgi
 diff --git a/cgi/lang.c b/cgi/lang.c
@@ -141,10 +141,10 @@ index 0000000..36b37dc
 +
 +#endif
 diff --git a/cgi/subfile.c b/cgi/subfile.c
-index d732246..fc8c2ba 100644
+index 760d2c6..7680091 100644
 --- a/cgi/subfile.c
 +++ b/cgi/subfile.c
-@@ -3,14 +3,53 @@
+@@ -5,14 +5,53 @@
  #include <string.h>
  
  #include "subfile.h"
@@ -198,7 +198,7 @@ index d732246..fc8c2ba 100644
      if ( nocache ) {
  	fputs( "Expires: Mon, 16 Apr 1973 13:10:00 GMT\n"
  		"Last-Modified: Mon, 16 Apr 1973 13:10:00 GMT\n"
-@@ -26,6 +65,9 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
+@@ -28,6 +67,9 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
  	exit( 1 );
      }
  
@@ -208,7 +208,7 @@ index d732246..fc8c2ba 100644
      while (( c = getc( fs )) != EOF ) {
  	if ( c == '$' ) {
  	    if (( c = getc( fs )) == EOF ) {
-@@ -37,6 +79,71 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
+@@ -39,6 +81,71 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
  		putchar( c );
  		continue;
  	    }
@@ -280,7 +280,7 @@ index d732246..fc8c2ba 100644
  
  	    for ( i = 0; sl[ i ].sl_letter != '\0'; i++ ) {
  		if ( sl[ i ].sl_letter == c ) {
-@@ -73,5 +180,11 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
+@@ -75,5 +182,11 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
  	perror( filename );
      }
  
@@ -293,4 +293,4 @@ index d732246..fc8c2ba 100644
 +
 +/* vim: set noet ts=8 sw=8 : */
 -- 
-tg: (7da5ba0..) t/multi_language (depends on: master)
+tg: (d1adc40..) t/multi_language (depends on: master)

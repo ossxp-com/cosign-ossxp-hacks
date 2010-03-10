@@ -6,13 +6,27 @@ Subject: [PATCH] t/custom_cosign_path
 Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 
 ---
+ html/expired_error.html  |    2 +-
  html/login.html          |    2 +-
  html/login_error.html    |    2 +-
  html/reauth.html         |    8 ++++----
  html/services/index.html |    2 +-
  html/verify-logout.html  |    2 +-
- 5 files changed, 8 insertions(+), 8 deletions(-)
+ 6 files changed, 9 insertions(+), 9 deletions(-)
 
+diff --git a/html/expired_error.html b/html/expired_error.html
+index 2e86646..0185219 100644
+--- a/html/expired_error.html
++++ b/html/expired_error.html
+@@ -93,7 +93,7 @@
+ 						those who know their Uniqname and Kerberos password.</p>
+ 				</div>
+ 			</div>
+-			<form action="/cosign-bin/cosign.cgi" method="post" name="factors" id="rightUIcol">
++			<form action="/cgi-bin/login" method="post" name="factors" id="rightUIcol">
+ 				<input type="hidden" name="required"
+ 				value="$f" />
+ 				<input type="hidden" name="ref"
 diff --git a/html/login.html b/html/login.html
 index f60342b..98fa0e1 100755
 --- a/html/login.html
@@ -106,4 +120,4 @@ index 001e127..ea68776 100755
  			<p>You are about to log out of <a href="/services/">all weblogin applications</a>.
  				Are you sure you want to do this?</p>
 -- 
-tg: (717a100..) t/custom_cosign_path (depends on: master t/autotools_for_setup)
+tg: (e8af26f..) t/custom_cosign_path (depends on: master t/autotools_for_setup)

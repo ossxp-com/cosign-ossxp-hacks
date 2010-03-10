@@ -6,15 +6,16 @@ Subject: [PATCH] t/bugfix_cosign_httponly_quirk
 Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 
 ---
- filters/apache/mod_cosign.c  |   37 ++++++++++++++++---------------------
- filters/apache2/mod_cosign.c |   37 ++++++++++++++++---------------------
- 2 files changed, 32 insertions(+), 42 deletions(-)
+ filters/apache/mod_cosign.c   |   37 ++++++++++++++++---------------------
+ filters/apache2/mod_cosign.c  |   37 ++++++++++++++++---------------------
+ filters/lighttpd/mod_cosign.c |    6 ++++--
+ 3 files changed, 36 insertions(+), 44 deletions(-)
 
 diff --git a/filters/apache/mod_cosign.c b/filters/apache/mod_cosign.c
-index c983342..97e5905 100755
+index 5ff2f06..6995f01 100755
 --- a/filters/apache/mod_cosign.c
 +++ b/filters/apache/mod_cosign.c
-@@ -143,27 +143,22 @@ set_cookie_and_redirect( request_rec *r, cosign_host_config *cfg )
+@@ -126,27 +126,22 @@ cosign_redirect( request_rec *r, cosign_host_config *cfg )
      if ( cfg->siteentry != NULL && strcasecmp( cfg->siteentry, "none" ) != 0 ) {
  	ref = cfg->siteentry;
      } else {
@@ -59,10 +60,10 @@ index c983342..97e5905 100755
  
      if ( cfg->reqfc > 0 ) {
 diff --git a/filters/apache2/mod_cosign.c b/filters/apache2/mod_cosign.c
-index aa49ffb..99ae3f5 100755
+index d90beeb..295dbe1 100755
 --- a/filters/apache2/mod_cosign.c
 +++ b/filters/apache2/mod_cosign.c
-@@ -150,27 +150,22 @@ set_cookie_and_redirect( request_rec *r, cosign_host_config *cfg )
+@@ -131,27 +131,22 @@ cosign_redirect( request_rec *r, cosign_host_config *cfg )
      if ( cfg->siteentry != NULL && strcasecmp( cfg->siteentry, "none" ) != 0 ) {
  	ref = cfg->siteentry;
      } else {
@@ -105,6 +106,30 @@ index aa49ffb..99ae3f5 100755
 +        }
      }
  
-     /* we need to remove this semi-colon eventually */
+     if ( cfg->reqfc > 0 ) {
+diff --git a/filters/lighttpd/mod_cosign.c b/filters/lighttpd/mod_cosign.c
+index a435d99..7b80e62 100644
+--- a/filters/lighttpd/mod_cosign.c
++++ b/filters/lighttpd/mod_cosign.c
+@@ -762,7 +762,8 @@ cosign_redirect( server *srv, connection *con, plugin_data *p_d )
+ 					CONST_STR_LEN( "none" )) != 0 ) {
+ 	ref = buffer_init_buffer( p->conf.siteentry );
+     } else {
+-	if ( p->conf.http ) {
++	port = ntohs( ss->addr.ipv4.sin_port );
++	if ( port == 80 || p->conf.http ) {
+ 	    ref = buffer_init_string( "http://" );
+ 	} else {
+ 	    ref = buffer_init_string( "https://" );
+@@ -792,7 +793,8 @@ cosign_redirect( server *srv, connection *con, plugin_data *p_d )
+ 
+ 	    buffer_append_string_buffer( ref, con->server_name );
+ 
+-	    port = ntohs( ss->addr.ipv4.sin_port );
++	    /* Set by previous code by ossxp.com */
++            /* port = ntohs( ss->addr.ipv4.sin_port ); */
+ 	    if ( port != ( p->conf.http ? 80 : 443 )
+ 		    && !p->conf.noappendport ) {
+ 		snprintf( pbuf, sizeof( pbuf ) - 1, ":%d", port );
 -- 
-tg: (7da5ba0..) t/bugfix_cosign_httponly_quirk (depends on: master)
+tg: (d1adc40..) t/bugfix_cosign_httponly_quirk (depends on: master)

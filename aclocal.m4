@@ -32,12 +32,9 @@ AC_DEFUN([CHECK_SSL],
     esac
 
     CPPFLAGS="$CPPFLAGS -I$ac_cv_path_ssl/include";
-    TLSDEFS=-DHAVE_LIBSSL;
-    AC_SUBST(TLSDEFS)
+    AC_DEFINE(HAVE_LIBSSL)
     LIBS="$LIBS -lssl -lcrypto";
     LDFLAGS="$LDFLAGS -L$ac_cv_path_ssl/lib";
-    HAVE_SSL=yes
-    AC_SUBST(HAVE_SSL)
     AC_MSG_RESULT($ac_cv_path_ssl)
 ])
 
@@ -49,6 +46,11 @@ AC_DEFUN([CHECK_LIBKRB],
 	echo "using krb as '$enableval'";
 	if test -f "$enableval/include/krb5.h"; then
 	    ac_cv_path_krb=$enableval
+	    krb_include="$enableval/include"
+	elif test -f "$enableval/include/kerberosV/krb5.h"; then
+	    # handle NetBSD's krb5 pathing
+	    ac_cv_path_krb=$enableval
+	    krb_include="$enableval/include/kerberosV"
 	fi
     else
 	krbdirs="/usr/local/kerberos /usr/lib/kerberos /usr/kerberos \
@@ -58,6 +60,11 @@ AC_DEFUN([CHECK_LIBKRB],
 	    for krbdir in $krbdirs; do
 		if test -f "$krbdir/include/krb5.h"; then
 		    ac_cv_path_krb=$krbdir
+		    krb_include="$krbdir/include"
+		    break;
+		elif test -f "$krbd/include/kerberosV/krb5.h"; then
+		    ac_cv_path_krb=$krbdir
+		    krb_include="$krbdir/include/kerberosV"
 		    break;
 		fi
 	    done
@@ -68,16 +75,13 @@ AC_DEFUN([CHECK_LIBKRB],
     fi
     KRBCGI="cosign.cgi"
     AC_SUBST(KRBCGI)
-    KRBDEFS=-DKRB;
-    AC_SUBST(KRBDEFS)
-    KINC="-I$ac_cv_path_krb/include";
+    KINC="-I$krb_include";
     AC_SUBST(KINC)
     KLIBS="-lkrb5 -lk5crypto -lcom_err";
     AC_SUBST(KLIBS)
     KLDFLAGS="-L$ac_cv_path_krb/lib";
     AC_SUBST(KLDFLAGS)
-    HAVE_KRB=yes
-    AC_SUBST(HAVE_KRB)
+    AC_DEFINE(KRB)
     AC_MSG_RESULT(Kerberos found at $ac_cv_path_krb)
 ])
 
@@ -103,10 +107,13 @@ AC_DEFUN([CHECK_APACHE2],
     else
 	APACHECTL2="${APXS2_SBINDIR}/${APXS2_TARGET}ctl"
     fi
+    APXS2_INCLUDEDIR="`${APXS2} -q INCLUDEDIR`"
+    if test -f "$APXS2_INCLUDEDIR/ap_regex.h"; then
+	AC_DEFINE(HAVE_AP_REGEX_H)
+    fi
     AC_SUBST(APXS2)
     AC_SUBST(APACHECTL2)
-    HAVE_APACHE2=yes
-    AC_SUBST(HAVE_APACHE2)
+    AC_DEFINE(APACHE2)
     AC_MSG_RESULT(apache 2 filter will be built)
 
 ])
@@ -117,16 +124,13 @@ AC_DEFUN([CHECK_GSS],
     if test ! -e "$ac_cv_path_krb" ; then
         AC_MSG_ERROR(gss require krb5 libraries)
     fi
-    GSSDEFS=-DGSS;
-    AC_SUBST(GSSDEFS)
     GSSINC="-I$ac_cv_path_krb/include";
     AC_SUBST(GSSINC)
     GSSLIBS="-lgssapi_krb5 -lkrb5 -lk5crypto -lcom_err";
     AC_SUBST(GSSLIBS)
     GSSLDFLAGS="-L$ac_cv_path_krb/lib";
     AC_SUBST(GSSLDFLAGS)
-    HAVE_GSS=yes
-    AC_SUBST(HAVE_GSS)
+    AC_DEFINE(GSS)
     AC_MSG_RESULT($ac_cv_path_krb)
 ])
 
@@ -146,7 +150,6 @@ AC_DEFUN([CHECK_APACHE_1],
         AC_MSG_ERROR(cannot find apache 1.3)
     fi
 
-    HAVE_APACHE=yes
     FILTERS="$FILTERS filters/apache"
     APXS_TARGET="`$APXS -q TARGET`"
     if test x_$APXS_TARGET = x_httpd ; then
@@ -156,6 +159,7 @@ AC_DEFUN([CHECK_APACHE_1],
     fi
     AC_SUBST(APXS)
     AC_SUBST(APACHECTL)
+    AC_DEFINE(APACHE1)
     AC_MSG_RESULT(apache 1.3 filter will be built)
 
 ])
@@ -163,18 +167,25 @@ AC_DEFUN([CHECK_APACHE_1],
 AC_DEFUN([CHECK_LIBMYSQL],
 [
     AC_MSG_CHECKING(for mysql)
-    mysqldirs="/usr /usr/local/mysql /usr/lib/mysql /usr/mysql \
-            /usr/pkg /usr/local /usr"
-    AC_CACHE_VAL(ac_cv_path_mysql,[
-        for mysqldir in $mysqldirs; do
-            if test -f "$mysqldir/include/mysql/mysql.h"; then
-                ac_cv_path_mysql=$mysqldir
-                break;
-            fi
-        done
-    ])
-    if test ! -e "$ac_cv_path_mysql" ; then
-        AC_MSG_ERROR(cannot find mysql libraries)
+
+    if test -d "$enableval"; then
+	if test -f "$enableval/include/mysql/mysql.h"; then
+	    ac_cv_path_mysql=$enableval
+	fi
+    else
+	mysqldirs="/usr /usr/local/mysql /usr/lib/mysql /usr/mysql \
+		/usr/pkg /usr/local /usr"
+	AC_CACHE_VAL(ac_cv_path_mysql,[
+	    for mysqldir in $mysqldirs; do
+		if test -f "$mysqldir/include/mysql/mysql.h"; then
+		    ac_cv_path_mysql=$mysqldir
+		    break;
+		fi
+	    done
+	])
+	if test ! -e "$ac_cv_path_mysql" ; then
+	    AC_MSG_ERROR(cannot find mysql libraries)
+	fi
     fi
     MYSQLINC="-I$ac_cv_path_mysql/include/mysql";
     AC_SUBST(MYSQLINC)
@@ -182,10 +193,8 @@ AC_DEFUN([CHECK_LIBMYSQL],
     AC_SUBST(MYSQLLIBS)
     MYSQLLDFLAGS="-L$ac_cv_path_mysql/lib/mysql -R$ac_cv_path_mysql/lib/mysql";
     AC_SUBST(MYSQLLDFLAGS)
-    SQLDEFS=-DSQL_FRIEND
-    AC_SUBST(SQLDEFS)
-    HAVE_MYSQL=yes
-    AC_SUBST(HAVE_MYSQL)
+    AC_DEFINE(HAVE_MYSQL)
+    AC_DEFINE(SQL_FRIEND)
     AC_MSG_RESULT($ac_cv_path_mysql)
 ])
 
@@ -236,4 +245,37 @@ rted])
 	FILTER_COMPILER_OPTS="-Wc,\"-isysroot /Developer/SDKs/$macosx_sdk\" -Wc,\"-arch i386\" -Wc,\"-arch x86_64\" -Wc,\"-arch ppc\" -Wc,\"-arch ppc64\" -Wc,\"$dep_target\""
 	UNIVERSAL_OPTOPTS="-isysroot /Developer/SDKs/$macosx_sdk -arch i386 -arch x86_64 -arch ppc -arch ppc64 $dep_target"
     fi
+])
+
+AC_DEFUN([CHECK_LIGHTTPD],
+[
+    AC_MSG_CHECKING(for lighttpd)
+ 
+    if test -d "$enableval"; then
+        echo "$enableval"
+        ac_cv_path_lighttpd="$enableval"
+    fi
+
+    if test ! -e "$ac_cv_path_lighttpd"; then
+	AC_MSG_ERROR(cannot find lighttpd)
+    fi
+
+    lighttpdincdirs="include src"
+    for incdir in $lighttpdincdirs; do
+	if test -e "$ac_cv_path_lighttpd/$incdir/base.h"; then
+	    LIGHTTPDINC="-I$ac_cv_path_lighttpd/$incdir"
+	    break
+	fi
+    done
+
+    if test -z "$LIGHTTPDINC"; then
+	AC_MSG_ERROR(cannot find lighttpd)
+    fi
+	
+    LIGHTTPD_COSIGN_SRCDIR=`pwd`
+
+    AC_SUBST(LIGHTTPD_COSIGN_SRCDIR)
+    AC_DEFINE(HAVE_LIGHTTPD)
+    FILTERS="$FILTERS filters/lighttpd"
+    AC_MSG_RESULT(lighttpd filter will be built)
 ])

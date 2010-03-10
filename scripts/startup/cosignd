@@ -1,0 +1,32 @@
+#!/bin/bash
+
+HOST=<<CHANGE TO YOUR WEBLOGIN HOSTNAME>>
+COSIGND=/usr/sbin/cosignd
+MONSTER=/usr/sbin/monster
+DAEMON_DIR=/var/cosign/daemon
+
+PATH=/bin:/usr/bin
+export HOST PATH COSIGND DAEMON_DIR
+
+case $1 in
+    'start')
+        if [ -x "$COSIGND" ]; then
+            cd $DAEMON_DIR
+            echo 'Cosign daemon starting...'
+            su cosign -c "$COSIGND -h $HOST"
+            su cosign -c "nohup $MONSTER -h $HOST &"
+        fi
+        ;;
+
+    'stop')
+        echo 'stopping monster...'
+        kill -9 `ps auxwww | grep "$MONSTER" | grep -v grep | awk '{print $2}'`
+        echo 'stopping cosignd...'
+        kill -9 `ps auxwww | grep "$COSIGND" | grep -v grep | awk '{print $2}'`
+        ;;
+
+    *)
+        echo 'Usage: /etc/init.d/cosignd start | stop'
+        ;;
+esac
+exit 0

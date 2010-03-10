@@ -1,0 +1,18 @@
+################## Some of this may need to be edited ##################
+
+INCPATH=        @CPPFLAGS@ -I../libsnet
+CC=             @CC@
+
+OPTOPTS=	@OPTOPTS@ @UNIVERSAL_OPTOPTS@
+CFLAGS=         ${DEFS} ${OPTOPTS} @CFLAGS@ ${INCPATH}
+
+################ Nothing below should need editing ###################
+
+SRC= argcargv.c config.c fbase64.c mkcookie.c rate.c wildcard.c
+COMMONOBJ= argcargv.o config.o fbase64.o mkcookie.o rate.o wildcard.o
+
+all : ${COMMONOBJ}
+
+clean :
+	rm -f a.out core* *.o *.bak *[Ee]rrs tags
+

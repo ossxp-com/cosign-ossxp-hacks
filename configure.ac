@@ -1,9 +1,9 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(cosign,2.1.0,cosign@umich.edu) 
+AC_INIT(cosign,3.1.1,cosign@umich.edu) 
 AC_PREREQ(2.53)
 AC_COPYRIGHT([Copyright (c) 2001-2002 Regents of The University of Michigan.  All Rights Reserved.])
 AC_CONFIG_SRCDIR([version.c.in])
-#AC_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADER([common/config.h])
 
 # Checks for programs.
 AC_PROG_AWK
@@ -19,6 +19,8 @@ AC_CHECK_LIB([socket], [socket])
 AC_ARG_ENABLE(apache1, AC_HELP_STRING([--enable-apache1=path_to_apache1.3-apxs], [enable apache 1.3 filter] ), CHECK_APACHE_1, AC_MSG_RESULT( apache 1.3 not enabled))
 
 AC_ARG_ENABLE(apache2, AC_HELP_STRING([--enable-apache2=path_to_apache2-apxs], [enable apache 2 filter]), CHECK_APACHE2, AC_MSG_RESULT( apache 2 not enabled))
+
+AC_ARG_ENABLE(lighttpd, AC_HELP_STRING([--enable-lighttpd=path_to_lighttpd], [enable lighttpd filter]), CHECK_LIGHTTPD, AC_MSG_RESULT( lighttpd not enabled))
 
 AC_ARG_ENABLE(krb, AC_HELP_STRING([--enable-krb=path_to_krb], [enable kerberos for the cgi and apache filter]), CHECK_LIBKRB, AC_MSG_RESULT( kerberos not enabled))
 
@@ -67,6 +69,9 @@ AC_SUBST(cosignhost)
 
 AC_ARG_WITH(cosignlogouturl, AC_HELP_STRING([--with-cosignlogouturl=URL], [default URL to redirect users to upon logout]), cosignlogouturl="$withval", cosignlogouturl="http://cosign.example.edu" )
 AC_SUBST(cosignlogouturl)
+
+AC_ARG_WITH(cosignlogoutregex, AC_HELP_STRING([--with-cosignlogoutregex=URL], [regular expression matching valid redirect URLs passed to the logout cgi]), cosignlogoutregex="$withval", cosignlogoutregex="http://.+\.example\.edu" )
+AC_SUBST(cosignlogoutregex)
 
 AC_ARG_WITH(cosignloopurl, AC_HELP_STRING([--with-cosignloopurl=URL], [default URL to redirect users to upon detecting an infinite loop]), cosignloopurl="$withval", cosignloopurl="http://cosign.example.edu/looping.html" )
 AC_SUBST(cosignloopurl)

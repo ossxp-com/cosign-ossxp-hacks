@@ -1,3 +1,5 @@
+srcdir=		@srcdir@
+
 CC=	@CC@
 ALL=	common libsnet libcgi cgi html daemon 
 FILTERS= @FILTERS@ 
@@ -15,7 +17,7 @@ cgi:	libcgi
 
 ${ALL}:	version.o
 
-${ALL} filters/apache filters/apache2:	FRC
+${ALL} filters/apache filters/apache2 filters/lighttpd:	FRC
 	cd $@; ${MAKE} ${MFLAGS} all
 
 FRC:
@@ -26,7 +28,7 @@ clean:
 	    do (cd $$i; ${MAKE} ${MFLAGS} clean); \
 	done
 
-VERSION=2.1.0
+VERSION=3.1.1
 DISTDIR=../cosign-${VERSION}
 
 dist   : distclean
@@ -35,7 +37,7 @@ dist   : distclean
 	echo ${VERSION} > ${DISTDIR}/VERSION
 	sed -e "s@INTERNAL@${VERSION}@" \
 		< configure.ac > ${DISTDIR}/configure.ac
-	cd "${DISTDIR}"; autoconf
+	cd "${DISTDIR}"; autoconf; rm -rf autom4te.cache
 
 distclean: clean
 	( cd libsnet ; make distclean )

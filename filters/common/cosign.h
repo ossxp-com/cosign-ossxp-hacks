@@ -1,3 +1,12 @@
+/* apache 1.3 & apache 2.0 lack ap_regex types and functions */
+#ifndef HAVE_AP_REGEX_H 
+#define ap_regex_t	regex_t
+#define ap_regmatch_t	regmatch_t
+
+#define AP_REG_EXTENDED	REG_EXTENDED
+#define AP_REG_NOMATCH	REG_NOMATCH
+#endif /* !HAVE_AP_REGEX_H */
+
 typedef struct {
     char                *host;
     char                *service;
@@ -9,6 +18,11 @@ typedef struct {
     int			public;
     char                *redirect;
     char                *posterror;
+    char		*validref;
+    char		*referr;
+#ifndef LIGHTTPD
+    ap_regex_t		*validpreg;
+#endif /* LIGHTTPD */
     unsigned short      port;
     int                 protect;
     int                 configured;
@@ -37,6 +51,8 @@ typedef struct {
 struct connlist {
     struct sockaddr_in  conn_sin;
     SNET                *conn_sn;
+    unsigned int	conn_capa;
+    unsigned int	conn_proto;
     struct connlist     *conn_next;
 };
 
@@ -49,8 +65,8 @@ struct connlist {
 #define IPCHECK_INITIAL		1
 #define IPCHECK_ALWAYS		2
 
-int cosign_cookie_valid( cosign_host_config *, char *, struct sinfo *, char *,
-	server_rec * );
-int cosign_check_cookie( char *, struct sinfo *, cosign_host_config *, int,
-	server_rec * );
-int teardown_conn( struct connlist **, server_rec * );
+int cosign_cookie_valid( cosign_host_config *, char *, char **, struct sinfo *,
+	char *, void * );
+int cosign_check_cookie( char *, char **, struct sinfo *, cosign_host_config *,
+	int, void * );
+int teardown_conn( struct connlist **, void * );

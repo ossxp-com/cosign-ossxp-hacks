@@ -11,7 +11,7 @@
 </head>
 <body>
 <div id="page">
-  <!--#include file="inc/header.inc" -->
+	<!--#include file="../templates-local/zh/inc/header.inc" -->
 	<div id="main">
 		<div id="uiRow">
 			<h1 class="error">修改尚未保存</h1>
@@ -22,6 +22,6 @@
 		<div id="uiBottom">&nbsp;</div>
 	</div>
 </div>
-<!--#include file="inc/footer.inc" -->
+<!--#include file="../templates-local/zh/inc/footer.inc" -->
 </body>
 </html>

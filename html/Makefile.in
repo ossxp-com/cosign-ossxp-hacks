@@ -1,4 +1,4 @@
-TEMPLATES = error.html expired_error.html login.html login_error.html verify-logout.html reauth.html
+TEMPLATES = error.html expired_error.html login.html login_error.html verify-logout.html reauth.html inc
 HTML = cosign_base.css cosign_js.css post_error.html looping.html
 prefix=@prefix@
 exec_prefix=@exec_prefix@
@@ -12,17 +12,17 @@ all: ${TEMPLATES}
 
 install : all
 	-mkdir -p $(DESTDIR)${exec_prefix}
-	-mkdir -p $(DESTDIR)${TMPLDIR}
+	-mkdir -p $(DESTDIR)${TMPLDIR}/en
 	-mkdir -p $(DESTDIR)${HTMLDIR}
 	for i in ${TEMPLATES}; do \
-	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${TMPLDIR}/; \
+	    cp -a $$i $(DESTDIR)${TMPLDIR}/en; \
 	done
 	# Templates for zh_cn
 	cp -a zh $(DESTDIR)${TMPLDIR}/
 	# Templates in google style, contains both en and zh_cn style
 	cp -a template_google $(DESTDIR)${TMPLDIR}_google; \
 	for i in ${HTML}; do \
-	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${HTMLDIR}/; \
+	    cp -a $$i $(DESTDIR)${HTMLDIR}/; \
 	done
 	-mkdir -p $(DESTDIR)${HTMLDIR}/images
 	cp images/*.gif $(DESTDIR)${HTMLDIR}/images/

@@ -1,0 +1,17 @@
+## Options for cosignd
+## -i 86400(1 day): idle timeout in seconds. (default 2 hours)
+## -g 1800 (30 minutes): grey window time. (default 30 minutes)
+COSIGND_OPTS="-i 86400 -y /opt/cosign/conf/certs/cosignd.pem -z /opt/cosign/conf/certs/cosignd.key"
+
+## Options for monster
+## -H 31536000 (1 year): Hard expire time since cookie created is 1 year,
+##                       even still active. (default 12 hours)
+## -i 95400 (26.5 hours): idle-cache-timeout defines how long for 
+##                        idle cookies to be removed. (default 4.5 hours)
+##                        = idle time in cosignd (24 hours)
+##                          + grey window time (0.5 hour)
+##                          + loggedout_cache time in monster (2 hour)
+## -l 7200(2 hours): loggedout-cache time, keep loggedout cookie another
+##                   2 hours by default.
+## -I 120 (2 minutes): monster sleep 2 minutes by default.
+MONSTER_OPTS="-H 31536000 -i 95400 -y /opt/cosign/conf/certs/cosignd.pem -z /opt/cosign/conf/certs/cosignd.key"

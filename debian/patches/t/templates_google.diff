@@ -44,7 +44,7 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
  35 files changed, 2732 insertions(+), 0 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
-index 99f1419..af8d9d3 100755
+index 06e9031..957740a 100755
 --- a/html/Makefile.in
 +++ b/html/Makefile.in
 @@ -19,6 +19,8 @@ install : all
@@ -54,7 +54,7 @@ index 99f1419..af8d9d3 100755
 +	# Templates in google style, contains both en and zh_cn style
 +	cp -a template_google $(DESTDIR)${TMPLDIR}_google; \
  	for i in ${HTML}; do \
- 	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${HTMLDIR}/; \
+ 	    cp -a $$i $(DESTDIR)${HTMLDIR}/; \
  	done
 diff --git a/html/template_google/en/error.html b/html/template_google/en/error.html
 new file mode 100644
@@ -2991,4 +2991,4 @@ index 0000000..f3ea7e6
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
 -- 
-tg: (f639539..) t/templates_google (depends on: t/template_standard_zh)
+tg: (e367fd2..) t/templates_google (depends on: t/template_standard_zh)

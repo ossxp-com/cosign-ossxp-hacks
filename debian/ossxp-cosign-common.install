@@ -1,8 +1,0 @@
-debian/conf/cosign.conf                      opt/cosign/conf
-debian/tmp/opt/cosign/man/man5/cosign.conf.5 opt/cosign/man/man5/
-CAcerts/*.pem                                opt/cosign/conf/certs/CA
-debian/certs/CA/*.pem                        opt/cosign/conf/certs/CA
-debian/certs/CA/Makefile                     opt/cosign/conf/certs/CA
-debian/package_info/ossxp-cosign-common.conf opt/ossxp/lib/packages/
-debian/package_info/ossxp-cosign-cgi.conf    opt/ossxp/lib/packages/
-debian/conf/apache2/include/cosign/*         etc/apache2/include/cosign/

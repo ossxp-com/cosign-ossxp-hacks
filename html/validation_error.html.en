@@ -11,7 +11,7 @@
 </head>
 <body>
 <div id="page">
-  <!--#include file="inc/header.inc" -->
+	<!--#include file="../templates-local/en/inc/header.inc" -->
 	<div id="main">
 		<div id="uiRow">
 			<h1 class="error">URL Validation Failed</h1>
@@ -24,6 +24,6 @@
 		<div id="uiBottom">&nbsp;</div>
 	</div>
 </div>
-<!--#include file="inc/footer.inc" -->
+<!--#include file="../templates-local/en/inc/footer.inc" -->
 </body>
 </html>

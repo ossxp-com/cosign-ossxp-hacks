@@ -1,0 +1,36 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
+<title>$t</title>
+<!--#include file="en/inc/css.inc" -->
+</head>
+<body>
+<body dir="ltr">
+<div id="main">
+	<!--#include file="en/inc/header.inc" -->
+  <br>
+  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
+    <tbody>
+      <tr>
+        <td valign="top" width="100%">
+
+          <h1 class="error">URL Validation Failed</h1>
+          <p>There is a problem with the URL to which you were redirected. Since this can
+             potentially indicate phishing or other suspicious activity, we have stopped
+             the redirect in order to protect your security.</p>
+          <p>You may be able to access the web site or service if you try again with its official URL.</p>
+          <p><a href="#">Put URL to main CoSign page here</a></p>
+
+        </td>
+      </tr>
+		</tbody>
+  </table>
+  <div class="clear">&nbsp;</div>
+  <div id="uiBottom">&nbsp;</div>
+</div>
+<br>
+<!--#include file="en/inc/footer.inc" -->
+</body>
+</html>
+<!-- vim: set ts=2 sw=2 et : -->

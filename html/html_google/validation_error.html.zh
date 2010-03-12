@@ -3,23 +3,22 @@
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
 <title>$t</title>
-$!include(inc/css.inc)
+<!--#include file="zh/inc/css.inc" -->
 </head>
+<body>
 <body dir="ltr">
 <div id="main">
-  $!include(inc/header.inc)
+	<!--#include file="zh/inc/header.inc" -->
   <br>
   <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
     <tbody>
       <tr>
         <td valign="top" width="100%">
-				  <h1 class="error">Web Login is Unavailable</h1>
-          <div style="font-size: 83%;">
-            <p>Web Login is unavailable due to an internal error. We apologize for any inconvenience
-              this may cause and are working to restore service as soon as possible. Please try
-              again later.</p>
-            <p class="techInfo"><strong>Technical Info:</strong> $e</p>
-          </div>
+
+          <h1 class="error">URL 验证失败</h1>
+          <p>您正在重定向的页面存在问题，例如：网络钓鱼或者其他可疑网站。我们已经停止该可疑的重定向，以保护你的安全。</p>
+          <p><a href="/">返回主页面</a></p>
+
         </td>
       </tr>
 		</tbody>
@@ -28,7 +27,7 @@ $!include(inc/css.inc)
   <div id="uiBottom">&nbsp;</div>
 </div>
 <br>
-$!include(inc/footer.inc)
+<!--#include file="zh/inc/footer.inc" -->
 </body>
 </html>
 <!-- vim: set ts=2 sw=2 et : -->

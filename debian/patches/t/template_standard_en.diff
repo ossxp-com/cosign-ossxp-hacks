@@ -219,7 +219,7 @@ index 808ac19..0000000
 -</html>
 diff --git a/html/looping.html.en b/html/looping.html.en
 new file mode 100755
-index 0000000..3d7b1c8
+index 0000000..ba34b0e
 --- /dev/null
 +++ b/html/looping.html.en
 @@ -0,0 +1,54 @@
@@ -241,7 +241,7 @@ index 0000000..3d7b1c8
 +</head>
 +<body>
 +<div id="page">
-+	<!--#include file="../templates-local/en/inc/header.inc" -->
++	<!--#include file="en/inc/header.inc" -->
 +	<hr class="text" />
 +	<div id="main">
 +		<div id="uiRow">
@@ -274,7 +274,7 @@ index 0000000..3d7b1c8
 +		<div id="uiBottom">&nbsp;</div>
 +	</div>
 +</div>
-+<!--#include file="../templates-local/en/inc/footer.inc" -->
++<!--#include file="en/inc/footer.inc" -->
 +</body>
 +</html>
 diff --git a/html/post_error.html b/html/post_error.html
@@ -318,7 +318,7 @@ index 071fa03..0000000
 -</html>
 diff --git a/html/post_error.html.en b/html/post_error.html.en
 new file mode 100755
-index 0000000..8a1bf5b
+index 0000000..27300a8
 --- /dev/null
 +++ b/html/post_error.html.en
 @@ -0,0 +1,30 @@
@@ -335,7 +335,7 @@ index 0000000..8a1bf5b
 +</head>
 +<body>
 +<div id="page">
-+	<!--#include file="../templates-local/en/inc/header.inc" -->
++	<!--#include file="en/inc/header.inc" -->
 +	<div id="main">
 +		<div id="uiRow">
 +			<h1 class="error">Changes Not Saved</h1>
@@ -349,7 +349,7 @@ index 0000000..8a1bf5b
 +		<div id="uiBottom">&nbsp;</div>
 +	</div>
 +</div>
-+<!--#include file="../templates-local/en/inc/footer.inc" -->
++<!--#include file="en/inc/footer.inc" -->
 +</body>
 +</html>
 diff --git a/html/reauth.html b/html/reauth.html
@@ -379,7 +379,7 @@ index c70b0f2..4cde522 100755
  	<input type="hidden" name="service" value="$c" />
 diff --git a/html/validation_error.html.en b/html/validation_error.html.en
 new file mode 100755
-index 0000000..5baa671
+index 0000000..145c8a2
 --- /dev/null
 +++ b/html/validation_error.html.en
 @@ -0,0 +1,29 @@
@@ -396,7 +396,7 @@ index 0000000..5baa671
 +</head>
 +<body>
 +<div id="page">
-+	<!--#include file="../templates-local/en/inc/header.inc" -->
++	<!--#include file="en/inc/header.inc" -->
 +	<div id="main">
 +		<div id="uiRow">
 +			<h1 class="error">URL Validation Failed</h1>
@@ -409,7 +409,7 @@ index 0000000..5baa671
 +		<div id="uiBottom">&nbsp;</div>
 +	</div>
 +</div>
-+<!--#include file="../templates-local/en/inc/footer.inc" -->
++<!--#include file="en/inc/footer.inc" -->
 +</body>
 +</html>
 diff --git a/html/verify-logout.html b/html/verify-logout.html

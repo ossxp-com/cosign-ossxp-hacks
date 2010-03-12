@@ -6,45 +6,55 @@ Subject: [PATCH] t/templates_google
 Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 
 ---
- html/Makefile.in                               |    2 +
- html/template_google/en/error.html             |   52 +++++
- html/template_google/en/expired_error.html     |  288 +++++++++++++++++++++++
- html/template_google/en/inc/0000.html          |    2 +
- html/template_google/en/inc/0010_wiki.html     |   15 ++
- html/template_google/en/inc/0015_blog.html     |   15 ++
- html/template_google/en/inc/0020_scm.html      |   21 ++
- html/template_google/en/inc/0030_bugtrac.html  |   19 ++
- html/template_google/en/inc/0035_testlink.html |   15 ++
- html/template_google/en/inc/0040_comm.html     |   15 ++
- html/template_google/en/inc/1000_account.html  |   16 ++
- html/template_google/en/inc/9000.html          |    2 +
- html/template_google/en/inc/footer.inc         |    3 +
- html/template_google/en/inc/header.inc         |    3 +
- html/template_google/en/login.html             |  288 +++++++++++++++++++++++
- html/template_google/en/login_error.html       |  289 ++++++++++++++++++++++++
- html/template_google/en/reauth.html            |  284 +++++++++++++++++++++++
- html/template_google/en/verify-logout.html     |   43 ++++
- html/template_google/zh/error.html             |   50 ++++
- html/template_google/zh/expired_error.html     |  287 +++++++++++++++++++++++
- html/template_google/zh/inc/0000.html          |    2 +
- html/template_google/zh/inc/0010_wiki.html     |   15 ++
- html/template_google/zh/inc/0015_blog.html     |   15 ++
- html/template_google/zh/inc/0020_scm.html      |   21 ++
- html/template_google/zh/inc/0030_bugtrac.html  |   19 ++
- html/template_google/zh/inc/0035_testlink.html |   15 ++
- html/template_google/zh/inc/0040_comm.html     |   15 ++
- html/template_google/zh/inc/1000_account.html  |   16 ++
- html/template_google/zh/inc/9000.html          |    2 +
- html/template_google/zh/inc/footer.inc         |    2 +
- html/template_google/zh/inc/header.inc         |    3 +
- html/template_google/zh/login.html             |  286 +++++++++++++++++++++++
- html/template_google/zh/login_error.html       |  287 +++++++++++++++++++++++
- html/template_google/zh/reauth.html            |  282 +++++++++++++++++++++++
- html/template_google/zh/verify-logout.html     |   43 ++++
- 35 files changed, 2732 insertions(+), 0 deletions(-)
+ html/Makefile.in                                |    2 +
+ html/html_google/looping.html.en                |   38 ++++++
+ html/html_google/looping.html.zh                |   39 ++++++
+ html/html_google/post_error.html.en             |   37 ++++++
+ html/html_google/post_error.html.zh             |   34 +++++
+ html/html_google/validation_error.html.en       |   36 ++++++
+ html/html_google/validation_error.html.zh       |   33 +++++
+ html/templates_google/en/error.html             |   34 +++++
+ html/templates_google/en/expired_error.html     |  149 ++++++++++++++++++++++
+ html/templates_google/en/inc/0000.html          |    2 +
+ html/templates_google/en/inc/0010_wiki.html     |   15 +++
+ html/templates_google/en/inc/0015_blog.html     |   15 +++
+ html/templates_google/en/inc/0020_scm.html      |   21 +++
+ html/templates_google/en/inc/0030_bugtrac.html  |   19 +++
+ html/templates_google/en/inc/0035_testlink.html |   15 +++
+ html/templates_google/en/inc/0040_comm.html     |   15 +++
+ html/templates_google/en/inc/1000_account.html  |   16 +++
+ html/templates_google/en/inc/9000.html          |    2 +
+ html/templates_google/en/inc/css.inc            |   90 ++++++++++++++
+ html/templates_google/en/inc/footer.inc         |    3 +
+ html/templates_google/en/inc/header.inc         |   34 +++++
+ html/templates_google/en/inc/js.inc             |   17 +++
+ html/templates_google/en/login.html             |  149 ++++++++++++++++++++++
+ html/templates_google/en/login_error.html       |  150 +++++++++++++++++++++++
+ html/templates_google/en/reauth.html            |  145 ++++++++++++++++++++++
+ html/templates_google/en/verify-logout.html     |   40 ++++++
+ html/templates_google/zh/error.html             |   34 +++++
+ html/templates_google/zh/expired_error.html     |  148 ++++++++++++++++++++++
+ html/templates_google/zh/inc/0000.html          |    2 +
+ html/templates_google/zh/inc/0010_wiki.html     |   15 +++
+ html/templates_google/zh/inc/0015_blog.html     |   15 +++
+ html/templates_google/zh/inc/0020_scm.html      |   21 +++
+ html/templates_google/zh/inc/0030_bugtrac.html  |   19 +++
+ html/templates_google/zh/inc/0035_testlink.html |   15 +++
+ html/templates_google/zh/inc/0040_comm.html     |   15 +++
+ html/templates_google/zh/inc/1000_account.html  |   16 +++
+ html/templates_google/zh/inc/9000.html          |    2 +
+ html/templates_google/zh/inc/css.inc            |   90 ++++++++++++++
+ html/templates_google/zh/inc/footer.inc         |    2 +
+ html/templates_google/zh/inc/header.inc         |   34 +++++
+ html/templates_google/zh/inc/js.inc             |   17 +++
+ html/templates_google/zh/login.html             |  147 ++++++++++++++++++++++
+ html/templates_google/zh/login_error.html       |  148 ++++++++++++++++++++++
+ html/templates_google/zh/reauth.html            |  143 +++++++++++++++++++++
+ html/templates_google/zh/verify-logout.html     |   40 ++++++
+ 45 files changed, 2073 insertions(+), 0 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
-index 06e9031..957740a 100755
+index 06e9031..bda0d11 100755
 --- a/html/Makefile.in
 +++ b/html/Makefile.in
 @@ -19,6 +19,8 @@ install : all
@@ -52,224 +62,320 @@ index 06e9031..957740a 100755
  	# Templates for zh_cn
  	cp -a zh $(DESTDIR)${TMPLDIR}/
 +	# Templates in google style, contains both en and zh_cn style
-+	cp -a template_google $(DESTDIR)${TMPLDIR}_google; \
++	cp -a templates_google html_google $(DESTDIR)${prefix}
  	for i in ${HTML}; do \
  	    cp -a $$i $(DESTDIR)${HTMLDIR}/; \
  	done
-diff --git a/html/template_google/en/error.html b/html/template_google/en/error.html
-new file mode 100644
-index 0000000..c0acf7b
+diff --git a/html/html_google/looping.html.en b/html/html_google/looping.html.en
+new file mode 100755
+index 0000000..55c495f
 --- /dev/null
-+++ b/html/template_google/en/error.html
-@@ -0,0 +1,52 @@
-+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-+<html xmlns="http://www.w3.org/1999/xhtml">
-+<head>
-+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-+<meta http-equiv="Pragma" content="no-cache" />
-+<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
-+<title>$t</title>
-+<style type="text/css" media="screen">
-+/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
-+
-+#rightUIcol .factorHead h2 {
-+	background: none;
-+	color: #999;
-+}
-+</style>
-+</head>
-+<body>
-+<div id="page">
-+  $!include(inc/header.inc)
-+	<div id="main">
-+		<div id="uiRow">
-+			<div id="leftUIcol">
-+				<h1 class="error">Web Login is Unavailable</h1>
-+				<p>Web Login is unavailable due to an internal error. We apologize for any inconvenience
-+					this may cause and are working to restore service as soon as possible. Please try
-+					again later.</p>
-+			<p class="techInfo"><strong>Technical
-+			Info:</strong> $e</p>
-+			</div>
-+			<form action="#" method="post" name="factors" id="rightUIcol">
-+				<div class="factorHead">
-+					<h2>ID &amp; Password</h2>
-+				</div>
-+				<div class="factorHead">
-+					<h2>One Time Passcode</h2>
-+				</div>
-+				<div class="factorHead">
-+					<h2>Certificate</h2>
-+				</div>
-+				<div id="loginButton">
-+					<input type="submit" name="doLogin" value="Log In" disabled="disabled" />
-+				</div>
-+			</form>
-+			<div class="clear">&nbsp;</div>
-+		</div>
-+		<div id="uiBottom">&nbsp;</div>
-+	</div>
-+</div>
-+$!include(inc/footer.inc)
-+</body>
-+</html>
-+<!-- vim: set ts=2 sw=2 et : -->
-diff --git a/html/template_google/en/expired_error.html b/html/template_google/en/expired_error.html
-new file mode 100644
-index 0000000..9c733a7
---- /dev/null
-+++ b/html/template_google/en/expired_error.html
-@@ -0,0 +1,288 @@
++++ b/html/html_google/looping.html.en
+@@ -0,0 +1,38 @@
 +<html><head>
 +<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 +<meta http-equiv="Pragma" content="no-cache" />
 +<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
 +<title>$t</title>
-+<script><!--
-+function gaia_setFocus() {
-+  var f = null;
-+  if (document.getElementById) { 
-+    f = document.getElementById("gaia_loginform");
-+  } else if (window.gaia_loginform) { 
-+    f = window.gaia_loginform;
-+  } 
-+  if (f) {
-+    if (f.login && (f.login.value == null || f.login.value == "")) {
-+      f.login.focus();
-+    } else if (f.password) {
-+      f.password.focus();
-+    } 
-+  }
-+}
-+--></script>
-+<style type="text/css">
-+  <!--
-+  body { font-family: arial,sans-serif; background-color: #fff; margin-top: 2; }
-+  .c { width: 4; height: 4; } 
-+  a:link { color: #00c; } 
-+  a:visited { color: #551a8b; }
-+  a:active { color: #f00; }
-+  .form-noindent { background-color: #fff; border: 1px solid #c3d9ff; }
-+  -->
-+</style>
-+<style type="text/css"><!--
-+.gaia.le.lbl { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.fpwd { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.chusr { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.val { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.button { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.rem { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
++<!--#include file="en/inc/css.inc" -->
++</head>
++<body>
++<body dir="ltr">
++<div id="main">
++	<!--#include file="en/inc/header.inc" -->
++  <br>
++  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
++    <tbody>
++      <tr>
++        <td valign="top" width="100%">
 +
-+.gaia.captchahtml.desc { font-family: arial, sans-serif; font-size: smaller; } 
-+.gaia.captchahtml.cmt { font-family: arial, sans-serif; font-size: smaller; font-style: italic; }
-+  
-+--></style>
-+<style type="text/css"><!--
-+  div.errormsg { color: red; font-size: smaller; font-family:arial,sans-serif; }
-+  font.errormsg { color: red; font-size: smaller; font-family:arial,sans-serif; }  
-+--></style>
-+<style type="text/css"><!--
-+.gaia.le.lbl { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.fpwd { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.chusr { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.val { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.button { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.rem { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
++          <h1 class="error">Authentication Error</h1>
++          <p>The Web Login-protected site that you were connecting to encountered an error while
++            processing your authentication. Please delete your cookies, restart your browser,
++            and try again. If you need assistance, contact <a href="#">Technical Support (put
++            URL here)</a>.</p>
++          <p><a href="#">Put URL to main CoSign page here</a></p>
++          <p class="techInfo"><strong>Technical Info:</strong> Browser is stuck in an infinite
++            redirect loop.</p>
 +
-+.gaia.captchahtml.desc { font-family: arial, sans-serif; font-size: smaller; } 
-+.gaia.captchahtml.cmt { font-family: arial, sans-serif; font-size: smaller; font-style: italic; }
-+  
-+--></style>
-+ 
-+<style type="text/css"><!--
-+    .body { margin-left: 3em;
-+            margin-right: 5em;
-+            font-family: arial,sans-serif; }
++        </td>
++      </tr>
++		</tbody>
++  </table>
++  <div class="clear">&nbsp;</div>
++  <div id="uiBottom">&nbsp;</div>
++</div>
++<br>
++<!--#include file="en/inc/footer.inc" -->
++</body>
++</html>
++<!-- vim: set ts=2 sw=2 et : -->
+diff --git a/html/html_google/looping.html.zh b/html/html_google/looping.html.zh
+new file mode 100755
+index 0000000..2af4cb8
+--- /dev/null
++++ b/html/html_google/looping.html.zh
+@@ -0,0 +1,39 @@
++<html><head>
++<meta http-equiv="content-type" content="text/html; charset=UTF-8">
++<meta http-equiv="Pragma" content="no-cache" />
++<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
++<title>$t</title>
++<!--#include file="zh/inc/css.inc" -->
++</head>
++<body>
++<body dir="ltr">
++<div id="main">
++	<!--#include file="zh/inc/header.inc" -->
++  <br>
++  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
++    <tbody>
++      <tr>
++        <td valign="top" width="100%">
 +
-+    div.errorbox-good {}
++				<h1 class="error">认证失败</h1>
++				<p>因为发生浏览器循环重定向，导致无法登录。</p>
++        <ul>
++          <li>这有可能是因为您本机时钟不正确，导致单点登录发放的 cookie 被您的浏览器错误的当做过期 cookie 而无法被设置。如果是这样的话，正确设置您机器的时钟；
++          <li>也可能是您的 IP 地址改变，导致登录 cookie 失效。这是可能是因为本服务器设置了较为严格的 IP 地址检查。您需要删除 cookie，关闭浏览器，再重新登录；
++          <li>或者是由于管理员对网站的配置错误造成的；
++        </ul>
++				<p>如果上述方法仍无法解决此问题，请联系管理员</p>
++				<p class="techInfo"><strong>信息:</strong> 浏览器陷入循环重定向。</p>
 +
-+    div.errorbox-bad {} 
++        </td>
++      </tr>
++		</tbody>
++  </table>
++  <div class="clear">&nbsp;</div>
++  <div id="uiBottom">&nbsp;</div>
++</div>
++<br>
++<!--#include file="zh/inc/footer.inc" -->
++</body>
++</html>
++<!-- vim: set ts=2 sw=2 et : -->
+diff --git a/html/html_google/post_error.html.en b/html/html_google/post_error.html.en
+new file mode 100755
+index 0000000..81710a9
+--- /dev/null
++++ b/html/html_google/post_error.html.en
+@@ -0,0 +1,37 @@
++<html><head>
++<meta http-equiv="content-type" content="text/html; charset=UTF-8">
++<meta http-equiv="Pragma" content="no-cache" />
++<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
++<title>$t</title>
++<!--#include file="en/inc/css.inc" -->
++</head>
++<body>
++<body dir="ltr">
++<div id="main">
++	<!--#include file="en/inc/header.inc" -->
++  <br>
++  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
++    <tbody>
++      <tr>
++        <td valign="top" width="100%">
 +
-+    div.errormsg { color: red; font-size: smaller; font-family: arial,sans-serif;}
-+    font.errormsg { color: red; font-size: smaller; font-family: arial,sans-serif;}
-+    
-+    hr {
-+      border: 0;
-+      background-color:#DDDDDD;
-+      height: 1px;
-+      width: 100%;
-+      text-align: left;
-+      margin: 5px;
-+    }
-+    
-+--></style>
-+<style type="text/css"><!--
-+#error {
-+	border: 1px dotted #cc9999;
-+	margin-bottom: 10px;
-+	padding: 6px 8px 6px 28px;
-+	background: url(images/icon_alert.gif) left center no-repeat;
-+	background-color: #fcfcfc;
-+	color: #cc0000;
-+}
-+#foot {
-+	width: 760px;
-+	margin: 20px auto;
-+	text-align: center;
-+	padding: 5px;
-+	font-size: 108%;
-+	border-top: 1px solid #ccc;
-+}
++          <h1 class="error">Changes Not Saved</h1>
++          <p>You attempted to submit data to a Web Login-protected web site after your session
++            had timed out. Your changes have not been saved.</p>
++          <p>This can happen if your session has been idle for more than one hour or if you logged
++            out (for example, in another browser window) before submitting the data. Please contact <a href="#">Technical
++            Support (put URL here)</a> if you have any questions.</p>
++          <p><a href="#">Put URL to main CoSign page here</a></p>
 +
-+#foot,
-+#foot a {
-+	background-color: inherit;
-+	color: #999;
-+}
++        </td>
++      </tr>
++		</tbody>
++  </table>
++  <div class="clear">&nbsp;</div>
++  <div id="uiBottom">&nbsp;</div>
++</div>
++<br>
++<!--#include file="en/inc/footer.inc" -->
++</body>
++</html>
++<!-- vim: set ts=2 sw=2 et : -->
+diff --git a/html/html_google/post_error.html.zh b/html/html_google/post_error.html.zh
+new file mode 100755
+index 0000000..6e687de
+--- /dev/null
++++ b/html/html_google/post_error.html.zh
+@@ -0,0 +1,34 @@
++<html><head>
++<meta http-equiv="content-type" content="text/html; charset=UTF-8">
++<meta http-equiv="Pragma" content="no-cache" />
++<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
++<title>$t</title>
++<!--#include file="zh/inc/css.inc" -->
++</head>
++<body>
++<body dir="ltr">
++<div id="main">
++	<!--#include file="zh/inc/header.inc" -->
++  <br>
++  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
++    <tbody>
++      <tr>
++        <td valign="top" width="100%">
 +
-+#foot a:hover {
-+	background-color: inherit;
-+	color: #70a8f1;
-+}
-+--></style>
++			<h1 class="error">修改尚未保存</h1>
++			<p>您的会话已经过期，导致您向受保护站点提交的数据没有被保存。</p>
++			<p>这可能是因为超时导致会话退出，或者您在另外的窗口已经退出登录。如果有疑问，请联系管理员。</p>
++			<p><a href="/">返回主页面</a></p>
 +
++        </td>
++      </tr>
++		</tbody>
++  </table>
++  <div class="clear">&nbsp;</div>
++  <div id="uiBottom">&nbsp;</div>
++</div>
++<br>
++<!--#include file="zh/inc/footer.inc" -->
++</body>
++</html>
++<!-- vim: set ts=2 sw=2 et : -->
+diff --git a/html/html_google/validation_error.html.en b/html/html_google/validation_error.html.en
+new file mode 100755
+index 0000000..344061b
+--- /dev/null
++++ b/html/html_google/validation_error.html.en
+@@ -0,0 +1,36 @@
++<html><head>
++<meta http-equiv="content-type" content="text/html; charset=UTF-8">
++<meta http-equiv="Pragma" content="no-cache" />
++<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
++<title>$t</title>
++<!--#include file="en/inc/css.inc" -->
++</head>
++<body>
++<body dir="ltr">
++<div id="main">
++	<!--#include file="en/inc/header.inc" -->
++  <br>
++  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
++    <tbody>
++      <tr>
++        <td valign="top" width="100%">
++
++          <h1 class="error">URL Validation Failed</h1>
++          <p>There is a problem with the URL to which you were redirected. Since this can
++             potentially indicate phishing or other suspicious activity, we have stopped
++             the redirect in order to protect your security.</p>
++          <p>You may be able to access the web site or service if you try again with its official URL.</p>
++          <p><a href="#">Put URL to main CoSign page here</a></p>
++
++        </td>
++      </tr>
++		</tbody>
++  </table>
++  <div class="clear">&nbsp;</div>
++  <div id="uiBottom">&nbsp;</div>
++</div>
++<br>
++<!--#include file="en/inc/footer.inc" -->
++</body>
++</html>
++<!-- vim: set ts=2 sw=2 et : -->
+diff --git a/html/html_google/validation_error.html.zh b/html/html_google/validation_error.html.zh
+new file mode 100755
+index 0000000..382345e
+--- /dev/null
++++ b/html/html_google/validation_error.html.zh
+@@ -0,0 +1,33 @@
++<html><head>
++<meta http-equiv="content-type" content="text/html; charset=UTF-8">
++<meta http-equiv="Pragma" content="no-cache" />
++<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
++<title>$t</title>
++<!--#include file="zh/inc/css.inc" -->
++</head>
++<body>
++<body dir="ltr">
++<div id="main">
++	<!--#include file="zh/inc/header.inc" -->
++  <br>
++  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
++    <tbody>
++      <tr>
++        <td valign="top" width="100%">
++
++          <h1 class="error">URL 验证失败</h1>
++          <p>您正在重定向的页面存在问题，例如：网络钓鱼或者其他可疑网站。我们已经停止该可疑的重定向，以保护你的安全。</p>
++          <p><a href="/">返回主页面</a></p>
++
++        </td>
++      </tr>
++		</tbody>
++  </table>
++  <div class="clear">&nbsp;</div>
++  <div id="uiBottom">&nbsp;</div>
++</div>
++<br>
++<!--#include file="zh/inc/footer.inc" -->
++</body>
++</html>
++<!-- vim: set ts=2 sw=2 et : -->
+diff --git a/html/templates_google/en/error.html b/html/templates_google/en/error.html
+new file mode 100644
+index 0000000..a2c6247
+--- /dev/null
++++ b/html/templates_google/en/error.html
+@@ -0,0 +1,34 @@
++<html><head>
++<meta http-equiv="content-type" content="text/html; charset=UTF-8">
++<meta http-equiv="Pragma" content="no-cache" />
++<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
++<title>$t</title>
++$!include(inc/css.inc)
++</head>
++<body dir="ltr">
++<div id="main">
++  $!include(inc/header.inc)
++  <br>
++  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
++    <tbody>
++      <tr>
++        <td valign="top" width="100%">
++				  <h1 class="error">Web Login is Unavailable</h1>
++          <div style="font-size: 83%;">
++            <p>Web Login is unavailable due to an internal error. We apologize for any inconvenience
++              this may cause and are working to restore service as soon as possible. Please try
++              again later.</p>
++            <p class="techInfo"><strong>Technical Info:</strong> $e</p>
++          </div>
++        </td>
++      </tr>
++		</tbody>
++  </table>
++  <div class="clear">&nbsp;</div>
++  <div id="uiBottom">&nbsp;</div>
++</div>
++<br>
++$!include(inc/footer.inc)
++</body>
++</html>
++<!-- vim: set ts=2 sw=2 et : -->
+diff --git a/html/templates_google/en/expired_error.html b/html/templates_google/en/expired_error.html
+new file mode 100644
+index 0000000..335f592
+--- /dev/null
++++ b/html/templates_google/en/expired_error.html
+@@ -0,0 +1,149 @@
++<html><head>
++<meta http-equiv="content-type" content="text/html; charset=UTF-8">
++<meta http-equiv="Pragma" content="no-cache" />
++<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
++<title>$t</title>
++$!include(inc/js.inc)
++$!include(inc/css.inc)
 +</head>
 +<body dir="ltr" onload="gaia_setFocus();">
 +<div id="main">
-+  <table border="0" cellpadding="2" cellspacing="0" width="100%">
-+    <tbody>
-+      <tr>
-+        <td colspan="2"><img alt="" height="2" width="1"></td>
-+      </tr>
-+      <tr>
-+        <td valign="top" width="1%">
-+          <a href="https://weblogin.foo.bar/">
-+          <img src="/cosign/images/services/Cosign_3d.gif" alt="CoSign" align="left" border="0">
-+          </a>
-+        </td>
-+        <td valign="bottom">
-+          <table border="0" cellpadding="0" cellspacing="0" width="100%">
-+            <tbody>
-+              <tr>
-+                <td colspan="2"><img alt="" height="15" width="1"></td>
-+              </tr>
-+              <tr bgcolor="#3366cc">
-+                <td><img alt="" height="1" width="1"></td>
-+              </tr>
-+              <tr bgcolor="#e5ecf9">
-+                <td style="padding-left: 4px; padding-bottom: 3px; padding-top: 2px; font-family: arial,sans-serif;">
-+                  <b>Single Sign-On</b>
-+                </td>
-+              </tr>
-+              <tr>
-+                <td colspan="2"><img alt="" height="5" width="1"></td>
-+              </tr>
-+            </tbody>
-+          </table>
-+        </td>
-+      </tr>
-+    </tbody>
-+  </table>
++  $!include(inc/header.inc)
 +  <br>
 +  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
 +    <tbody>
@@ -408,19 +514,19 @@ index 0000000..9c733a7
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff --git a/html/template_google/en/inc/0000.html b/html/template_google/en/inc/0000.html
+diff --git a/html/templates_google/en/inc/0000.html b/html/templates_google/en/inc/0000.html
 new file mode 100644
 index 0000000..cd6c895
 --- /dev/null
-+++ b/html/template_google/en/inc/0000.html
++++ b/html/templates_google/en/inc/0000.html
 @@ -0,0 +1,2 @@
 +            <table border="0" cellpadding="4">
 +              <tbody>
-diff --git a/html/template_google/en/inc/0010_wiki.html b/html/template_google/en/inc/0010_wiki.html
+diff --git a/html/templates_google/en/inc/0010_wiki.html b/html/templates_google/en/inc/0010_wiki.html
 new file mode 100644
 index 0000000..846469b
 --- /dev/null
-+++ b/html/template_google/en/inc/0010_wiki.html
++++ b/html/templates_google/en/inc/0010_wiki.html
 @@ -0,0 +1,15 @@
 +                <tr>
 +                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -437,11 +543,11 @@ index 0000000..846469b
 +                    </small>
 +                  </td>
 +                </tr>
-diff --git a/html/template_google/en/inc/0015_blog.html b/html/template_google/en/inc/0015_blog.html
+diff --git a/html/templates_google/en/inc/0015_blog.html b/html/templates_google/en/inc/0015_blog.html
 new file mode 100644
 index 0000000..2805ea1
 --- /dev/null
-+++ b/html/template_google/en/inc/0015_blog.html
++++ b/html/templates_google/en/inc/0015_blog.html
 @@ -0,0 +1,15 @@
 +                <tr>
 +                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -458,11 +564,11 @@ index 0000000..2805ea1
 +                    </small>
 +                  </td>
 +                </tr>
-diff --git a/html/template_google/en/inc/0020_scm.html b/html/template_google/en/inc/0020_scm.html
+diff --git a/html/templates_google/en/inc/0020_scm.html b/html/templates_google/en/inc/0020_scm.html
 new file mode 100644
 index 0000000..6648764
 --- /dev/null
-+++ b/html/template_google/en/inc/0020_scm.html
++++ b/html/templates_google/en/inc/0020_scm.html
 @@ -0,0 +1,21 @@
 +                <tr>
 +                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -485,11 +591,11 @@ index 0000000..6648764
 +                    </small>
 +                  </td>
 +                </tr>
-diff --git a/html/template_google/en/inc/0030_bugtrac.html b/html/template_google/en/inc/0030_bugtrac.html
+diff --git a/html/templates_google/en/inc/0030_bugtrac.html b/html/templates_google/en/inc/0030_bugtrac.html
 new file mode 100644
 index 0000000..371b8c2
 --- /dev/null
-+++ b/html/template_google/en/inc/0030_bugtrac.html
++++ b/html/templates_google/en/inc/0030_bugtrac.html
 @@ -0,0 +1,19 @@
 +                <tr>
 +                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -510,11 +616,11 @@ index 0000000..371b8c2
 +                    </small>
 +                  </td>
 +                </tr>
-diff --git a/html/template_google/en/inc/0035_testlink.html b/html/template_google/en/inc/0035_testlink.html
+diff --git a/html/templates_google/en/inc/0035_testlink.html b/html/templates_google/en/inc/0035_testlink.html
 new file mode 100644
 index 0000000..22b623b
 --- /dev/null
-+++ b/html/template_google/en/inc/0035_testlink.html
++++ b/html/templates_google/en/inc/0035_testlink.html
 @@ -0,0 +1,15 @@
 +                <tr>
 +                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -531,11 +637,11 @@ index 0000000..22b623b
 +                    </small>
 +                  </td>
 +                </tr>
-diff --git a/html/template_google/en/inc/0040_comm.html b/html/template_google/en/inc/0040_comm.html
+diff --git a/html/templates_google/en/inc/0040_comm.html b/html/templates_google/en/inc/0040_comm.html
 new file mode 100644
 index 0000000..7cf153b
 --- /dev/null
-+++ b/html/template_google/en/inc/0040_comm.html
++++ b/html/templates_google/en/inc/0040_comm.html
 @@ -0,0 +1,15 @@
 +                <tr>
 +                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -552,11 +658,11 @@ index 0000000..7cf153b
 +                    </small>
 +                  </td>
 +                </tr>
-diff --git a/html/template_google/en/inc/1000_account.html b/html/template_google/en/inc/1000_account.html
+diff --git a/html/templates_google/en/inc/1000_account.html b/html/templates_google/en/inc/1000_account.html
 new file mode 100644
 index 0000000..d10571f
 --- /dev/null
-+++ b/html/template_google/en/inc/1000_account.html
++++ b/html/templates_google/en/inc/1000_account.html
 @@ -0,0 +1,16 @@
 +                <tr>
 +                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -574,60 +680,20 @@ index 0000000..d10571f
 +                    </small>
 +                  </td>
 +                </tr>
-diff --git a/html/template_google/en/inc/9000.html b/html/template_google/en/inc/9000.html
+diff --git a/html/templates_google/en/inc/9000.html b/html/templates_google/en/inc/9000.html
 new file mode 100644
 index 0000000..a0203b7
 --- /dev/null
-+++ b/html/template_google/en/inc/9000.html
++++ b/html/templates_google/en/inc/9000.html
 @@ -0,0 +1,2 @@
 +              </tbody>
 +            </table>
-diff --git a/html/template_google/en/inc/footer.inc b/html/template_google/en/inc/footer.inc
+diff --git a/html/templates_google/en/inc/css.inc b/html/templates_google/en/inc/css.inc
 new file mode 100644
-index 0000000..ef71703
+index 0000000..e616f5d
 --- /dev/null
-+++ b/html/template_google/en/inc/footer.inc
-@@ -0,0 +1,3 @@
-+<div id="foot">&copy; 2006-2009 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
-+		of the University of Michigan</a>, 
-+       <a href="http://www.ossxp.com/">OSSXP Support</a> </div>
-diff --git a/html/template_google/en/inc/header.inc b/html/template_google/en/inc/header.inc
-new file mode 100644
-index 0000000..f0a35bc
---- /dev/null
-+++ b/html/template_google/en/inc/header.inc
-@@ -0,0 +1,3 @@
-+	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
-+		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
-+		</span> <strong>Our Home Page</strong></a> </div>
-diff --git a/html/template_google/en/login.html b/html/template_google/en/login.html
-new file mode 100644
-index 0000000..3f412e1
---- /dev/null
-+++ b/html/template_google/en/login.html
-@@ -0,0 +1,288 @@
-+<html><head>
-+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-+<meta http-equiv="Pragma" content="no-cache" />
-+<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
-+<title>$t</title>
-+<script><!--
-+function gaia_setFocus() {
-+  var f = null;
-+  if (document.getElementById) { 
-+    f = document.getElementById("gaia_loginform");
-+  } else if (window.gaia_loginform) { 
-+    f = window.gaia_loginform;
-+  } 
-+  if (f) {
-+    if (f.login && (f.login.value == null || f.login.value == "")) {
-+      f.login.focus();
-+    } else if (f.password) {
-+      f.password.focus();
-+    } 
-+  }
-+}
-+--></script>
++++ b/html/templates_google/en/inc/css.inc
+@@ -0,0 +1,90 @@
 +<style type="text/css">
 +  <!--
 +  body { font-family: arial,sans-serif; background-color: #fff; margin-top: 2; }
@@ -718,10 +784,21 @@ index 0000000..3f412e1
 +	color: #70a8f1;
 +}
 +--></style>
-+
-+</head>
-+<body dir="ltr" onload="gaia_setFocus();">
-+<div id="main">
+diff --git a/html/templates_google/en/inc/footer.inc b/html/templates_google/en/inc/footer.inc
+new file mode 100644
+index 0000000..ef71703
+--- /dev/null
++++ b/html/templates_google/en/inc/footer.inc
+@@ -0,0 +1,3 @@
++<div id="foot">&copy; 2006-2009 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
++		of the University of Michigan</a>, 
++       <a href="http://www.ossxp.com/">OSSXP Support</a> </div>
+diff --git a/html/templates_google/en/inc/header.inc b/html/templates_google/en/inc/header.inc
+new file mode 100644
+index 0000000..2cbe19f
+--- /dev/null
++++ b/html/templates_google/en/inc/header.inc
+@@ -0,0 +1,34 @@
 +  <table border="0" cellpadding="2" cellspacing="0" width="100%">
 +    <tbody>
 +      <tr>
@@ -756,6 +833,46 @@ index 0000000..3f412e1
 +      </tr>
 +    </tbody>
 +  </table>
+diff --git a/html/templates_google/en/inc/js.inc b/html/templates_google/en/inc/js.inc
+new file mode 100644
+index 0000000..f1d1d16
+--- /dev/null
++++ b/html/templates_google/en/inc/js.inc
+@@ -0,0 +1,17 @@
++<script><!--
++function gaia_setFocus() {
++  var f = null;
++  if (document.getElementById) { 
++    f = document.getElementById("gaia_loginform");
++  } else if (window.gaia_loginform) { 
++    f = window.gaia_loginform;
++  } 
++  if (f) {
++    if (f.login && (f.login.value == null || f.login.value == "")) {
++      f.login.focus();
++    } else if (f.password) {
++      f.password.focus();
++    } 
++  }
++}
++--></script>
+diff --git a/html/templates_google/en/login.html b/html/templates_google/en/login.html
+new file mode 100644
+index 0000000..27c2f5d
+--- /dev/null
++++ b/html/templates_google/en/login.html
+@@ -0,0 +1,149 @@
++<html><head>
++<meta http-equiv="content-type" content="text/html; charset=UTF-8">
++<meta http-equiv="Pragma" content="no-cache" />
++<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
++<title>$t</title>
++$!include(inc/js.inc)
++$!include(inc/css.inc)
++</head>
++<body dir="ltr" onload="gaia_setFocus();">
++<div id="main">
++  $!include(inc/header.inc)
 +  <br>
 +  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
 +    <tbody>
@@ -894,162 +1011,23 @@ index 0000000..3f412e1
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff --git a/html/template_google/en/login_error.html b/html/template_google/en/login_error.html
+diff --git a/html/templates_google/en/login_error.html b/html/templates_google/en/login_error.html
 new file mode 100644
-index 0000000..6c677f8
+index 0000000..b3b4345
 --- /dev/null
-+++ b/html/template_google/en/login_error.html
-@@ -0,0 +1,289 @@
++++ b/html/templates_google/en/login_error.html
+@@ -0,0 +1,150 @@
 +<html><head>
 +<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 +<meta http-equiv="Pragma" content="no-cache" />
 +<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
 +<title>$t</title>
-+<script><!--
-+function gaia_setFocus() {
-+  var f = null;
-+  if (document.getElementById) { 
-+    f = document.getElementById("gaia_loginform");
-+  } else if (window.gaia_loginform) { 
-+    f = window.gaia_loginform;
-+  } 
-+  if (f) {
-+    if (f.login && (f.login.value == null || f.login.value == "")) {
-+      f.login.focus();
-+    } else if (f.password) {
-+      f.password.focus();
-+    } 
-+  }
-+}
-+--></script>
-+<style type="text/css">
-+  <!--
-+  body { font-family: arial,sans-serif; background-color: #fff; margin-top: 2; }
-+  .c { width: 4; height: 4; } 
-+  a:link { color: #00c; } 
-+  a:visited { color: #551a8b; }
-+  a:active { color: #f00; }
-+  .form-noindent { background-color: #fff; border: 1px solid #c3d9ff; }
-+  -->
-+</style>
-+<style type="text/css"><!--
-+.gaia.le.lbl { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.fpwd { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.chusr { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.val { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.button { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.rem { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+
-+.gaia.captchahtml.desc { font-family: arial, sans-serif; font-size: smaller; } 
-+.gaia.captchahtml.cmt { font-family: arial, sans-serif; font-size: smaller; font-style: italic; }
-+  
-+--></style>
-+<style type="text/css"><!--
-+  div.errormsg { color: red; font-size: smaller; font-family:arial,sans-serif; }
-+  font.errormsg { color: red; font-size: smaller; font-family:arial,sans-serif; }  
-+--></style>
-+<style type="text/css"><!--
-+.gaia.le.lbl { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.fpwd { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.chusr { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.val { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.button { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.rem { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+
-+.gaia.captchahtml.desc { font-family: arial, sans-serif; font-size: smaller; } 
-+.gaia.captchahtml.cmt { font-family: arial, sans-serif; font-size: smaller; font-style: italic; }
-+  
-+--></style>
-+ 
-+<style type="text/css"><!--
-+    .body { margin-left: 3em;
-+            margin-right: 5em;
-+            font-family: arial,sans-serif; }
-+
-+    div.errorbox-good {}
-+
-+    div.errorbox-bad {} 
-+
-+    div.errormsg { color: red; font-size: smaller; font-family: arial,sans-serif;}
-+    font.errormsg { color: red; font-size: smaller; font-family: arial,sans-serif;}
-+    
-+    hr {
-+      border: 0;
-+      background-color:#DDDDDD;
-+      height: 1px;
-+      width: 100%;
-+      text-align: left;
-+      margin: 5px;
-+    }
-+    
-+--></style>
-+<style type="text/css"><!--
-+#error {
-+	border: 1px dotted #cc9999;
-+	margin-bottom: 10px;
-+	padding: 6px 8px 6px 28px;
-+	background: url(images/icon_alert.gif) left center no-repeat;
-+	background-color: #fcfcfc;
-+	color: #cc0000;
-+}
-+#foot {
-+	width: 760px;
-+	margin: 20px auto;
-+	text-align: center;
-+	padding: 5px;
-+	font-size: 108%;
-+	border-top: 1px solid #ccc;
-+}
-+
-+#foot,
-+#foot a {
-+	background-color: inherit;
-+	color: #999;
-+}
-+
-+#foot a:hover {
-+	background-color: inherit;
-+	color: #70a8f1;
-+}
-+--></style>
-+
++$!include(inc/js.inc)
++$!include(inc/css.inc)
 +</head>
 +<body dir="ltr" onload="gaia_setFocus();">
 +<div id="main">
-+  <table border="0" cellpadding="2" cellspacing="0" width="100%">
-+    <tbody>
-+      <tr>
-+        <td colspan="2"><img alt="" height="2" width="1"></td>
-+      </tr>
-+      <tr>
-+        <td valign="top" width="1%">
-+          <a href="https://weblogin.foo.bar/">
-+          <img src="/cosign/images/services/Cosign_3d.gif" alt="CoSign" align="left" border="0">
-+          </a>
-+        </td>
-+        <td valign="bottom">
-+          <table border="0" cellpadding="0" cellspacing="0" width="100%">
-+            <tbody>
-+              <tr>
-+                <td colspan="2"><img alt="" height="15" width="1"></td>
-+              </tr>
-+              <tr bgcolor="#3366cc">
-+                <td><img alt="" height="1" width="1"></td>
-+              </tr>
-+              <tr bgcolor="#e5ecf9">
-+                <td style="padding-left: 4px; padding-bottom: 3px; padding-top: 2px; font-family: arial,sans-serif;">
-+                  <b>Single Sign-On</b>
-+                </td>
-+              </tr>
-+              <tr>
-+                <td colspan="2"><img alt="" height="5" width="1"></td>
-+              </tr>
-+            </tbody>
-+          </table>
-+        </td>
-+      </tr>
-+    </tbody>
-+  </table>
++  $!include(inc/header.inc)
 +  <br>
 +  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
 +    <tbody>
@@ -1189,162 +1167,23 @@ index 0000000..6c677f8
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff --git a/html/template_google/en/reauth.html b/html/template_google/en/reauth.html
+diff --git a/html/templates_google/en/reauth.html b/html/templates_google/en/reauth.html
 new file mode 100644
-index 0000000..7043dee
+index 0000000..d6536bc
 --- /dev/null
-+++ b/html/template_google/en/reauth.html
-@@ -0,0 +1,284 @@
++++ b/html/templates_google/en/reauth.html
+@@ -0,0 +1,145 @@
 +<html><head>
 +<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 +<meta http-equiv="Pragma" content="no-cache" />
 +<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
 +<title>$t</title>
-+<script><!--
-+function gaia_setFocus() {
-+  var f = null;
-+  if (document.getElementById) { 
-+    f = document.getElementById("gaia_loginform");
-+  } else if (window.gaia_loginform) { 
-+    f = window.gaia_loginform;
-+  } 
-+  if (f) {
-+    if (f.login && (f.login.value == null || f.login.value == "")) {
-+      f.login.focus();
-+    } else if (f.password) {
-+      f.password.focus();
-+    } 
-+  }
-+}
-+--></script>
-+<style type="text/css">
-+  <!--
-+  body { font-family: arial,sans-serif; background-color: #fff; margin-top: 2; }
-+  .c { width: 4; height: 4; } 
-+  a:link { color: #00c; } 
-+  a:visited { color: #551a8b; }
-+  a:active { color: #f00; }
-+  .form-noindent { background-color: #fff; border: 1px solid #c3d9ff; }
-+  -->
-+</style>
-+<style type="text/css"><!--
-+.gaia.le.lbl { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.fpwd { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.chusr { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.val { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.button { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.rem { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+
-+.gaia.captchahtml.desc { font-family: arial, sans-serif; font-size: smaller; } 
-+.gaia.captchahtml.cmt { font-family: arial, sans-serif; font-size: smaller; font-style: italic; }
-+  
-+--></style>
-+<style type="text/css"><!--
-+  div.errormsg { color: red; font-size: smaller; font-family:arial,sans-serif; }
-+  font.errormsg { color: red; font-size: smaller; font-family:arial,sans-serif; }  
-+--></style>
-+<style type="text/css"><!--
-+.gaia.le.lbl { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.fpwd { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.chusr { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.val { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.button { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.rem { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+
-+.gaia.captchahtml.desc { font-family: arial, sans-serif; font-size: smaller; } 
-+.gaia.captchahtml.cmt { font-family: arial, sans-serif; font-size: smaller; font-style: italic; }
-+  
-+--></style>
-+ 
-+<style type="text/css"><!--
-+    .body { margin-left: 3em;
-+            margin-right: 5em;
-+            font-family: arial,sans-serif; }
-+
-+    div.errorbox-good {}
-+
-+    div.errorbox-bad {} 
-+
-+    div.errormsg { color: red; font-size: smaller; font-family: arial,sans-serif;}
-+    font.errormsg { color: red; font-size: smaller; font-family: arial,sans-serif;}
-+    
-+    hr {
-+      border: 0;
-+      background-color:#DDDDDD;
-+      height: 1px;
-+      width: 100%;
-+      text-align: left;
-+      margin: 5px;
-+    }
-+    
-+--></style>
-+<style type="text/css"><!--
-+#error {
-+	border: 1px dotted #cc9999;
-+	margin-bottom: 10px;
-+	padding: 6px 8px 6px 28px;
-+	background: url(images/icon_alert.gif) left center no-repeat;
-+	background-color: #fcfcfc;
-+	color: #cc0000;
-+}
-+#foot {
-+	width: 760px;
-+	margin: 20px auto;
-+	text-align: center;
-+	padding: 5px;
-+	font-size: 108%;
-+	border-top: 1px solid #ccc;
-+}
-+
-+#foot,
-+#foot a {
-+	background-color: inherit;
-+	color: #999;
-+}
-+
-+#foot a:hover {
-+	background-color: inherit;
-+	color: #70a8f1;
-+}
-+--></style>
-+
++$!include(inc/js.inc)
++$!include(inc/css.inc)
 +</head>
 +<body dir="ltr" onload="gaia_setFocus();">
 +<div id="main">
-+  <table border="0" cellpadding="2" cellspacing="0" width="100%">
-+    <tbody>
-+      <tr>
-+        <td colspan="2"><img alt="" height="2" width="1"></td>
-+      </tr>
-+      <tr>
-+        <td valign="top" width="1%">
-+          <a href="https://weblogin.foo.bar/">
-+          <img src="/cosign/images/services/Cosign_3d.gif" alt="CoSign" align="left" border="0">
-+          </a>
-+        </td>
-+        <td valign="bottom">
-+          <table border="0" cellpadding="0" cellspacing="0" width="100%">
-+            <tbody>
-+              <tr>
-+                <td colspan="2"><img alt="" height="15" width="1"></td>
-+              </tr>
-+              <tr bgcolor="#3366cc">
-+                <td><img alt="" height="1" width="1"></td>
-+              </tr>
-+              <tr bgcolor="#e5ecf9">
-+                <td style="padding-left: 4px; padding-bottom: 3px; padding-top: 2px; font-family: arial,sans-serif;">
-+                  <b>Single Sign-On</b>
-+                </td>
-+              </tr>
-+              <tr>
-+                <td colspan="2"><img alt="" height="5" width="1"></td>
-+              </tr>
-+            </tbody>
-+          </table>
-+        </td>
-+      </tr>
-+    </tbody>
-+  </table>
++  $!include(inc/header.inc)
 +  <br>
 +  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
 +    <tbody>
@@ -1479,12 +1318,12 @@ index 0000000..7043dee
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff --git a/html/template_google/en/verify-logout.html b/html/template_google/en/verify-logout.html
+diff --git a/html/templates_google/en/verify-logout.html b/html/templates_google/en/verify-logout.html
 new file mode 100644
-index 0000000..2f4b222
+index 0000000..c547fe0
 --- /dev/null
-+++ b/html/template_google/en/verify-logout.html
-@@ -0,0 +1,43 @@
++++ b/html/templates_google/en/verify-logout.html
+@@ -0,0 +1,40 @@
 +<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 +<html xmlns="http://www.w3.org/1999/xhtml">
 +<head>
@@ -1492,254 +1331,96 @@ index 0000000..2f4b222
 +<meta http-equiv="Pragma" content="no-cache" />
 +<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
 +<title>$t</title>
-+<style type="text/css" media="screen">
-+/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
-+</style>
-+<script type="text/javascript" src="/cosign/js/prototype.js"></script>
-+<script type="text/javascript">
-+	window.onload = function() {
-+		Event.observe('back', 'click', function() {history.go(-1)});
-+		$('logout').focus();
-+	}
-+</script>
++$!include(inc/css.inc)
 +</head>
-+<body>
-+<div id="page">
++<body dir="ltr">
++<div id="main">
 +  $!include(inc/header.inc)
-+	<div id="main" class="logoutUI">
-+		<div id="uiRow">
-+		    <form name="f" method="post" action="/cgi-bin/logout">
-+			<h1>Log Out</h1>
-+			<p>You are about to log out of <a href="/services/">all weblogin applications</a>.
-+				Are you sure you want to do this?</p>
-+			<p>
-+				<input type="button" id="back" value="Go Back" />
-+				<input type="submit" id="logout" name="verify" value="Log Out" />
-+			</p>
-+			<div class="redirect">After logout your browser
-+			will redirect to: $u</div>
-+			<input type="hidden" name="url" value="$u" />
-+		</form>
-+		</div>
-+		<div id="uiBottom">&nbsp;</div>
-+	</div>
-+</div>
-+$!include(inc/footer.inc)
-+</body>
-+</html>
-+<!-- vim: set ts=2 sw=2 et : -->
-diff --git a/html/template_google/zh/error.html b/html/template_google/zh/error.html
-new file mode 100644
-index 0000000..374781e
---- /dev/null
-+++ b/html/template_google/zh/error.html
-@@ -0,0 +1,50 @@
-+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-+<html xmlns="http://www.w3.org/1999/xhtml">
-+<head>
-+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-+<meta http-equiv="Pragma" content="no-cache" />
-+<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
-+<title>$t</title>
-+<style type="text/css" media="screen">
-+/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
++  <br>
++  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
++    <tbody>
++      <tr>
++        <td valign="top" width="100%">
 +
-+#rightUIcol .factorHead h2 {
-+	background: none;
-+	color: #999;
-+}
-+</style>
-+</head>
-+<body>
-+<div id="page">
-+  $!include(inc/header.inc)
-+	<div id="main">
-+		<div id="uiRow">
-+			<div id="leftUIcol">
-+				<h1 class="error">单点登录不可用</h1>
-+				<p>内部错误导致单点登录不可用。非常抱歉，我们会尽快修复。请稍后重试。</p>
-+			<p class="techInfo"><strong>Technical
-+			Info:</strong> $e</p>
-+			</div>
-+			<form action="#" method="post" name="factors" id="rightUIcol">
-+				<div class="factorHead">
-+					<h2>用户名和口令</h2>
-+				</div>
-+				<div class="factorHead">
-+					<h2>一次性口令</h2>
-+				</div>
-+				<div class="factorHead">
-+					<h2>证书</h2>
-+				</div>
-+				<div id="loginButton">
-+					<input type="submit" name="doLogin" value="登录" disabled="disabled" />
-+				</div>
-+			</form>
-+			<div class="clear">&nbsp;</div>
-+		</div>
-+		<div id="uiBottom">&nbsp;</div>
-+	</div>
++          <form name="f" method="post" action="/cgi-bin/logout">
++            <h1>Log Out</h1>
++            <p>You are about to log out of <a href="/services/">all weblogin applications</a>.
++              Are you sure you want to do this?</p>
++            <p>
++              <input type="button" id="back" value="Go Back" />
++              <input type="submit" id="logout" name="verify" value="Log Out" />
++            </p>
++            <div class="redirect">After logout your browser
++            will redirect to: $u</div>
++            <input type="hidden" name="url" value="$u" />
++          </form>
++        </td>
++      </tr>
++		</tbody>
++  </table>
++  <div id="uiBottom">&nbsp;</div>
 +</div>
 +$!include(inc/footer.inc)
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff --git a/html/template_google/zh/expired_error.html b/html/template_google/zh/expired_error.html
+diff --git a/html/templates_google/zh/error.html b/html/templates_google/zh/error.html
 new file mode 100644
-index 0000000..0cfde37
+index 0000000..cb83315
 --- /dev/null
-+++ b/html/template_google/zh/expired_error.html
-@@ -0,0 +1,287 @@
++++ b/html/templates_google/zh/error.html
+@@ -0,0 +1,34 @@
 +<html><head>
 +<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 +<meta http-equiv="Pragma" content="no-cache" />
 +<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
 +<title>$t</title>
-+<script><!--
-+function gaia_setFocus() {
-+  var f = null;
-+  if (document.getElementById) { 
-+    f = document.getElementById("gaia_loginform");
-+  } else if (window.gaia_loginform) { 
-+    f = window.gaia_loginform;
-+  } 
-+  if (f) {
-+    if (f.login && (f.login.value == null || f.login.value == "")) {
-+      f.login.focus();
-+    } else if (f.password) {
-+      f.password.focus();
-+    } 
-+  }
-+}
-+--></script>
-+<style type="text/css">
-+  <!--
-+  body { font-family: arial,sans-serif; background-color: #fff; margin-top: 2; }
-+  .c { width: 4; height: 4; } 
-+  a:link { color: #00c; } 
-+  a:visited { color: #551a8b; }
-+  a:active { color: #f00; }
-+  .form-noindent { background-color: #fff; border: 1px solid #c3d9ff; }
-+  -->
-+</style>
-+<style type="text/css"><!--
-+.gaia.le.lbl { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.fpwd { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.chusr { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.val { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.button { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.rem { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
++$!include(inc/css.inc)
++</head>
++<body dir="ltr">
++<div id="main">
++  $!include(inc/header.inc)
++  <br>
++  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
++    <tbody>
++      <tr>
++        <td valign="top" width="100%">
 +
-+.gaia.captchahtml.desc { font-family: arial, sans-serif; font-size: smaller; } 
-+.gaia.captchahtml.cmt { font-family: arial, sans-serif; font-size: smaller; font-style: italic; }
-+  
-+--></style>
-+<style type="text/css"><!--
-+  div.errormsg { color: red; font-size: smaller; font-family:arial,sans-serif; }
-+  font.errormsg { color: red; font-size: smaller; font-family:arial,sans-serif; }  
-+--></style>
-+<style type="text/css"><!--
-+.gaia.le.lbl { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.fpwd { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.chusr { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.val { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.button { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.rem { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+
-+.gaia.captchahtml.desc { font-family: arial, sans-serif; font-size: smaller; } 
-+.gaia.captchahtml.cmt { font-family: arial, sans-serif; font-size: smaller; font-style: italic; }
-+  
-+--></style>
-+ 
-+<style type="text/css"><!--
-+    .body { margin-left: 3em;
-+            margin-right: 5em;
-+            font-family: arial,sans-serif; }
-+
-+    div.errorbox-good {}
-+
-+    div.errorbox-bad {} 
-+
-+    div.errormsg { color: red; font-size: smaller; font-family: arial,sans-serif;}
-+    font.errormsg { color: red; font-size: smaller; font-family: arial,sans-serif;}
-+    
-+    hr {
-+      border: 0;
-+      background-color:#DDDDDD;
-+      height: 1px;
-+      width: 100%;
-+      text-align: left;
-+      margin: 5px;
-+    }
-+    
-+--></style>
-+<style type="text/css"><!--
-+#error {
-+	border: 1px dotted #cc9999;
-+	margin-bottom: 10px;
-+	padding: 6px 8px 6px 28px;
-+	background: url(images/icon_alert.gif) left center no-repeat;
-+	background-color: #fcfcfc;
-+	color: #cc0000;
-+}
-+#foot {
-+	width: 760px;
-+	margin: 20px auto;
-+	text-align: center;
-+	padding: 5px;
-+	font-size: 108%;
-+	border-top: 1px solid #ccc;
-+}
-+
-+#foot,
-+#foot a {
-+	background-color: inherit;
-+	color: #999;
-+}
-+
-+#foot a:hover {
-+	background-color: inherit;
-+	color: #70a8f1;
-+}
-+--></style>
-+
++          <h1 class="error">单点登录不可用</h1>
++          <div style="font-size: 83%;">
++            <p>内部错误导致单点登录不可用。非常抱歉，我们会尽快修复。请稍后重试。</p>
++            <p class="techInfo"><strong>Technical
++            Info:</strong> $e</p>
++          </div>
++        </td>
++      </tr>
++		</tbody>
++  </table>
++  <div class="clear">&nbsp;</div>
++  <div id="uiBottom">&nbsp;</div>
++</div>
++<br>
++$!include(inc/footer.inc)
++</body>
++</html>
++<!-- vim: set ts=2 sw=2 et : -->
+diff --git a/html/templates_google/zh/expired_error.html b/html/templates_google/zh/expired_error.html
+new file mode 100644
+index 0000000..0263117
+--- /dev/null
++++ b/html/templates_google/zh/expired_error.html
+@@ -0,0 +1,148 @@
++<html><head>
++<meta http-equiv="content-type" content="text/html; charset=UTF-8">
++<meta http-equiv="Pragma" content="no-cache" />
++<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
++<title>$t</title>
++$!include(inc/js.inc)
++$!include(inc/css.inc)
 +</head>
 +<body dir="ltr" onload="gaia_setFocus();">
 +<div id="main">
-+  <table border="0" cellpadding="2" cellspacing="0" width="100%">
-+    <tbody>
-+      <tr>
-+        <td colspan="2"><img alt="" height="2" width="1"></td>
-+      </tr>
-+      <tr>
-+        <td valign="top" width="1%">
-+          <a href="https://weblogin.foo.bar/">
-+          <img src="/cosign/images/services/Cosign_3d.gif" alt="CoSign" align="left" border="0">
-+          </a>
-+        </td>
-+        <td valign="bottom">
-+          <table border="0" cellpadding="0" cellspacing="0" width="100%">
-+            <tbody>
-+              <tr>
-+                <td colspan="2"><img alt="" height="15" width="1"></td>
-+              </tr>
-+              <tr bgcolor="#3366cc">
-+                <td><img alt="" height="1" width="1"></td>
-+              </tr>
-+              <tr bgcolor="#e5ecf9">
-+                <td style="padding-left: 4px; padding-bottom: 3px; padding-top: 2px; font-family: arial,sans-serif;">
-+                  <b>单点登录</b>
-+                </td>
-+              </tr>
-+              <tr>
-+                <td colspan="2"><img alt="" height="5" width="1"></td>
-+              </tr>
-+            </tbody>
-+          </table>
-+        </td>
-+      </tr>
-+    </tbody>
-+  </table>
++  $!include(inc/header.inc)
 +  <br>
 +  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
 +    <tbody>
@@ -1877,19 +1558,19 @@ index 0000000..0cfde37
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff --git a/html/template_google/zh/inc/0000.html b/html/template_google/zh/inc/0000.html
+diff --git a/html/templates_google/zh/inc/0000.html b/html/templates_google/zh/inc/0000.html
 new file mode 100644
 index 0000000..cd6c895
 --- /dev/null
-+++ b/html/template_google/zh/inc/0000.html
++++ b/html/templates_google/zh/inc/0000.html
 @@ -0,0 +1,2 @@
 +            <table border="0" cellpadding="4">
 +              <tbody>
-diff --git a/html/template_google/zh/inc/0010_wiki.html b/html/template_google/zh/inc/0010_wiki.html
+diff --git a/html/templates_google/zh/inc/0010_wiki.html b/html/templates_google/zh/inc/0010_wiki.html
 new file mode 100644
 index 0000000..bf9e081
 --- /dev/null
-+++ b/html/template_google/zh/inc/0010_wiki.html
++++ b/html/templates_google/zh/inc/0010_wiki.html
 @@ -0,0 +1,15 @@
 +                <tr>
 +                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -1906,11 +1587,11 @@ index 0000000..bf9e081
 +                    </small>
 +                  </td>
 +                </tr>
-diff --git a/html/template_google/zh/inc/0015_blog.html b/html/template_google/zh/inc/0015_blog.html
+diff --git a/html/templates_google/zh/inc/0015_blog.html b/html/templates_google/zh/inc/0015_blog.html
 new file mode 100644
 index 0000000..5228943
 --- /dev/null
-+++ b/html/template_google/zh/inc/0015_blog.html
++++ b/html/templates_google/zh/inc/0015_blog.html
 @@ -0,0 +1,15 @@
 +                <tr>
 +                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -1927,11 +1608,11 @@ index 0000000..5228943
 +                    </small>
 +                  </td>
 +                </tr>
-diff --git a/html/template_google/zh/inc/0020_scm.html b/html/template_google/zh/inc/0020_scm.html
+diff --git a/html/templates_google/zh/inc/0020_scm.html b/html/templates_google/zh/inc/0020_scm.html
 new file mode 100644
 index 0000000..6ebf8f7
 --- /dev/null
-+++ b/html/template_google/zh/inc/0020_scm.html
++++ b/html/templates_google/zh/inc/0020_scm.html
 @@ -0,0 +1,21 @@
 +                <tr>
 +                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -1954,11 +1635,11 @@ index 0000000..6ebf8f7
 +                    </small>
 +                  </td>
 +                </tr>
-diff --git a/html/template_google/zh/inc/0030_bugtrac.html b/html/template_google/zh/inc/0030_bugtrac.html
+diff --git a/html/templates_google/zh/inc/0030_bugtrac.html b/html/templates_google/zh/inc/0030_bugtrac.html
 new file mode 100644
 index 0000000..2b908d4
 --- /dev/null
-+++ b/html/template_google/zh/inc/0030_bugtrac.html
++++ b/html/templates_google/zh/inc/0030_bugtrac.html
 @@ -0,0 +1,19 @@
 +                <tr>
 +                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -1979,11 +1660,11 @@ index 0000000..2b908d4
 +                    </small>
 +                  </td>
 +                </tr>
-diff --git a/html/template_google/zh/inc/0035_testlink.html b/html/template_google/zh/inc/0035_testlink.html
+diff --git a/html/templates_google/zh/inc/0035_testlink.html b/html/templates_google/zh/inc/0035_testlink.html
 new file mode 100644
 index 0000000..29b9c73
 --- /dev/null
-+++ b/html/template_google/zh/inc/0035_testlink.html
++++ b/html/templates_google/zh/inc/0035_testlink.html
 @@ -0,0 +1,15 @@
 +                <tr>
 +                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -2000,11 +1681,11 @@ index 0000000..29b9c73
 +                    </small>
 +                  </td>
 +                </tr>
-diff --git a/html/template_google/zh/inc/0040_comm.html b/html/template_google/zh/inc/0040_comm.html
+diff --git a/html/templates_google/zh/inc/0040_comm.html b/html/templates_google/zh/inc/0040_comm.html
 new file mode 100644
 index 0000000..bcb8fa0
 --- /dev/null
-+++ b/html/template_google/zh/inc/0040_comm.html
++++ b/html/templates_google/zh/inc/0040_comm.html
 @@ -0,0 +1,15 @@
 +                <tr>
 +                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -2021,11 +1702,11 @@ index 0000000..bcb8fa0
 +                    </small>
 +                  </td>
 +                </tr>
-diff --git a/html/template_google/zh/inc/1000_account.html b/html/template_google/zh/inc/1000_account.html
+diff --git a/html/templates_google/zh/inc/1000_account.html b/html/templates_google/zh/inc/1000_account.html
 new file mode 100644
 index 0000000..ec601af
 --- /dev/null
-+++ b/html/template_google/zh/inc/1000_account.html
++++ b/html/templates_google/zh/inc/1000_account.html
 @@ -0,0 +1,16 @@
 +                <tr>
 +                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -2043,59 +1724,20 @@ index 0000000..ec601af
 +                    </small>
 +                  </td>
 +                </tr>
-diff --git a/html/template_google/zh/inc/9000.html b/html/template_google/zh/inc/9000.html
+diff --git a/html/templates_google/zh/inc/9000.html b/html/templates_google/zh/inc/9000.html
 new file mode 100644
 index 0000000..a0203b7
 --- /dev/null
-+++ b/html/template_google/zh/inc/9000.html
++++ b/html/templates_google/zh/inc/9000.html
 @@ -0,0 +1,2 @@
 +              </tbody>
 +            </table>
-diff --git a/html/template_google/zh/inc/footer.inc b/html/template_google/zh/inc/footer.inc
+diff --git a/html/templates_google/zh/inc/css.inc b/html/templates_google/zh/inc/css.inc
 new file mode 100644
-index 0000000..e1f8a0a
+index 0000000..e616f5d
 --- /dev/null
-+++ b/html/template_google/zh/inc/footer.inc
-@@ -0,0 +1,2 @@
-+<div id="foot">&copy; 2006-2009 <a href="http://www.umich.edu/~regents/" title="密歇根大学">密歇根大学</a>, 
-+       <a href="http://www.ossxp.com/">群英汇技术支持</a></div>
-diff --git a/html/template_google/zh/inc/header.inc b/html/template_google/zh/inc/header.inc
-new file mode 100644
-index 0000000..0988c0e
---- /dev/null
-+++ b/html/template_google/zh/inc/header.inc
-@@ -0,0 +1,3 @@
-+	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
-+		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
-+		</span> <strong>我们的主页</strong></a> </div>
-diff --git a/html/template_google/zh/login.html b/html/template_google/zh/login.html
-new file mode 100644
-index 0000000..8782115
---- /dev/null
-+++ b/html/template_google/zh/login.html
-@@ -0,0 +1,286 @@
-+<html><head>
-+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-+<meta http-equiv="Pragma" content="no-cache" />
-+<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
-+<title>$t</title>
-+<script><!--
-+function gaia_setFocus() {
-+  var f = null;
-+  if (document.getElementById) { 
-+    f = document.getElementById("gaia_loginform");
-+  } else if (window.gaia_loginform) { 
-+    f = window.gaia_loginform;
-+  } 
-+  if (f) {
-+    if (f.login && (f.login.value == null || f.login.value == "")) {
-+      f.login.focus();
-+    } else if (f.password) {
-+      f.password.focus();
-+    } 
-+  }
-+}
-+--></script>
++++ b/html/templates_google/zh/inc/css.inc
+@@ -0,0 +1,90 @@
 +<style type="text/css">
 +  <!--
 +  body { font-family: arial,sans-serif; background-color: #fff; margin-top: 2; }
@@ -2186,10 +1828,20 @@ index 0000000..8782115
 +	color: #70a8f1;
 +}
 +--></style>
-+
-+</head>
-+<body dir="ltr" onload="gaia_setFocus();">
-+<div id="main">
+diff --git a/html/templates_google/zh/inc/footer.inc b/html/templates_google/zh/inc/footer.inc
+new file mode 100644
+index 0000000..e1f8a0a
+--- /dev/null
++++ b/html/templates_google/zh/inc/footer.inc
+@@ -0,0 +1,2 @@
++<div id="foot">&copy; 2006-2009 <a href="http://www.umich.edu/~regents/" title="密歇根大学">密歇根大学</a>, 
++       <a href="http://www.ossxp.com/">群英汇技术支持</a></div>
+diff --git a/html/templates_google/zh/inc/header.inc b/html/templates_google/zh/inc/header.inc
+new file mode 100644
+index 0000000..eeaea8f
+--- /dev/null
++++ b/html/templates_google/zh/inc/header.inc
+@@ -0,0 +1,34 @@
 +  <table border="0" cellpadding="2" cellspacing="0" width="100%">
 +    <tbody>
 +      <tr>
@@ -2224,6 +1876,46 @@ index 0000000..8782115
 +      </tr>
 +    </tbody>
 +  </table>
+diff --git a/html/templates_google/zh/inc/js.inc b/html/templates_google/zh/inc/js.inc
+new file mode 100644
+index 0000000..f1d1d16
+--- /dev/null
++++ b/html/templates_google/zh/inc/js.inc
+@@ -0,0 +1,17 @@
++<script><!--
++function gaia_setFocus() {
++  var f = null;
++  if (document.getElementById) { 
++    f = document.getElementById("gaia_loginform");
++  } else if (window.gaia_loginform) { 
++    f = window.gaia_loginform;
++  } 
++  if (f) {
++    if (f.login && (f.login.value == null || f.login.value == "")) {
++      f.login.focus();
++    } else if (f.password) {
++      f.password.focus();
++    } 
++  }
++}
++--></script>
+diff --git a/html/templates_google/zh/login.html b/html/templates_google/zh/login.html
+new file mode 100644
+index 0000000..82e6be6
+--- /dev/null
++++ b/html/templates_google/zh/login.html
+@@ -0,0 +1,147 @@
++<html><head>
++<meta http-equiv="content-type" content="text/html; charset=UTF-8">
++<meta http-equiv="Pragma" content="no-cache" />
++<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
++<title>$t</title>
++$!include(inc/js.inc)
++$!include(inc/css.inc)
++</head>
++<body dir="ltr" onload="gaia_setFocus();">
++<div id="main">
++  $!include(inc/header.inc)
 +  <br>
 +  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
 +    <tbody>
@@ -2360,162 +2052,23 @@ index 0000000..8782115
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff --git a/html/template_google/zh/login_error.html b/html/template_google/zh/login_error.html
+diff --git a/html/templates_google/zh/login_error.html b/html/templates_google/zh/login_error.html
 new file mode 100644
-index 0000000..0cfde37
+index 0000000..0263117
 --- /dev/null
-+++ b/html/template_google/zh/login_error.html
-@@ -0,0 +1,287 @@
++++ b/html/templates_google/zh/login_error.html
+@@ -0,0 +1,148 @@
 +<html><head>
 +<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 +<meta http-equiv="Pragma" content="no-cache" />
 +<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
 +<title>$t</title>
-+<script><!--
-+function gaia_setFocus() {
-+  var f = null;
-+  if (document.getElementById) { 
-+    f = document.getElementById("gaia_loginform");
-+  } else if (window.gaia_loginform) { 
-+    f = window.gaia_loginform;
-+  } 
-+  if (f) {
-+    if (f.login && (f.login.value == null || f.login.value == "")) {
-+      f.login.focus();
-+    } else if (f.password) {
-+      f.password.focus();
-+    } 
-+  }
-+}
-+--></script>
-+<style type="text/css">
-+  <!--
-+  body { font-family: arial,sans-serif; background-color: #fff; margin-top: 2; }
-+  .c { width: 4; height: 4; } 
-+  a:link { color: #00c; } 
-+  a:visited { color: #551a8b; }
-+  a:active { color: #f00; }
-+  .form-noindent { background-color: #fff; border: 1px solid #c3d9ff; }
-+  -->
-+</style>
-+<style type="text/css"><!--
-+.gaia.le.lbl { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.fpwd { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.chusr { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.val { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.button { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.rem { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+
-+.gaia.captchahtml.desc { font-family: arial, sans-serif; font-size: smaller; } 
-+.gaia.captchahtml.cmt { font-family: arial, sans-serif; font-size: smaller; font-style: italic; }
-+  
-+--></style>
-+<style type="text/css"><!--
-+  div.errormsg { color: red; font-size: smaller; font-family:arial,sans-serif; }
-+  font.errormsg { color: red; font-size: smaller; font-family:arial,sans-serif; }  
-+--></style>
-+<style type="text/css"><!--
-+.gaia.le.lbl { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.fpwd { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.chusr { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.val { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.button { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.rem { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+
-+.gaia.captchahtml.desc { font-family: arial, sans-serif; font-size: smaller; } 
-+.gaia.captchahtml.cmt { font-family: arial, sans-serif; font-size: smaller; font-style: italic; }
-+  
-+--></style>
-+ 
-+<style type="text/css"><!--
-+    .body { margin-left: 3em;
-+            margin-right: 5em;
-+            font-family: arial,sans-serif; }
-+
-+    div.errorbox-good {}
-+
-+    div.errorbox-bad {} 
-+
-+    div.errormsg { color: red; font-size: smaller; font-family: arial,sans-serif;}
-+    font.errormsg { color: red; font-size: smaller; font-family: arial,sans-serif;}
-+    
-+    hr {
-+      border: 0;
-+      background-color:#DDDDDD;
-+      height: 1px;
-+      width: 100%;
-+      text-align: left;
-+      margin: 5px;
-+    }
-+    
-+--></style>
-+<style type="text/css"><!--
-+#error {
-+	border: 1px dotted #cc9999;
-+	margin-bottom: 10px;
-+	padding: 6px 8px 6px 28px;
-+	background: url(images/icon_alert.gif) left center no-repeat;
-+	background-color: #fcfcfc;
-+	color: #cc0000;
-+}
-+#foot {
-+	width: 760px;
-+	margin: 20px auto;
-+	text-align: center;
-+	padding: 5px;
-+	font-size: 108%;
-+	border-top: 1px solid #ccc;
-+}
-+
-+#foot,
-+#foot a {
-+	background-color: inherit;
-+	color: #999;
-+}
-+
-+#foot a:hover {
-+	background-color: inherit;
-+	color: #70a8f1;
-+}
-+--></style>
-+
++$!include(inc/js.inc)
++$!include(inc/css.inc)
 +</head>
 +<body dir="ltr" onload="gaia_setFocus();">
 +<div id="main">
-+  <table border="0" cellpadding="2" cellspacing="0" width="100%">
-+    <tbody>
-+      <tr>
-+        <td colspan="2"><img alt="" height="2" width="1"></td>
-+      </tr>
-+      <tr>
-+        <td valign="top" width="1%">
-+          <a href="https://weblogin.foo.bar/">
-+          <img src="/cosign/images/services/Cosign_3d.gif" alt="CoSign" align="left" border="0">
-+          </a>
-+        </td>
-+        <td valign="bottom">
-+          <table border="0" cellpadding="0" cellspacing="0" width="100%">
-+            <tbody>
-+              <tr>
-+                <td colspan="2"><img alt="" height="15" width="1"></td>
-+              </tr>
-+              <tr bgcolor="#3366cc">
-+                <td><img alt="" height="1" width="1"></td>
-+              </tr>
-+              <tr bgcolor="#e5ecf9">
-+                <td style="padding-left: 4px; padding-bottom: 3px; padding-top: 2px; font-family: arial,sans-serif;">
-+                  <b>单点登录</b>
-+                </td>
-+              </tr>
-+              <tr>
-+                <td colspan="2"><img alt="" height="5" width="1"></td>
-+              </tr>
-+            </tbody>
-+          </table>
-+        </td>
-+      </tr>
-+    </tbody>
-+  </table>
++  $!include(inc/header.inc)
 +  <br>
 +  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
 +    <tbody>
@@ -2653,162 +2206,23 @@ index 0000000..0cfde37
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff --git a/html/template_google/zh/reauth.html b/html/template_google/zh/reauth.html
+diff --git a/html/templates_google/zh/reauth.html b/html/templates_google/zh/reauth.html
 new file mode 100644
-index 0000000..9a92169
+index 0000000..b561cbc
 --- /dev/null
-+++ b/html/template_google/zh/reauth.html
-@@ -0,0 +1,282 @@
++++ b/html/templates_google/zh/reauth.html
+@@ -0,0 +1,143 @@
 +<html><head>
 +<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 +<meta http-equiv="Pragma" content="no-cache" />
 +<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
 +<title>$t</title>
-+<script><!--
-+function gaia_setFocus() {
-+  var f = null;
-+  if (document.getElementById) { 
-+    f = document.getElementById("gaia_loginform");
-+  } else if (window.gaia_loginform) { 
-+    f = window.gaia_loginform;
-+  } 
-+  if (f) {
-+    if (f.login && (f.login.value == null || f.login.value == "")) {
-+      f.login.focus();
-+    } else if (f.password) {
-+      f.password.focus();
-+    } 
-+  }
-+}
-+--></script>
-+<style type="text/css">
-+  <!--
-+  body { font-family: arial,sans-serif; background-color: #fff; margin-top: 2; }
-+  .c { width: 4; height: 4; } 
-+  a:link { color: #00c; } 
-+  a:visited { color: #551a8b; }
-+  a:active { color: #f00; }
-+  .form-noindent { background-color: #fff; border: 1px solid #c3d9ff; }
-+  -->
-+</style>
-+<style type="text/css"><!--
-+.gaia.le.lbl { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.fpwd { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.chusr { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.val { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.button { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.rem { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+
-+.gaia.captchahtml.desc { font-family: arial, sans-serif; font-size: smaller; } 
-+.gaia.captchahtml.cmt { font-family: arial, sans-serif; font-size: smaller; font-style: italic; }
-+  
-+--></style>
-+<style type="text/css"><!--
-+  div.errormsg { color: red; font-size: smaller; font-family:arial,sans-serif; }
-+  font.errormsg { color: red; font-size: smaller; font-family:arial,sans-serif; }  
-+--></style>
-+<style type="text/css"><!--
-+.gaia.le.lbl { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.fpwd { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.chusr { font-family: Arial, Helvetica, sans-serif; font-size: 70%; }
-+.gaia.le.val { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.button { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+.gaia.le.rem { font-family: Arial, Helvetica, sans-serif; font-size: smaller; }
-+
-+.gaia.captchahtml.desc { font-family: arial, sans-serif; font-size: smaller; } 
-+.gaia.captchahtml.cmt { font-family: arial, sans-serif; font-size: smaller; font-style: italic; }
-+  
-+--></style>
-+ 
-+<style type="text/css"><!--
-+    .body { margin-left: 3em;
-+            margin-right: 5em;
-+            font-family: arial,sans-serif; }
-+
-+    div.errorbox-good {}
-+
-+    div.errorbox-bad {} 
-+
-+    div.errormsg { color: red; font-size: smaller; font-family: arial,sans-serif;}
-+    font.errormsg { color: red; font-size: smaller; font-family: arial,sans-serif;}
-+    
-+    hr {
-+      border: 0;
-+      background-color:#DDDDDD;
-+      height: 1px;
-+      width: 100%;
-+      text-align: left;
-+      margin: 5px;
-+    }
-+    
-+--></style>
-+<style type="text/css"><!--
-+#error {
-+	border: 1px dotted #cc9999;
-+	margin-bottom: 10px;
-+	padding: 6px 8px 6px 28px;
-+	background: url(images/icon_alert.gif) left center no-repeat;
-+	background-color: #fcfcfc;
-+	color: #cc0000;
-+}
-+#foot {
-+	width: 760px;
-+	margin: 20px auto;
-+	text-align: center;
-+	padding: 5px;
-+	font-size: 108%;
-+	border-top: 1px solid #ccc;
-+}
-+
-+#foot,
-+#foot a {
-+	background-color: inherit;
-+	color: #999;
-+}
-+
-+#foot a:hover {
-+	background-color: inherit;
-+	color: #70a8f1;
-+}
-+--></style>
-+
++$!include(inc/js.inc)
++$!include(inc/css.inc)
 +</head>
 +<body dir="ltr" onload="gaia_setFocus();">
 +<div id="main">
-+  <table border="0" cellpadding="2" cellspacing="0" width="100%">
-+    <tbody>
-+      <tr>
-+        <td colspan="2"><img alt="" height="2" width="1"></td>
-+      </tr>
-+      <tr>
-+        <td valign="top" width="1%">
-+          <a href="https://weblogin.foo.bar/">
-+          <img src="/cosign/images/services/Cosign_3d.gif" alt="CoSign" align="left" border="0">
-+          </a>
-+        </td>
-+        <td valign="bottom">
-+          <table border="0" cellpadding="0" cellspacing="0" width="100%">
-+            <tbody>
-+              <tr>
-+                <td colspan="2"><img alt="" height="15" width="1"></td>
-+              </tr>
-+              <tr bgcolor="#3366cc">
-+                <td><img alt="" height="1" width="1"></td>
-+              </tr>
-+              <tr bgcolor="#e5ecf9">
-+                <td style="padding-left: 4px; padding-bottom: 3px; padding-top: 2px; font-family: arial,sans-serif;">
-+                  <b>单点登录</b>
-+                </td>
-+              </tr>
-+              <tr>
-+                <td colspan="2"><img alt="" height="5" width="1"></td>
-+              </tr>
-+            </tbody>
-+          </table>
-+        </td>
-+      </tr>
-+    </tbody>
-+  </table>
++  $!include(inc/header.inc)
 +  <br>
 +  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
 +    <tbody>
@@ -2941,12 +2355,12 @@ index 0000000..9a92169
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
-diff --git a/html/template_google/zh/verify-logout.html b/html/template_google/zh/verify-logout.html
+diff --git a/html/templates_google/zh/verify-logout.html b/html/templates_google/zh/verify-logout.html
 new file mode 100644
-index 0000000..f3ea7e6
+index 0000000..e391b70
 --- /dev/null
-+++ b/html/template_google/zh/verify-logout.html
-@@ -0,0 +1,43 @@
++++ b/html/templates_google/zh/verify-logout.html
+@@ -0,0 +1,40 @@
 +<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 +<html xmlns="http://www.w3.org/1999/xhtml">
 +<head>
@@ -2954,41 +2368,38 @@ index 0000000..f3ea7e6
 +<meta http-equiv="Pragma" content="no-cache" />
 +<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
 +<title>$t</title>
-+<style type="text/css" media="screen">
-+/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
-+</style>
-+<script type="text/javascript" src="/cosign/js/prototype.js"></script>
-+<script type="text/javascript">
-+	window.onload = function() {
-+		Event.observe('back', 'click', function() {history.go(-1)});
-+		$('logout').focus();
-+	}
-+</script>
++$!include(inc/css.inc)
 +</head>
-+<body>
-+<div id="page">
++<body dir="ltr">
++<div id="main">
 +  $!include(inc/header.inc)
-+	<div id="main" class="logoutUI">
-+		<div id="uiRow">
-+		    <form name="f" method="post" action="/cgi-bin/logout">
-+			<h1>退出登录</h1>
-+			<p>您将要退出<a href="/services/">所有的应用</a>。
-+			   您确定退出么？</p>
-+			<p>
-+				<input type="button" id="back" value="返回" />
-+				<input type="submit" id="logout" name="verify" value="确认退出" />
-+			</p>
-+			<div class="redirect">退出后，您的浏览器
-+			将跳转到: $u</div>
-+			<input type="hidden" name="url" value="$u" />
-+		</form>
-+		</div>
-+		<div id="uiBottom">&nbsp;</div>
-+	</div>
++  <br>
++  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
++    <tbody>
++      <tr>
++        <td valign="top" width="100%">
++
++          <form name="f" method="post" action="/cgi-bin/logout">
++			      <h1>退出登录</h1>
++            <p>您将要退出<a href="/services/">所有的应用</a>。
++               您确定退出么？</p>
++            <p>
++            <input type="button" id="back" value="返回" />
++            <input type="submit" id="logout" name="verify" value="确认退出" />
++            </p>
++            <div class="redirect">退出后，您的浏览器
++            将跳转到: $u</div>
++            <input type="hidden" name="url" value="$u" />
++          </form>
++        </td>
++      </tr>
++		</tbody>
++  </table>
++  <div id="uiBottom">&nbsp;</div>
 +</div>
 +$!include(inc/footer.inc)
 +</body>
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
 -- 
-tg: (e367fd2..) t/templates_google (depends on: t/template_standard_zh)
+tg: (61a1e32..) t/templates_google (depends on: t/template_standard_zh)

@@ -41,7 +41,7 @@ index b5d6334..06e9031 100755
  	done
 diff --git a/html/looping.html.zh b/html/looping.html.zh
 new file mode 100755
-index 0000000..4ecb673
+index 0000000..9bce203
 --- /dev/null
 +++ b/html/looping.html.zh
 @@ -0,0 +1,55 @@
@@ -63,7 +63,7 @@ index 0000000..4ecb673
 +</head>
 +<body>
 +<div id="page">
-+	<!--#include file="../templates-local/zh/inc/header.inc" -->
++	<!--#include file="zh/inc/header.inc" -->
 +	<hr class="text" />
 +	<div id="main">
 +		<div id="uiRow">
@@ -97,19 +97,19 @@ index 0000000..4ecb673
 +		<div id="uiBottom">&nbsp;</div>
 +	</div>
 +</div>
-+<!--#include file="../templates-local/zh/inc/footer.inc" -->
++<!--#include file="zh/inc/footer.inc" -->
 +</body>
 +</html>
 diff --git a/html/post_error.html.zh b/html/post_error.html.zh
 new file mode 100755
-index 0000000..94a5d66
+index 0000000..5dd6446
 --- /dev/null
 +++ b/html/post_error.html.zh
 @@ -0,0 +1,27 @@
 +<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 +<html xmlns="http://www.w3.org/1999/xhtml">
 +<head>
-+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
++<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 +<meta http-equiv="Pragma" content="no-cache" />
 +<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
 +<title>You were trying to POST?</title>
@@ -119,7 +119,7 @@ index 0000000..94a5d66
 +</head>
 +<body>
 +<div id="page">
-+	<!--#include file="../templates-local/zh/inc/header.inc" -->
++	<!--#include file="zh/inc/header.inc" -->
 +	<div id="main">
 +		<div id="uiRow">
 +			<h1 class="error">修改尚未保存</h1>
@@ -130,19 +130,19 @@ index 0000000..94a5d66
 +		<div id="uiBottom">&nbsp;</div>
 +	</div>
 +</div>
-+<!--#include file="../templates-local/zh/inc/footer.inc" -->
++<!--#include file="zh/inc/footer.inc" -->
 +</body>
 +</html>
 diff --git a/html/validation_error.html.zh b/html/validation_error.html.zh
 new file mode 100755
-index 0000000..a5034b6
+index 0000000..81bbaad
 --- /dev/null
 +++ b/html/validation_error.html.zh
 @@ -0,0 +1,26 @@
 +<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 +<html xmlns="http://www.w3.org/1999/xhtml">
 +<head>
-+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
++<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 +<meta http-equiv="Pragma" content="no-cache" />
 +<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
 +<title>weblogin: URL validation failed</title>
@@ -152,7 +152,7 @@ index 0000000..a5034b6
 +</head>
 +<body>
 +<div id="page">
-+	<!--#include file="../templates-local/zh/inc/header.inc" -->
++	<!--#include file="zh/inc/header.inc" -->
 +	<div id="main">
 +		<div id="uiRow">
 +			<h1 class="error">URL 验证失败</h1>
@@ -162,7 +162,7 @@ index 0000000..a5034b6
 +		<div id="uiBottom">&nbsp;</div>
 +	</div>
 +</div>
-+<!--#include file="../templates-local/zh/inc/footer.inc" -->
++<!--#include file="zh/inc/footer.inc" -->
 +</body>
 +</html>
 diff --git a/html/zh/error.html b/html/zh/error.html
@@ -755,4 +755,4 @@ index 0000000..3b32b8c
 +</body>
 +</html>
 -- 
-tg: (98a96c7..) t/template_standard_zh (depends on: t/custom_cosign_path t/template_standard_en)
+tg: (9add2e3..) t/template_standard_zh (depends on: t/custom_cosign_path t/template_standard_en)

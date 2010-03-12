@@ -16,7 +16,7 @@
 </head>
 <body>
 <div id="page">
-	<!--#include file="../templates-local/zh/inc/header.inc" -->
+	<!--#include file="zh/inc/header.inc" -->
 	<hr class="text" />
 	<div id="main">
 		<div id="uiRow">
@@ -50,6 +50,6 @@
 		<div id="uiBottom">&nbsp;</div>
 	</div>
 </div>
-<!--#include file="../templates-local/zh/inc/footer.inc" -->
+<!--#include file="zh/inc/footer.inc" -->
 </body>
 </html>

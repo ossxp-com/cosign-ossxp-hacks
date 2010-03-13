@@ -1,7 +1,15 @@
 <?php
 
-$logouturl = "https://weblogin.foo.bar/cgi-bin/logout";
-$loginurl  = "https://weblogin.foo.bar/cgi-bin/login";
+$logouturl = "https://weblogin.moon.ossxp.com/cgi-bin/logout";
+$loginurl  = "https://weblogin.moon.ossxp.com/cgi-bin/login";
+
+function isloggedin()
+{
+    if (isset($_SERVER["REMOTE_USER"]) && !empty($_SERVER["REMOTE_USER"]))
+      return true;
+    else
+      return false;
+}
 
 function show_summary()
 {
@@ -43,12 +51,15 @@ function show_summary()
     <table class="borderless">
       <tr>
         <th valign="middle">
-          CookieName: siteX
+          CookieName: siteX.testX
         </th>
         <td>
             <table border='1'>
               <tr>
                 <th>
+                </th>
+                <th>
+                  CosignAllowPublicAccess: on
                 </th>
                 <th>
                   CosignAllowPublicAccess: on
@@ -65,7 +76,10 @@ function show_summary()
                   <a href="/">Home - site1:on/on</a>
                 </td>
                 <td>
-                  <a href="/login">login - site1:on/off</a>
+                  <a href="/login.php?service=site1.test1">login - site1:on/on</a>
+                </td>
+                <td>
+                  <a href="/protect">login - site1:on/off</a>
                 </td>
               </tr>
               <tr>
@@ -73,7 +87,7 @@ function show_summary()
                   CosignProtected: off
                 </th>
                 <td colspan='2'>
-                  <a href="/off">off - site1:off</a>
+                  <a href="/off">off - siteX:off</a>
                 </td>
               </tr>
             </table>
@@ -81,12 +95,15 @@ function show_summary()
       </tr>
       <tr>
         <th valign="middle">
-          CookieName: service
+          CookieName: siteX.testservice
         </th>
         <td valign="middle">
             <table border='1'>
               <tr>
                 <th>
+                </th>
+                <th>
+                  CosignAllowPublicAccess: on
                 </th>
                 <th>
                   CosignAllowPublicAccess: on
@@ -103,6 +120,9 @@ function show_summary()
                   <a href="/service1">service1 - service:on/on</a>
                 </td>
                 <td>
+                  <a href="/service1/login.php?service=site1.testservice">login - service:on/on</a>
+                </td>
+                <td>
                   <a href="/service2">service2 - service:on/off</a>
                 </td>
               </tr>
@@ -111,7 +131,7 @@ function show_summary()
                   CosignProtected: off
                 </th>
                 <td colspan='2'>
-                  <a href="/off">off - site1:off</a>
+                  <a href="/off">off - siteX:off</a>
                 </td>
               </tr>
             </table>

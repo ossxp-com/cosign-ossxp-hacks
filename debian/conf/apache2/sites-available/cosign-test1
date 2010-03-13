@@ -28,7 +28,7 @@
     AllowOverride None
     Include /etc/apache2/include/authz_host/_private
   </Directory>
-  <Directory "/opt/cosign/sites/site1/www/login/">
+  <Directory "/opt/cosign/sites/site1/www/protect/">
     CosignProtected On
     # Cookie name:
     CosignService site1.test1 

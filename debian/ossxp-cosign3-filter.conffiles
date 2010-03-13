@@ -1,4 +1,2 @@
 /opt/cosign/conf/cron.d/cosign-cleanup
-/opt/cosign/sites/site1/apache.conf
-/opt/cosign/sites/site2/apache.conf
 /opt/cosign/sites/site1/www/include.inc.php

@@ -1,0 +1,55 @@
+# Host 2: a list of available services
+<VirtualHost *:80>
+  ServerName site2.foo.bar
+
+  <IfModule mod_cosign.c>
+    Include /etc/apache2/include/cosign/virtualhost.inf
+    CosignCrypto /opt/ossxp/ssl/certs/cosign-filter/insecure-filter-2.key /opt/ossxp/ssl/certs/cosign-filter/insecure-filter-2.crt /opt/cosign/conf/certs/CA
+  </IfModule>
+
+  # Don't redirect to https if we come from http
+  CosignHttpOnly On
+
+  DocumentRoot "/opt/cosign/sites/site2/www"
+  <Directory "/opt/cosign/sites/site2/www/">
+    Options +FollowSymLinks +Indexes
+    DirectoryIndex index.php index.html index.htm
+    <IfModule !mod_php5.c>
+        <IfModule mod_fcgid.c>
+            Options +ExecCGI
+        </IfModule>
+    </IfModule>
+
+    CosignProtected On
+    # Cookie name:
+    CosignService site2
+    CosignAllowPublicAccess On
+
+    AllowOverride None
+    Include /etc/apache2/include/authz_host/_private
+  </Directory>
+  <Directory "/opt/cosign/sites/site2/www/login/">
+    CosignProtected On
+    # Cookie name:
+    CosignService site2
+    CosignAllowPublicAccess Off
+  </Directory>
+  <Directory "/opt/cosign/sites/site2/www/service1/">
+    CosignProtected On
+    # Cookie name:
+    CosignService service
+    CosignAllowPublicAccess On
+  </Directory>
+  <Directory "/opt/cosign/sites/site2/www/service2/">
+    CosignProtected On
+    # Cookie name:
+    CosignService service
+    CosignAllowPublicAccess Off
+  </Directory>
+  <Directory "/opt/cosign/sites/site2/www/off/">
+    CosignProtected Off
+    # Cookie name:
+    CosignService site2
+    CosignAllowPublicAccess Off
+  </Directory>
+</VirtualHost>

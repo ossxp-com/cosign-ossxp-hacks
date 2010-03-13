@@ -1,6 +1,7 @@
-debian/tmp/opt/cosign/bin/monster  opt/cosign/bin/
-debian/tmp/opt/cosign/bin/cosignd  opt/cosign/bin/
-debian/tmp/opt/cosign/man/man8/monster.8 opt/cosign/man/man8/
-debian/tmp/opt/cosign/man/man8/cosignd.8 opt/cosign/man/man8/
-debian/certs/daemon/*                    opt/ossxp/ssl/certs/cosign-daemon
-debian/conf/default/cosign         etc/default/
+debian/tmp/opt/cosign/bin/monster             opt/cosign/bin/
+debian/tmp/opt/cosign/bin/cosignd             opt/cosign/bin/
+debian/tmp/opt/cosign/man/man8/monster.8      opt/cosign/man/man8/
+debian/tmp/opt/cosign/man/man8/cosignd.8      opt/cosign/man/man8/
+debian/certs/daemon/*                         opt/ossxp/ssl/certs/cosign-daemon
+debian/conf/default/cosign                    etc/default/
+debian/package_info/ossxp-cosign3-daemon.conf opt/ossxp/lib/packages/

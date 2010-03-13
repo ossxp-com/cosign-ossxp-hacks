@@ -1,8 +1,4 @@
 /opt/cosign/cgi-bin/cosign.cgi       /opt/cosign/cgi-bin/login
-/opt/cosign/lib/html/images          /opt/cosign/lib/html_google/images
-/opt/cosign/lib/html/js              /opt/cosign/lib/html_google/js
-/opt/cosign/lib/html/cosign_base.css /opt/cosign/lib/html_google/cosign_base.css
-/opt/cosign/lib/html/cosign_js.css   /opt/cosign/lib/html_google/cosign_js.css
 /opt/cosign/lib/templates-local/en   /opt/cosign/lib/html/en
 /opt/cosign/lib/templates-local/zh   /opt/cosign/lib/html/zh
 /opt/cosign/lib/templates-local/en   /opt/cosign/lib/html_google/en

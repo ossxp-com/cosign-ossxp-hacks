@@ -2,17 +2,30 @@
 <VirtualHost *:80>
   ServerName site1.foo.bar
 
-  Include /opt/cosign/conf/apache.inc
+  <IfModule mod_cosign.c>
+    Include /etc/apache2/include/cosign/virtualhost.inf
+  </IfModule>
 
   # Don't redirect to https if we come from http
   CosignHttpOnly On
 
   DocumentRoot "/opt/cosign/sites/site1/www"
   <Directory "/opt/cosign/sites/site1/www/">
+    Options +FollowSymLinks +Indexes
+    DirectoryIndex index.php index.html index.htm
+    <IfModule !mod_php5.c>
+        <IfModule mod_fcgid.c>
+            Options +ExecCGI
+        </IfModule>
+    </IfModule>
+
     CosignProtected On
     # Cookie name:
     CosignService site1
     CosignAllowPublicAccess On
+
+    AllowOverride None
+    Include /etc/apache2/include/authz_host/_private
   </Directory>
   <Directory "/opt/cosign/sites/site1/www/login/">
     CosignProtected On

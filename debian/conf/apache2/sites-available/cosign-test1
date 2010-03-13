@@ -4,6 +4,7 @@
 
   <IfModule mod_cosign.c>
     Include /etc/apache2/include/cosign/virtualhost.inf
+    CosignCrypto /opt/ossxp/ssl/certs/cosign-filter/insecure-filter-1.key /opt/ossxp/ssl/certs/cosign-filter/insecure-filter-1.crt /opt/cosign/conf/certs/CA
   </IfModule>
 
   # Don't redirect to https if we come from http
@@ -21,7 +22,7 @@
 
     CosignProtected On
     # Cookie name:
-    CosignService site1
+    CosignService site1.test1
     CosignAllowPublicAccess On
 
     AllowOverride None
@@ -30,25 +31,25 @@
   <Directory "/opt/cosign/sites/site1/www/login/">
     CosignProtected On
     # Cookie name:
-    CosignService site1
+    CosignService site1.test1 
     CosignAllowPublicAccess Off
   </Directory>
   <Directory "/opt/cosign/sites/site1/www/service1/">
     CosignProtected On
     # Cookie name:
-    CosignService service
+    CosignService site1.testservice
     CosignAllowPublicAccess On
   </Directory>
   <Directory "/opt/cosign/sites/site1/www/service2/">
     CosignProtected On
     # Cookie name:
-    CosignService service
+    CosignService site1.testservice
     CosignAllowPublicAccess Off
   </Directory>
   <Directory "/opt/cosign/sites/site1/www/off/">
     CosignProtected Off
     # Cookie name:
-    CosignService site1
+    CosignService site1.test1
     CosignAllowPublicAccess Off
   </Directory>
 </VirtualHost>

@@ -22,7 +22,7 @@
 
     CosignProtected On
     # Cookie name:
-    CosignService site2
+    CosignService site2.test2
     CosignAllowPublicAccess On
 
     AllowOverride None
@@ -31,25 +31,25 @@
   <Directory "/opt/cosign/sites/site2/www/login/">
     CosignProtected On
     # Cookie name:
-    CosignService site2
+    CosignService site2.test2 
     CosignAllowPublicAccess Off
   </Directory>
   <Directory "/opt/cosign/sites/site2/www/service1/">
     CosignProtected On
     # Cookie name:
-    CosignService service
+    CosignService site2.testservice
     CosignAllowPublicAccess On
   </Directory>
   <Directory "/opt/cosign/sites/site2/www/service2/">
     CosignProtected On
     # Cookie name:
-    CosignService service
+    CosignService site2.testservice
     CosignAllowPublicAccess Off
   </Directory>
   <Directory "/opt/cosign/sites/site2/www/off/">
     CosignProtected Off
     # Cookie name:
-    CosignService site2
+    CosignService site2.test2
     CosignAllowPublicAccess Off
   </Directory>
 </VirtualHost>

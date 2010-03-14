@@ -1,27 +1,28 @@
-ossxp-cosign3 (3.1.1-0.7) unstable; urgency=low
+ossxp-cosign3 (3.1.1-0.8) unstable; urgency=low
 
   * Static web pages serve for different languages.
   * More testcase for cosign demo site.
+  * Service directives in cosign.conf are compatible with old apps.
 
- -- Jiang Xin <jiangxin@foo.bar>  Thu, 11 Mar 2010 21:45:40 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Sun, 14 Mar 2010 11:21:49 +0800
 
 ossxp-cosign3 (3.1.1-0.3.0) unstable; urgency=low
 
   * Upstream upgrade to 3.1.1.
 
- -- Jiang Xin <jiangxin@foo.bar>  Wed, 10 Mar 2010 16:49:34 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Wed, 10 Mar 2010 16:49:34 +0800
 
 ossxp-cosign (2.1.1-0.2.82+) unstable; urgency=low
 
   * Add blog to google_template.
 
- -- Jiang Xin <jiangxin@foo.bar>  Wed, 06 Jan 2010 20:19:43 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Wed, 06 Jan 2010 20:19:43 +0800
 
 ossxp-cosign (2.1.1-0.2.81+git) unstable; urgency=low
 
   * Maintain using git;
 
- -- Jiang Xin <jiangxin@foo.bar>  Thu, 24 Dec 2009 18:31:35 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Thu, 24 Dec 2009 18:31:35 +0800
 
 ossxp-cosign (2.1.1-0.2.81) unstable; urgency=low
 
@@ -29,7 +30,7 @@ ossxp-cosign (2.1.1-0.2.81) unstable; urgency=low
   * Php in services handle logout properly;
   * English templates works;
 
- -- Jiang Xin <jiangxin@foo.bar>  Tue, 17 Nov 2009 00:34:07 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Tue, 17 Nov 2009 00:34:07 +0800
 
 ossxp-cosign (2.1.1-0.2.77) unstable; urgency=low
 
@@ -37,25 +38,25 @@ ossxp-cosign (2.1.1-0.2.77) unstable; urgency=low
     $!include(filename*.txt)
   * New templates using $!include() macro.
 
- -- Jiang Xin <jiangxin@foo.bar>  Tue, 17 Nov 2009 00:34:07 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Tue, 17 Nov 2009 00:34:07 +0800
 
 ossxp-cosign (2.1.1-0.2.74) unstable; urgency=low
 
   * php script works with php in cgi mode.
 
- -- Jiang Xin <jiangxin@foo.bar>  Fri, 30 Oct 2009 23:43:13 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Fri, 30 Oct 2009 23:43:13 +0800
 
 ossxp-cosign (2.1.1-0.2.70) unstable; urgency=low
 
   * Cosign Cgi redirt / to https://weblogin/cgi-bin/login
 
- -- Jiang Xin <jiangxin@foo.bar>  Thu, 03 Sep 2009 20:06:38 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Thu, 03 Sep 2009 20:06:38 +0800
 
 ossxp-cosign (2.1.1-0.2.68) unstable; urgency=low
 
   * Deploy certs to /opt/ossxp/ssl/certs/cosign-*/
 
- -- Jiang Xin <jiangxin@foo.bar>  Thu, 03 Sep 2009 20:06:38 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Thu, 03 Sep 2009 20:06:38 +0800
 
 ossxp-cosign (2.1.1-0.2.65) unstable; urgency=low
 
@@ -64,13 +65,13 @@ ossxp-cosign (2.1.1-0.2.65) unstable; urgency=low
     raise a Exception. So change cosign module name for apache2
     to x_cosign.load and x_cosign.conf
 
- -- Jiang Xin <jiangxin@foo.bar>  Thu, 13 Aug 2009 14:16:42 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Thu, 13 Aug 2009 14:16:42 +0800
 
 ossxp-cosign (2.1.1-0.2.62) unstable; urgency=low
 
   * set idle time for cosign daemon and monster.
 
- -- Jiang Xin <jiangxin@foo.bar>  Thu, 13 Aug 2009 14:16:42 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Thu, 13 Aug 2009 14:16:42 +0800
 
 ossxp-cosign (2.1.1-0.2.59) unstable; urgency=low
 
@@ -80,7 +81,7 @@ ossxp-cosign (2.1.1-0.2.59) unstable; urgency=low
   * new include file virtualhost.inf for VirtualHost
   * add http redirect.
 
- -- Jiang Xin <jiangxin@foo.bar>  Fri, 10 Jul 2009 18:52:03 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Fri, 10 Jul 2009 18:52:03 +0800
 
 ossxp-cosign (2.1.1-0.2.47) unstable; urgency=low
 
@@ -90,26 +91,26 @@ ossxp-cosign (2.1.1-0.2.47) unstable; urgency=low
   * cosign conflicts with apache2 2.2.11.
   * package_info bugfix.
 
- -- Jiang Xin <jiangxin@foo.bar>  Tue, 16 Jun 2009 19:40:09 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Tue, 16 Jun 2009 19:40:09 +0800
 
 ossxp-cosign (2.1.1-0.2.36) unstable; urgency=low
 
   * Add ossxp package info.
 
- -- Jiang Xin <jiangxin@foo.bar>  Thu, 11 Jun 2009 18:12:33 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Thu, 11 Jun 2009 18:12:33 +0800
 
 ossxp-cosign (2.1.1-0.2.33) unstable; urgency=low
 
   * Cosign upgrade to 2.1.1;
 
- -- Jiang Xin <jiangxin@foo.bar>  Fri, 15 May 2009 17:26:44 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Fri, 15 May 2009 17:26:44 +0800
 
 ossxp-cosign (2.1.0-0.2.32) unstable; urgency=low
 
   * Cosign upgrade to 2.1.0;
   * Trac replace mantis in services list and cosign template.
 
- -- Jiang Xin <jiangxin@foo.bar>  Fri, 13 Mar 2009 23:39:10 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Fri, 13 Mar 2009 23:39:10 +0800
 
 ossxp-cosign (2.1.0~rc1-0.1.5141) unstable; urgency=low
 
@@ -117,10 +118,10 @@ ossxp-cosign (2.1.0~rc1-0.1.5141) unstable; urgency=low
   * Add Google style templates;
   * Fix quirk behavior for CosignHttpOnly parameter;
 
- -- Jiang Xin <jiangxin@foo.bar>  Thu, 11 Dec 2008 03:13:19 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Thu, 11 Dec 2008 03:13:19 +0800
 
 ossxp-cosign (2.1.0~rc1-0.1.5113) unstable; urgency=low
 
   * CoSign debian package initial.
 
- -- Jiang Xin <jiangxin@foo.bar>  Tue, 02 Dec 2008 15:44:28 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Tue, 02 Dec 2008 15:44:28 +0800

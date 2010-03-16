@@ -1,6 +1,6 @@
 <?php
 
-$url_gosa = "https://weblogin.foo.bar/members/?login";
+$url_gosa = "https://members.foo.bar/members/?login";
 $url_logout = "https://weblogin.foo.bar/cgi-bin/logout";
 
 #############################

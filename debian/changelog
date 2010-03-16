@@ -1,3 +1,9 @@
+ossxp-cosign3 (3.1.1-0.9) unstable; urgency=low
+
+  * Config files tuning.
+
+ -- Jiang Xin <jiangxin@ossxp.com>  Tue, 16 Mar 2010 08:51:00 +0800
+
 ossxp-cosign3 (3.1.1-0.8) unstable; urgency=low
 
   * Static web pages serve for different languages.

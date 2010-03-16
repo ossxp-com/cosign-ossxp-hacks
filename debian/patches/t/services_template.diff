@@ -26,13 +26,13 @@ index 8785b78..87cfa6e 100755
  clean:
 diff --git a/html/services/config_inc.php b/html/services/config_inc.php
 new file mode 100644
-index 0000000..75d61d6
+index 0000000..54f9c0c
 --- /dev/null
 +++ b/html/services/config_inc.php
 @@ -0,0 +1,18 @@
 +<?php
 +
-+$url_gosa = "https://weblogin.foo.bar/members/?login";
++$url_gosa = "https://members.foo.bar/members/?login";
 +$url_logout = "https://weblogin.foo.bar/cgi-bin/logout";
 +
 +#############################
@@ -50,7 +50,7 @@ index 0000000..75d61d6
 +?>
 diff --git a/html/services/index.php b/html/services/index.php
 new file mode 100644
-index 0000000..0e2db31
+index 0000000..70b28af
 --- /dev/null
 +++ b/html/services/index.php
 @@ -0,0 +1,259 @@
@@ -305,7 +305,7 @@ index 0000000..0e2db31
 +  else
 +  {
 +?>
-+  <div id="foot">&copy; 2006-2008 <a href="http://www.umich.edu/~regents/" title="密歇根大学">密歇根大学</a>, 
++  <div id="foot">&copy; 2006-2010 <a href="http://www.umich.edu/~regents/" title="密歇根大学">密歇根大学</a>,
 +       <a href="http://www.ossxp.com/">群英汇技术支持</a></div>
 +<?php
 +  }

@@ -65,10 +65,12 @@ $ldap->bind("$binddn", password => "$bindpw", version => 3);
 my $mesg = $ldap->search(base => $base, filter => $filter, attrs => $attrs);
 my $count = $mesg->count;
 if ($count == 0) {
-    print "Login failed: user '$login' does not exist.\n";
+    #print "Login failed: user '$login' does not exist.\n";
+    print "Login failed: user does not exist or wrong password.\n";
     exit 1;
 } elsif ($count > 1) {
-    print "Login failed: several users '$login' exist!\n";
+    #print "Login failed: several users '$login' exist!\n";
+    print "Login failed: user does not exist or wrong password.\n";
     exit 1;
 }
 
@@ -81,7 +83,8 @@ $binddn = $dn;
 $bindpw = $pass;
 my $result = $ldap->bind("$binddn", password => "$bindpw", version => 3);
 if ($result->code()) {
-    print "Login failed (LDAP error: " . $result->error . ")\n";
+    #print "Login failed (LDAP error: " . $result->error . ")\n";
+    print "Login failed: user does not exist or wrong password.\n";
     exit 1;
 }
 

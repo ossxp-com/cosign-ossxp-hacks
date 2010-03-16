@@ -18,7 +18,7 @@ else
         $service = $_GET["service"];
     }
     // redirect to: weblogin?cosign_$service&return_url;
-    $url = $loginurl . "?cosign-" . $service . "&http://" . $_SERVER["SERVER_NAME"] . $_SERVER["SCRIPT_NAME"];
+    $url = $loginurl . "?cosign-" . $service . "&http://" . @$_SERVER["SERVER_NAME"] . @$_SERVER["SCRIPT_NAME"];
     header( "Location: $url" );
 }
 ?>

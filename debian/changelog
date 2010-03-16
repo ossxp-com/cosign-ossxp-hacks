@@ -1,4 +1,4 @@
-ossxp-cosign3 (3.1.1-0.9+) unstable; urgency=low
+ossxp-cosign3 (3.1.1-0.9+1) unstable; urgency=low
 
   * Config files tuning.
   * LDAP login failed message does not leak message.

@@ -15,12 +15,12 @@ function show_summary()
 {
     global $loginurl, $logouturl;
 
-    $location = trim($_SERVER["REQUEST_URI"], '/');
+    $location = trim(@$_SERVER["REQUEST_URI"], '/');
     if (!$location)
         $location = "Home";
     print "<h1>$location page</h1>";
 
-    $username = $_SERVER["REMOTE_USER"];
+    $username = @$_SERVER["REMOTE_USER"];
     if ($username)
         print "<h2>Welcome ".$username . "</h2>\n";
     else
@@ -39,7 +39,7 @@ function show_summary()
     {
         print "<tr>";
         print "<th>$item</th>";
-        $value = $_SERVER[$item];
+        $value = @$_SERVER[$item];
         $value = implode('<br>',explode(';', $value));
         print "<td>". $value . "</td>";
         print "</tr>\n";

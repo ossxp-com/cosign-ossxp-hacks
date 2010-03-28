@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
 <title>$t</title>
@@ -51,44 +51,30 @@
 	<div id="main">
 		<div id="uiRow">
 			<div id="leftUIcol">
-				<h1 id="instruct">Password Expired</h1>
-				<p>Replace this text with information about reseting a password. <a href="http://domain.edu/passwd?ref=$r">reset</a></p>
-				<p class="jsOnly">Authentication
-				sections marked with a <img
-				src="/cosign/images/circle.gif" alt="yellow circle" /> are
-					required.</p>
-				<p>By using this service you agree to adhere to our policies and guidelines.</p>
-				<p class="noScript">This page displays best when JavaScript is enabled in your web
-					browser.</p>
+				<h1 id="instruct">口令过期</h1>
+				<p>将此文本替换为口令重置相关信息。<a href="http://domain.edu/passwd?ref=$r">重置口令</a></p>
+				<p class="jsOnly">标记为 <img
+				src="/cosign/images/circle.gif" alt="yellow circle" /> 是必须的。</p>
+				<p>使用本服务，意味着您已经接受我们的相关政策条款。</p>
+				<p class="noScript">这个页面在 JavaScript 启用下有更好的表现。</p>
 				<div id="kerbInfo" class="infoBox">
-					<h4><a href="#mainInfo" class="hideInfo" id="kerbInfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
-							to Top</a></h4>
-					<h3>Need an Account?</h3>
-					<p>Replace this text with information about obtaining an account. Lorem ipsum dolor
-						sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean vitae
-						orci. Mauris vulputate ornare urna.</p>
-					<h3>Forgot Your Password?</h3>
-					<p>Replace this text with information about resetting your password. Lorem ipsum
-						dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean
-						vitae orci. Mauris vulputate ornare urna.</p>
+					<h4><a href="#mainInfo" class="hideInfo" id="kerbInfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>
+					<h3>需要一个帐号？</h3>
+					<p>替换本段内容为创建帐号的相关指示...</p>
+					<h3>忘记口令？</h3>
+					<p>替换本段内容为重置密码的相关指示...</p>
 				</div>
 				<div id="otpInfo" class="infoBox">
-					<h4><a href="#mainInfo" class="hideInfo" id="otpInfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
-							to Top</a></h4>
-					<h3>Get a Token</h3>
-					<p>Replace this with text about using one time passcodes. Lorem ipsum dolor sit amet,
-						consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean vitae orci.
-						Mauris vulputate ornare urna.</p>
+					<h4><a href="#mainInfo" class="hideInfo" id="otpInfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>
+					<h3>获取一个令牌</h3>
+					<p>替换本段内容为一次性口令的相关指示...</p>
 				</div>
 				<div id="kx509Info" class="infoBox">
-					<h4><a href="#mainInfo" class="hideInfo" id="kx509InfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
-							to Top</a></h4>
-					<h3>Download KX.509</h3>
-					<p>The KX.509 service provides a client/server application that uses Kerberos to
-						acquire a short-term X.509 certificate. This makes it possible for web-browsers
-						to authenticate a user to any CoSign-protected web services silently instead of
-						prompting the user for a name and password. At U-M, this service can be used by
-						those who know their Uniqname and Kerberos password.</p>
+					<h4><a href="#mainInfo" class="hideInfo" id="kx509InfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>
+					<h3>下载 KX.509</h3>
+					<p>服务 KX.509 提供了一个 客户端/服务器 应用，使用 Kerberos 来获取一个短期的 X.509 证书一。
+						使得浏览器连接任何 CoSign 保护的网站不再需要输入用户名和口令，而自动登录。 在密歇根大学，
+						这项服务由知道唯一名称和 Kerberos 口令的用户使用。</p>
 				</div>
 			</div>
 			<form action="/cgi-bin/login" method="post" name="factors" id="rightUIcol">
@@ -99,14 +85,14 @@
 				<input type="hidden" name="service"
 				value="$c" />
 				<div id="error">$e</div>
-				<div class="factorHead"> <a href="#" tabindex="10">Help</a>
-					<h2 id="kerbTitle"><span>&nbsp;</span>ID &amp; Password</h2>
-					<div class="authComplete" style="display: none;">Authentication Complete</div>
+				<div class="factorHead"> <a href="#" tabindex="10">帮助</a>
+					<h2 id="kerbTitle"><span>&nbsp;</span>用户名和口令</h2>
+					<div class="authComplete" style="display: none;">认证完成</div>
 				</div>
 				<div class="factor" id="kerberos">
 					<table>
 						<tr>
-							<td><label for="login">Login</label></td>
+							<td><label for="login">用户名</label></td>
 							<td><input
 							id="login"
 							name="login"
@@ -114,18 +100,18 @@
 							value="$l" size="18" tabindex="1" /></td>
 						</tr>
 						<tr>
-							<td><label for="password">Password</label></td>
+							<td><label for="password">口令</label></td>
 							<td><input id="password" name="password" type="password" value="" size="18" tabindex="2" /></td>
 						</tr>
 						<tr class="capsLock" style="display: none;">
 							<td>&nbsp;</td>
-							<td>Caps Lock is on</td>
+							<td>大小写锁定键被打开</td>
 						</tr>
 					</table>
-					Need <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">an account or password help?</a> </div>
-				<div class="factorHead"> <a href="#" tabindex="11">Help</a>
-					<h2 id="otpTitle"><span>&nbsp;</span>One Time Passcode</h2>
-					<div class="authComplete" style="display: none;">Authentication Complete</div>
+					需要 <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">一个帐号或者忘记口令？</a> </div>
+				<div class="factorHead"> <a href="#" tabindex="11">帮助</a>
+					<h2 id="otpTitle"><span>&nbsp;</span>一次性口令</h2>
+					<div class="authComplete" style="display: none;">认证完成</div>
 				</div>
 				<div class="factor" id="otp">
 					<table>
@@ -135,23 +121,23 @@
 						</tr>
 						<tr class="capsLock" style="display: none;">
 							<td>&nbsp;</td>
-							<td>Caps Lock is on</td>
+							<td>大小写锁定键被打开</td>
 						</tr>
 					</table>
-					Manage your <a href="#otpInfo" id="otpInfoShow" tabindex="8">token</a> </div>
-				<div class="factorHead"> <a href="#" tabindex="12">Help</a>
-					<h2 id="kx509Title"><span>&nbsp;</span>Certificate</h2>
-					<div class="authComplete" style="display: none;">Authentication Complete</div>
+					管理您的 <a href="#otpInfo" id="otpInfoShow" tabindex="8">令牌</a> </div>
+				<div class="factorHead"> <a href="#" tabindex="12">帮助</a>
+					<h2 id="kx509Title"><span>&nbsp;</span>证书</h2>
+					<div class="authComplete" style="display: none;">认证完成</div>
 				</div>
 				<div class="factor" id="kx509">
-					<p class="note">You must have k.x-509 software installed and configured.</p>
+					<p class="note">您必须安装 k.x-509 软件并且已配置。</p>
 					<p>
 						<input name="useKX509" id="useKX509" type="checkbox" value="1" tabindex="5" />
-						<label for="useKX509">Authenticate using a certificate</label>
+						<label for="useKX509">使用证书认证</label>
 					</p>
-					Download <a href="#kx509Info" id="kx509InfoShow" tabindex="9">k.x-509 software</a> </div>
+					下载 <a href="#kx509Info" id="kx509InfoShow" tabindex="9">k.x-509 软件</a> </div>
 				<div id="loginButton">
-					<input type="submit" name="doLogin" value="Log In" tabindex="6" />
+					<input type="submit" name="doLogin" value="登录" tabindex="6" />
 				</div>
 			</form>
 			<div class="clear">&nbsp;</div>

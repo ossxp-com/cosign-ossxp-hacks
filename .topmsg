@@ -1,0 +1,6 @@
+From: Jiang <jiangxin@ossxp.com>
+Subject: [PATCH] t/javascript
+
+cosign.js depends on higher version of prototype.
+
+Signed-off-by: Jiang <jiangxin@ossxp.com>

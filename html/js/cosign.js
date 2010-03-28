@@ -174,7 +174,7 @@ Cosign.prototype = Object.extend( new Remember(), {
 	},
 
 	MWJ_say_Caps: function( oC ) {
-		var elements = document.getElementsByClassName( 'capsLock' );
+		var elements = $A( document.getElementsByClassName( 'capsLock' ) );
 		if( oC ) {
 			elements.each( function( node ) {Element.show( node )} );
 		} else {
@@ -196,7 +196,12 @@ Cosign.prototype = Object.extend( new Remember(), {
 		}
 
 		if ( $( 'error' ) != null ) {
-			new Effect.Highlight( 'error' );
+			error_div = $( 'error' )
+			if ( error_div.innerHTML.strip() )  {
+				if ( ! error_div.visible() )
+					error_div.show();
+				new Effect.Highlight( error_div );
+			}
 		}
 		
 		var nodeList  = document.getElementsByTagName( 'input' );

@@ -51,8 +51,8 @@ binary-fixup/ossxp-cosign3-cgi::
 
 debian/patches/: debian/patches
 debian/patches:
-	tg export --all --quilt debian/patches.new
-	cp -a debian/patches.new/* debian/patches && rm -rf debian/patches.new
+	rm -rf debian/patches
+	tg export --all --quilt debian/patches
 	cd debian && git status || true
 
 .PHONY: debian/patches debian/patches/

@@ -6,18 +6,27 @@ Subject: [PATCH] t/template_standard_zh
 Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 
 ---
- html/Makefile.in              |    4 +-
- html/looping.html.zh          |   55 ++++++++++++++
- html/post_error.html.zh       |   27 +++++++
- html/validation_error.html.zh |   26 +++++++
- html/zh/error.html            |   49 +++++++++++++
- html/zh/inc/footer.inc        |    1 +
- html/zh/inc/header.inc        |    3 +
- html/zh/login.html            |  146 ++++++++++++++++++++++++++++++++++++++
- html/zh/login_error.html      |  150 +++++++++++++++++++++++++++++++++++++++
- html/zh/reauth.html           |  156 +++++++++++++++++++++++++++++++++++++++++
- html/zh/verify-logout.html    |   42 +++++++++++
- 11 files changed, 658 insertions(+), 1 deletions(-)
+ html/Makefile.in                    |    4 +-
+ html/looping.html.zh                |   55 ++++++++++++++++++++++++++
+ html/post_error.html.zh             |   27 +++++++++++++
+ html/validation_error.html.zh       |   26 ++++++++++++
+ html/zh/error.html                  |   49 +++++++++++++++++++++++
+ html/zh/expired_error.html          |   63 ++++++++++++++++++++++++++++++
+ html/zh/inc/factor_invite.inc       |   17 ++++++++
+ html/zh/inc/factor_kx509.inc        |   11 +++++
+ html/zh/inc/factor_login.inc        |   24 ++++++++++++
+ html/zh/inc/factor_login_reauth.inc |   21 ++++++++++
+ html/zh/inc/factor_otp.inc          |   16 ++++++++
+ html/zh/inc/footer.inc              |    1 +
+ html/zh/inc/header.inc              |    3 +
+ html/zh/inc/help_hotkey.inc         |   12 ++++++
+ html/zh/inc/help_infobox.inc        |   33 ++++++++++++++++
+ html/zh/inc/js_config.inc           |   11 +++++
+ html/zh/login.html                  |   63 ++++++++++++++++++++++++++++++
+ html/zh/login_error.html            |   63 ++++++++++++++++++++++++++++++
+ html/zh/reauth.html                 |   72 +++++++++++++++++++++++++++++++++++
+ html/zh/verify-logout.html          |   47 +++++++++++++++++++++++
+ 20 files changed, 617 insertions(+), 1 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
 index b5d6334..06e9031 100755
@@ -167,7 +176,7 @@ index 0000000..81bbaad
 +</html>
 diff --git a/html/zh/error.html b/html/zh/error.html
 new file mode 100644
-index 0000000..f102216
+index 0000000..1d56429
 --- /dev/null
 +++ b/html/zh/error.html
 @@ -0,0 +1,49 @@
@@ -199,13 +208,13 @@ index 0000000..f102216
 +			Info:</strong> $e</p>
 +			</div>
 +			<form action="#" method="post" name="factors" id="rightUIcol">
-+				<div class="factorHead">
++				<div class="factorHead" style="display: none;">
 +					<h2>用户名和口令</h2>
 +				</div>
-+				<div class="factorHead">
++				<div class="factorHead" style="display: none;">
 +					<h2>一次性口令</h2>
 +				</div>
-+				<div class="factorHead">
++				<div class="factorHead" style="display: none;">
 +					<h2>证书</h2>
 +				</div>
 +				<div id="loginButton">
@@ -220,28 +229,12 @@ index 0000000..f102216
 +$!include(inc/footer.inc)
 +</body>
 +</html>
-diff --git a/html/zh/inc/footer.inc b/html/zh/inc/footer.inc
+diff --git a/html/zh/expired_error.html b/html/zh/expired_error.html
 new file mode 100644
-index 0000000..c0db804
+index 0000000..e10189e
 --- /dev/null
-+++ b/html/zh/inc/footer.inc
-@@ -0,0 +1 @@
-+<div id="foot">&copy; 2006-2008 <a href="http://www.umich.edu/~regents/" title="密歇根大学">密歇根大学</a>, <a href="http://www.ossxp.com/">群英汇技术支持</a></div>
-diff --git a/html/zh/inc/header.inc b/html/zh/inc/header.inc
-new file mode 100644
-index 0000000..0988c0e
---- /dev/null
-+++ b/html/zh/inc/header.inc
-@@ -0,0 +1,3 @@
-+	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
-+		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
-+		</span> <strong>我们的主页</strong></a> </div>
-diff --git a/html/zh/login.html b/html/zh/login.html
-new file mode 100644
-index 0000000..f018459
---- /dev/null
-+++ b/html/zh/login.html
-@@ -0,0 +1,146 @@
++++ b/html/zh/expired_error.html
+@@ -0,0 +1,63 @@
 +<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 +<html xmlns="http://www.w3.org/1999/xhtml">
 +<head>
@@ -265,61 +258,21 @@ index 0000000..f018459
 +	window.onload = function() {
 +		var cosign = new Cosign('$f');
 +		cosign.setSatisfied('$d');
-+		cosign.addFactor(['friend','UMICH.EDU'],'kerbTitle','kerberos');
-+		cosign.addFactor('otp','otpTitle','otp');
-+		cosign.addFactor('kx509','kx509Title','kx509');
-+		cosign.addInfoBox('kerbInfo','kerbInfoShow','kerbInfoHide');
-+		cosign.addInfoBox('otpInfo','otpInfoShow','otpInfoHide');
-+		cosign.addInfoBox('kx509Info','kx509InfoShow','kx509InfoHide');
-+		cosign.initUI();
++		$!include(inc/js_config.inc)
 +	}
-+	</script>
++</script>
 +</head>
 +<body>
 +<div id="page">
 +  $!include(inc/header.inc)
 +	<hr class="text" />
-+	<ul class="text">
-+		<li><a href="#instruct" title="Jump to the Web Login instructions [ALT + 1 Windows / CONTROL + 1 Mac]" accesskey="1">Jump
-+				to the Web Login instructions</a></li>
-+		<li><a href="#error" title="Jump to the error message (if present) [ALT + 2 Windows / CONTROL + 2 Mac]" accesskey="2">Jump
-+				to the error message (if present)</a></li>
-+		<li><a href="#kerberos" title="Jump to the ID and Password section [ALT + 3 Windows / CONTROL + 3 Mac]" accesskey="3">Jump
-+				to the ID and Password section</a></li>
-+		<li><a href="#otp" title="Jump to the One Time Passcode section [ALT + 4 Windows / CONTROL + 4 Mac]"  accesskey="4">Jump
-+				to the One Time Passcode section</a></li>
-+		<li><a href="#kx509" title="Jump to the Certificate section [ALT + 5 Windows / CONTROL + 5 Mac]" accesskey="5">Jump
-+				to the Certificate section</a></li>
-+	</ul>
++	$!include(inc/help_hotkey.inc)
 +	<hr class="text" />
 +	<div id="main">
 +		<div id="uiRow">
 +			<div id="leftUIcol">
-+				<h1 id="instruct">请登录</h1>
-+				<p>在右侧选择任一种登录方式，输入登录信息，之后按 &quot;登录按钮&quot; 完成登录。</p>
-+				<p class="jsOnly">标记为 <img
-+				src="/cosign/images/circle.gif" alt="yellow circle" /> 是必须的。</p>
-+				<p>使用本服务，意味着您已经接受我们的相关政策条款。</p>
-+				<p class="noScript">这个页面在 JavaScript 启用下有更好的表现。</p>
-+				<div id="kerbInfo" class="infoBox">
-+					<h4><a href="#mainInfo" class="hideInfo" id="kerbInfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>
-+					<h3>需要一个帐号？</h3>
-+					<p>替换本段内容为创建帐号的相关指示...</p>
-+					<h3>忘记口令？</h3>
-+					<p>替换本段内容为重置密码的相关指示...</p>
-+				</div>
-+				<div id="otpInfo" class="infoBox">
-+					<h4><a href="#mainInfo" class="hideInfo" id="otpInfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>
-+					<h3>获取一个令牌</h3>
-+					<p>替换本段内容为一次性口令的相关指示...</p>
-+				</div>
-+				<div id="kx509Info" class="infoBox">
-+					<h4><a href="#mainInfo" class="hideInfo" id="kx509InfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>
-+					<h3>下载 KX.509</h3>
-+					<p>服务 KX.509 提供了一个 客户端/服务器 应用，使用 Kerberos 来获取一个短期的 X.509 证书一。
-+						使得浏览器连接任何 CoSign 保护的网站不再需要输入用户名和口令，而自动登录。 在密歇根大学，
-+						这项服务由知道唯一名称和 Kerberos 口令的用户使用。</p>
-+				</div>
++				<h1 id="instruct">口令过期</h1>
++				$!include(inc/help_infobox.inc)
 +			</div>
 +			<form action="/cgi-bin/login" method="post" name="factors" id="rightUIcol">
 +				<input type="hidden" name="required"
@@ -328,54 +281,11 @@ index 0000000..f018459
 +				value="$r" />
 +				<input type="hidden" name="service"
 +				value="$c" />
-+				<!--div id="error">$e</div-->
-+				<div class="factorHead"> <a href="#" tabindex="10">帮助</a>
-+					<h2 id="kerbTitle"><span>&nbsp;</span>用户名和口令</h2>
-+					<div class="authComplete" style="display: none;">认证完成</div>
-+				</div>
-+				<div class="factor" id="kerberos">
-+					<table>
-+						<tr>
-+							<td><label for="login">用户名</label></td>
-+							<td><input id="login" name="login" type="text" value="" size="18" tabindex="1" /></td>
-+						</tr>
-+						<tr>
-+							<td><label for="password">口令</label></td>
-+							<td><input id="password" name="password" type="password" value="" size="18" tabindex="2" /></td>
-+						</tr>
-+						<tr class="capsLock" style="display: none;">
-+							<td>&nbsp;</td>
-+							<td>大小写锁定键被打开</td>
-+						</tr>
-+					</table>
-+					需要 <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">一个帐号或者忘记口令？</a> </div>
-+				<div class="factorHead"> <a href="#" tabindex="11">帮助</a>
-+					<h2 id="otpTitle"><span>&nbsp;</span>一次性口令</h2>
-+					<div class="authComplete" style="display: none;">认证完成</div>
-+				</div>
-+				<div class="factor" id="otp">
-+					<table>
-+						<tr>
-+							<td><label for="passcode" id="pCodeLabel">Passcode</label></td>
-+							<td><input id="passcode" name="passcode" type="password" value="" size="18" tabindex="3" /></td>
-+						</tr>
-+						<tr class="capsLock" style="display: none;">
-+							<td>&nbsp;</td>
-+							<td>大小写锁定键被打开</td>
-+						</tr>
-+					</table>
-+					管理您的 <a href="#otpInfo" id="otpInfoShow" tabindex="8">令牌</a> </div>
-+				<div class="factorHead"> <a href="#" tabindex="12">帮助</a>
-+					<h2 id="kx509Title"><span>&nbsp;</span>证书</h2>
-+					<div class="authComplete" style="display: none;">认证完成</div>
-+				</div>
-+				<div class="factor" id="kx509">
-+					<p class="note">您必须安装 k.x-509 软件并且已配置。</p>
-+					<p>
-+						<input name="useKX509" id="useKX509" type="checkbox" value="1" tabindex="5" />
-+						<label for="useKX509">使用证书认证</label>
-+					</p>
-+					下载 <a href="#kx509Info" id="kx509InfoShow" tabindex="9">k.x-509 软件</a> </div>
++				<div id="error" style="display: none;">$e</div>
++				$!include(inc/factor_login.inc)
++				$!include(inc/factor_otp.inc)
++				$!include(inc/factor_kx509.inc)
++				$!include(inc/factor_invite.inc)
 +				<div id="loginButton">
 +					<input type="submit" name="doLogin" value="登录" tabindex="6" />
 +				</div>
@@ -388,104 +298,57 @@ index 0000000..f018459
 +$!include(inc/footer.inc)
 +</body>
 +</html>
-diff --git a/html/zh/login_error.html b/html/zh/login_error.html
+diff --git a/html/zh/inc/factor_invite.inc b/html/zh/inc/factor_invite.inc
 new file mode 100644
-index 0000000..e6da085
+index 0000000..4d36b6e
 --- /dev/null
-+++ b/html/zh/login_error.html
-@@ -0,0 +1,150 @@
-+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-+<html xmlns="http://www.w3.org/1999/xhtml">
-+<head>
-+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-+<meta http-equiv="Pragma" content="no-cache" />
-+<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
-+<title>$t</title>
-+<style type="text/css" media="screen">
-+/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
-+</style>
-+<script type="text/javascript" src="/cosign/js/prototype.js"></script>
-+<script type="text/javascript" src="/cosign/js/scriptaculous.js"></script>
-+<script type="text/javascript" src="/cosign/js/effects.js"></script>
-+<script type="text/javascript" src="/cosign/js/cosign.js"></script>
-+<script type="text/javascript">
-+	var link = document.createElement('link');
-+	link.setAttribute('rel', 'stylesheet');
-+	link.setAttribute('type', 'text/css');
-+	link.setAttribute('href', '/cosign/cosign_js.css');
-+	document.getElementsByTagName('head')[0].appendChild(link);
-+	window.onload = function() {
-+		var cosign = new Cosign('$f');
-+		cosign.setSatisfied('$d');
-+		cosign.addFactor(['friend','UMICH.EDU'],'kerbTitle','kerberos');
-+		cosign.addFactor('otp','otpTitle','otp');
-+		cosign.addFactor('kx509','kx509Title','kx509');
-+		cosign.addInfoBox('kerbInfo','kerbInfoShow','kerbInfoHide');
-+		cosign.addInfoBox('otpInfo','otpInfoShow','otpInfoHide');
-+		cosign.addInfoBox('kx509Info','kx509InfoShow','kx509InfoHide');
-+		cosign.initUI();
-+	}
-+	</script>
-+</head>
-+<body>
-+<div id="page">
-+  $!include(inc/header.inc)
-+	<hr class="text" />
-+	<ul class="text">
-+		<li><a href="#instruct" title="Jump to the Web Login instructions [ALT + 1 Windows / CONTROL + 1 Mac]" accesskey="1">Jump
-+				to the Web Login instructions</a></li>
-+		<li><a href="#error" title="Jump to the error message (if present) [ALT + 2 Windows / CONTROL + 2 Mac]" accesskey="2">Jump
-+				to the error message (if present)</a></li>
-+		<li><a href="#kerberos" title="Jump to the ID and Password section [ALT + 3 Windows / CONTROL + 3 Mac]" accesskey="3">Jump
-+				to the ID and Password section</a></li>
-+		<li><a href="#otp" title="Jump to the One Time Passcode section [ALT + 4 Windows / CONTROL + 4 Mac]"  accesskey="4">Jump
-+				to the One Time Passcode section</a></li>
-+		<li><a href="#kx509" title="Jump to the Certificate section [ALT + 5 Windows / CONTROL + 5 Mac]" accesskey="5">Jump
-+				to the Certificate section</a></li>
-+	</ul>
-+	<hr class="text" />
-+	<div id="main">
-+		<div id="uiRow">
-+			<div id="leftUIcol">
-+				<h1 id="instruct">请登录</h1>
-+				<p>在右侧选择任一种登录方式，输入登录信息，之后按 &quot;登录按钮&quot; 完成登录。</p>
-+				<p class="jsOnly">标记为 <img
-+				src="/cosign/images/circle.gif" alt="yellow circle" /> 是必须的。</p>
-+				<p>使用本服务，意味着您已经接受我们的相关政策条款。</p>
-+				<p class="noScript">这个页面在 JavaScript 启用下有更好的表现。</p>
-+				<div id="kerbInfo" class="infoBox">
-+					<h4><a href="#mainInfo" class="hideInfo" id="kerbInfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>
-+					<h3>需要一个帐号？</h3>
-+					<p>替换本段内容为创建帐号的相关指示...</p>
-+					<h3>忘记口令？</h3>
-+					<p>替换本段内容为重置密码的相关指示...</p>
++++ b/html/zh/inc/factor_invite.inc
+@@ -0,0 +1,17 @@
++				<div class="factorHead" style="display: none;">
++					<h2 id="inviteloginTitle"><span>&nbsp;</span>邀请码认证</h2>
++					<div class="authComplete" style="display: none;">认证完成</div>
 +				</div>
-+				<div id="otpInfo" class="infoBox">
-+					<h4><a href="#mainInfo" class="hideInfo" id="otpInfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>
-+					<h3>获取一个令牌</h3>
-+					<p>替换本段内容为一次性口令的相关指示...</p>
++				<div class="factor" id="invitelogin" style="display: none;">
++					<table>
++						<tr>
++							<td><label for="invite">邀请码</label></td>
++							<td><input id="invite" name="invite" type="password" value="" size="18" tabindex="1" /></td>
++						</tr>
++						<tr class="capsLock" style="display: none;">
++							<td>&nbsp;</td>
++							<td>大小写锁定键被打开</td>
++						</tr>
++					</table>
++					<a href="#inviteinfo" id="inviteInfoShow" tabindex="7">什么是邀请码？</a> </div>
++
+diff --git a/html/zh/inc/factor_kx509.inc b/html/zh/inc/factor_kx509.inc
+new file mode 100644
+index 0000000..83291de
+--- /dev/null
++++ b/html/zh/inc/factor_kx509.inc
+@@ -0,0 +1,11 @@
++				<div class="factorHead" style="display: none;">
++					<h2 id="kx509Title"><span>&nbsp;</span>证书</h2>
++					<div class="authComplete" style="display: none;">认证完成</div>
 +				</div>
-+				<div id="kx509Info" class="infoBox">
-+					<h4><a href="#mainInfo" class="hideInfo" id="kx509InfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>
-+					<h3>下载 KX.509</h3>
-+					<p>服务 KX.509 提供了一个 客户端/服务器 应用，使用 Kerberos 来获取一个短期的 X.509 证书一。
-+						使得浏览器连接任何 CoSign 保护的网站不再需要输入用户名和口令，而自动登录。 在密歇根大学，
-+						这项服务由知道唯一名称和 Kerberos 口令的用户使用。</p>
-+				</div>
-+			</div>
-+			<form action="/cgi-bin/login" method="post" name="factors" id="rightUIcol">
-+				<input type="hidden" name="required"
-+				value="$f" />
-+				<input type="hidden" name="ref"
-+				value="$r" />
-+				<input type="hidden" name="service"
-+				value="$c" />
-+				<div id="error">$e</div>
-+				<div class="factorHead"> <a href="#" tabindex="10">帮助</a>
++				<div class="factor" id="kx509" style="display: none;">
++					<p class="note">您必须安装 k.x-509 软件并且已配置。</p>
++					<p>
++						<input name="useKX509" id="useKX509" type="checkbox" value="1" tabindex="5" />
++						<label for="useKX509">使用证书认证</label>
++					</p>
++					下载 <a href="#kx509Info" id="kx509InfoShow" tabindex="9">k.x-509 软件</a> </div>
+diff --git a/html/zh/inc/factor_login.inc b/html/zh/inc/factor_login.inc
+new file mode 100644
+index 0000000..73950d8
+--- /dev/null
++++ b/html/zh/inc/factor_login.inc
+@@ -0,0 +1,24 @@
++				<div class="factorHead" style="display: none;">
 +					<h2 id="kerbTitle"><span>&nbsp;</span>用户名和口令</h2>
 +					<div class="authComplete" style="display: none;">认证完成</div>
 +				</div>
-+				<div class="factor" id="kerberos">
++				<div class="factor" id="kerberos" style="display: none;">
 +					<table>
 +						<tr>
 +							<td><label for="login">用户名</label></td>
@@ -505,11 +368,44 @@ index 0000000..e6da085
 +						</tr>
 +					</table>
 +					需要 <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">一个帐号或者忘记口令？</a> </div>
-+				<div class="factorHead"> <a href="#" tabindex="11">帮助</a>
+diff --git a/html/zh/inc/factor_login_reauth.inc b/html/zh/inc/factor_login_reauth.inc
+new file mode 100644
+index 0000000..a38c94b
+--- /dev/null
++++ b/html/zh/inc/factor_login_reauth.inc
+@@ -0,0 +1,21 @@
++				<div class="factorHead" style="display: none;">
++					<h2 id="kerbTitle"><span>&nbsp;</span>用户名和口令</h2>
++					<div class="authComplete" style="display: none;">认证完成</div>
++				</div>
++				<div class="factor" id="kerberos" style="display: none;">
++					<table>
++						<tr>
++							<td><label for="login">登录</label></td>
++							<td
++							id="login">$l (<a href="/cgi-bin/logout" class="switchUser" id="switchUserR" tabindex="1">切换用户</a>)</td>
++						</tr>
++						<tr>
++							<td><label for="password">口令</label></td>
++							<td><input id="password" name="password" type="password" value="" size="18" tabindex="2" /></td>
++						</tr>
++						<tr class="capsLock" style="display: none;">
++							<td>&nbsp;</td>
++							<td>大小写锁定键被打开</td>
++						</tr>
++					</table>
++					需要 <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">一个帐号或者忘记口令？</a> </div>
+diff --git a/html/zh/inc/factor_otp.inc b/html/zh/inc/factor_otp.inc
+new file mode 100644
+index 0000000..4775375
+--- /dev/null
++++ b/html/zh/inc/factor_otp.inc
+@@ -0,0 +1,16 @@
++				<div class="factorHead" style="display: none;">
 +					<h2 id="otpTitle"><span>&nbsp;</span>一次性口令</h2>
 +					<div class="authComplete" style="display: none;">认证完成</div>
 +				</div>
-+				<div class="factor" id="otp">
++				<div class="factor" id="otp" style="display: none;">
 +					<table>
 +						<tr>
 +							<td><label for="passcode" id="pCodeLabel">Passcode</label></td>
@@ -521,35 +417,102 @@ index 0000000..e6da085
 +						</tr>
 +					</table>
 +					管理您的 <a href="#otpInfo" id="otpInfoShow" tabindex="8">令牌</a> </div>
-+				<div class="factorHead"> <a href="#" tabindex="12">帮助</a>
-+					<h2 id="kx509Title"><span>&nbsp;</span>证书</h2>
-+					<div class="authComplete" style="display: none;">认证完成</div>
-+				</div>
-+				<div class="factor" id="kx509">
-+					<p class="note">您必须安装 k.x-509 软件并且已配置。</p>
-+					<p>
-+						<input name="useKX509" id="useKX509" type="checkbox" value="1" tabindex="5" />
-+						<label for="useKX509">使用证书认证</label>
-+					</p>
-+					下载 <a href="#kx509Info" id="kx509InfoShow" tabindex="9">k.x-509 软件</a> </div>
-+				<div id="loginButton">
-+					<input type="submit" name="doLogin" value="登录" tabindex="6" />
-+				</div>
-+			</form>
-+			<div class="clear">&nbsp;</div>
-+		</div>
-+		<div id="uiBottom">&nbsp;</div>
-+	</div>
-+</div>
-+$!include(inc/footer.inc)
-+</body>
-+</html>
-diff --git a/html/zh/reauth.html b/html/zh/reauth.html
+diff --git a/html/zh/inc/footer.inc b/html/zh/inc/footer.inc
 new file mode 100644
-index 0000000..36cb9a9
+index 0000000..c0db804
 --- /dev/null
-+++ b/html/zh/reauth.html
-@@ -0,0 +1,156 @@
++++ b/html/zh/inc/footer.inc
+@@ -0,0 +1 @@
++<div id="foot">&copy; 2006-2008 <a href="http://www.umich.edu/~regents/" title="密歇根大学">密歇根大学</a>, <a href="http://www.ossxp.com/">群英汇技术支持</a></div>
+diff --git a/html/zh/inc/header.inc b/html/zh/inc/header.inc
+new file mode 100644
+index 0000000..0988c0e
+--- /dev/null
++++ b/html/zh/inc/header.inc
+@@ -0,0 +1,3 @@
++	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
++		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
++		</span> <strong>我们的主页</strong></a> </div>
+diff --git a/html/zh/inc/help_hotkey.inc b/html/zh/inc/help_hotkey.inc
+new file mode 100644
+index 0000000..eea5e31
+--- /dev/null
++++ b/html/zh/inc/help_hotkey.inc
+@@ -0,0 +1,12 @@
++	<ul class="text">
++		<li><a href="#instruct" title="Jump to the Web Login instructions [ALT + 1 Windows / CONTROL + 1 Mac]" accesskey="1">Jump
++				to the Web Login instructions</a></li>
++		<li><a href="#error" title="Jump to the error message (if present) [ALT + 2 Windows / CONTROL + 2 Mac]" accesskey="2">Jump
++				to the error message (if present)</a></li>
++		<li><a href="#kerberos" title="Jump to the ID and Password section [ALT + 3 Windows / CONTROL + 3 Mac]" accesskey="3">Jump
++				to the ID and Password section</a></li>
++		<li><a href="#otp" title="Jump to the One Time Passcode section [ALT + 4 Windows / CONTROL + 4 Mac]"  accesskey="4">Jump
++				to the One Time Passcode section</a></li>
++		<li><a href="#kx509" title="Jump to the Certificate section [ALT + 5 Windows / CONTROL + 5 Mac]" accesskey="5">Jump
++				to the Certificate section</a></li>
++	</ul>
+diff --git a/html/zh/inc/help_infobox.inc b/html/zh/inc/help_infobox.inc
+new file mode 100644
+index 0000000..64f619a
+--- /dev/null
++++ b/html/zh/inc/help_infobox.inc
+@@ -0,0 +1,33 @@
++				<div id="mainInfo">
++					<p>在右侧选择任一种登录方式，输入登录信息，之后按 &quot;登录按钮&quot; 完成登录。</p>
++					<p class="jsOnly">标记为 <img
++					src="/cosign/images/circle.gif" alt="yellow circle" /> 是必须的。</p>
++					<p>使用本服务，意味着您已经接受我们的相关政策条款。</p>
++					<p class="noScript">这个页面在 JavaScript 启用下有更好的表现。</p>
++				</div>
++				<div id="kerbInfo" class="infoBox">
++					<h4><a href="#mainInfo" class="hideInfo" id="kerbInfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>
++					<h3>需要一个帐号？</h3>
++					<p>替换本段内容为创建帐号的相关指示...</p>
++					<h3>忘记口令？</h3>
++					<p>替换本段内容为重置密码的相关指示...</p>
++				</div>
++				<div id="otpInfo" class="infoBox">
++					<h4><a href="#mainInfo" class="hideInfo" id="otpInfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>
++					<h3>获取一个令牌</h3>
++					<p>替换本段内容为一次性口令的相关指示...</p>
++				</div>
++				<div id="kx509Info" class="infoBox">
++					<h4><a href="#mainInfo" class="hideInfo" id="kx509InfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>
++					<h3>下载 KX.509</h3>
++					<p>服务 KX.509 提供了一个 客户端/服务器 应用，使用 Kerberos 来获取一个短期的 X.509 证书一。
++						使得浏览器连接任何 CoSign 保护的网站不再需要输入用户名和口令，而自动登录。 在密歇根大学，
++						这项服务由知道唯一名称和 Kerberos 口令的用户使用。</p>
++				</div>
++				<div id="inviteInfo" class="infoBox">
++					<h4><a href="#mainInfo" class="hideInfo" id="inviteInfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>
++					<h3>关于邀请码认证</h3>
++					<p>邀请码是由管理员分配的登录密钥。登录时仅输入该邀请码即可，无需提供用户名。
++					</p>
++				</div>
++
+diff --git a/html/zh/inc/js_config.inc b/html/zh/inc/js_config.inc
+new file mode 100644
+index 0000000..517d465
+--- /dev/null
++++ b/html/zh/inc/js_config.inc
+@@ -0,0 +1,11 @@
++		cosign.addFactor(['ldap','friend'],'kerbTitle','kerberos');
++		cosign.addFactor('otp','otpTitle','otp');
++		cosign.addFactor('kx509','kx509Title','kx509');
++		cosign.addFactor('invite','inviteloginTitle','invitelogin');
++		cosign.addInfoBox('kerbInfo','kerbInfoShow','kerbInfoHide');
++		cosign.addInfoBox('otpInfo','otpInfoShow','otpInfoHide');
++		cosign.addInfoBox('kx509Info','kx509InfoShow','kx509InfoHide');
++		cosign.addInfoBox('inviteInfo','inviteInfoShow','inviteInfoHide');
++		cosign.setDefaultOpen('ldap');
++		//cosign.setDisabledFactors('otp,kx509');
++		cosign.initUI();
+diff --git a/html/zh/login.html b/html/zh/login.html
+new file mode 100644
+index 0000000..79466b3
+--- /dev/null
++++ b/html/zh/login.html
+@@ -0,0 +1,63 @@
 +<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 +<html xmlns="http://www.w3.org/1999/xhtml">
 +<head>
@@ -572,121 +535,175 @@ index 0000000..36cb9a9
 +	document.getElementsByTagName('head')[0].appendChild(link);
 +	window.onload = function() {
 +		var cosign = new Cosign('$f');
-+		cosign.setDefaultOpen( 'UMICH.EDU' );
-+		cosign.addFactor(['friend','UMICH.EDU'],'kerbTitle','kerberos');
-+		cosign.addFactor('otp','otpTitle','otp');
-+		cosign.addFactor('kx509','kx509Title','kx509');
-+		cosign.addInfoBox('kerbInfo','kerbInfoShow','kerbInfoHide');
-+		cosign.addInfoBox('otpInfo','otpInfoShow','otpInfoHide');
-+		cosign.addInfoBox('kx509Info','kx509InfoShow','kx509InfoHide');
-+		cosign.setSubmitLink('switchUserL', 'switchUserForm');
-+		cosign.setSubmitLink('switchUserR', 'switchUserForm');
-+		cosign.initUI();
++		cosign.setSatisfied('$d');
++		$!include(inc/js_config.inc)
 +	}
-+	</script>
++</script>
 +</head>
 +<body>
 +<div id="page">
 +  $!include(inc/header.inc)
 +	<hr class="text" />
-+	<ul class="text">
-+		<li><a href="#instruct" title="Jump to the Web Login instructions [ALT + 1 Windows / CONTROL + 1 Mac]" accesskey="1">Jump
-+				to the Web Login instructions</a></li>
-+		<li><a href="#error" title="Jump to the error message (if present) [ALT + 2 Windows / CONTROL + 2 Mac]" accesskey="2">Jump
-+				to the error message (if present)</a></li>
-+		<li><a href="#kerberos" title="Jump to the ID and Password section [ALT + 3 Windows / CONTROL + 3 Mac]" accesskey="3">Jump
-+				to the ID and Password section</a></li>
-+		<li><a href="#otp" title="Jump to the One Time Passcode section [ALT + 4 Windows / CONTROL + 4 Mac]"  accesskey="4">Jump
-+				to the One Time Passcode section</a></li>
-+		<li><a href="#kx509" title="Jump to the Certificate section [ALT + 5 Windows / CONTROL + 5 Mac]" accesskey="5">Jump
-+				to the Certificate section</a></li>
-+	</ul>
++	$!include(inc/help_hotkey.inc)
++	<hr class="text" />
++	<div id="main">
++		<div id="uiRow">
++			<div id="leftUIcol">
++				<h1 id="instruct">请登录</h1>
++				$!include(inc/help_infobox.inc)
++			</div>
++			<form action="/cgi-bin/login" method="post" name="factors" id="rightUIcol">
++				<input type="hidden" name="required"
++				value="$f" />
++				<input type="hidden" name="ref"
++				value="$r" />
++				<input type="hidden" name="service"
++				value="$c" />
++				<div id="error" style="display: none;">$e</div>
++				$!include(inc/factor_login.inc)
++				$!include(inc/factor_otp.inc)
++				$!include(inc/factor_kx509.inc)
++				$!include(inc/factor_invite.inc)
++				<div id="loginButton">
++					<input type="submit" name="doLogin" value="登录" tabindex="6" />
++				</div>
++			</form>
++			<div class="clear">&nbsp;</div>
++		</div>
++		<div id="uiBottom">&nbsp;</div>
++	</div>
++</div>
++$!include(inc/footer.inc)
++</body>
++</html>
+diff --git a/html/zh/login_error.html b/html/zh/login_error.html
+new file mode 100644
+index 0000000..79466b3
+--- /dev/null
++++ b/html/zh/login_error.html
+@@ -0,0 +1,63 @@
++<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
++<html xmlns="http://www.w3.org/1999/xhtml">
++<head>
++<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
++<meta http-equiv="Pragma" content="no-cache" />
++<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
++<title>$t</title>
++<style type="text/css" media="screen">
++/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
++</style>
++<script type="text/javascript" src="/cosign/js/prototype.js"></script>
++<script type="text/javascript" src="/cosign/js/scriptaculous.js"></script>
++<script type="text/javascript" src="/cosign/js/effects.js"></script>
++<script type="text/javascript" src="/cosign/js/cosign.js"></script>
++<script type="text/javascript">
++	var link = document.createElement('link');
++	link.setAttribute('rel', 'stylesheet');
++	link.setAttribute('type', 'text/css');
++	link.setAttribute('href', '/cosign/cosign_js.css');
++	document.getElementsByTagName('head')[0].appendChild(link);
++	window.onload = function() {
++		var cosign = new Cosign('$f');
++		cosign.setSatisfied('$d');
++		$!include(inc/js_config.inc)
++	}
++</script>
++</head>
++<body>
++<div id="page">
++  $!include(inc/header.inc)
++	<hr class="text" />
++	$!include(inc/help_hotkey.inc)
++	<hr class="text" />
++	<div id="main">
++		<div id="uiRow">
++			<div id="leftUIcol">
++				<h1 id="instruct">请登录</h1>
++				$!include(inc/help_infobox.inc)
++			</div>
++			<form action="/cgi-bin/login" method="post" name="factors" id="rightUIcol">
++				<input type="hidden" name="required"
++				value="$f" />
++				<input type="hidden" name="ref"
++				value="$r" />
++				<input type="hidden" name="service"
++				value="$c" />
++				<div id="error" style="display: none;">$e</div>
++				$!include(inc/factor_login.inc)
++				$!include(inc/factor_otp.inc)
++				$!include(inc/factor_kx509.inc)
++				$!include(inc/factor_invite.inc)
++				<div id="loginButton">
++					<input type="submit" name="doLogin" value="登录" tabindex="6" />
++				</div>
++			</form>
++			<div class="clear">&nbsp;</div>
++		</div>
++		<div id="uiBottom">&nbsp;</div>
++	</div>
++</div>
++$!include(inc/footer.inc)
++</body>
++</html>
+diff --git a/html/zh/reauth.html b/html/zh/reauth.html
+new file mode 100644
+index 0000000..bd27180
+--- /dev/null
++++ b/html/zh/reauth.html
+@@ -0,0 +1,72 @@
++<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
++<html xmlns="http://www.w3.org/1999/xhtml">
++<head>
++<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
++<meta http-equiv="Pragma" content="no-cache" />
++<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
++<title>$t</title>
++<style type="text/css" media="screen">
++/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
++</style>
++<script type="text/javascript" src="/cosign/js/prototype.js"></script>
++<script type="text/javascript" src="/cosign/js/scriptaculous.js"></script>
++<script type="text/javascript" src="/cosign/js/effects.js"></script>
++<script type="text/javascript" src="/cosign/js/cosign.js"></script>
++<script type="text/javascript">
++	var link = document.createElement('link');
++	link.setAttribute('rel', 'stylesheet');
++	link.setAttribute('type', 'text/css');
++	link.setAttribute('href', '/cosign/cosign_js.css');
++	document.getElementsByTagName('head')[0].appendChild(link);
++	window.onload = function() {
++		var cosign = new Cosign('$f');
++		cosign.setSubmitLink('switchUserL', 'switchUserForm');
++		cosign.setSubmitLink('switchUserR', 'switchUserForm');
++		$!include(inc/js_config.inc)
++	}
++</script>
++</head>
++<body>
++<div id="page">
++  $!include(inc/header.inc)
++	<hr class="text" />
++	$!include(inc/help_hotkey.inc)
 +	<hr class="text" />
 +	<div id="main">
 +		<div id="uiRow">
 +			<div id="leftUIcol">
 +				<h1 id="instruct">需要重新认证</h1>
-+				<p>为保护您的个人信息，您需要再次确认您的口令。请输入您的口令并点击重新认证按钮以继续。</p>
-+				<p>如果您不是 $l，您可以 <a href="/cgi-bin/logout" id="switchUserL">切换用户</a>
-+               再以您自己的身份登录。</p>
-+				<p class="jsOnly">标记为 <img
-+				src="/cosign/images/circle.gif" alt="yellow circle" /> 是必须的。</p>
-+				<p>使用本服务，意味着您已经接受我们的相关政策条款。</p>
-+				<p class="noScript">这个页面在 JavaScript 启用下有更好的表现。</p>
-+				<div id="kerbInfo" class="infoBox">
-+					<h4><a href="#mainInfo" class="hideInfo" id="kerbInfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>
-+					<h3>需要一个帐号？</h3>
-+					<p>替换本段内容为创建帐号的相关指示...</p>
-+					<h3>忘记口令？</h3>
-+					<p>替换本段内容为重置密码的相关指示...</p>
-+				</div>
-+				<div id="otpInfo" class="infoBox">
-+					<h4><a href="#mainInfo" class="hideInfo" id="otpInfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>
-+					<h3>获取一个令牌</h3>
-+					<p>替换本段内容为一次性口令的相关指示...</p>
-+				</div>
-+				<div id="kx509Info" class="infoBox">
-+					<h4><a href="#mainInfo" class="hideInfo" id="kx509InfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>
-+					<h3>下载 KX.509</h3>
-+					<p>服务 KX.509 提供了一个 客户端/服务器 应用，使用 Kerberos 来获取一个短期的 X.509 证书一。
-+						使得浏览器连接任何 CoSign 保护的网站不再需要输入用户名和口令，而自动登录。 在密歇根大学，
-+						这项服务由知道唯一名称和 Kerberos 口令的用户使用。</p>
-+				</div>
++				$!include(inc/help_infobox.inc)
 +			</div>
 +			<form action="/cgi-bin/login" method="post" name="factors" id="rightUIcol">
-+			<input type="hidden" name="required" value="$f" />
-+			<input type="hidden" name="ref" value="$r" />
-+			<input type="hidden" name="service" value="$c" />
-+			<input type="hidden" name="reauth" value="true" />
-+			<div id="error">$e</div>
-+				<div class="factorHead"> <a href="#" tabindex="10">帮助</a>
-+					<h2 id="kerbTitle"><span>&nbsp;</span>用户名和口令</h2>
-+					<div class="authComplete" style="display: none;">认证完成</div>
-+				</div>
-+				<div class="factor" id="kerberos">
-+					<table>
-+						<tr>
-+							<td><label for="login">登录</label></td>
-+							<td
-+							id="login">$l (<a href="/cgi-bin/logout" class="switchUser" id="switchUserR" tabindex="1">切换用户</a>)</td>
-+						</tr>
-+						<tr>
-+							<td><label for="password">口令</label></td>
-+							<td><input id="password" name="password" type="password" value="" size="18" tabindex="2" /></td>
-+						</tr>
-+						<tr class="capsLock" style="display: none;">
-+							<td>&nbsp;</td>
-+							<td>大小写锁定键被打开</td>
-+						</tr>
-+					</table>
-+					需要 <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">一个帐号或者忘记口令？</a> </div>
-+				<div class="factorHead"> <a href="#" tabindex="11">帮助</a>
-+					<h2 id="otpTitle"><span>&nbsp;</span>一次性口令</h2>
-+					<div class="authComplete" style="display: none;">认证完成</div>
-+				</div>
-+				<div class="factor" id="otp">
-+					<table>
-+						<tr>
-+							<td><label for="passcode" id="pCodeLabel">Passcode</label></td>
-+							<td><input id="passcode" name="passcode" type="password" value="" size="18" tabindex="3" /></td>
-+						</tr>
-+						<tr class="capsLock" style="display: none;">
-+							<td>&nbsp;</td>
-+							<td>大小写锁定键被打开</td>
-+						</tr>
-+					</table>
-+					管理您的 <a href="#otpInfo" id="otpInfoShow" tabindex="8">令牌</a> </div>
-+				<div class="factorHead"> <a href="#" tabindex="12">帮助</a>
-+					<h2 id="kx509Title"><span>&nbsp;</span>证书</h2>
-+					<div class="authComplete" style="display: none;">认证完成</div>
-+				</div>
-+				<div class="factor" id="kx509">
-+					<p class="note">您必须安装 k.x-509 软件并且已配置。</p>
-+					<p>
-+						<input name="useKX509" id="useKX509" type="checkbox" value="1" tabindex="5" />
-+						<label for="useKX509">使用证书认证</label>
-+					</p>
-+					下载 <a href="#kx509Info" id="kx509InfoShow" tabindex="9">k.x-509 软件</a> </div>
++				<input type="hidden" name="required"
++				value="$f" />
++				<input type="hidden" name="ref"
++				value="$r" />
++				<input type="hidden" name="service"
++				value="$c" />
++				<input type="hidden" name="reauth" value="true" />
++				<div id="error" style="display: none;">$e</div>
++				$!include(inc/factor_login_reauth.inc)
++				$!include(inc/factor_otp.inc)
++				$!include(inc/factor_kx509.inc)
++				$!include(inc/factor_invite.inc)
 +				<div id="loginButton">
 +					<input type="submit" name="doLogin" value="登录" tabindex="6" />
 +				</div>
@@ -708,10 +725,10 @@ index 0000000..36cb9a9
 +</html>
 diff --git a/html/zh/verify-logout.html b/html/zh/verify-logout.html
 new file mode 100644
-index 0000000..3b32b8c
+index 0000000..15320f0
 --- /dev/null
 +++ b/html/zh/verify-logout.html
-@@ -0,0 +1,42 @@
+@@ -0,0 +1,47 @@
 +<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 +<html xmlns="http://www.w3.org/1999/xhtml">
 +<head>
@@ -725,6 +742,11 @@ index 0000000..3b32b8c
 +<script type="text/javascript" src="/cosign/js/prototype.js"></script>
 +<script type="text/javascript">
 +	window.onload = function() {
++		try {
++			if (history.length <= 1) {
++				$('back').hide();
++			}
++		} catch (e) {}
 +		Event.observe('back', 'click', function() {history.go(-1)});
 +		$('logout').focus();
 +	}
@@ -755,4 +777,4 @@ index 0000000..3b32b8c
 +</body>
 +</html>
 -- 
-tg: (9add2e3..) t/template_standard_zh (depends on: t/custom_cosign_path t/template_standard_en)
+tg: (edfd5b3..) t/template_standard_zh (depends on: t/custom_cosign_path t/template_standard_en)

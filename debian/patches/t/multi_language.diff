@@ -7,10 +7,10 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 
 ---
  cgi/Makefile.in |    2 +-
- cgi/lang.c      |   92 ++++++++++++++++++++++++++++++++++++++++++++
+ cgi/lang.c      |   92 +++++++++++++++++++++++++++++++++++++++++++++
  cgi/lang.h      |   11 +++++
- cgi/subfile.c   |  113 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 217 insertions(+), 1 deletions(-)
+ cgi/subfile.c   |  111 ++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 4 files changed, 213 insertions(+), 3 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
 index e867410..d8baf0b 100755
@@ -141,10 +141,10 @@ index 0000000..36b37dc
 +
 +#endif
 diff --git a/cgi/subfile.c b/cgi/subfile.c
-index 760d2c6..7680091 100644
+index 760d2c6..33d6ed4 100644
 --- a/cgi/subfile.c
 +++ b/cgi/subfile.c
-@@ -5,14 +5,53 @@
+@@ -5,6 +5,11 @@
  #include <string.h>
  
  #include "subfile.h"
@@ -156,12 +156,11 @@ index 760d2c6..7680091 100644
  
      void
  subfile( char *filename, struct subfile_list *sl, int nocache )
- {
-     FILE	*fs;
-+    FILE	*finc;
+@@ -13,7 +18,40 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
      int 	c, i, j;
      char	nasties[] = "<>(){}[]'`\" \\";
  
+-    if ( nocache ) {
 +    char	**lang;
 +    char	*filename_i18n;
 +    char	*pbuff = NULL;
@@ -195,10 +194,21 @@ index 760d2c6..7680091 100644
 +        }
 +    }
 +
-     if ( nocache ) {
++    if ( nocache > 0 ) {
  	fputs( "Expires: Mon, 16 Apr 1973 13:10:00 GMT\n"
  		"Last-Modified: Mon, 16 Apr 1973 13:10:00 GMT\n"
-@@ -28,6 +67,9 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
+ 		"Cache-Control: no-store, no-cache, must-revalidate\n"
+@@ -21,13 +59,18 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
+ 		"Pragma: no-cache\n", stdout );
+     }
+ 
+-    fputs( "Content-type: text/html\n\n", stdout );
++    if ( nocache >= 0 ) {
++	fputs( "Content-type: text/html\n\n", stdout );
++    }
+ 
+     if (( fs = fopen( filename, "r" )) == NULL ) {
+ 	perror( filename );
  	exit( 1 );
      }
  
@@ -208,7 +218,7 @@ index 760d2c6..7680091 100644
      while (( c = getc( fs )) != EOF ) {
  	if ( c == '$' ) {
  	    if (( c = getc( fs )) == EOF ) {
-@@ -39,6 +81,71 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
+@@ -39,6 +82,64 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
  		putchar( c );
  		continue;
  	    }
@@ -229,11 +239,8 @@ index 760d2c6..7680091 100644
 +			incfile[i] = '\0';
 +			if (c==')')
 +			{
-+				if ( (access(incfile, F_OK)==0) && (finc = fopen( incfile, "r" )) != NULL ) {
-+					while (( c = getc( finc )) != EOF ) {
-+						putchar( c );
-+					}
-+					fclose(finc);
++				if ( access(incfile, F_OK) == 0 ) {
++					subfile( incfile, sl, -1);
 +				}
 +				else
 +				{
@@ -242,13 +249,9 @@ index 760d2c6..7680091 100644
 +					{
 +						for (i=0; i< globfiles.gl_pathc; i++)
 +						{
-+							if ( (access(globfiles.gl_pathv[i], F_OK)==0) &&
-+							     (finc = fopen( globfiles.gl_pathv[i], "r" )) != NULL )
++							if ( access(globfiles.gl_pathv[i], F_OK) == 0 )
 +							{
-+								while (( c = getc( finc )) != EOF ) {
-+									putchar( c );
-+								}
-+								fclose(finc);
++								subfile( globfiles.gl_pathv[i], sl, -1);
 +							}
 +						}
 +						globfree(&globfiles);
@@ -280,7 +283,7 @@ index 760d2c6..7680091 100644
  
  	    for ( i = 0; sl[ i ].sl_letter != '\0'; i++ ) {
  		if ( sl[ i ].sl_letter == c ) {
-@@ -75,5 +182,11 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
+@@ -75,5 +176,11 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
  	perror( filename );
      }
  

@@ -8,19 +8,19 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 ---
  html/Makefile.in              |   10 +++---
  html/error.html               |    7 +---
- html/expired_error.html       |    4 +--
+ html/expired_error.html       |   13 ++++-----
  html/inc/footer.inc           |    2 +
  html/inc/header.inc           |    3 ++
- html/login.html               |    7 +---
- html/login_error.html         |    7 +---
+ html/login.html               |   30 +++++++++++-----------
+ html/login_error.html         |   32 +++++++++++-----------
  html/looping.html             |   56 -----------------------------------------
  html/looping.html.en          |   54 +++++++++++++++++++++++++++++++++++++++
  html/post_error.html          |   33 ------------------------
  html/post_error.html.en       |   30 ++++++++++++++++++++++
- html/reauth.html              |    7 +---
+ html/reauth.html              |   37 +++++++++++++--------------
  html/validation_error.html.en |   29 +++++++++++++++++++++
  html/verify-logout.html       |    7 +---
- 14 files changed, 134 insertions(+), 122 deletions(-)
+ 14 files changed, 182 insertions(+), 161 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
 index 8785b78..b5d6334 100755
@@ -76,10 +76,24 @@ index 3a3a08f..9af21ce 100755
  </body>
  </html>
 diff --git a/html/expired_error.html b/html/expired_error.html
-index 0185219..41b1f7d 100644
+index 0185219..ac82331 100644
 --- a/html/expired_error.html
 +++ b/html/expired_error.html
-@@ -33,9 +33,7 @@
+@@ -21,21 +21,20 @@
+ 	window.onload = function() {
+ 		var cosign = new Cosign('$f');
+ 		cosign.setSatisfied('$d');
+-		cosign.addFactor(['friend','UMICH.EDU'],'kerbTitle','kerberos');
++		cosign.addFactor(['ldap','friend'],'kerbTitle','kerberos');
+ 		cosign.addFactor('otp','otpTitle','otp');
+ 		cosign.addFactor('kx509','kx509Title','kx509');
+ 		cosign.addInfoBox('kerbInfo','kerbInfoShow','kerbInfoHide');
+ 		cosign.addInfoBox('otpInfo','otpInfoShow','otpInfoHide');
+ 		cosign.addInfoBox('kx509Info','kx509InfoShow','kx509InfoHide');
++		cosign.setDefaultOpen('ldap');
+ 		cosign.initUI();
+ 	}
+ 	</script>
  </head>
  <body>
  <div id="page">
@@ -90,6 +104,33 @@ index 0185219..41b1f7d 100644
  	<hr class="text" />
  	<ul class="text">
  		<li><a href="#instruct" title="Jump to the Web Login instructions [ALT + 1 Windows / CONTROL + 1 Mac]" accesskey="1">Jump
+@@ -101,7 +100,7 @@
+ 				<input type="hidden" name="service"
+ 				value="$c" />
+ 				<div id="error">$e</div>
+-				<div class="factorHead"> <a href="#" tabindex="10">Help</a>
++				<div class="factorHead">
+ 					<h2 id="kerbTitle"><span>&nbsp;</span>ID &amp; Password</h2>
+ 					<div class="authComplete" style="display: none;">Authentication Complete</div>
+ 				</div>
+@@ -125,7 +124,7 @@
+ 						</tr>
+ 					</table>
+ 					Need <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">an account or password help?</a> </div>
+-				<div class="factorHead"> <a href="#" tabindex="11">Help</a>
++				<div class="factorHead">
+ 					<h2 id="otpTitle"><span>&nbsp;</span>One Time Passcode</h2>
+ 					<div class="authComplete" style="display: none;">Authentication Complete</div>
+ 				</div>
+@@ -141,7 +140,7 @@
+ 						</tr>
+ 					</table>
+ 					Manage your <a href="#otpInfo" id="otpInfoShow" tabindex="8">token</a> </div>
+-				<div class="factorHead"> <a href="#" tabindex="12">Help</a>
++				<div class="factorHead">
+ 					<h2 id="kx509Title"><span>&nbsp;</span>Certificate</h2>
+ 					<div class="authComplete" style="display: none;">Authentication Complete</div>
+ 				</div>
 diff --git a/html/inc/footer.inc b/html/inc/footer.inc
 new file mode 100644
 index 0000000..f7eb918
@@ -108,10 +149,24 @@ index 0000000..f0a35bc
 +		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
 +		</span> <strong>Our Home Page</strong></a> </div>
 diff --git a/html/login.html b/html/login.html
-index 98fa0e1..07ec488 100755
+index 98fa0e1..b36a0e1 100755
 --- a/html/login.html
 +++ b/html/login.html
-@@ -33,9 +33,7 @@
+@@ -21,21 +21,20 @@
+ 	window.onload = function() {
+ 		var cosign = new Cosign('$f');
+ 		cosign.setSatisfied('$d');
+-		cosign.addFactor(['friend','UMICH.EDU'],'kerbTitle','kerberos');
++		cosign.addFactor(['ldap','friend'],'kerbTitle','kerberos');
+ 		cosign.addFactor('otp','otpTitle','otp');
+ 		cosign.addFactor('kx509','kx509Title','kx509');
+ 		cosign.addInfoBox('kerbInfo','kerbInfoShow','kerbInfoHide');
+ 		cosign.addInfoBox('otpInfo','otpInfoShow','otpInfoHide');
+ 		cosign.addInfoBox('kx509Info','kx509InfoShow','kx509InfoHide');
++		cosign.setDefaultOpen('ldap');
+ 		cosign.initUI();
+ 	}
+ 	</script>
  </head>
  <body>
  <div id="page">
@@ -122,7 +177,56 @@ index 98fa0e1..07ec488 100755
  	<hr class="text" />
  	<ul class="text">
  		<li><a href="#instruct" title="Jump to the Web Login instructions [ALT + 1 Windows / CONTROL + 1 Mac]" accesskey="1">Jump
-@@ -158,7 +156,6 @@
+@@ -54,13 +53,15 @@
+ 		<div id="uiRow">
+ 			<div id="leftUIcol">
+ 				<h1 id="instruct">Authentication Required</h1>
+-				<p>Please enter your authentication information and click the &quot;Log&nbsp;In&quot; button
+-					to continue.</p>
+-				<p class="jsOnly">Authentication
+-				sections marked with a <img
+-				src="/cosign/images/circle.gif" alt="yellow circle" /> are
+-					required.</p>
++				<div id="mainInfo">
++					<p>Please enter your authentication information and click the &quot;Log&nbsp;In&quot; button
++						to continue.</p>
++					<p class="jsOnly">Authentication
++					sections marked with a <img
++					src="/cosign/images/circle.gif" alt="yellow circle" /> are
++						required.</p>
+ 				<p>By using this service you agree to adhere to our policies and guidelines.</p>
++				</div>
+ 				<p class="noScript">This page displays best when JavaScript is enabled in your web
+ 					browser.</p>
+ 				<div id="kerbInfo" class="infoBox">
+@@ -102,7 +103,7 @@
+ 				<input type="hidden" name="service"
+ 				value="$c" />
+ 				<!--div id="error">$e</div-->
+-				<div class="factorHead"> <a href="#" tabindex="10">Help</a>
++				<div class="factorHead">
+ 					<h2 id="kerbTitle"><span>&nbsp;</span>ID &amp; Password</h2>
+ 					<div class="authComplete" style="display: none;">Authentication Complete</div>
+ 				</div>
+@@ -122,7 +123,7 @@
+ 						</tr>
+ 					</table>
+ 					Need <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">an account or password help?</a> </div>
+-				<div class="factorHead"> <a href="#" tabindex="11">Help</a>
++				<div class="factorHead">
+ 					<h2 id="otpTitle"><span>&nbsp;</span>One Time Passcode</h2>
+ 					<div class="authComplete" style="display: none;">Authentication Complete</div>
+ 				</div>
+@@ -138,7 +139,7 @@
+ 						</tr>
+ 					</table>
+ 					Manage your <a href="#otpInfo" id="otpInfoShow" tabindex="8">token</a> </div>
+-				<div class="factorHead"> <a href="#" tabindex="12">Help</a>
++				<div class="factorHead">
+ 					<h2 id="kx509Title"><span>&nbsp;</span>Certificate</h2>
+ 					<div class="authComplete" style="display: none;">Authentication Complete</div>
+ 				</div>
+@@ -158,7 +159,6 @@
  		<div id="uiBottom">&nbsp;</div>
  	</div>
  </div>
@@ -132,10 +236,24 @@ index 98fa0e1..07ec488 100755
  </body>
  </html>
 diff --git a/html/login_error.html b/html/login_error.html
-index 3cf1c94..e512203 100755
+index 3cf1c94..f70f5ae 100755
 --- a/html/login_error.html
 +++ b/html/login_error.html
-@@ -33,9 +33,7 @@
+@@ -21,21 +21,20 @@
+ 	window.onload = function() {
+ 		var cosign = new Cosign('$f');
+ 		cosign.setSatisfied('$d');
+-		cosign.addFactor(['friend','UMICH.EDU'],'kerbTitle','kerberos');
++		cosign.addFactor(['ldap','friend'],'kerbTitle','kerberos');
+ 		cosign.addFactor('otp','otpTitle','otp');
+ 		cosign.addFactor('kx509','kx509Title','kx509');
+ 		cosign.addInfoBox('kerbInfo','kerbInfoShow','kerbInfoHide');
+ 		cosign.addInfoBox('otpInfo','otpInfoShow','otpInfoHide');
+ 		cosign.addInfoBox('kx509Info','kx509InfoShow','kx509InfoHide');
++		cosign.setDefaultOpen('ldap');
+ 		cosign.initUI();
+ 	}
+ 	</script>
  </head>
  <body>
  <div id="page">
@@ -146,7 +264,57 @@ index 3cf1c94..e512203 100755
  	<hr class="text" />
  	<ul class="text">
  		<li><a href="#instruct" title="Jump to the Web Login instructions [ALT + 1 Windows / CONTROL + 1 Mac]" accesskey="1">Jump
-@@ -162,7 +160,6 @@
+@@ -54,13 +53,15 @@
+ 		<div id="uiRow">
+ 			<div id="leftUIcol">
+ 				<h1 id="instruct">Authentication Required</h1>
+-				<p>Please enter your authentication information and click the &quot;Log&nbsp;In&quot; button
+-					to continue.</p>
+-				<p class="jsOnly">Authentication
+-				sections marked with a <img
+-				src="/cosign/images/circle.gif" alt="yellow circle" /> are
+-					required.</p>
+-				<p>By using this service you agree to adhere to our policies and guidelines.</p>
++				<div id="mainInfo">
++					<p>Please enter your authentication information and click the &quot;Log&nbsp;In&quot; button
++						to continue.</p>
++					<p class="jsOnly">Authentication
++					sections marked with a <img
++					src="/cosign/images/circle.gif" alt="yellow circle" /> are
++						required.</p>
++					<p>By using this service you agree to adhere to our policies and guidelines.</p>
++				</div>
+ 				<p class="noScript">This page displays best when JavaScript is enabled in your web
+ 					browser.</p>
+ 				<div id="kerbInfo" class="infoBox">
+@@ -102,7 +103,7 @@
+ 				<input type="hidden" name="service"
+ 				value="$c" />
+ 				<div id="error">$e</div>
+-				<div class="factorHead"> <a href="#" tabindex="10">Help</a>
++				<div class="factorHead">
+ 					<h2 id="kerbTitle"><span>&nbsp;</span>ID &amp; Password</h2>
+ 					<div class="authComplete" style="display: none;">Authentication Complete</div>
+ 				</div>
+@@ -126,7 +127,7 @@
+ 						</tr>
+ 					</table>
+ 					Need <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">an account or password help?</a> </div>
+-				<div class="factorHead"> <a href="#" tabindex="11">Help</a>
++				<div class="factorHead">
+ 					<h2 id="otpTitle"><span>&nbsp;</span>One Time Passcode</h2>
+ 					<div class="authComplete" style="display: none;">Authentication Complete</div>
+ 				</div>
+@@ -142,7 +143,7 @@
+ 						</tr>
+ 					</table>
+ 					Manage your <a href="#otpInfo" id="otpInfoShow" tabindex="8">token</a> </div>
+-				<div class="factorHead"> <a href="#" tabindex="12">Help</a>
++				<div class="factorHead">
+ 					<h2 id="kx509Title"><span>&nbsp;</span>Certificate</h2>
+ 					<div class="authComplete" style="display: none;">Authentication Complete</div>
+ 				</div>
+@@ -162,7 +163,6 @@
  		<div id="uiBottom">&nbsp;</div>
  	</div>
  </div>
@@ -353,10 +521,27 @@ index 0000000..27300a8
 +</body>
 +</html>
 diff --git a/html/reauth.html b/html/reauth.html
-index c70b0f2..4cde522 100755
+index c70b0f2..2535580 100755
 --- a/html/reauth.html
 +++ b/html/reauth.html
-@@ -35,9 +35,7 @@
+@@ -20,8 +20,7 @@
+ 	document.getElementsByTagName('head')[0].appendChild(link);
+ 	window.onload = function() {
+ 		var cosign = new Cosign('$f');
+-		cosign.setDefaultOpen( 'UMICH.EDU' );
+-		cosign.addFactor(['friend','UMICH.EDU'],'kerbTitle','kerberos');
++		cosign.addFactor(['ldap','friend'],'kerbTitle','kerberos');
+ 		cosign.addFactor('otp','otpTitle','otp');
+ 		cosign.addFactor('kx509','kx509Title','kx509');
+ 		cosign.addInfoBox('kerbInfo','kerbInfoShow','kerbInfoHide');
+@@ -29,15 +28,14 @@
+ 		cosign.addInfoBox('kx509Info','kx509InfoShow','kx509InfoHide');
+ 		cosign.setSubmitLink('switchUserL', 'switchUserForm');
+ 		cosign.setSubmitLink('switchUserR', 'switchUserForm');
++		cosign.setDefaultOpen('ldap');
+ 		cosign.initUI();
+ 	}
+ 	</script>
  </head>
  <body>
  <div id="page">
@@ -367,7 +552,61 @@ index c70b0f2..4cde522 100755
  	<hr class="text" />
  	<ul class="text">
  		<li><a href="#instruct" title="Jump to the Web Login instructions [ALT + 1 Windows / CONTROL + 1 Mac]" accesskey="1">Jump
-@@ -162,8 +160,7 @@
+@@ -56,15 +54,17 @@
+ 		<div id="uiRow">
+ 			<div id="leftUIcol">
+ 				<h1 id="instruct">Re-Authentication Required</h1>
+-				<p>To protect your personal information, you must verify your password. Please type
+-					your password and click the Re-Authenticate button to continue.</p>
+-				<p>If you are not $l, you may <a href="/cgi-bin/logout" id="switchUserL">Switch
+-						Users</a> and log in as yourself.</p>
+-				<p class="jsOnly">Authentication
+-				sections marked with a <img
+-				src="/cosign/images/circle.gif" alt="yellow circle" /> are
+-					required.</p>
+-				<p>By using this service you agree to adhere to our policies and guidelines.</p>
++				<div id="mainInfo">
++					<p>To protect your personal information, you must verify your password. Please type
++						your password and click the Re-Authenticate button to continue.</p>
++					<p>If you are not $l, you may <a href="/cgi-bin/logout" id="switchUserL">Switch
++							Users</a> and log in as yourself.</p>
++					<p class="jsOnly">Authentication
++					sections marked with a <img
++					src="/cosign/images/circle.gif" alt="yellow circle" /> are
++						required.</p>
++					<p>By using this service you agree to adhere to our policies and guidelines.</p>
++				</div>
+ 				<p class="noScript">This page displays best when JavaScript is enabled in your web
+ 					browser.</p>
+ 				<div id="kerbInfo" class="infoBox">
+@@ -104,7 +104,7 @@
+ 			<input type="hidden" name="service" value="$c" />
+ 			<input type="hidden" name="reauth" value="true" />
+ 			<div id="error">$e</div>
+-				<div class="factorHead"> <a href="#" tabindex="10">Help</a>
++				<div class="factorHead">
+ 					<h2 id="kerbTitle"><span>&nbsp;</span>ID &amp; Password</h2>
+ 					<div class="authComplete" style="display: none;">Authentication Complete</div>
+ 				</div>
+@@ -126,7 +126,7 @@
+ 						</tr>
+ 					</table>
+ 					Need <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">an account or password help?</a> </div>
+-				<div class="factorHead"> <a href="#" tabindex="11">Help</a>
++				<div class="factorHead">
+ 					<h2 id="otpTitle"><span>&nbsp;</span>One Time Passcode</h2>
+ 					<div class="authComplete" style="display: none;">Authentication Complete</div>
+ 				</div>
+@@ -142,7 +142,7 @@
+ 						</tr>
+ 					</table>
+ 					Manage your <a href="#otpInfo" id="otpInfoShow" tabindex="8">token</a> </div>
+-				<div class="factorHead"> <a href="#" tabindex="12">Help</a>
++				<div class="factorHead">
+ 					<h2 id="kx509Title"><span>&nbsp;</span>Certificate</h2>
+ 					<div class="authComplete" style="display: none;">Authentication Complete</div>
+ 				</div>
+@@ -162,8 +162,7 @@
  		<div id="uiBottom">&nbsp;</div>
  	</div>
  </div>
@@ -437,4 +676,4 @@ index ea68776..2df98c3 100755
  </body>
  </html>
 -- 
-tg: (c0f41f7..) t/template_standard_en (depends on: master t/custom_cosign_path)
+tg: (dc23fe6..) t/template_standard_en (depends on: t/custom_cosign_path t/javascript)

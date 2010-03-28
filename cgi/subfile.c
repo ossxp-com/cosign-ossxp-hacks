@@ -51,7 +51,7 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
         }
     }
 
-    if ( nocache ) {
+    if ( nocache > 0 ) {
 	fputs( "Expires: Mon, 16 Apr 1973 13:10:00 GMT\n"
 		"Last-Modified: Mon, 16 Apr 1973 13:10:00 GMT\n"
 		"Cache-Control: no-store, no-cache, must-revalidate\n"
@@ -59,7 +59,9 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
 		"Pragma: no-cache\n", stdout );
     }
 
-    fputs( "Content-type: text/html\n\n", stdout );
+    if ( nocache >= 0 ) {
+	fputs( "Content-type: text/html\n\n", stdout );
+    }
 
     if (( fs = fopen( filename, "r" )) == NULL ) {
 	perror( filename );
@@ -98,7 +100,7 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
 			if (c==')')
 			{
 				if ( access(incfile, F_OK) == 0 ) {
-					subfile( incfile, sl, nocache );
+					subfile( incfile, sl, -1);
 				}
 				else
 				{
@@ -109,7 +111,7 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
 						{
 							if ( access(globfiles.gl_pathv[i], F_OK) == 0 )
 							{
-								subfile( globfiles.gl_pathv[i], sl, nocache );
+								subfile( globfiles.gl_pathv[i], sl, -1);
 							}
 						}
 						globfree(&globfiles);

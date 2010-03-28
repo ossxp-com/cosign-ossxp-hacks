@@ -58,16 +58,21 @@ Cosign.prototype = Object.extend( new Remember(), {
 		this.cookieAttribs   = Array();
 		this.satisfied       = Array();
 		this.defaultOpen     = Array();
+		this.disabledFactors = Array();
 		this.requiredFctrs   = requiredFctrs.split( ',' );
 		var cookieFactors    = this.readCookie( this.factorCookie );
 		this.cookieFactors   = cookieFactors.data.split( ',' );
-		this.factorCookieSet = cookieFactors.isset;
+		this.factorCookieSet = cookieFactors.isset && this.cookieFactors.max().length > 0;
 		var cookieAttribs    = this.readCookie( this.attribsCookie );
 		this.cookieAttribs   = cookieAttribs.data.split( ',' );
 	},
 
 	setSatisfied: function( satisfied ) {
 		this.satisfied = satisfied.split( ',' );
+	},
+
+	setDisabledFactors: function( disabled_factor ) {
+		this.disabledFactors = disabled_factor.split( ',' );
 	},
 
 	setDefaultOpen: function( defaults ) {
@@ -80,11 +85,17 @@ Cosign.prototype = Object.extend( new Remember(), {
 			focusBox = $( factorDivID ).getElementsByTagName( 'input' )[1];
 		}
 
-		this.factors[title] = {factorName: factorName, title: title, factorDivID: factorDivID, focusBox: focusBox};
+		if ( this.factors.select( function(f) {return f.title == title;}).length == 0 )
+		{
+			this.factors.push({factorName: factorName, title: title, factorDivID: factorDivID, focusBox: focusBox});
+		}
 	},
 
 	addInfoBox: function ( infoID, infoShow, infoHide ) {
-		this.infoBoxes[infoShow] = {infoID: infoID, infoShow: infoShow, infoHide: infoHide};
+		if ( this.infoBoxes.select( function(i) {return i.infoShow == infoShow;}).length == 0 )
+		{
+			this.infoBoxes.push( {infoID: infoID, infoShow: infoShow, infoHide: infoHide} );
+		}
 	},
 	
 	setSubmitLink: function ( elName, formName ) {
@@ -116,6 +127,11 @@ Cosign.prototype = Object.extend( new Remember(), {
 
 	giveFocus: function( focusBox ) {
 		try {
+			try {
+				parent = $( focusBox ).up('div')
+				if (!parent.visible()) new Effect.Appear(parent,{duration:0.20});
+			} catch ( e ) {; }
+
 			$( focusBox ).focus();
 			return true;
 		} catch ( e ) {
@@ -197,40 +213,57 @@ Cosign.prototype = Object.extend( new Remember(), {
 				}
 			});
 
-		// Set factor visibility and focus
-		$H( this.factors ).each( function( factor ) {
-			if ( this.satisfied.inArray( factor.value.factorName )) {
-				this.showSatisfied( factor.value );
-			} else if ( this.requiredFctrs.inArray( factor.value.factorName )) {
-				$( factor.value.title ).className = 'required';
-				if ( ! focusSet ) {
-					focusSet = this.giveFocus( factor.value.focusBox );
+		// Set factor visibility
+		(function () {
+			var fades = Array();
+			var shows = Array();
+			oThis.factors.each( function( factor ) {
+				if ( oThis.disabledFactors.inArray( factor.factorName ) ) {
+					disable_node = $( factor.factorDivID );
+					if (disable_node && disable_node.visible()) { fades.push( Effect.Fade( disable_node ) ); };
+					disable_node = disable_node.previous();
+					if (disable_node && disable_node.visible()) { fades.push( Effect.Fade( disable_node ) ); };
+				} else if (factor.factorDivID) {
+					enable_node = $( factor.factorDivID ).previous();
+					if (enable_node && !enable_node.visible()) { shows.push( Effect.Appear( enable_node ) ); };
 				}
-			} else if ( this.cookieFactors.inArray( factor.value.factorName )) {
-				Event.observe(factor.key, 'click', function(){oThis.toggle(oThis.factors[factor.key])});
+			});
+			new Effect.Parallel( fades, {duration: 0.20, afterFinish:function() { new Effect.Parallel( shows, {duration: 0.20 } ); } } )
+		})();
+		// Set factor focus
+		oThis.factors.each( function( factor ) {
+			if ( this.satisfied.inArray( factor.factorName )) {
+				this.showSatisfied( factor );
+			} else if ( this.requiredFctrs.inArray( factor.factorName )) {
+				$( factor.title ).className = 'required';
 				if ( ! focusSet ) {
-					focusSet = this.giveFocus( factor.value.focusBox );
+					focusSet = this.giveFocus( factor.focusBox );
 				}
-			} else if ( this.defaultOpen.inArray( factor.value.factorName ) && this.factorCookieSet == false ) {
-				Event.observe(factor.key, 'click', function(){oThis.toggle(oThis.factors[factor.key])});
+			} else if ( this.factorCookieSet && this.cookieFactors.inArray( factor.factorName )) {
+				Event.observe(factor.title, 'click', function(){oThis.toggle(factor)});
 				if ( ! focusSet ) {
-					focusSet = this.giveFocus( factor.value.focusBox );
+					focusSet = this.giveFocus( factor.focusBox );
+				}
+			} else if ( this.defaultOpen.inArray( factor.factorName ) && this.factorCookieSet == false ) {
+				Event.observe(factor.title, 'click', function(){oThis.toggle(factor)});
+				if ( ! focusSet ) {
+					focusSet = this.giveFocus( factor.focusBox );
 				}
 
 				// Set a cookie for the default open factor
-				this.saveFactorState( factor.value );
+				this.saveFactorState( factor );
 			} else {
-				Event.observe(factor.key, 'click', function(){oThis.toggle(oThis.factors[factor.key])});
-				this.hide( factor.value );
+				Event.observe(factor.title, 'click', function(){oThis.toggle(factor)});
+				this.hide( factor );
 			}
 		}.bind( this ));
 
 		// Register InfoBox click events
-		$H( this.infoBoxes ).each( function( infoBox ) {
-			Event.observe(infoBox.key, 'click', function(){oThis.showInfo(oThis.infoBoxes[infoBox.key].infoID)});
-			Event.observe(infoBox.value.infoHide, 'click', function(){oThis.closeInfo()});
-			Element.hide( infoBox.value.infoID );
-			$( infoBox.value.infoID ).style.visibility = 'visible'; // Prevents a "flash" of all infoboxes on load
+		this.infoBoxes.each( function( infoBox ) {
+			Event.observe(infoBox.infoShow, 'click', function(){oThis.showInfo(infoBox.infoID)});
+			Event.observe(infoBox.infoHide, 'click', function(){oThis.closeInfo()});
+			Element.hide( infoBox.infoID );
+			$( infoBox.infoID ).style.visibility = 'visible'; // Prevents a "flash" of all infoboxes on load
 		});
 
 		// Apply misc element attributes
@@ -292,20 +325,22 @@ Cosign.prototype = Object.extend( new Remember(), {
 
 	closeInfo: function() {
 		var fades = Array();
-		$H( this.infoBoxes ).each( function(infoBox ) {
-			fades.push( Effect.Fade( infoBox.value.infoID ));
+		this.infoBoxes.each( function(infoBox ) {
+			fades.push( Effect.Fade( infoBox.infoID ));
 		});
 
-		new Effect.Parallel( fades, {duration: 0.20} );
+		new Effect.Parallel( fades, {duration: 0.20, afterFinish:function() { if($('mainInfo')!=null) Effect.Appear('mainInfo',{duration:0.20}); }} );
 	},
 
 	showInfo: function( showInfoID ) {
 		var fades = Array();
-		$H( this.infoBoxes ).each( function( infoBox ) {
-			if ( infoBox.value.infoID != showInfoID ) {
-				fades.push( Effect.Fade( infoBox.value.infoID ));
+		this.infoBoxes.each( function( infoBox ) {
+			if ( infoBox.infoID != showInfoID ) {
+				fades.push( Effect.Fade( infoBox.infoID ));
 			}
 		});
+
+		if ( $('mainInfo') != null ) { fades.push(Effect.Fade('mainInfo')); }
 
 		new Effect.Parallel(fades,{duration: 0.20, afterFinish: function(){Effect.Appear(showInfoID,{duration: 0.20});}});
 		
@@ -348,3 +383,5 @@ Cosign.prototype = Object.extend( new Remember(), {
 		}
 	}
 });
+
+// vim: noet ts=4 sw=4

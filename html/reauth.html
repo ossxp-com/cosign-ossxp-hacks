@@ -20,8 +20,7 @@
 	document.getElementsByTagName('head')[0].appendChild(link);
 	window.onload = function() {
 		var cosign = new Cosign('$f');
-		cosign.setDefaultOpen( 'UMICH.EDU' );
-		cosign.addFactor(['friend','UMICH.EDU'],'kerbTitle','kerberos');
+		cosign.addFactor(['ldap','friend'],'kerbTitle','kerberos');
 		cosign.addFactor('otp','otpTitle','otp');
 		cosign.addFactor('kx509','kx509Title','kx509');
 		cosign.addInfoBox('kerbInfo','kerbInfoShow','kerbInfoHide');
@@ -29,6 +28,7 @@
 		cosign.addInfoBox('kx509Info','kx509InfoShow','kx509InfoHide');
 		cosign.setSubmitLink('switchUserL', 'switchUserForm');
 		cosign.setSubmitLink('switchUserR', 'switchUserForm');
+		cosign.setDefaultOpen('ldap');
 		cosign.initUI();
 	}
 	</script>
@@ -54,15 +54,17 @@
 		<div id="uiRow">
 			<div id="leftUIcol">
 				<h1 id="instruct">Re-Authentication Required</h1>
-				<p>To protect your personal information, you must verify your password. Please type
-					your password and click the Re-Authenticate button to continue.</p>
-				<p>If you are not $l, you may <a href="/cgi-bin/logout" id="switchUserL">Switch
-						Users</a> and log in as yourself.</p>
-				<p class="jsOnly">Authentication
-				sections marked with a <img
-				src="/cosign/images/circle.gif" alt="yellow circle" /> are
-					required.</p>
-				<p>By using this service you agree to adhere to our policies and guidelines.</p>
+				<div id="mainInfo">
+					<p>To protect your personal information, you must verify your password. Please type
+						your password and click the Re-Authenticate button to continue.</p>
+					<p>If you are not $l, you may <a href="/cgi-bin/logout" id="switchUserL">Switch
+							Users</a> and log in as yourself.</p>
+					<p class="jsOnly">Authentication
+					sections marked with a <img
+					src="/cosign/images/circle.gif" alt="yellow circle" /> are
+						required.</p>
+					<p>By using this service you agree to adhere to our policies and guidelines.</p>
+				</div>
 				<p class="noScript">This page displays best when JavaScript is enabled in your web
 					browser.</p>
 				<div id="kerbInfo" class="infoBox">
@@ -102,7 +104,7 @@
 			<input type="hidden" name="service" value="$c" />
 			<input type="hidden" name="reauth" value="true" />
 			<div id="error">$e</div>
-				<div class="factorHead"> <a href="#" tabindex="10">Help</a>
+				<div class="factorHead">
 					<h2 id="kerbTitle"><span>&nbsp;</span>ID &amp; Password</h2>
 					<div class="authComplete" style="display: none;">Authentication Complete</div>
 				</div>
@@ -124,7 +126,7 @@
 						</tr>
 					</table>
 					Need <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">an account or password help?</a> </div>
-				<div class="factorHead"> <a href="#" tabindex="11">Help</a>
+				<div class="factorHead">
 					<h2 id="otpTitle"><span>&nbsp;</span>One Time Passcode</h2>
 					<div class="authComplete" style="display: none;">Authentication Complete</div>
 				</div>
@@ -140,7 +142,7 @@
 						</tr>
 					</table>
 					Manage your <a href="#otpInfo" id="otpInfoShow" tabindex="8">token</a> </div>
-				<div class="factorHead"> <a href="#" tabindex="12">Help</a>
+				<div class="factorHead">
 					<h2 id="kx509Title"><span>&nbsp;</span>Certificate</h2>
 					<div class="authComplete" style="display: none;">Authentication Complete</div>
 				</div>

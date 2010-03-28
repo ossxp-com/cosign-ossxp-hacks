@@ -21,61 +21,21 @@
 	window.onload = function() {
 		var cosign = new Cosign('$f');
 		cosign.setSatisfied('$d');
-		cosign.addFactor(['friend','UMICH.EDU'],'kerbTitle','kerberos');
-		cosign.addFactor('otp','otpTitle','otp');
-		cosign.addFactor('kx509','kx509Title','kx509');
-		cosign.addInfoBox('kerbInfo','kerbInfoShow','kerbInfoHide');
-		cosign.addInfoBox('otpInfo','otpInfoShow','otpInfoHide');
-		cosign.addInfoBox('kx509Info','kx509InfoShow','kx509InfoHide');
-		cosign.initUI();
+		$!include(inc/js_config.inc)
 	}
-	</script>
+</script>
 </head>
 <body>
 <div id="page">
   $!include(inc/header.inc)
 	<hr class="text" />
-	<ul class="text">
-		<li><a href="#instruct" title="Jump to the Web Login instructions [ALT + 1 Windows / CONTROL + 1 Mac]" accesskey="1">Jump
-				to the Web Login instructions</a></li>
-		<li><a href="#error" title="Jump to the error message (if present) [ALT + 2 Windows / CONTROL + 2 Mac]" accesskey="2">Jump
-				to the error message (if present)</a></li>
-		<li><a href="#kerberos" title="Jump to the ID and Password section [ALT + 3 Windows / CONTROL + 3 Mac]" accesskey="3">Jump
-				to the ID and Password section</a></li>
-		<li><a href="#otp" title="Jump to the One Time Passcode section [ALT + 4 Windows / CONTROL + 4 Mac]"  accesskey="4">Jump
-				to the One Time Passcode section</a></li>
-		<li><a href="#kx509" title="Jump to the Certificate section [ALT + 5 Windows / CONTROL + 5 Mac]" accesskey="5">Jump
-				to the Certificate section</a></li>
-	</ul>
+	$!include(inc/help_hotkey.inc)
 	<hr class="text" />
 	<div id="main">
 		<div id="uiRow">
 			<div id="leftUIcol">
 				<h1 id="instruct">请登录</h1>
-				<p>在右侧选择任一种登录方式，输入登录信息，之后按 &quot;登录按钮&quot; 完成登录。</p>
-				<p class="jsOnly">标记为 <img
-				src="/cosign/images/circle.gif" alt="yellow circle" /> 是必须的。</p>
-				<p>使用本服务，意味着您已经接受我们的相关政策条款。</p>
-				<p class="noScript">这个页面在 JavaScript 启用下有更好的表现。</p>
-				<div id="kerbInfo" class="infoBox">
-					<h4><a href="#mainInfo" class="hideInfo" id="kerbInfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>
-					<h3>需要一个帐号？</h3>
-					<p>替换本段内容为创建帐号的相关指示...</p>
-					<h3>忘记口令？</h3>
-					<p>替换本段内容为重置密码的相关指示...</p>
-				</div>
-				<div id="otpInfo" class="infoBox">
-					<h4><a href="#mainInfo" class="hideInfo" id="otpInfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>
-					<h3>获取一个令牌</h3>
-					<p>替换本段内容为一次性口令的相关指示...</p>
-				</div>
-				<div id="kx509Info" class="infoBox">
-					<h4><a href="#mainInfo" class="hideInfo" id="kx509InfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>
-					<h3>下载 KX.509</h3>
-					<p>服务 KX.509 提供了一个 客户端/服务器 应用，使用 Kerberos 来获取一个短期的 X.509 证书一。
-						使得浏览器连接任何 CoSign 保护的网站不再需要输入用户名和口令，而自动登录。 在密歇根大学，
-						这项服务由知道唯一名称和 Kerberos 口令的用户使用。</p>
-				</div>
+				$!include(inc/help_infobox.inc)
 			</div>
 			<form action="/cgi-bin/login" method="post" name="factors" id="rightUIcol">
 				<input type="hidden" name="required"
@@ -84,54 +44,11 @@
 				value="$r" />
 				<input type="hidden" name="service"
 				value="$c" />
-				<!--div id="error">$e</div-->
-				<div class="factorHead"> <a href="#" tabindex="10">帮助</a>
-					<h2 id="kerbTitle"><span>&nbsp;</span>用户名和口令</h2>
-					<div class="authComplete" style="display: none;">认证完成</div>
-				</div>
-				<div class="factor" id="kerberos">
-					<table>
-						<tr>
-							<td><label for="login">用户名</label></td>
-							<td><input id="login" name="login" type="text" value="" size="18" tabindex="1" /></td>
-						</tr>
-						<tr>
-							<td><label for="password">口令</label></td>
-							<td><input id="password" name="password" type="password" value="" size="18" tabindex="2" /></td>
-						</tr>
-						<tr class="capsLock" style="display: none;">
-							<td>&nbsp;</td>
-							<td>大小写锁定键被打开</td>
-						</tr>
-					</table>
-					需要 <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">一个帐号或者忘记口令？</a> </div>
-				<div class="factorHead"> <a href="#" tabindex="11">帮助</a>
-					<h2 id="otpTitle"><span>&nbsp;</span>一次性口令</h2>
-					<div class="authComplete" style="display: none;">认证完成</div>
-				</div>
-				<div class="factor" id="otp">
-					<table>
-						<tr>
-							<td><label for="passcode" id="pCodeLabel">Passcode</label></td>
-							<td><input id="passcode" name="passcode" type="password" value="" size="18" tabindex="3" /></td>
-						</tr>
-						<tr class="capsLock" style="display: none;">
-							<td>&nbsp;</td>
-							<td>大小写锁定键被打开</td>
-						</tr>
-					</table>
-					管理您的 <a href="#otpInfo" id="otpInfoShow" tabindex="8">令牌</a> </div>
-				<div class="factorHead"> <a href="#" tabindex="12">帮助</a>
-					<h2 id="kx509Title"><span>&nbsp;</span>证书</h2>
-					<div class="authComplete" style="display: none;">认证完成</div>
-				</div>
-				<div class="factor" id="kx509">
-					<p class="note">您必须安装 k.x-509 软件并且已配置。</p>
-					<p>
-						<input name="useKX509" id="useKX509" type="checkbox" value="1" tabindex="5" />
-						<label for="useKX509">使用证书认证</label>
-					</p>
-					下载 <a href="#kx509Info" id="kx509InfoShow" tabindex="9">k.x-509 软件</a> </div>
+				<div id="error" style="display: none;">$e</div>
+				$!include(inc/factor_login.inc)
+				$!include(inc/factor_otp.inc)
+				$!include(inc/factor_kx509.inc)
+				$!include(inc/factor_invite.inc)
 				<div id="loginButton">
 					<input type="submit" name="doLogin" value="登录" tabindex="6" />
 				</div>

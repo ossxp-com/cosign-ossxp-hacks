@@ -11,6 +11,11 @@
 <script type="text/javascript" src="/cosign/js/prototype.js"></script>
 <script type="text/javascript">
 	window.onload = function() {
+		try {
+			if (history.length <= 1) {
+				$('back').hide();
+			}
+		} catch (e) {}
 		Event.observe('back', 'click', function() {history.go(-1)});
 		$('logout').focus();
 	}

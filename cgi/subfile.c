@@ -15,7 +15,6 @@
 subfile( char *filename, struct subfile_list *sl, int nocache )
 {
     FILE	*fs;
-    FILE	*finc;
     int 	c, i, j;
     char	nasties[] = "<>(){}[]'`\" \\";
 
@@ -98,11 +97,8 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
 			incfile[i] = '\0';
 			if (c==')')
 			{
-				if ( (access(incfile, F_OK)==0) && (finc = fopen( incfile, "r" )) != NULL ) {
-					while (( c = getc( finc )) != EOF ) {
-						putchar( c );
-					}
-					fclose(finc);
+				if ( access(incfile, F_OK) == 0 ) {
+					subfile( incfile, sl, nocache );
 				}
 				else
 				{
@@ -111,13 +107,9 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
 					{
 						for (i=0; i< globfiles.gl_pathc; i++)
 						{
-							if ( (access(globfiles.gl_pathv[i], F_OK)==0) &&
-							     (finc = fopen( globfiles.gl_pathv[i], "r" )) != NULL )
+							if ( access(globfiles.gl_pathv[i], F_OK) == 0 )
 							{
-								while (( c = getc( finc )) != EOF ) {
-									putchar( c );
-								}
-								fclose(finc);
+								subfile( globfiles.gl_pathv[i], sl, nocache );
 							}
 						}
 						globfree(&globfiles);

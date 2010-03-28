@@ -21,12 +21,13 @@
 	window.onload = function() {
 		var cosign = new Cosign('$f');
 		cosign.setSatisfied('$d');
-		cosign.addFactor(['friend','UMICH.EDU'],'kerbTitle','kerberos');
+		cosign.addFactor(['ldap','friend'],'kerbTitle','kerberos');
 		cosign.addFactor('otp','otpTitle','otp');
 		cosign.addFactor('kx509','kx509Title','kx509');
 		cosign.addInfoBox('kerbInfo','kerbInfoShow','kerbInfoHide');
 		cosign.addInfoBox('otpInfo','otpInfoShow','otpInfoHide');
 		cosign.addInfoBox('kx509Info','kx509InfoShow','kx509InfoHide');
+		cosign.setDefaultOpen('ldap');
 		cosign.initUI();
 	}
 	</script>
@@ -52,13 +53,15 @@
 		<div id="uiRow">
 			<div id="leftUIcol">
 				<h1 id="instruct">Authentication Required</h1>
-				<p>Please enter your authentication information and click the &quot;Log&nbsp;In&quot; button
-					to continue.</p>
-				<p class="jsOnly">Authentication
-				sections marked with a <img
-				src="/cosign/images/circle.gif" alt="yellow circle" /> are
-					required.</p>
+				<div id="mainInfo">
+					<p>Please enter your authentication information and click the &quot;Log&nbsp;In&quot; button
+						to continue.</p>
+					<p class="jsOnly">Authentication
+					sections marked with a <img
+					src="/cosign/images/circle.gif" alt="yellow circle" /> are
+						required.</p>
 				<p>By using this service you agree to adhere to our policies and guidelines.</p>
+				</div>
 				<p class="noScript">This page displays best when JavaScript is enabled in your web
 					browser.</p>
 				<div id="kerbInfo" class="infoBox">
@@ -100,7 +103,7 @@
 				<input type="hidden" name="service"
 				value="$c" />
 				<!--div id="error">$e</div-->
-				<div class="factorHead"> <a href="#" tabindex="10">Help</a>
+				<div class="factorHead">
 					<h2 id="kerbTitle"><span>&nbsp;</span>ID &amp; Password</h2>
 					<div class="authComplete" style="display: none;">Authentication Complete</div>
 				</div>
@@ -120,7 +123,7 @@
 						</tr>
 					</table>
 					Need <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">an account or password help?</a> </div>
-				<div class="factorHead"> <a href="#" tabindex="11">Help</a>
+				<div class="factorHead">
 					<h2 id="otpTitle"><span>&nbsp;</span>One Time Passcode</h2>
 					<div class="authComplete" style="display: none;">Authentication Complete</div>
 				</div>
@@ -136,7 +139,7 @@
 						</tr>
 					</table>
 					Manage your <a href="#otpInfo" id="otpInfoShow" tabindex="8">token</a> </div>
-				<div class="factorHead"> <a href="#" tabindex="12">Help</a>
+				<div class="factorHead">
 					<h2 id="kx509Title"><span>&nbsp;</span>Certificate</h2>
 					<div class="authComplete" style="display: none;">Authentication Complete</div>
 				</div>

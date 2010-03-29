@@ -18,13 +18,34 @@ Options:
             Save log to file
 """
 
+class DefaultConfig:
+    # LDAP parameters
+    ldap_uri = 'ldap://localhost'
+    ldap_binddn = ''
+    ldap_bindpw = ''
+    ldap_base = 'dc=foo,dc=bar'
+    ldap_scope = 2 # 2 - ldap.SCOPE_SUBTREE
+    ldap_filter = '(ossxpConfirmed=TRUE)'
+    ldap_timeout = 10 # how long we wait for the ldap server [s]
+    ldap_coding = 'utf-8' # coding used for ldap queries and result values
+    ldap_start_tls = False
+    ldap_email_attribute = 'mail'
+    ldap_login_attribute = 'uid'
+
+    # Debug and logging
+    log_level = False
+    log_file  = None
+
 import sys
 import os
 
 config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'conf')
 if config_path not in sys.path:
     sys.path.insert(0, config_path)
-    from config import LdapConfig as cfg
+    try:
+        from config import LdapConfig as cfg
+    except:
+        cfg = DefaultConfig
 
 import getopt 
 import logging
@@ -119,7 +140,7 @@ def ldap_login(username, password, cfg):
                                  attrlist=attrs, timeout=getattr(cfg, 'ldap_timeout', 10))
             # we remove entries with dn == None to get the real result list:
             lusers = [(dn, ldap_dict) for dn, ldap_dict in lusers if dn is not None]
-            if getattr(cfg, 'ldap_verbose', False):
+            if getattr(cfg, 'log_level', False):
                 for dn, ldap_dict in lusers:
                     log.debug("LDAP: dn:%r" % dn)
                     for key, val in ldap_dict.items():
@@ -152,12 +173,8 @@ def ldap_login(username, password, cfg):
     return True
 
 def main(argv=None):
-    if getattr(cfg, 'ldap_verbose', False):
-        opt_loglevel = 'debug'
-    else:
-        opt_loglevel = 'critical'
-
-    opt_logfile = getattr(cfg, 'ldap_logfile', None)
+    opt_loglevel = getattr(cfg, 'log_level', 'critical')
+    opt_logfile  = getattr(cfg, 'log_file', None)
 
     if argv is None:
         argv = sys.argv[1:]

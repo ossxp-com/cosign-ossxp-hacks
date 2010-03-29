@@ -125,13 +125,16 @@ Cosign.prototype = Object.extend( new Remember(), {
 		);
 	},
 
-	giveFocus: function( focusBox ) {
+	giveVisible: function( focusBox ) {
 		try {
-			try {
-				parent = $( focusBox ).up('div')
-				if (!parent.visible()) new Effect.Appear(parent,{duration:0.20});
-			} catch ( e ) {; }
+			parent = $( focusBox ).up('div')
+			if (!parent.visible()) new Effect.Appear(parent,{duration:0.20});
+		} catch ( e ) {;}
+	},
 
+	giveFocus: function( focusBox ) {
+		this.giveVisible( focusBox );
+		try {
 			$( focusBox ).focus();
 			return true;
 		} catch ( e ) {
@@ -243,16 +246,22 @@ Cosign.prototype = Object.extend( new Remember(), {
 				$( factor.title ).className = 'required';
 				if ( ! focusSet ) {
 					focusSet = this.giveFocus( factor.focusBox );
+				} else {
+					this.giveVisible( factor.focusBox );
 				}
 			} else if ( this.factorCookieSet && this.cookieFactors.inArray( factor.factorName )) {
 				Event.observe(factor.title, 'click', function(){oThis.toggle(factor)});
 				if ( ! focusSet ) {
 					focusSet = this.giveFocus( factor.focusBox );
+				} else {
+					this.giveVisible( factor.focusBox );
 				}
 			} else if ( this.defaultOpen.inArray( factor.factorName ) && this.factorCookieSet == false ) {
 				Event.observe(factor.title, 'click', function(){oThis.toggle(factor)});
 				if ( ! focusSet ) {
 					focusSet = this.giveFocus( factor.focusBox );
+				} else {
+					this.giveVisible( factor.focusBox );
 				}
 
 				// Set a cookie for the default open factor

@@ -1,6 +1,8 @@
 t/autotools_for_setup.diff -p1
 t/bugfix_cosign_httponly_quirk.diff -p1
 t/custom_cosign_path.diff -p1
+t/factor_invite.diff -p1
+t/factor_ldap.diff -p1
 t/javascript.diff -p1
 t/multi_language.diff -p1
 t/services_template.diff -p1

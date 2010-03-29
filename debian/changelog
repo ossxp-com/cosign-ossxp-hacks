@@ -1,9 +1,10 @@
-ossxp-cosign3 (3.1.1-0.9+2) unstable; urgency=low
+ossxp-cosign3 (3.1.1-0.9+3) unstable; urgency=low
 
   * Template inclusion also parse using subfile.
   * Template refactor and add new factor: invite login.
+  * New factor: ldap2 and invite.
 
- -- Jiang Xin <jiangxin@ossxp.com>  Mon, 29 Mar 2010 01:01:52 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Mon, 29 Mar 2010 15:26:39 +0800
 
 ossxp-cosign3 (3.1.1-0.9+1) unstable; urgency=low
 

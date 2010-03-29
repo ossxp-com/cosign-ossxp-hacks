@@ -1,0 +1,6 @@
+From: Jiang <jiangxin@ossxp.com>
+Subject: [PATCH] t/factor_invite
+
+Login using invite code.
+
+Signed-off-by: Jiang <jiangxin@ossxp.com>

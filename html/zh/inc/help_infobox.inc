@@ -27,7 +27,8 @@
 				<div id="inviteInfo" class="infoBox">
 					<h4><a href="#mainInfo" class="hideInfo" id="inviteInfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>
 					<h3>关于邀请码认证</h3>
-					<p>邀请码是由管理员分配的登录密钥。登录时仅输入该邀请码即可，无需提供用户名。
+					<p>邀请码是由管理员分配的登录密钥。在使用邀请码登录时，您还需要在用户名字段输入您的邮件地址。
+					<p>注意：邀请码登录和口令登录互斥，当口令输入框中包含内容时，邀请码输入框自动禁用，反之亦然。
 					</p>
 				</div>
 

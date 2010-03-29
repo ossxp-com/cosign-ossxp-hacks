@@ -21,24 +21,35 @@ if (!$uid)
   die("Not login yet.");
 }
 
+# If auth using invite factor, userid is from factor name.
+$factor = @$_SERVER["COSIGN_FACTOR"]? @$_SERVER["COSIGN_FACTOR"] : @$_SERVER["REDIRECT_COSIGN_FACTOR"];
+if ($factor && preg_match("/^invite_.*/", $factor)) {
+  $uid = substr($factor, 7);
+  $mail = @$_SERVER["REMOTE_USER"]? @$_SERVER["REMOTE_USER"] : @$_SERVER["REDIRECT_REMOTE_USER"];
+}
+
 $info=ldap_brief_info($uid);
-if ($info['givenname'] == $info['sn'] && $info['sn']!='')
+$uid=$info['uid'];
+
+$username = !($info['givenname'] && $info['sn']) && $info['givenname'] ? $info['givenname'] : $info['sn'];
+if ( $username != $info['givenname'] || $info['givenname'] != "")
 {
-  $username = $info['sn'];
+   $username .=  " ".$info['givenname'];
 }
-else
+else if (!$username)
 {
-  $username = $info['sn'] . " " .  $info['givenname'];
-}
-if (!$username)
   $username = $uid;
+}
 
 if ($info['cn'])
   $aliasname = $info['cn'];
-else
+else if ($username)
   $aliasname = $username;
+else
+  $aliasname = $uid;
 
-$mail = $info['mail'];
+if ($info['mail'])
+  $mail = $info['mail'];
 
 ?>
 <html><head>

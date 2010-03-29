@@ -70,7 +70,11 @@ function ldap_brief_info( $p_username ) {
     $t_ldap_root_dn	    	= config_get( 'ldap_root_dn' );
 
     $t_ldap_uid_field = config_get( 'ldap_uid_field', 'uid' ) ;
-    $t_search_filter	= "(&$t_ldap_organization($t_ldap_uid_field=$p_username))";
+    if (preg_match("/.*@.*\..*/", $p_username)) {
+        $t_search_filter	= "(&$t_ldap_organization(mail=$p_username))";
+    } else {
+        $t_search_filter	= "(&$t_ldap_organization($t_ldap_uid_field=$p_username))";
+    }
     $t_search_attrs		= array( $t_ldap_uid_field, 'dn', 'givenName', 'sn', 'cn', 'mail' );
     $t_ds           	= ldap_connect_bind();
 
@@ -80,11 +84,22 @@ function ldap_brief_info( $p_username ) {
     ldap_unbind( $t_ds );
 
     $result = array();
-    $result['dn'] = $t_info[0]['dn'];
-    $result['givenname'] = $t_info[0]['givenname'][0];
-    $result['sn'] = $t_info[0]['sn'][0];
-    $result['cn'] = $t_info[0]['cn'][0];
-    $result['mail'] = $t_info[0]['mail'][0];
+    if ($t_info) {
+      $result['dn'] = $t_info[0]['dn'];
+      $result['givenname'] = $t_info[0]['givenname'][0];
+      $result['uid'] = $t_info[0][$t_ldap_uid_field][0];
+      $result['sn'] = $t_info[0]['sn'][0];
+      $result['cn'] = $t_info[0]['cn'][0];
+      $result['mail'] = $t_info[0]['mail'][0];
+    } else {
+      # May login through invite factor
+      $result['uid'] = $p_username;
+      $result['dn'] = '';
+      $result['givenname'] = '';
+      $result['sn'] = '';
+      $result['cn'] = '';
+      $result['mail'] = '';
+    }
 
     return $result;
 }

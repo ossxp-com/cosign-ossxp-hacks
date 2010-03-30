@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-03-30 14:40+0800\n"
-"PO-Revision-Date: 2010-03-30 15:16+0800\n"
+"PO-Revision-Date: 2010-03-30 15:57+0800\n"
 "Last-Translator: Jiang Xin <worldhello.net@gmail.com>\n"
 "Language-Team: Chinese Simplified <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -276,4 +276,21 @@ msgstr "正则表达式替换错误: %s 到 %s\n"
 msgid "requested v2 for v3 service %s\n"
 msgstr "对协议3的服务 %s 发起协议2的请求\n"
 
+msgid "Login failed: email or invite_code not provided."
+msgstr "登录失败: 请输入您的邮件地址和邀请码。"
+
+msgid "Login failed: invite factor has not setup yet."
+msgstr "登录失败: 邀请码认证尚未配置。"
+
+msgid "Login failed: provide your email address as login name."
+msgstr "登录失败: 请在用户名输入框输入您的邮件地址。"
+
+msgid "Login failed: user does not exist or wrong password."
+msgstr "登录失败: 用户不存在或口令错。"
+
+msgid "Login failed: user does not exist or wrong password.\n"
+msgstr "登录失败: 用户不存在或口令错。\n"
+
+msgid "Login failed: wrong invite code."
+msgstr "登录失败: 错误的邀请码。"
 

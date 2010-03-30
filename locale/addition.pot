@@ -1,0 +1,29 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-03-30 14:40+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Login failed: email or invite_code not provided."
+msgstr ""
+
+msgid "Login failed: invite factor has not setup yet."
+msgstr ""
+
+msgid "Login failed: provide your email address as login name."
+msgstr ""
+
+msgid "Login failed: user does not exist or wrong password."
+msgstr ""
+
+msgid "Login failed: user does not exist or wrong password.\n"
+msgstr ""
+
+msgid "Login failed: wrong invite code."
+msgstr ""

@@ -40,6 +40,11 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
             filename = filename_i18n;
             break;
         }
+        if (strcmp(*lang, "zh_TW")==0)
+        {
+            strcpy(*lang, "zh");
+            continue;
+        }
         lang++;
     }
     if (access(filename, F_OK)!=0)

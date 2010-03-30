@@ -1,7 +1,9 @@
 var Localization = {
-	"9999": {
-		"en": "Cannot open logfile.",
-		"zh": "无法打开日志文件。" },
+	"Please enter your login and password.": {
+		"zh": "请输入您的用户名和口令。" },
+
+	"Please input your email address into username field.": {
+		"zh": "请在用户名输入框输入您的邮件地址。" },
 
 	"default": "en"
 };

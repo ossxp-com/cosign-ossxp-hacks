@@ -6,11 +6,11 @@ Templates can include other files using macro: $!include(...)
 Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
- cgi/subfile.c |  111 +++++++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 files changed, 109 insertions(+), 2 deletions(-)
+ cgi/subfile.c |  116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 114 insertions(+), 2 deletions(-)
 
 diff --git a/cgi/subfile.c b/cgi/subfile.c
-index 760d2c6..33d6ed4 100644
+index 760d2c6..781ef4e 100644
 --- a/cgi/subfile.c
 +++ b/cgi/subfile.c
 @@ -5,6 +5,11 @@
@@ -25,7 +25,7 @@ index 760d2c6..33d6ed4 100644
  
      void
  subfile( char *filename, struct subfile_list *sl, int nocache )
-@@ -13,7 +18,40 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
+@@ -13,7 +18,45 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
      int 	c, i, j;
      char	nasties[] = "<>(){}[]'`\" \\";
  
@@ -52,6 +52,11 @@ index 760d2c6..33d6ed4 100644
 +            filename = filename_i18n;
 +            break;
 +        }
++        if (strcmp(*lang, "zh_TW")==0)
++        {
++            strcpy(*lang, "zh");
++            continue;
++        }
 +        lang++;
 +    }
 +    if (access(filename, F_OK)!=0)
@@ -67,7 +72,7 @@ index 760d2c6..33d6ed4 100644
  	fputs( "Expires: Mon, 16 Apr 1973 13:10:00 GMT\n"
  		"Last-Modified: Mon, 16 Apr 1973 13:10:00 GMT\n"
  		"Cache-Control: no-store, no-cache, must-revalidate\n"
-@@ -21,13 +59,18 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
+@@ -21,13 +64,18 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
  		"Pragma: no-cache\n", stdout );
      }
  
@@ -87,7 +92,7 @@ index 760d2c6..33d6ed4 100644
      while (( c = getc( fs )) != EOF ) {
  	if ( c == '$' ) {
  	    if (( c = getc( fs )) == EOF ) {
-@@ -39,6 +82,64 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
+@@ -39,6 +87,64 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
  		putchar( c );
  		continue;
  	    }
@@ -152,7 +157,7 @@ index 760d2c6..33d6ed4 100644
  
  	    for ( i = 0; sl[ i ].sl_letter != '\0'; i++ ) {
  		if ( sl[ i ].sl_letter == c ) {
-@@ -75,5 +176,11 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
+@@ -75,5 +181,11 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
  	perror( filename );
      }
  
@@ -165,4 +170,4 @@ index 760d2c6..33d6ed4 100644
 +
 +/* vim: set noet ts=8 sw=8 : */
 -- 
-tg: (1a05cf9..) t/include_macro_for_templates (depends on: t/multi_language)
+tg: (23340c2..) t/include_macro_for_templates (depends on: t/multi_language)

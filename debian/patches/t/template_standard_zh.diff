@@ -11,7 +11,7 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
  html/post_error.html.zh             |   27 +++++++++++++
  html/validation_error.html.zh       |   26 ++++++++++++
  html/zh/error.html                  |   49 +++++++++++++++++++++++
- html/zh/expired_error.html          |   63 +++++++++++++++++++++++++++++
+ html/zh/expired_error.html          |   65 ++++++++++++++++++++++++++++++
  html/zh/inc/factor_invite.inc       |   74 +++++++++++++++++++++++++++++++++++
  html/zh/inc/factor_kx509.inc        |   11 +++++
  html/zh/inc/factor_login.inc        |   24 +++++++++++
@@ -22,11 +22,11 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
  html/zh/inc/help_hotkey.inc         |   12 ++++++
  html/zh/inc/help_infobox.inc        |   34 ++++++++++++++++
  html/zh/inc/js_config.inc           |   11 +++++
- html/zh/login.html                  |   63 +++++++++++++++++++++++++++++
- html/zh/login_error.html            |   63 +++++++++++++++++++++++++++++
- html/zh/reauth.html                 |   72 ++++++++++++++++++++++++++++++++++
+ html/zh/login.html                  |   65 ++++++++++++++++++++++++++++++
+ html/zh/login_error.html            |   65 ++++++++++++++++++++++++++++++
+ html/zh/reauth.html                 |   74 +++++++++++++++++++++++++++++++++++
  html/zh/verify-logout.html          |   47 ++++++++++++++++++++++
- 20 files changed, 675 insertions(+), 1 deletions(-)
+ 20 files changed, 683 insertions(+), 1 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
 index b5d6334..06e9031 100755
@@ -231,10 +231,10 @@ index 0000000..1d56429
 +</html>
 diff --git a/html/zh/expired_error.html b/html/zh/expired_error.html
 new file mode 100644
-index 0000000..e10189e
+index 0000000..3c441d9
 --- /dev/null
 +++ b/html/zh/expired_error.html
-@@ -0,0 +1,63 @@
+@@ -0,0 +1,65 @@
 +<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 +<html xmlns="http://www.w3.org/1999/xhtml">
 +<head>
@@ -248,8 +248,10 @@ index 0000000..e10189e
 +<script type="text/javascript" src="/cosign/js/prototype.js"></script>
 +<script type="text/javascript" src="/cosign/js/scriptaculous.js"></script>
 +<script type="text/javascript" src="/cosign/js/effects.js"></script>
++<script type="text/javascript" src="/cosign/js/js_locale.js"></script>
 +<script type="text/javascript" src="/cosign/js/cosign.js"></script>
 +<script type="text/javascript">
++	setLocale("zh");
 +	var link = document.createElement('link');
 +	link.setAttribute('rel', 'stylesheet');
 +	link.setAttribute('type', 'text/css');
@@ -300,7 +302,7 @@ index 0000000..e10189e
 +</html>
 diff --git a/html/zh/inc/factor_invite.inc b/html/zh/inc/factor_invite.inc
 new file mode 100644
-index 0000000..c4dbe2f
+index 0000000..5409b27
 --- /dev/null
 +++ b/html/zh/inc/factor_invite.inc
 @@ -0,0 +1,74 @@
@@ -314,13 +316,13 @@ index 0000000..c4dbe2f
 +            Event.observe( form_login, 'submit', function(e) {
 +                  if (input_p.textLength > 0 && input_l.value.length == 0)
 +                  {
-+                    alert("Please enter your login and password.");
++                    alert("Please enter your login and password."._());
 +                    input_l.focus();
 +                    Event.stop(e);
 +                  }
 +                  if (input_i.textLength > 0 && !input_l.value.include("@"))
 +                  {
-+                    alert("Please input your email address into username field.");
++                    alert("Please input your email address into username field."._());
 +                    input_l.focus();
 +                    Event.stop(e);
 +                  }
@@ -567,10 +569,10 @@ index 0000000..517d465
 +		cosign.initUI();
 diff --git a/html/zh/login.html b/html/zh/login.html
 new file mode 100644
-index 0000000..79466b3
+index 0000000..c602ed7
 --- /dev/null
 +++ b/html/zh/login.html
-@@ -0,0 +1,63 @@
+@@ -0,0 +1,65 @@
 +<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 +<html xmlns="http://www.w3.org/1999/xhtml">
 +<head>
@@ -584,8 +586,10 @@ index 0000000..79466b3
 +<script type="text/javascript" src="/cosign/js/prototype.js"></script>
 +<script type="text/javascript" src="/cosign/js/scriptaculous.js"></script>
 +<script type="text/javascript" src="/cosign/js/effects.js"></script>
++<script type="text/javascript" src="/cosign/js/js_locale.js"></script>
 +<script type="text/javascript" src="/cosign/js/cosign.js"></script>
 +<script type="text/javascript">
++	setLocale("zh");
 +	var link = document.createElement('link');
 +	link.setAttribute('rel', 'stylesheet');
 +	link.setAttribute('type', 'text/css');
@@ -636,10 +640,10 @@ index 0000000..79466b3
 +</html>
 diff --git a/html/zh/login_error.html b/html/zh/login_error.html
 new file mode 100644
-index 0000000..79466b3
+index 0000000..c602ed7
 --- /dev/null
 +++ b/html/zh/login_error.html
-@@ -0,0 +1,63 @@
+@@ -0,0 +1,65 @@
 +<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 +<html xmlns="http://www.w3.org/1999/xhtml">
 +<head>
@@ -653,8 +657,10 @@ index 0000000..79466b3
 +<script type="text/javascript" src="/cosign/js/prototype.js"></script>
 +<script type="text/javascript" src="/cosign/js/scriptaculous.js"></script>
 +<script type="text/javascript" src="/cosign/js/effects.js"></script>
++<script type="text/javascript" src="/cosign/js/js_locale.js"></script>
 +<script type="text/javascript" src="/cosign/js/cosign.js"></script>
 +<script type="text/javascript">
++	setLocale("zh");
 +	var link = document.createElement('link');
 +	link.setAttribute('rel', 'stylesheet');
 +	link.setAttribute('type', 'text/css');
@@ -705,10 +711,10 @@ index 0000000..79466b3
 +</html>
 diff --git a/html/zh/reauth.html b/html/zh/reauth.html
 new file mode 100644
-index 0000000..bd27180
+index 0000000..9ec1cc1
 --- /dev/null
 +++ b/html/zh/reauth.html
-@@ -0,0 +1,72 @@
+@@ -0,0 +1,74 @@
 +<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 +<html xmlns="http://www.w3.org/1999/xhtml">
 +<head>
@@ -722,8 +728,10 @@ index 0000000..bd27180
 +<script type="text/javascript" src="/cosign/js/prototype.js"></script>
 +<script type="text/javascript" src="/cosign/js/scriptaculous.js"></script>
 +<script type="text/javascript" src="/cosign/js/effects.js"></script>
++<script type="text/javascript" src="/cosign/js/js_locale.js"></script>
 +<script type="text/javascript" src="/cosign/js/cosign.js"></script>
 +<script type="text/javascript">
++	setLocale("zh");
 +	var link = document.createElement('link');
 +	link.setAttribute('rel', 'stylesheet');
 +	link.setAttribute('type', 'text/css');
@@ -835,4 +843,4 @@ index 0000000..15320f0
 +</body>
 +</html>
 -- 
-tg: (c6eb892..) t/template_standard_zh (depends on: t/custom_cosign_path t/template_standard_en)
+tg: (ba60624..) t/template_standard_zh (depends on: t/custom_cosign_path t/template_standard_en)

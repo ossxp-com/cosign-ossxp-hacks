@@ -7,9 +7,9 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 
 ---
  cgi/Makefile.in |    2 +-
- cgi/lang.c      |   92 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- cgi/lang.h      |   11 ++++++
- 3 files changed, 104 insertions(+), 1 deletions(-)
+ cgi/lang.c      |  116 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ cgi/lang.h      |   11 +++++
+ 3 files changed, 128 insertions(+), 1 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
 index e867410..d8baf0b 100755
@@ -26,13 +26,14 @@ index e867410..d8baf0b 100755
  TARGETS = logout cosign.cgi
 diff --git a/cgi/lang.c b/cgi/lang.c
 new file mode 100644
-index 0000000..33c8939
+index 0000000..9410891
 --- /dev/null
 +++ b/cgi/lang.c
-@@ -0,0 +1,92 @@
+@@ -0,0 +1,116 @@
 +#include <stdio.h>
 +#include <string.h>
 +#include <stdlib.h>
++#include <ctype.h>
 +
 +#include "lang.h"
 +
@@ -43,7 +44,7 @@ index 0000000..33c8939
 +    char *p, *pnext, *buff;
 +    char **lang;
 +    int found = 0;
-+    int i;
++    int i,j,k;
 +    int _INIT_SIZE=3;
 +
 +    lang = calloc(sizeof(char*),_INIT_SIZE+1);
@@ -72,12 +73,32 @@ index 0000000..33c8939
 +
 +            if (buff!=NULL)
 +            {
-+                if (strcmp(buff, "zh-cn")==0 || strcmp(buff, "zh_cn")==0)
++                for (j=0,k=0; j < strlen(buff); j++)
++                {
++                    if ( *(buff+j) == '-' || *(buff+j) == '_')
++                    {
++                        *(buff+j) = '_';
++                        k = 1;
++                        continue;
++                    }
++                    if (k==0)
++                        *(buff+j) = tolower(*(buff+j));
++                    else
++                        *(buff+j) = toupper(*(buff+j));
++
++                }
++
++                if (strcmp(buff, "zh_CN")==0 || strcmp(buff, "zh_SG")==0)
 +                {
 +                    free(buff);
 +                    buff = strdup("zh");
 +                }
-+                else if (strncmp(buff, "en", 2)==0)
++                else if (strcmp(buff, "zh_HK")==0)
++                {
++                    free(buff);
++                    buff = strdup("zh_TW");
++                }
++                else if (strncasecmp(buff, "en", 2)==0)
 +                {
 +                    free(buff);
 +                    buff = strdup("en");
@@ -114,12 +135,15 @@ index 0000000..33c8939
 +                break;
 +        }
 +    }
++
 +    /*
++    // Debug: print to stderr will be logged in apache log file.
 +    for(i=0; i< _INIT_SIZE; i++)
 +    {
 +        fprintf(stderr, "lang[%d] = %s\n", i, lang[i]);
 +    }
 +    */
++
 +    return lang;
 +}
 diff --git a/cgi/lang.h b/cgi/lang.h

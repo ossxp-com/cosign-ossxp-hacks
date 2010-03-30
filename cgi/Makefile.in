@@ -1,6 +1,7 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 SBINDIR=@sbindir@
+LOCALEDIR=@localedir@
 CGIDIR  = @prefix@/cgi-ssl
 HTMLDIR  = @prefix@/html
 COSIGNCADIR=@cosigncadir@
@@ -54,6 +55,7 @@ cgi.o:	cgi.c
 	-D_COSIGN_TLS_KEY=\"${COSIGNKEY}\" \
 	-D_COSIGN_CONF=\"${COSIGNCONF}\" \
 	-D_COSIGN_TMPL_DIR=\"${COSIGNTMPLDIR}\" \
+	-D_LOCALEDIR=\"${LOCALEDIR}\" \
 	-c cgi.c
 
 cosign.cgi: cgi.o login.o factor.o $(OBJ)

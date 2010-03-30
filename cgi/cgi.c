@@ -293,7 +293,7 @@ main( int argc, char *argv[] )
     CGIHANDLE			*cgi;
     char			**lang;
 
-    bindtextdomain("cosign","/opt/cosign/locale");
+    bindtextdomain("cosign", _LOCALEDIR);
     textdomain("cosign");
     lang = get_accept_language();
     while(*lang !=NULL)

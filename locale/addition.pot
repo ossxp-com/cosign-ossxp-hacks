@@ -27,3 +27,6 @@ msgstr ""
 
 msgid "Login failed: wrong invite code."
 msgstr ""
+
+msgid "Cannot connect to LDAP server.\n"
+msgstr ""

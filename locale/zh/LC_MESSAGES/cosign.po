@@ -294,3 +294,5 @@ msgstr "登录失败: 用户不存在或口令错。\n"
 msgid "Login failed: wrong invite code."
 msgstr "登录失败: 错误的邀请码。"
 
+msgid "Cannot connect to LDAP server.\n"
+msgstr "无法连接到 LDAP 服务器。\n"

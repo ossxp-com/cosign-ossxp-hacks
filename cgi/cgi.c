@@ -293,10 +293,18 @@ main( int argc, char *argv[] )
     CGIHANDLE			*cgi;
     char			**lang;
 
-    bindtextdomain("cosign","locale");
+    bindtextdomain("cosign","/opt/cosign/locale");
     textdomain("cosign");
     lang = get_accept_language();
-    setlocale( LC_ALL, lang );
+    while(*lang !=NULL)
+    {
+        if (strcmp(*lang, "zh")==0 || strcmp(*lang, "zh_CN")==0) {
+          setlocale( LC_ALL, "zh_CN.UTF-8");
+          break;
+        } else if (setlocale( LC_ALL, *lang) != NULL) {
+          break;
+        }
+    }
 
     if ( argc == 2 ) {
 	if ( strcmp( argv[ 1 ], "-V" ) == 0 ) {
@@ -311,7 +319,7 @@ main( int argc, char *argv[] )
     }
 
     if ( cosign_config( cosign_conf ) < 0 ) {
-	fprintf( stderr, _("Couldn't read %s\n"), cosign_conf );
+	fprintf( stderr, "Couldn't read %s\n", cosign_conf );
 	exit( 1 );
     }
     kcgi_configure();

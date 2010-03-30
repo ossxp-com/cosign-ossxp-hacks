@@ -131,6 +131,7 @@ AC_CONFIG_FILES([Makefile
                  common/Makefile
                  html/Makefile
                  daemon/Makefile
+                 locale/Makefile
                  filters/common/cosignpaths.h
                  $FILTER_CONFIG_FILES])
 

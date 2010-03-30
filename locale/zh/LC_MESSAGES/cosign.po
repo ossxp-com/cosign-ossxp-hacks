@@ -63,11 +63,6 @@ msgstr "需要认证"
 msgid "Bad service in query string."
 msgstr "query sting 中包含错误的服务名。"
 
-#: cgi/cgi.c:311
-#, c-format
-msgid "Couldn't read %s\n"
-msgstr "无法读取 %s\n"
-
 #: cgi/cgi.c:456
 msgid "Error: Cookies Required"
 msgstr "错误: 需要启用 cookies"

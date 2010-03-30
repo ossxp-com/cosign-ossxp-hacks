@@ -238,7 +238,7 @@ def main(argv=None):
         print "ldap2"
         return 0
     else:
-        print "Login failed: user does not exist or wrong password.";
+        print "0001: Login failed: user does not exist or wrong password."
         return 1
 
 if __name__ == '__main__':

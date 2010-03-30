@@ -20,13 +20,13 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
  html/zh/inc/footer.inc              |    1 +
  html/zh/inc/header.inc              |    3 +
  html/zh/inc/help_hotkey.inc         |   12 ++++++
- html/zh/inc/help_infobox.inc        |   34 ++++++++++++++++
+ html/zh/inc/help_infobox.inc        |   35 ++++++++++++++++
  html/zh/inc/js_config.inc           |   11 +++++
  html/zh/login.html                  |   65 ++++++++++++++++++++++++++++++
  html/zh/login_error.html            |   65 ++++++++++++++++++++++++++++++
  html/zh/reauth.html                 |   74 +++++++++++++++++++++++++++++++++++
  html/zh/verify-logout.html          |   47 ++++++++++++++++++++++
- 20 files changed, 683 insertions(+), 1 deletions(-)
+ 20 files changed, 684 insertions(+), 1 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
 index b5d6334..06e9031 100755
@@ -231,7 +231,7 @@ index 0000000..1d56429
 +</html>
 diff --git a/html/zh/expired_error.html b/html/zh/expired_error.html
 new file mode 100644
-index 0000000..3c441d9
+index 0000000..94323bf
 --- /dev/null
 +++ b/html/zh/expired_error.html
 @@ -0,0 +1,65 @@
@@ -273,7 +273,7 @@ index 0000000..3c441d9
 +	<div id="main">
 +		<div id="uiRow">
 +			<div id="leftUIcol">
-+				<h1 id="instruct">口令过期</h1>
++				<h1 id="instruct">$t</h1>
 +				$!include(inc/help_infobox.inc)
 +			</div>
 +			<form action="/cgi-bin/login" method="post" name="factors" id="rightUIcol">
@@ -512,16 +512,17 @@ index 0000000..eea5e31
 +	</ul>
 diff --git a/html/zh/inc/help_infobox.inc b/html/zh/inc/help_infobox.inc
 new file mode 100644
-index 0000000..b368fdf
+index 0000000..617ed84
 --- /dev/null
 +++ b/html/zh/inc/help_infobox.inc
-@@ -0,0 +1,34 @@
+@@ -0,0 +1,35 @@
 +				<div id="mainInfo">
 +					<p>在右侧选择任一种登录方式，输入登录信息，之后按 &quot;登录按钮&quot; 完成登录。</p>
 +					<p class="jsOnly">标记为 <img
 +					src="/cosign/images/circle.gif" alt="yellow circle" /> 是必须的。</p>
 +					<p>使用本服务，意味着您已经接受我们的相关政策条款。</p>
 +					<p class="noScript">这个页面在 JavaScript 启用下有更好的表现。</p>
++					$!include(../inc/*.html)
 +				</div>
 +				<div id="kerbInfo" class="infoBox">
 +					<h4><a href="#mainInfo" class="hideInfo" id="kerbInfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>
@@ -569,7 +570,7 @@ index 0000000..517d465
 +		cosign.initUI();
 diff --git a/html/zh/login.html b/html/zh/login.html
 new file mode 100644
-index 0000000..c602ed7
+index 0000000..94323bf
 --- /dev/null
 +++ b/html/zh/login.html
 @@ -0,0 +1,65 @@
@@ -611,7 +612,7 @@ index 0000000..c602ed7
 +	<div id="main">
 +		<div id="uiRow">
 +			<div id="leftUIcol">
-+				<h1 id="instruct">请登录</h1>
++				<h1 id="instruct">$t</h1>
 +				$!include(inc/help_infobox.inc)
 +			</div>
 +			<form action="/cgi-bin/login" method="post" name="factors" id="rightUIcol">
@@ -640,7 +641,7 @@ index 0000000..c602ed7
 +</html>
 diff --git a/html/zh/login_error.html b/html/zh/login_error.html
 new file mode 100644
-index 0000000..c602ed7
+index 0000000..94323bf
 --- /dev/null
 +++ b/html/zh/login_error.html
 @@ -0,0 +1,65 @@
@@ -682,7 +683,7 @@ index 0000000..c602ed7
 +	<div id="main">
 +		<div id="uiRow">
 +			<div id="leftUIcol">
-+				<h1 id="instruct">请登录</h1>
++				<h1 id="instruct">$t</h1>
 +				$!include(inc/help_infobox.inc)
 +			</div>
 +			<form action="/cgi-bin/login" method="post" name="factors" id="rightUIcol">
@@ -711,7 +712,7 @@ index 0000000..c602ed7
 +</html>
 diff --git a/html/zh/reauth.html b/html/zh/reauth.html
 new file mode 100644
-index 0000000..9ec1cc1
+index 0000000..0c8463f
 --- /dev/null
 +++ b/html/zh/reauth.html
 @@ -0,0 +1,74 @@
@@ -754,7 +755,7 @@ index 0000000..9ec1cc1
 +	<div id="main">
 +		<div id="uiRow">
 +			<div id="leftUIcol">
-+				<h1 id="instruct">需要重新认证</h1>
++				<h1 id="instruct">$t</h1>
 +				$!include(inc/help_infobox.inc)
 +			</div>
 +			<form action="/cgi-bin/login" method="post" name="factors" id="rightUIcol">

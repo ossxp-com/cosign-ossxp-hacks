@@ -32,6 +32,7 @@
 #include "subfile.h"
 #include "factor.h"
 #include "mkcookie.h"
+#include "lang.h"
 
 #define SERVICE_MENU	"/services/"
 #define LOOPWINDOW      30 
@@ -290,10 +291,12 @@ main( int argc, char *argv[] )
     regmatch_t			matches[ 2 ];
     int				nmatch = 2;
     CGIHANDLE			*cgi;
+    char			**lang;
 
-    setlocale( LC_ALL, "" );
     bindtextdomain("cosign","locale");
     textdomain("cosign");
+    lang = get_accept_language();
+    setlocale( LC_ALL, lang );
 
     if ( argc == 2 ) {
 	if ( strcmp( argv[ 1 ], "-V" ) == 0 ) {

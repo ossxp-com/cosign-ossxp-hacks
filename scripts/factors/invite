@@ -56,17 +56,17 @@ def invite_login(email, invite_code, cfg):
     invite_code = invite_code.strip()
 
     if not email or not invite_code:
-        print "0101: Login failed: email or invite_code not provided."
+        print "Login failed: email or invite_code not provided."
         log.error("Parameters not set for invite_login")
         return False
 
     if not cfg:
-        print "0102: Login failed: invite factor has not setup yet."
+        print "Login failed: invite factor has not setup yet."
         log.error("Invite facter has not setup yet.")
         return False
 
     if not re.match(".*@.*\..*", email):
-        print "0103: Login failed: provide your email address as login name."
+        print "Login failed: provide your email address as login name."
         return False
 
     match = None
@@ -79,7 +79,7 @@ def invite_login(email, invite_code, cfg):
         print "invite_%s" % match
         return True
     else:
-        print "0104: Login failed: wrong invite code."
+        print "Login failed: wrong invite code."
         return False
 
 def main(argv=None):

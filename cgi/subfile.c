@@ -5,11 +5,6 @@
 #include <string.h>
 
 #include "subfile.h"
-#include "lang.h"
-#include <unistd.h>
-
-#include <libgen.h>
-#include <glob.h>
 
     void
 subfile( char *filename, struct subfile_list *sl, int nocache )
@@ -18,40 +13,7 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
     int 	c, i, j;
     char	nasties[] = "<>(){}[]'`\" \\";
 
-    char	**lang;
-    char	*filename_i18n;
-    char	*pbuff = NULL;
-    char	*pdir;
-    int tmplen = 0;
-
-    tmplen = strlen(filename)+5;
-    filename_i18n = malloc(tmplen+1);
-    lang = get_accept_language();
-    while(*lang !=NULL)
-    {
-        if (strlen(*lang)+1+strlen(filename) > tmplen)
-        {
-            tmplen +=5;
-            filename_i18n=realloc(filename_i18n,tmplen+1);
-        }
-        snprintf(filename_i18n, tmplen, "%s/%s", *lang, filename);
-        if (access(filename_i18n, F_OK)==0)
-        {
-            filename = filename_i18n;
-            break;
-        }
-        lang++;
-    }
-    if (access(filename, F_OK)!=0)
-    {
-        snprintf(filename_i18n, tmplen, "%s/%s", "en", filename);
-        if (access(filename_i18n, F_OK)==0)
-        {
-            filename = filename_i18n;
-        }
-    }
-
-    if ( nocache > 0 ) {
+    if ( nocache ) {
 	fputs( "Expires: Mon, 16 Apr 1973 13:10:00 GMT\n"
 		"Last-Modified: Mon, 16 Apr 1973 13:10:00 GMT\n"
 		"Cache-Control: no-store, no-cache, must-revalidate\n"
@@ -59,17 +21,12 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
 		"Pragma: no-cache\n", stdout );
     }
 
-    if ( nocache >= 0 ) {
-	fputs( "Content-type: text/html\n\n", stdout );
-    }
+    fputs( "Content-type: text/html\n\n", stdout );
 
     if (( fs = fopen( filename, "r" )) == NULL ) {
 	perror( filename );
 	exit( 1 );
     }
-
-    pbuff = strdup(filename);
-    pdir = dirname (pbuff);
 
     while (( c = getc( fs )) != EOF ) {
 	if ( c == '$' ) {
@@ -82,64 +39,6 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
 		putchar( c );
 		continue;
 	    }
-	if ( c == '!' ) {
-		char *s = malloc(9);
-		char *incfile = malloc(255);
-		fgets(s, 9, fs);
-		if (strncmp(s, "include(", 8) == 0)
-		{
-			strcpy(incfile, pdir);
-			strcat(incfile, "/");
-			i = strlen(incfile)-1;
-    			while (( c = getc( fs )) != EOF && i++ < 254 ) {
-				if (c==')')
-					break;
-				incfile[i] = c;
-			}
-			incfile[i] = '\0';
-			if (c==')')
-			{
-				if ( access(incfile, F_OK) == 0 ) {
-					subfile( incfile, sl, -1);
-				}
-				else
-				{
-					glob_t globfiles;
-					if ( glob(incfile, 0, NULL, &globfiles) == 0)
-					{
-						for (i=0; i< globfiles.gl_pathc; i++)
-						{
-							if ( access(globfiles.gl_pathv[i], F_OK) == 0 )
-							{
-								subfile( globfiles.gl_pathv[i], sl, -1);
-							}
-						}
-						globfree(&globfiles);
-					}
-				}
-			}
-			else
-			{
-				printf ("include(%s", incfile+strlen(pdir)+1);
-				if (c != EOF)
-					putchar( c );
-			}
-		}
-		else
-		{
-			putchar( '$' );
-			putchar( c );
-			fseek(fs, -1*strlen(s), SEEK_CUR);
-		}
-		if (s != NULL)
-			free(s);
-		if (incfile != NULL)
-			free(incfile);
-		s = NULL;
-		incfile = NULL;
-		continue;
-	}
-
 
 	    for ( i = 0; sl[ i ].sl_letter != '\0'; i++ ) {
 		if ( sl[ i ].sl_letter == c ) {
@@ -176,11 +75,5 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
 	perror( filename );
     }
 
-    if (filename_i18n != NULL)
-        free(filename_i18n);
-    if (pbuff != NULL)
-        free(pbuff);
     return;
 }
-
-/* vim: set noet ts=8 sw=8 : */

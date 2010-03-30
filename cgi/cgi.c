@@ -986,6 +986,8 @@ loginscreen:
 	    sl[ SL_ERROR ].sl_data = _("Please try again later.");
 	    subfile( ERROR_HTML, sl, 0 );
 	    exit( 0 );
+	} else if ( sl[ SL_TITLE ].sl_data == NULL ) {
+	    sl[ SL_TITLE ].sl_data = _("Authentication Required");
 	}
 	snprintf( new_cookie, sizeof( new_cookie ), "cosign=%s/%lu",
 		new_cookiebuf, tv.tv_sec );
@@ -1040,6 +1042,9 @@ loginscreen:
 	} else {
 	    sl[ SL_DFACTOR ].sl_data = smash( ui.ui_factors );
 	    sl[ SL_RFACTOR ].sl_data = factor;
+	    if ( sl[ SL_TITLE ].sl_data == NULL ) {
+		sl[ SL_TITLE ].sl_data = _("Authentication Required");
+	    }
 	    tmpl = LOGIN_ERROR_HTML;
 	}
     }

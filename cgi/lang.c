@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include "lang.h"
 
@@ -11,7 +12,7 @@ get_accept_language()
     char *p, *pnext, *buff;
     char **lang;
     int found = 0;
-    int i;
+    int i,j,k;
     int _INIT_SIZE=3;
 
     lang = calloc(sizeof(char*),_INIT_SIZE+1);
@@ -40,12 +41,32 @@ get_accept_language()
 
             if (buff!=NULL)
             {
-                if (strcmp(buff, "zh-cn")==0 || strcmp(buff, "zh_cn")==0)
+                for (j=0,k=0; j < strlen(buff); j++)
+                {
+                    if ( *(buff+j) == '-' || *(buff+j) == '_')
+                    {
+                        *(buff+j) = '_';
+                        k = 1;
+                        continue;
+                    }
+                    if (k==0)
+                        *(buff+j) = tolower(*(buff+j));
+                    else
+                        *(buff+j) = toupper(*(buff+j));
+
+                }
+
+                if (strcmp(buff, "zh_CN")==0 || strcmp(buff, "zh_SG")==0)
                 {
                     free(buff);
                     buff = strdup("zh");
                 }
-                else if (strncmp(buff, "en", 2)==0)
+                else if (strcmp(buff, "zh_HK")==0)
+                {
+                    free(buff);
+                    buff = strdup("zh_TW");
+                }
+                else if (strncasecmp(buff, "en", 2)==0)
                 {
                     free(buff);
                     buff = strdup("en");
@@ -82,11 +103,14 @@ get_accept_language()
                 break;
         }
     }
+
     /*
+    // Debug: print to stderr will be logged in apache log file.
     for(i=0; i< _INIT_SIZE; i++)
     {
         fprintf(stderr, "lang[%d] = %s\n", i, lang[i]);
     }
     */
+
     return lang;
 }

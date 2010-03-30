@@ -57,7 +57,7 @@ if (!defined($ldap)) {
     # the return code will be different than 1, making CoSign unhappy,
     # and the error will be print on stderr, so will be missing in the
     # web interface
-    print "Cannot connect to LDAP server $host\n";
+    print "Cannot connect to LDAP server.\n";
     exit 1;
 }
 $ldap->bind("$binddn", password => "$bindpw", version => 3);

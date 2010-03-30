@@ -1,6 +1,6 @@
-From: Jiang Xin <worldhello.net@gmail.com>
-Subject: [PATCH] t/multi_language
+From: Jiang <jiangxin@ossxp.com>
+Subject: [PATCH] t/include_macro_for_templates
 
-<patch description>
+Templates can include other files using macro: $!include(...)
 
-Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
+Signed-off-by: Jiang <jiangxin@ossxp.com>

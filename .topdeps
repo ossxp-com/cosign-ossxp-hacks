@@ -1,2 +1,3 @@
 t/factor_ldap
 t/factor_invite
+t/multi_language

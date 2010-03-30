@@ -8,9 +8,9 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 ---
  html/Makefile.in             |    2 +-
  html/services/config_inc.php |   18 +++
- html/services/index.php      |  259 ++++++++++++++++++++++++++++++++++++++++++
- html/services/ldap_api.php   |   92 +++++++++++++++
- 4 files changed, 370 insertions(+), 1 deletions(-)
+ html/services/index.php      |  270 ++++++++++++++++++++++++++++++++++++++++++
+ html/services/ldap_api.php   |  107 +++++++++++++++++
+ 4 files changed, 396 insertions(+), 1 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
 index 8785b78..87cfa6e 100755
@@ -50,10 +50,10 @@ index 0000000..54f9c0c
 +?>
 diff --git a/html/services/index.php b/html/services/index.php
 new file mode 100644
-index 0000000..70b28af
+index 0000000..e189185
 --- /dev/null
 +++ b/html/services/index.php
-@@ -0,0 +1,259 @@
+@@ -0,0 +1,270 @@
 +<?php
 +
 +require_once("config_inc.php");
@@ -77,24 +77,35 @@ index 0000000..70b28af
 +  die("Not login yet.");
 +}
 +
++# If auth using invite factor, userid is from factor name.
++$factor = @$_SERVER["COSIGN_FACTOR"]? @$_SERVER["COSIGN_FACTOR"] : @$_SERVER["REDIRECT_COSIGN_FACTOR"];
++if ($factor && preg_match("/^invite_.*/", $factor)) {
++  $uid = substr($factor, 7);
++  $mail = @$_SERVER["REMOTE_USER"]? @$_SERVER["REMOTE_USER"] : @$_SERVER["REDIRECT_REMOTE_USER"];
++}
++
 +$info=ldap_brief_info($uid);
-+if ($info['givenname'] == $info['sn'] && $info['sn']!='')
++$uid=$info['uid'];
++
++$username = !($info['givenname'] && $info['sn']) && $info['givenname'] ? $info['givenname'] : $info['sn'];
++if ( $username != $info['givenname'] || $info['givenname'] != "")
 +{
-+  $username = $info['sn'];
++   $username .=  " ".$info['givenname'];
 +}
-+else
++else if (!$username)
 +{
-+  $username = $info['sn'] . " " .  $info['givenname'];
-+}
-+if (!$username)
 +  $username = $uid;
++}
 +
 +if ($info['cn'])
 +  $aliasname = $info['cn'];
-+else
++else if ($username)
 +  $aliasname = $username;
++else
++  $aliasname = $uid;
 +
-+$mail = $info['mail'];
++if ($info['mail'])
++  $mail = $info['mail'];
 +
 +?>
 +<html><head>
@@ -315,10 +326,10 @@ index 0000000..70b28af
 +<!-- vim: set ts=2 sw=2 et : -->
 diff --git a/html/services/ldap_api.php b/html/services/ldap_api.php
 new file mode 100644
-index 0000000..c55ca05
+index 0000000..6a8d92d
 --- /dev/null
 +++ b/html/services/ldap_api.php
-@@ -0,0 +1,92 @@
+@@ -0,0 +1,107 @@
 +<?php
 +
 +###########################################################################
@@ -391,7 +402,11 @@ index 0000000..c55ca05
 +    $t_ldap_root_dn	    	= config_get( 'ldap_root_dn' );
 +
 +    $t_ldap_uid_field = config_get( 'ldap_uid_field', 'uid' ) ;
-+    $t_search_filter	= "(&$t_ldap_organization($t_ldap_uid_field=$p_username))";
++    if (preg_match("/.*@.*\..*/", $p_username)) {
++        $t_search_filter	= "(&$t_ldap_organization(mail=$p_username))";
++    } else {
++        $t_search_filter	= "(&$t_ldap_organization($t_ldap_uid_field=$p_username))";
++    }
 +    $t_search_attrs		= array( $t_ldap_uid_field, 'dn', 'givenName', 'sn', 'cn', 'mail' );
 +    $t_ds           	= ldap_connect_bind();
 +
@@ -401,11 +416,22 @@ index 0000000..c55ca05
 +    ldap_unbind( $t_ds );
 +
 +    $result = array();
-+    $result['dn'] = $t_info[0]['dn'];
-+    $result['givenname'] = $t_info[0]['givenname'][0];
-+    $result['sn'] = $t_info[0]['sn'][0];
-+    $result['cn'] = $t_info[0]['cn'][0];
-+    $result['mail'] = $t_info[0]['mail'][0];
++    if ($t_info) {
++      $result['dn'] = $t_info[0]['dn'];
++      $result['givenname'] = $t_info[0]['givenname'][0];
++      $result['uid'] = $t_info[0][$t_ldap_uid_field][0];
++      $result['sn'] = $t_info[0]['sn'][0];
++      $result['cn'] = $t_info[0]['cn'][0];
++      $result['mail'] = $t_info[0]['mail'][0];
++    } else {
++      # May login through invite factor
++      $result['uid'] = $p_username;
++      $result['dn'] = '';
++      $result['givenname'] = '';
++      $result['sn'] = '';
++      $result['cn'] = '';
++      $result['mail'] = '';
++    }
 +
 +    return $result;
 +}

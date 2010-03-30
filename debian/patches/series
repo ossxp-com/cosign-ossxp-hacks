@@ -3,8 +3,10 @@ t/bugfix_cosign_httponly_quirk.diff -p1
 t/custom_cosign_path.diff -p1
 t/factor_invite.diff -p1
 t/factor_ldap.diff -p1
-t/javascript.diff -p1
 t/multi_language.diff -p1
+t/include_macro_for_templates.diff -p1
+t/javascript.diff -p1
+t/message_localize.diff -p1
 t/services_template.diff -p1
 t/template_standard_en.diff -p1
 t/template_standard_zh.diff -p1

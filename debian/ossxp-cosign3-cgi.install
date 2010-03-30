@@ -2,6 +2,7 @@ debian/conf/config.py                   opt/cosign/conf
 debian/tmp/opt/cosign/lib/*             opt/cosign/lib
 scripts/factors/ldap                    opt/cosign/factor
 scripts/factors/ldap2                   opt/cosign/factor
+scripts/factors/invite                  opt/cosign/factor
 debian/certs/cgi/*                      opt/ossxp/ssl/certs/cosign-cgi
 debian/images/*                                opt/cosign/lib/html/images/
 debian/conf/apache2/include/https/*            etc/apache2/include/https/

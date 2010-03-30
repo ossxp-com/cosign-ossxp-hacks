@@ -11,22 +11,22 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
  html/post_error.html.zh             |   27 +++++++++++++
  html/validation_error.html.zh       |   26 ++++++++++++
  html/zh/error.html                  |   49 +++++++++++++++++++++++
- html/zh/expired_error.html          |   63 ++++++++++++++++++++++++++++++
- html/zh/inc/factor_invite.inc       |   17 ++++++++
+ html/zh/expired_error.html          |   63 +++++++++++++++++++++++++++++
+ html/zh/inc/factor_invite.inc       |   74 +++++++++++++++++++++++++++++++++++
  html/zh/inc/factor_kx509.inc        |   11 +++++
- html/zh/inc/factor_login.inc        |   24 ++++++++++++
+ html/zh/inc/factor_login.inc        |   24 +++++++++++
  html/zh/inc/factor_login_reauth.inc |   21 ++++++++++
- html/zh/inc/factor_otp.inc          |   16 ++++++++
+ html/zh/inc/factor_otp.inc          |   16 +++++++
  html/zh/inc/footer.inc              |    1 +
  html/zh/inc/header.inc              |    3 +
  html/zh/inc/help_hotkey.inc         |   12 ++++++
- html/zh/inc/help_infobox.inc        |   33 ++++++++++++++++
+ html/zh/inc/help_infobox.inc        |   34 ++++++++++++++++
  html/zh/inc/js_config.inc           |   11 +++++
- html/zh/login.html                  |   63 ++++++++++++++++++++++++++++++
- html/zh/login_error.html            |   63 ++++++++++++++++++++++++++++++
- html/zh/reauth.html                 |   72 +++++++++++++++++++++++++++++++++++
- html/zh/verify-logout.html          |   47 +++++++++++++++++++++++
- 20 files changed, 617 insertions(+), 1 deletions(-)
+ html/zh/login.html                  |   63 +++++++++++++++++++++++++++++
+ html/zh/login_error.html            |   63 +++++++++++++++++++++++++++++
+ html/zh/reauth.html                 |   72 ++++++++++++++++++++++++++++++++++
+ html/zh/verify-logout.html          |   47 ++++++++++++++++++++++
+ 20 files changed, 675 insertions(+), 1 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
 index b5d6334..06e9031 100755
@@ -300,10 +300,67 @@ index 0000000..e10189e
 +</html>
 diff --git a/html/zh/inc/factor_invite.inc b/html/zh/inc/factor_invite.inc
 new file mode 100644
-index 0000000..4d36b6e
+index 0000000..c4dbe2f
 --- /dev/null
 +++ b/html/zh/inc/factor_invite.inc
-@@ -0,0 +1,17 @@
+@@ -0,0 +1,74 @@
++        <script type="text/javascript">
++          function factor_invite_observe() {
++            var input_p = $('password');
++            var input_i = $('invite');
++            var input_l = $('login');
++            var form_login = input_i.up('form');
++
++            Event.observe( form_login, 'submit', function(e) {
++                  if (input_p.textLength > 0 && input_l.value.length == 0)
++                  {
++                    alert("Please enter your login and password.");
++                    input_l.focus();
++                    Event.stop(e);
++                  }
++                  if (input_i.textLength > 0 && !input_l.value.include("@"))
++                  {
++                    alert("Please input your email address into username field.");
++                    input_l.focus();
++                    Event.stop(e);
++                  }
++                  return true;
++              });
++
++            Event.observe( $('invite'), 'focus', function() {
++                  try {
++                    parent = input_p.up('div')
++                    if (!parent.visible())
++                      new Effect.Appear(parent,{duration:0.20});
++                  } catch ( e ) {;}
++                  input_p.disable().clear().up('tr').hide();
++              });
++
++            Event.observe( $('password'), 'focus', function() {
++                  input_i.disable().clear();
++              });
++
++            Event.observe( $('invite'), 'blur', function() {
++                if (this.textLength > 0) {
++                  input_p.disable().clear().up('tr').hide();
++                  if (!input_l.value.include("@")) {
++                    input_l.select();
++                  }
++                } else {
++                  input_p.enable().up('tr').show();
++                }
++              });
++
++            Event.observe( $('password'), 'blur', function() {
++                if (this.textLength > 0)
++                  input_i.disable().clear();
++                else
++                  input_i.enable();
++              });
++          }
++
++          Event.observe(window, 'load', factor_invite_observe);
++        </script>
 +				<div class="factorHead" style="display: none;">
 +					<h2 id="inviteloginTitle"><span>&nbsp;</span>邀请码认证</h2>
 +					<div class="authComplete" style="display: none;">认证完成</div>
@@ -312,18 +369,18 @@ index 0000000..4d36b6e
 +					<table>
 +						<tr>
 +							<td><label for="invite">邀请码</label></td>
-+							<td><input id="invite" name="invite" type="password" value="" size="18" tabindex="1" /></td>
++							<td><input id="invite" name="invite" type="password" value="" size="18" tabindex="5" /></td>
 +						</tr>
 +						<tr class="capsLock" style="display: none;">
 +							<td>&nbsp;</td>
 +							<td>大小写锁定键被打开</td>
 +						</tr>
 +					</table>
-+					<a href="#inviteinfo" id="inviteInfoShow" tabindex="7">什么是邀请码？</a> </div>
++					<a href="#inviteinfo" id="inviteInfoShow" tabindex="10">什么是邀请码？</a> </div>
 +
 diff --git a/html/zh/inc/factor_kx509.inc b/html/zh/inc/factor_kx509.inc
 new file mode 100644
-index 0000000..83291de
+index 0000000..89d2a08
 --- /dev/null
 +++ b/html/zh/inc/factor_kx509.inc
 @@ -0,0 +1,11 @@
@@ -334,7 +391,7 @@ index 0000000..83291de
 +				<div class="factor" id="kx509" style="display: none;">
 +					<p class="note">您必须安装 k.x-509 软件并且已配置。</p>
 +					<p>
-+						<input name="useKX509" id="useKX509" type="checkbox" value="1" tabindex="5" />
++						<input name="useKX509" id="useKX509" type="checkbox" value="1" tabindex="4" />
 +						<label for="useKX509">使用证书认证</label>
 +					</p>
 +					下载 <a href="#kx509Info" id="kx509InfoShow" tabindex="9">k.x-509 软件</a> </div>
@@ -453,10 +510,10 @@ index 0000000..eea5e31
 +	</ul>
 diff --git a/html/zh/inc/help_infobox.inc b/html/zh/inc/help_infobox.inc
 new file mode 100644
-index 0000000..64f619a
+index 0000000..b368fdf
 --- /dev/null
 +++ b/html/zh/inc/help_infobox.inc
-@@ -0,0 +1,33 @@
+@@ -0,0 +1,34 @@
 +				<div id="mainInfo">
 +					<p>在右侧选择任一种登录方式，输入登录信息，之后按 &quot;登录按钮&quot; 完成登录。</p>
 +					<p class="jsOnly">标记为 <img
@@ -486,7 +543,8 @@ index 0000000..64f619a
 +				<div id="inviteInfo" class="infoBox">
 +					<h4><a href="#mainInfo" class="hideInfo" id="inviteInfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>
 +					<h3>关于邀请码认证</h3>
-+					<p>邀请码是由管理员分配的登录密钥。登录时仅输入该邀请码即可，无需提供用户名。
++					<p>邀请码是由管理员分配的登录密钥。在使用邀请码登录时，您还需要在用户名字段输入您的邮件地址。
++					<p>注意：邀请码登录和口令登录互斥，当口令输入框中包含内容时，邀请码输入框自动禁用，反之亦然。
 +					</p>
 +				</div>
 +
@@ -777,4 +835,4 @@ index 0000000..15320f0
 +</body>
 +</html>
 -- 
-tg: (edfd5b3..) t/template_standard_zh (depends on: t/custom_cosign_path t/template_standard_en)
+tg: (c6eb892..) t/template_standard_zh (depends on: t/custom_cosign_path t/template_standard_en)

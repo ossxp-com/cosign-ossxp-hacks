@@ -1,0 +1,1379 @@
+From: Jiang <jiangxin@ossxp.com>
+Subject: [PATCH] t/message_localize
+
+Translate CoSign error message using javascript.
+
+Signed-off-by: Jiang <jiangxin@ossxp.com>
+
+---
+ Makefile.in                     |   10 ++
+ cgi/cgi.c                       |  283 +++++++++++++++++++------------------
+ html/js/js_locale.js            |   46 ++++++
+ locale/addition.pot             |   32 ++++
+ locale/cosign.pot               |  277 ++++++++++++++++++++++++++++++++++++
+ locale/zh/LC_MESSAGES/cosign.po |  298 +++++++++++++++++++++++++++++++++++++++
+ locale/zh_CN                    |    1 +
+ locale/zh_TW                    |    1 +
+ 8 files changed, 813 insertions(+), 135 deletions(-)
+
+diff --git a/Makefile.in b/Makefile.in
+index 54d2d22..1258deb 100755
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -22,6 +22,16 @@ ${ALL} filters/apache filters/apache2 filters/lighttpd:	FRC
+ 
+ FRC:
+ 
++POT=locale/cosign.pot
++pot: $(POT)
++$(POT): cgi/cgi.c
++	xgettext -s -k_ -o $@ $^
++
++mo:: po
++mo:: locale/zh/LC_MESSAGES/cosign.mo
++locale/zh/LC_MESSAGES/cosign.mo: locale/zh/LC_MESSAGES/cosign.po
++	msgfmt -o $@ $<
++
+ clean:
+ 	rm -f version.o
+ 	for i in ${ALL} ${FILTERS} ; \
+diff --git a/cgi/cgi.c b/cgi/cgi.c
+index ae4ec41..72632b5 100755
+--- a/cgi/cgi.c
++++ b/cgi/cgi.c
+@@ -16,6 +16,12 @@
+ #include <time.h>
+ #include <ctype.h>
+ 
++#include <locale.h>
++#include <libintl.h>
++#define _(String) gettext (String)
++#define gettext_noop(String) String
++#define N_(String) gettext_noop (String)
++
+ #include <openssl/ssl.h>
+ #include <snet.h>
+ #include "cgi.h"
+@@ -26,6 +32,7 @@
+ #include "subfile.h"
+ #include "factor.h"
+ #include "mkcookie.h"
++#include "lang.h"
+ 
+ #define SERVICE_MENU	"/services/"
+ #define LOOPWINDOW      30 
+@@ -99,8 +106,8 @@ loop_checker( int time, int count, char *cookie )
+     char       		new_cookie[ 255 ];
+ 
+     if ( gettimeofday( &tv, NULL ) != 0 ) {
+-	sl[ SL_TITLE ].sl_data = "Error: Loop Breaker";
+-	sl[ SL_ERROR ].sl_data = "Please try again later.";
++	sl[ SL_TITLE ].sl_data = _("Error: Loop Breaker");
++	sl[ SL_ERROR ].sl_data = _("Please try again later.");
+ 	subfile( ERROR_HTML, sl, 0 );
+ 	exit( 0 );
+     }
+@@ -111,8 +118,8 @@ loop_checker( int time, int count, char *cookie )
+ 	count = 1;
+ 	if ( snprintf( new_cookie, sizeof( new_cookie ),
+ 		"%s/%d/%d", cookie, time, count) >= sizeof( new_cookie )) {
+-	    sl[ SL_TITLE ].sl_data = "Error: Loop Breaker";
+-	    sl[ SL_ERROR ].sl_data = "Please try again later.";
++	    sl[ SL_TITLE ].sl_data = _("Error: Loop Breaker");
++	    sl[ SL_ERROR ].sl_data = _("Please try again later.");
+ 	    subfile( ERROR_HTML, sl, 0 );
+ 	    exit( 0 );
+ 	}
+@@ -126,8 +133,8 @@ loop_checker( int time, int count, char *cookie )
+ 	count = 1;
+ 	if ( snprintf( new_cookie, sizeof( new_cookie ),
+ 		"%s/%d/%d", cookie, time, count) >= sizeof( new_cookie )) {
+-	    sl[ SL_TITLE ].sl_data = "Error: Loop Breaker";
+-	    sl[ SL_ERROR ].sl_data = "Please try again later.";
++	    sl[ SL_TITLE ].sl_data = _("Error: Loop Breaker");
++	    sl[ SL_ERROR ].sl_data = _("Please try again later.");
+ 	    subfile( ERROR_HTML, sl, 0 );
+ 	    exit( 0 );
+ 	}
+@@ -139,8 +146,8 @@ loop_checker( int time, int count, char *cookie )
+     count++;
+     if ( snprintf( new_cookie, sizeof( new_cookie ),
+ 	    "%s/%d/%d", cookie, time, count) >= sizeof( new_cookie )) {
+-	sl[ SL_TITLE ].sl_data = "Error: Loop Breaker";
+-	sl[ SL_ERROR ].sl_data = "Please try again later.";
++	sl[ SL_TITLE ].sl_data = _("Error: Loop Breaker");
++	sl[ SL_ERROR ].sl_data = _("Please try again later.");
+ 	subfile( ERROR_HTML, sl, 0 );
+ 	exit( 0 );
+     }
+@@ -178,8 +185,8 @@ kcgi_configure()
+ 	} else if ( strcasecmp( val, "off" ) == 0 ) {
+ 	    krbtkts = 0;
+ 	} else {
+-	    fprintf( stderr, "%s: invalid setting for krbtkts:"
+-		    " defaulting off.\n", val );
++	    fprintf( stderr, _("%s: invalid setting for krbtkts:"
++		    " defaulting off.\n"), val );
+ 	    krbtkts = 0;
+ 	}
+     }
+@@ -244,11 +251,11 @@ mkscookie( char *service_name, char *new_scookie, int len )
+     char			tmp[ 128 ];
+ 
+     if ( mkcookie( sizeof( tmp ), tmp ) != 0 ) {
+-	fprintf( stderr, "%s: mkscookie failed.\n", script );
++	fprintf( stderr, _("%s: mkscookie failed.\n"), script );
+ 	return( -1 );
+     }
+     if ( snprintf( new_scookie, len, "%s=%s", service_name, tmp ) >= len ) {
+-	fprintf( stderr, "%s: %s=%s: too long\n", script, service_name, tmp );
++	fprintf( stderr, _("%s: %s=%s: too long\n"), script, service_name, tmp );
+ 	return( -1 );
+     }
+ 
+@@ -284,6 +291,12 @@ main( int argc, char *argv[] )
+     regmatch_t			matches[ 2 ];
+     int				nmatch = 2;
+     CGIHANDLE			*cgi;
++    char			**lang;
++
++    bindtextdomain("cosign","locale");
++    textdomain("cosign");
++    lang = get_accept_language();
++    setlocale( LC_ALL, lang );
+ 
+     if ( argc == 2 ) {
+ 	if ( strcmp( argv[ 1 ], "-V" ) == 0 ) {
+@@ -298,7 +311,7 @@ main( int argc, char *argv[] )
+     }
+ 
+     if ( cosign_config( cosign_conf ) < 0 ) {
+-	fprintf( stderr, "Couldn't read %s\n", cosign_conf );
++	fprintf( stderr, _("Couldn't read %s\n"), cosign_conf );
+ 	exit( 1 );
+     }
+     kcgi_configure();
+@@ -308,32 +321,32 @@ main( int argc, char *argv[] )
+     }
+ 
+     if (( script = getenv( "SCRIPT_NAME" )) == NULL ) {
+-	sl[ SL_TITLE ].sl_data = "Error: Server Configuration";
+-	sl[ SL_ERROR ].sl_data = "Unable to retrieve the script name";
++	sl[ SL_TITLE ].sl_data = _("Error: Server Configuration");
++	sl[ SL_ERROR ].sl_data = _("Unable to retrieve the script name");
+ 	subfile( ERROR_HTML, sl, 0 );
+ 	exit( 0 );
+     }
+     if (( method = getenv( "REQUEST_METHOD" )) == NULL ) {
+-	sl[ SL_TITLE ].sl_data = "Error: Server Configuration";
+-	sl[ SL_ERROR ].sl_data = "Unable to retrieve method";
++	sl[ SL_TITLE ].sl_data = _("Error: Server Configuration");
++	sl[ SL_ERROR ].sl_data = _("Unable to retrieve method");
+ 	subfile( ERROR_HTML, sl, 0 );
+ 	exit(0);
+     }
+     if (( ip_addr = getenv( "REMOTE_ADDR" )) == NULL ) {
+-	sl[ SL_TITLE ].sl_data = "Error: Server Configuration";
+-	sl[ SL_ERROR ].sl_data = "Unable to retrieve IP address";
++	sl[ SL_TITLE ].sl_data = _("Error: Server Configuration");
++	sl[ SL_ERROR ].sl_data = _("Unable to retrieve IP address");
+ 	subfile( ERROR_HTML, sl, 0 );
+ 	exit(0);
+     }
+     if (( server_name = getenv( "SERVER_NAME" )) == NULL ) {
+-	sl[ SL_TITLE ].sl_data = "Error: Server Configuration";
+-	sl[ SL_ERROR ].sl_data = "Unable to retrieve server name";
++	sl[ SL_TITLE ].sl_data = _("Error: Server Configuration");
++	sl[ SL_ERROR ].sl_data = _("Unable to retrieve server name");
+ 	subfile( ERROR_HTML, sl, 0 );
+ 	exit(0);
+     }
+     if (( sport = getenv( "SERVER_PORT" )) == NULL ) {
+-	sl[ SL_TITLE ].sl_data = "Error: Server Configuration";
+-	sl[ SL_ERROR ].sl_data = "Unable to retrieve server port";
++	sl[ SL_TITLE ].sl_data = _("Error: Server Configuration");
++	sl[ SL_ERROR ].sl_data = _("Unable to retrieve server port");
+ 	subfile( ERROR_HTML, sl, 0 );
+ 	exit(0);
+     }
+@@ -344,9 +357,9 @@ main( int argc, char *argv[] )
+ 
+     if ( subject_dn && issuer_dn ) {
+ 	if ( x509_translate( subject_dn, issuer_dn, &login, &realm ) != 0 ) {
+-	    sl[ SL_TITLE ].sl_data = "Error: X509 failed";
+-	    sl[ SL_ERROR ].sl_data = "There was an x.509 mutual authentication"
+-		    " configuration error. Contact your administrator.";
++	    sl[ SL_TITLE ].sl_data = _("Error: X509 failed");
++	    sl[ SL_ERROR ].sl_data = _("There was an x.509 mutual authentication"
++		    " configuration error. Contact your administrator.");
+ 	    subfile( ERROR_HTML, sl, 0 );
+ 	    exit( 0 );
+ 	}
+@@ -358,9 +371,9 @@ main( int argc, char *argv[] )
+ 	if ( remote_user && auth_type &&
+ 		strcasecmp( auth_type, "Negotiate" ) == 0 ) {
+ 	    if ( negotiate_translate( remote_user, &login, &realm ) != 0 ) {
+-		sl[ SL_TITLE ].sl_data = "Error: Negotiate login failed";
+-	 	sl[ SL_ERROR ].sl_data = "There was a problem processing your"
+-			" authentication data. Contact your administrator";
++		sl[ SL_TITLE ].sl_data = _("Error: Negotiate login failed");
++	 	sl[ SL_ERROR ].sl_data = _("There was a problem processing your"
++			" authentication data. Contact your administrator");
+ 		subfile( ERROR_HTML, sl, 0 );
+ 		exit ( 0 );
+ 	    }
+@@ -372,8 +385,8 @@ main( int argc, char *argv[] )
+ 
+     if ( krbtkts ) {
+ 	if (( krbtkt_path = getenv( "KRB5CCNAME" )) == NULL ) {
+-	    fprintf( stderr, "Kerberos ticket transfer is on, "
+-		     " but no tickets were found in the environment\n" );
++	    fprintf( stderr, _("Kerberos ticket transfer is on, "
++		     " but no tickets were found in the environment\n") );
+ 	} else if ( strncmp( krbtkt_path, "FILE:", 5 ) == 0 ) {
+ 	    krbtkt_path += 5;
+ 	}
+@@ -381,9 +394,9 @@ main( int argc, char *argv[] )
+ 
+     if ((( qs = getenv( "QUERY_STRING" )) != NULL ) && ( *qs != '\0' )) {
+ 	if (( p = strtok( qs, "&" )) == NULL ) {
+-	    sl[ SL_TITLE ].sl_data = "Error: Unrecognized Service";
+-	    sl[ SL_ERROR ].sl_data = "Unable to determine referring "
+-		    "service from query string.";
++	    sl[ SL_TITLE ].sl_data = _("Error: Unrecognized Service");
++	    sl[ SL_ERROR ].sl_data = _("Unable to determine referring "
++		    "service from query string.");
+ 	    subfile( ERROR_HTML, sl, 0 );
+ 	    exit( 0 );
+ 	}
+@@ -395,9 +408,9 @@ main( int argc, char *argv[] )
+ 
+ 	if ( p != NULL && strncmp( p, "factors=", 8 ) == 0 ) {
+ 	    if (( factor = strchr( p, '=' )) == NULL ) {
+-		sl[ SL_TITLE ].sl_data = "Error: malformatted factors";
+-		sl[ SL_ERROR ].sl_data = "Unable to determine required "
+-			"factors from query string.";
++		sl[ SL_TITLE ].sl_data = _("Error: malformatted factors");
++		sl[ SL_ERROR ].sl_data = _("Unable to determine required "
++			"factors from query string.");
+ 		subfile( ERROR_HTML, sl, 0 );
+ 		exit( 0 );
+ 	    }
+@@ -413,17 +426,17 @@ main( int argc, char *argv[] )
+ 		service[ len - 1 ] = '\0';
+ 	    }
+ 	    if ( strncmp( service, "cosign-", 7 ) != 0 ) {
+-		sl[ SL_TITLE ].sl_data = "Error: Unrecognized Service";
+-		sl[ SL_ERROR ].sl_data = "Bad service in query string.";
++		sl[ SL_TITLE ].sl_data = _("Error: Unrecognized Service");
++		sl[ SL_ERROR ].sl_data = _("Bad service in query string.");
+ 		subfile( ERROR_HTML, sl, 0 );
+ 		exit( 0 );
+ 	    }
+ 	    sl[ SL_SERVICE ].sl_data = service;
+ 
+ 	    if (( ref = strtok( NULL, "" )) == NULL ) {
+-		sl[ SL_TITLE ].sl_data = "Error: malformatted referrer";
+-		sl[ SL_ERROR ].sl_data = "Unable to determine referring "
+-			"service from query string.";
++		sl[ SL_TITLE ].sl_data = _("Error: malformatted referrer");
++		sl[ SL_ERROR ].sl_data = _("Unable to determine referring "
++			"service from query string.");
+ 		subfile( ERROR_HTML, sl, 0 );
+ 		exit( 0 );
+ 	    }
+@@ -443,9 +456,9 @@ main( int argc, char *argv[] )
+ 
+     if ( cookie == NULL ) {
+ 	if (( strcmp( method, "POST" ) == 0 ) || rebasic ) {
+-	    sl[ SL_TITLE ].sl_data = "Error: Cookies Required";
+-	    sl[ SL_ERROR ].sl_data = "This service requires that "
+-		    "cookies be enabled.";
++	    sl[ SL_TITLE ].sl_data = _("Error: Cookies Required");
++	    sl[ SL_ERROR ].sl_data = _("This service requires that "
++		    "cookies be enabled.");
+ 	    subfile( ERROR_HTML, sl, 0 );
+ 	    exit( 0 );
+ 	}
+@@ -462,8 +475,8 @@ main( int argc, char *argv[] )
+ 	cookietime = atoi( misc );
+ 
+ 	if ( gettimeofday( &tv, NULL ) != 0 ) {
+-	    sl[ SL_TITLE ].sl_data = "Error: Login Screen";
+-	    sl[ SL_ERROR ].sl_data = "Please try again later.";
++	    sl[ SL_TITLE ].sl_data = _("Error: Login Screen");
++	    sl[ SL_ERROR ].sl_data = _("Please try again later.");
+ 	    subfile( ERROR_HTML, sl, 0 );
+ 	    exit( 0 );
+ 	}
+@@ -481,9 +494,9 @@ main( int argc, char *argv[] )
+ 
+     /* setup conn and ssl and hostlist */
+     if (( head = connlist_setup( cosign_host, cosign_port )) == NULL ) {
+-	sl[ SL_TITLE ].sl_data = "Error: Server Configuration";
+-	sl[ SL_ERROR ].sl_data = "We were unable to contact the "
+-		"authentication server.  Please try again later.";
++	sl[ SL_TITLE ].sl_data = _("Error: Server Configuration");
++	sl[ SL_ERROR ].sl_data = _("We were unable to contact the "
++		"authentication server.  Please try again later.");
+ 	subfile( ERROR_HTML, sl, 0 );
+ 	exit( 0 );
+     }
+@@ -492,9 +505,9 @@ main( int argc, char *argv[] )
+     SSL_library_init();
+ 
+     if ( cosign_ssl( cryptofile, certfile, cadir, &ctx ) != 0 ) {
+-	sl[ SL_TITLE ].sl_data = "Error: Server Configuration";
+-	sl[ SL_ERROR ].sl_data = "Failed to initialise connections "
+-		"to the authentication server. Please try again later";
++	sl[ SL_TITLE ].sl_data = _("Error: Server Configuration");
++	sl[ SL_ERROR ].sl_data = _("Failed to initialise connections "
++		"to the authentication server. Please try again later");
+ 	subfile( ERROR_HTML, sl, 0 );
+ 	exit( 0 );
+     }
+@@ -504,10 +517,10 @@ main( int argc, char *argv[] )
+ 	/* basic's implicit register */
+ 	if ( rebasic && cosign_login( head, cookie, ip_addr, remote_user,
+ 		    realm, krbtkt_path ) < 0 ) {
+-	    fprintf( stderr, "cosign_login: basic login failed\n" ) ;
+-	    sl[ SL_TITLE ].sl_data = "Error: Please try later";
+-	    sl[ SL_ERROR ].sl_data = "We were unable to contact the "
+-		    "authentication server. Please try again later.";
++	    fprintf( stderr, _("cosign_login: basic login failed\n") ) ;
++	    sl[ SL_TITLE ].sl_data = _("Error: Please try later");
++	    sl[ SL_ERROR ].sl_data = _("We were unable to contact the "
++		    "authentication server. Please try again later.");
+ 	    subfile( ERROR_HTML, sl, 0 );
+ 	    exit( 0 );
+ 	}
+@@ -522,30 +535,30 @@ main( int argc, char *argv[] )
+ 	    *p = '=';
+ 	}
+ 	if ( scookie == NULL ) {
+-	    fprintf( stderr, "no matching service for %s\n", service );
+-	    sl[ SL_TITLE ].sl_data = "Error: Unknown service";
+-	    sl[ SL_ERROR ].sl_data = "We were unable to locate a "
+-		    "service matching the one provided.";
++	    fprintf( stderr, _("no matching service for %s\n"), service );
++	    sl[ SL_TITLE ].sl_data = _("Error: Unknown service");
++	    sl[ SL_ERROR ].sl_data = _("We were unable to locate a "
++		    "service matching the one provided.");
+ 		subfile( ERROR_HTML, sl, 0 );
+ 		exit( 0 );
+ 	    }
+ 
+ 	if ( match_substitute( scookie->sl_wkurl, sizeof( matchbuf ),
+ 		matchbuf, nmatch, matches, service ) != 0 ) {
+-	    fprintf( stderr, "regex substitution failed: %s into %s\n",
++	    fprintf( stderr, _("regex substitution failed: %s into %s\n"),
+ 		service, scookie->sl_wkurl );
+-	    sl[ SL_TITLE ].sl_data = "Error: Unknown service";
+-	    sl[ SL_ERROR ].sl_data = "We were unable to locate a "
+-		    "service matching the one provided.";
++	    sl[ SL_TITLE ].sl_data = _("Error: Unknown service");
++	    sl[ SL_ERROR ].sl_data = _("We were unable to locate a "
++		    "service matching the one provided.");
+ 	    subfile( ERROR_HTML, sl, 0 );
+ 	    exit( 0 );
+ 	}
+ 
+ 	if ( scheme == 2 && !( scookie->sl_flag & SL_SCHEME_V2 )) {
+-	    fprintf( stderr, "requested v2 for v3 service %s\n", service );
+-	    sl[ SL_TITLE ].sl_data = "Error: Unknown service";
+-	    sl[ SL_ERROR ].sl_data = "We were unable to locate a "
+-		    "service matching the one provided.";
++	    fprintf( stderr, _("requested v2 for v3 service %s\n"), service );
++	    sl[ SL_TITLE ].sl_data = _("Error: Unknown service");
++	    sl[ SL_ERROR ].sl_data = _("We were unable to locate a "
++		    "service matching the one provided.");
+ 	    subfile( ERROR_HTML, sl, 0 );
+ 	    exit( 0 );
+ 	}
+@@ -581,8 +594,8 @@ main( int argc, char *argv[] )
+ 		}
+ 	    }
+ 	    if ( r != NULL ) {
+-		sl[ SL_ERROR ].sl_data = "Additional authentication"
+-			" is required.";
++		sl[ SL_ERROR ].sl_data = _("Additional authentication"
++			" is required.");
+ 		goto loginscreen;
+ 	    }
+ 	}
+@@ -591,10 +604,10 @@ main( int argc, char *argv[] )
+ 	    /* cosign3 scheme, must generate new service cookie */
+ 	    if ( mkscookie( service, new_scookie,
+ 			    sizeof( new_scookie )) != 0 ) {
+-		fprintf( stderr, "%s: mkscookie failed\n", script );
+-		sl[ SL_TITLE ].sl_data = "Error: Make Service Cookie Failed";
+-		sl[ SL_ERROR ].sl_data = "We were unable to create a service "
+-		    "cookie. Please try again later.";
++		fprintf( stderr, _("%s: mkscookie failed\n"), script );
++		sl[ SL_TITLE ].sl_data = _("Error: Make Service Cookie Failed");
++		sl[ SL_ERROR ].sl_data = _("We were unable to create a service "
++		    "cookie. Please try again later.");
+ 		subfile( ERROR_HTML, sl, 0 );
+ 		exit( 0 );
+ 	    }
+@@ -602,10 +615,10 @@ main( int argc, char *argv[] )
+ 	}
+ 
+ 	if (( rc = cosign_register( head, cookie, ip_addr, service )) < 0 ) {
+-	    fprintf( stderr, "%s: cosign_register failed\n", script );
+-	    sl[ SL_TITLE ].sl_data = "Error: Register Failed";
+-	    sl[ SL_ERROR ].sl_data = "We were unable to contact "
+-		    "the authentication server.  Please try again later.";
++	    fprintf( stderr, _("%s: cosign_register failed\n"), script );
++	    sl[ SL_TITLE ].sl_data = _("Error: Register Failed");
++	    sl[ SL_ERROR ].sl_data = _("We were unable to contact "
++		    "the authentication server.  Please try again later.");
+ 	    subfile( ERROR_HTML, sl, 0 );
+ 	    exit( 0 );
+ 	}
+@@ -624,10 +637,10 @@ main( int argc, char *argv[] )
+ 	if ( cosign_check( head, cookie, &ui ) != 0 ) {
+ 	    if ( rebasic && cosign_login( head, cookie, ip_addr, remote_user,
+ 			realm, krbtkt_path ) < 0 ) {
+-		fprintf( stderr, "cosign_login: basic login failed\n" ) ;
+-		sl[ SL_TITLE ].sl_data = "Error: Please try later";
+-		sl[ SL_ERROR ].sl_data = "We were unable to contact the "
+-			"authentication server. Please try again later.";
++		fprintf( stderr, _("cosign_login: basic login failed\n") ) ;
++		sl[ SL_TITLE ].sl_data = _("Error: Please try later");
++		sl[ SL_ERROR ].sl_data = _("We were unable to contact the "
++			"authentication server. Please try again later.");
+ 		subfile( ERROR_HTML, sl, 0 );
+ 		exit( 0 );
+ 	    } else if ( !rebasic ) {
+@@ -649,8 +662,8 @@ main( int argc, char *argv[] )
+     tmpl = LOGIN_ERROR_HTML;
+ 
+     if (( cgi = cgi_init()) == NULL ) {
+-        sl[ SL_TITLE ].sl_data = "Error: Server Error";
+-        sl[ SL_ERROR ].sl_data = "cgi_init failed";
++        sl[ SL_TITLE ].sl_data = _("Error: Server Error");
++        sl[ SL_ERROR ].sl_data = _("cgi_init failed");
+         subfile( ERROR_HTML, sl, 0 );
+         exit( 0 );
+     }  
+@@ -669,8 +682,8 @@ main( int argc, char *argv[] )
+ 		}
+ 	    }
+ 	    if ( cl[ i ].cl_key == NULL ) {
+-		sl[ SL_TITLE ].sl_data = "Error: Server Configuration";
+-		sl[ SL_ERROR ].sl_data = "Too many form fields configured.";
++		sl[ SL_TITLE ].sl_data = _("Error: Server Configuration");
++		sl[ SL_ERROR ].sl_data = _("Too many form fields configured.");
+ 		subfile( ERROR_HTML, sl, 0 );
+ 		exit( 0 );
+ 	    }
+@@ -701,8 +714,8 @@ main( int argc, char *argv[] )
+ 	login = cl[ CL_LOGIN ].cl_data = ui.ui_login;
+     } else {
+ 	if ( cl[ CL_LOGIN ].cl_data == NULL ) {
+-	    sl[ SL_TITLE ].sl_data = "Authentication Required";
+-	    sl[ SL_ERROR ].sl_data = "Please enter your login and password.";
++	    sl[ SL_TITLE ].sl_data = _("Authentication Required");
++	    sl[ SL_ERROR ].sl_data = _("Please enter your login and password.");
+ 	    goto loginscreen;
+ 	}
+ 	login = sl[ SL_LOGIN ].sl_data = cl[ CL_LOGIN ].cl_data;
+@@ -742,23 +755,23 @@ main( int argc, char *argv[] )
+ #endif /* KRB5 */
+ 	    {
+                 rc = COSIGN_CGI_ERROR;
+-	        fprintf( stderr, "Unknown authentication type '%s'", type );
++	        fprintf( stderr, _("Unknown authentication type '%s'"), type );
+ 	    }
+         }
+ 
+ 	if ( rc == COSIGN_CGI_PASSWORD_EXPIRED ) {
+-	    sl[ SL_TITLE ].sl_data = "Password Expired";
++	    sl[ SL_TITLE ].sl_data = _("Password Expired");
+ 	    sl[ SL_ERROR ].sl_data = msg;
+             subfile( EXPIRED_ERROR_HTML, sl, 0 );
+             exit( 0 ); 
+         }
+ 
+-	sl[ SL_TITLE ].sl_data = "Authentication Required";
++	sl[ SL_TITLE ].sl_data = _("Authentication Required");
+ 	if ( msg != NULL && strlen( msg ) > 0 ) {
+ 	    sl[ SL_ERROR ].sl_data = msg;
+ 	} else {
+-	    sl[ SL_ERROR ].sl_data = "Password or Account Name incorrect. "
+-		    "Is [caps lock] on?";
++	    sl[ SL_ERROR ].sl_data = _("Password or Account Name incorrect. "
++		    "Is [caps lock] on?");
+ 	}
+ 	goto loginscreen;
+ 
+@@ -787,19 +800,19 @@ loggedin:
+ 	}
+ 
+ 	if (( fl->fl_flag == 2 ) && ( *ui.ui_login == '\0' )) {
+-	    sl[ SL_TITLE ].sl_data = "Authentication Required";
+-	    sl[ SL_ERROR ].sl_data = "Primary authentication is required"
+-		    " before secondary authentication.";
++	    sl[ SL_TITLE ].sl_data = _("Authentication Required");
++	    sl[ SL_ERROR ].sl_data = _("Primary authentication is required"
++		    " before secondary authentication.");
+ 	    goto loginscreen;
+ 	}
+ 	if (( rc = execfactor( fl, cl, &msg )) != COSIGN_CGI_OK ) {
+-	    sl[ SL_ERROR ].sl_data = msg;
++	    sl[ SL_ERROR ].sl_data = _(msg);
+             if ( rc == COSIGN_CGI_PASSWORD_EXPIRED ) {
+-	        sl[ SL_TITLE ].sl_data = "Password Expired";
++	        sl[ SL_TITLE ].sl_data = _("Password Expired");
+                 subfile( EXPIRED_ERROR_HTML, sl, 0 );
+                 exit( 0 );
+             } else {
+-	        sl[ SL_TITLE ].sl_data = "Authentication Required";
++	        sl[ SL_TITLE ].sl_data = _("Authentication Required");
+             }
+ 	    goto loginscreen;
+ 	}
+@@ -827,9 +840,9 @@ loggedin:
+ 	if (( ui.ui_factors[ i ] == NULL ) ||
+ 		( strcmp( ui.ui_ipaddr, ip_addr ) != 0 )) {
+ 	    if ( cosign_login( head, cookie, ip_addr, login, msg, NULL ) < 0 ) {
+-		sl[ SL_TITLE ].sl_data = "Error: Please try later";
+-		sl[ SL_ERROR ].sl_data = "We were unable to contact the "
+-			"authentication server. Please try again later.";
++		sl[ SL_TITLE ].sl_data = _("Error: Please try later");
++		sl[ SL_ERROR ].sl_data = _("We were unable to contact the "
++			"authentication server. Please try again later.");
+ 		subfile( ERROR_HTML, sl, 0 );
+ 		exit( 0 );
+ 	    }
+@@ -839,8 +852,8 @@ loggedin:
+     }
+ 
+     if ( *ui.ui_login == '\0' ) {
+-	sl[ SL_TITLE ].sl_data = "Authentication Required";
+-	sl[ SL_ERROR ].sl_data = "Please enter your login and password.";
++	sl[ SL_TITLE ].sl_data = _("Authentication Required");
++	sl[ SL_ERROR ].sl_data = _("Please enter your login and password.");
+ 	goto loginscreen;
+     }
+ 
+@@ -855,30 +868,30 @@ loggedin:
+ 	    *p = '=';
+ 	}
+ 	if ( scookie == NULL ) {
+-	    fprintf( stderr, "no matching service for %s\n", service );
+-	    sl[ SL_TITLE ].sl_data = "Error: Unknown service";
+-	    sl[ SL_ERROR ].sl_data = "We were unable to locate a "
+-		    "service matching the one provided.";
++	    fprintf( stderr, _("no matching service for %s\n"), service );
++	    sl[ SL_TITLE ].sl_data = _("Error: Unknown service");
++	    sl[ SL_ERROR ].sl_data = _("We were unable to locate a "
++		    "service matching the one provided.");
+ 		subfile( ERROR_HTML, sl, 0 );
+ 		exit( 0 );
+ 	    }
+ 
+ 	if ( match_substitute( scookie->sl_wkurl, sizeof( matchbuf ),
+ 		matchbuf, nmatch, matches, service ) != 0 ) {
+-	    fprintf( stderr, "regex substitution failed: %s into %s\n",
++	    fprintf( stderr, _("regex substitution failed: %s into %s\n"),
+ 		service, scookie->sl_wkurl );
+-	    sl[ SL_TITLE ].sl_data = "Error: Unknown service";
+-	    sl[ SL_ERROR ].sl_data = "We were unable to locate a "
+-		    "service matching the one provided.";
++	    sl[ SL_TITLE ].sl_data = _("Error: Unknown service");
++	    sl[ SL_ERROR ].sl_data = _("We were unable to locate a "
++		    "service matching the one provided.");
+ 	    subfile( ERROR_HTML, sl, 0 );
+ 	    exit( 0 );
+ 	}
+ 
+ 	if ( scheme == 2 && !( scookie->sl_flag & SL_SCHEME_V2 )) {
+-	    fprintf( stderr, "requested v2 for v3 service %s\n", service );
+-	    sl[ SL_TITLE ].sl_data = "Error: Unknown service";
+-	    sl[ SL_ERROR ].sl_data = "We were unable to locate a "
+-		    "service matching the one provided.";
++	    fprintf( stderr, _("requested v2 for v3 service %s\n"), service );
++	    sl[ SL_TITLE ].sl_data = _("Error: Unknown service");
++	    sl[ SL_ERROR ].sl_data = _("We were unable to locate a "
++		    "service matching the one provided.");
+ 	    subfile( ERROR_HTML, sl, 0 );
+ 	    exit( 0 );
+ 	}
+@@ -896,8 +909,8 @@ loggedin:
+ 		    }
+ 		}
+ 		if ( new_factors[ j ] == NULL ) {
+-		    sl[ SL_ERROR ].sl_data = "Please complete"
+-			    " all required fields to re-authenticate.";
++		    sl[ SL_ERROR ].sl_data = _("Please complete"
++			    " all required fields to re-authenticate.");
+ 		    goto loginscreen;
+ 		}
+ 	    }
+@@ -911,10 +924,10 @@ loggedin:
+ 	    /* cosign3 scheme, must generate new service cookie */
+ 	    if ( mkscookie( service, new_scookie,
+ 			    sizeof( new_scookie )) != 0 ) {
+-		fprintf( stderr, "%s: mkscookie failed\n", script );
+-		sl[ SL_TITLE ].sl_data = "Error: Make Service Cookie Failed";
+-		sl[ SL_ERROR ].sl_data = "We were unable to create a service "
+-		    "cookie. Please try again later.";
++		fprintf( stderr, _("%s: mkscookie failed\n"), script );
++		sl[ SL_TITLE ].sl_data = _("Error: Make Service Cookie Failed");
++		sl[ SL_ERROR ].sl_data = _("We were unable to create a service "
++		    "cookie. Please try again later.");
+ 		subfile( ERROR_HTML, sl, 0 );
+ 		exit( 0 );
+ 	    }
+@@ -922,10 +935,10 @@ loggedin:
+ 	}
+ 
+         if (( rc = cosign_register( head, cookie, ip_addr, service )) < 0 ) {
+-            fprintf( stderr, "%s: implicit cosign_register failed\n", script );
+-            sl[ SL_TITLE ].sl_data = "Error: Implicit Register Failed";
+-            sl[ SL_ERROR ].sl_data = "We were unable to contact the "
+-		    "authentication server.  Please try again later.";
++            fprintf( stderr, _("%s: implicit cosign_register failed\n"), script );
++            sl[ SL_TITLE ].sl_data = _("Error: Implicit Register Failed");
++            sl[ SL_ERROR ].sl_data = _("We were unable to contact the "
++		    "authentication server.  Please try again later.");
+ 	    subfile( ERROR_HTML, sl, 0 );
+             exit( 0 );
+         }
+@@ -957,12 +970,12 @@ loginscreen:
+ 	}
+ 
+ 	if ( mkcookie( sizeof( new_cookiebuf ), new_cookiebuf ) != 0 ) {
+-	    fprintf( stderr, "%s: mkcookie: failed\n", script );
++	    fprintf( stderr, _("%s: mkcookie: failed\n"), script );
+ 	    exit( 1 );
+ 	}
+ 	if ( gettimeofday( &tv, NULL ) != 0 ) {
+-	    sl[ SL_TITLE ].sl_data = "Error: Login Screen";
+-	    sl[ SL_ERROR ].sl_data = "Please try again later.";
++	    sl[ SL_TITLE ].sl_data = _("Error: Login Screen");
++	    sl[ SL_ERROR ].sl_data = _("Please try again later.");
+ 	    subfile( ERROR_HTML, sl, 0 );
+ 	    exit( 0 );
+ 	}
+@@ -1002,18 +1015,18 @@ loginscreen:
+ 	if (( scookie != NULL ) && ( scookie->sl_flag & SL_REAUTH )) {
+ 	    sl[ SL_DFACTOR ].sl_data = NULL;
+ 	    sl[ SL_RFACTOR ].sl_data = smash( scookie->sl_factors );
+-	    sl[ SL_TITLE ].sl_data = "Re-Authentication Required";
++	    sl[ SL_TITLE ].sl_data = _("Re-Authentication Required");
+ 	    if ( sl[ SL_ERROR ].sl_data == NULL ) {
+-		sl[ SL_ERROR ].sl_data = "Please Re-Authenticate.";
++		sl[ SL_ERROR ].sl_data = _("Please Re-Authenticate.");
+ 	    }
+ 	    tmpl = REAUTH_HTML;
+ 	} else if ( strcmp( ui.ui_ipaddr, ip_addr ) != 0 ) {
+ 	    sl[ SL_DFACTOR ].sl_data = NULL;
+ 	    sl[ SL_RFACTOR ].sl_data = ui.ui_factors[ 0 ];
+-	    sl[ SL_TITLE ].sl_data = "Re-Authentication Required";
++	    sl[ SL_TITLE ].sl_data = _("Re-Authentication Required");
+ 	    if ( sl[ SL_ERROR ].sl_data == NULL ) {
+-		sl[ SL_ERROR ].sl_data = "Re-authenticate to confirm"
+-			" your new Internet address.";
++		sl[ SL_ERROR ].sl_data = _("Re-authenticate to confirm"
++			" your new Internet address.");
+ 	    }
+ 	    tmpl = REAUTH_HTML;
+ 	} else {
+diff --git a/html/js/js_locale.js b/html/js/js_locale.js
+new file mode 100644
+index 0000000..bb28364
+--- /dev/null
++++ b/html/js/js_locale.js
+@@ -0,0 +1,46 @@
++var Localization = {
++	"9999": {
++		"en": "Cannot open logfile.",
++		"zh": "无法打开日志文件。" },
++
++	"default": "en"
++};
++
++function setLocale(lang) {
++	if (!lang) lang = "en";
++	Localization.default = lang;
++}
++
++(function() {
++	function extend(destination, source) {
++		for (var property in source)
++			destination[property] = source[property];
++			return destination;
++	}
++
++	extend(String.prototype, (function() {
++		function localize(lang) {
++			var code;
++			var s;
++			if (code = /^([0-9]+)\s*:/.exec(this)) code = code[1];
++			if (Localization) {
++				s= Localization[code] ? Localization[code] : Localization[this];
++				if (!s) return this;
++				if (s instanceof Object) {
++					if (!lang) lang = Localization.default;
++					return s[lang] ? s[lang] : s["en"];
++				}
++				return s;
++			}
++			return this;
++		}
++
++		return {
++			l: localize,
++			_: localize,
++			localize: localize
++		};
++	})());
++})();
++
++// vim: noet ts=4 sw=4
+diff --git a/locale/addition.pot b/locale/addition.pot
+new file mode 100644
+index 0000000..ab77f7c
+--- /dev/null
++++ b/locale/addition.pot
+@@ -0,0 +1,32 @@
++msgid ""
++msgstr ""
++"Project-Id-Version: PACKAGE VERSION\n"
++"Report-Msgid-Bugs-To: \n"
++"POT-Creation-Date: 2010-03-30 14:40+0800\n"
++"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
++"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
++"Language-Team: LANGUAGE <LL@li.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=CHARSET\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Login failed: email or invite_code not provided."
++msgstr ""
++
++msgid "Login failed: invite factor has not setup yet."
++msgstr ""
++
++msgid "Login failed: provide your email address as login name."
++msgstr ""
++
++msgid "Login failed: user does not exist or wrong password."
++msgstr ""
++
++msgid "Login failed: user does not exist or wrong password.\n"
++msgstr ""
++
++msgid "Login failed: wrong invite code."
++msgstr ""
++
++msgid "Cannot connect to LDAP server.\n"
++msgstr ""
+diff --git a/locale/cosign.pot b/locale/cosign.pot
+new file mode 100644
+index 0000000..a15b4ff
+--- /dev/null
++++ b/locale/cosign.pot
+@@ -0,0 +1,277 @@
++# SOME DESCRIPTIVE TITLE.
++# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
++# This file is distributed under the same license as the PACKAGE package.
++# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
++#
++#, fuzzy
++msgid ""
++msgstr ""
++"Project-Id-Version: PACKAGE VERSION\n"
++"Report-Msgid-Bugs-To: \n"
++"POT-Creation-Date: 2010-03-30 14:40+0800\n"
++"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
++"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
++"Language-Team: LANGUAGE <LL@li.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=CHARSET\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#: cgi/cgi.c:257
++#, c-format
++msgid "%s: %s=%s: too long\n"
++msgstr ""
++
++#: cgi/cgi.c:615
++#, c-format
++msgid "%s: cosign_register failed\n"
++msgstr ""
++
++#: cgi/cgi.c:935
++#, c-format
++msgid "%s: implicit cosign_register failed\n"
++msgstr ""
++
++#: cgi/cgi.c:187
++#, c-format
++msgid "%s: invalid setting for krbtkts: defaulting off.\n"
++msgstr ""
++
++#: cgi/cgi.c:970
++#, c-format
++msgid "%s: mkcookie: failed\n"
++msgstr ""
++
++#: cgi/cgi.c:604 cgi/cgi.c:924
++#, c-format
++msgid "%s: mkscookie failed\n"
++msgstr ""
++
++#: cgi/cgi.c:253
++#, c-format
++msgid "%s: mkscookie failed.\n"
++msgstr ""
++
++#: cgi/cgi.c:594
++msgid "Additional authentication is required."
++msgstr ""
++
++#: cgi/cgi.c:714 cgi/cgi.c:766 cgi/cgi.c:800 cgi/cgi.c:812 cgi/cgi.c:852
++msgid "Authentication Required"
++msgstr ""
++
++#: cgi/cgi.c:427
++msgid "Bad service in query string."
++msgstr ""
++
++#: cgi/cgi.c:311
++#, c-format
++msgid "Couldn't read %s\n"
++msgstr ""
++
++#: cgi/cgi.c:456
++msgid "Error: Cookies Required"
++msgstr ""
++
++#: cgi/cgi.c:936
++msgid "Error: Implicit Register Failed"
++msgstr ""
++
++#: cgi/cgi.c:475 cgi/cgi.c:974
++msgid "Error: Login Screen"
++msgstr ""
++
++#: cgi/cgi.c:108 cgi/cgi.c:120 cgi/cgi.c:135 cgi/cgi.c:148
++msgid "Error: Loop Breaker"
++msgstr ""
++
++#: cgi/cgi.c:605 cgi/cgi.c:925
++msgid "Error: Make Service Cookie Failed"
++msgstr ""
++
++#: cgi/cgi.c:371
++msgid "Error: Negotiate login failed"
++msgstr ""
++
++#: cgi/cgi.c:518 cgi/cgi.c:638 cgi/cgi.c:840
++msgid "Error: Please try later"
++msgstr ""
++
++#: cgi/cgi.c:616
++msgid "Error: Register Failed"
++msgstr ""
++
++#: cgi/cgi.c:321 cgi/cgi.c:327 cgi/cgi.c:333 cgi/cgi.c:339 cgi/cgi.c:345
++#: cgi/cgi.c:494 cgi/cgi.c:505 cgi/cgi.c:682
++msgid "Error: Server Configuration"
++msgstr ""
++
++#: cgi/cgi.c:662
++msgid "Error: Server Error"
++msgstr ""
++
++#: cgi/cgi.c:536 cgi/cgi.c:547 cgi/cgi.c:556 cgi/cgi.c:869 cgi/cgi.c:880
++#: cgi/cgi.c:889
++msgid "Error: Unknown service"
++msgstr ""
++
++#: cgi/cgi.c:394 cgi/cgi.c:426
++msgid "Error: Unrecognized Service"
++msgstr ""
++
++#: cgi/cgi.c:357
++msgid "Error: X509 failed"
++msgstr ""
++
++#: cgi/cgi.c:408
++msgid "Error: malformatted factors"
++msgstr ""
++
++#: cgi/cgi.c:434
++msgid "Error: malformatted referrer"
++msgstr ""
++
++#: cgi/cgi.c:506
++msgid ""
++"Failed to initialise connections to the authentication server. Please try "
++"again later"
++msgstr ""
++
++#: cgi/cgi.c:385
++#, c-format
++msgid ""
++"Kerberos ticket transfer is on,  but no tickets were found in the "
++"environment\n"
++msgstr ""
++
++#: cgi/cgi.c:760 cgi/cgi.c:808
++msgid "Password Expired"
++msgstr ""
++
++#: cgi/cgi.c:770
++msgid "Password or Account Name incorrect. Is [caps lock] on?"
++msgstr ""
++
++#: cgi/cgi.c:1017
++msgid "Please Re-Authenticate."
++msgstr ""
++
++#: cgi/cgi.c:909
++msgid "Please complete all required fields to re-authenticate."
++msgstr ""
++
++#: cgi/cgi.c:715 cgi/cgi.c:853
++msgid "Please enter your login and password."
++msgstr ""
++
++#: cgi/cgi.c:109 cgi/cgi.c:121 cgi/cgi.c:136 cgi/cgi.c:149 cgi/cgi.c:476
++#: cgi/cgi.c:975
++msgid "Please try again later."
++msgstr ""
++
++#: cgi/cgi.c:801
++msgid "Primary authentication is required before secondary authentication."
++msgstr ""
++
++#: cgi/cgi.c:1015 cgi/cgi.c:1023
++msgid "Re-Authentication Required"
++msgstr ""
++
++#: cgi/cgi.c:1025
++msgid "Re-authenticate to confirm your new Internet address."
++msgstr ""
++
++#: cgi/cgi.c:372
++msgid ""
++"There was a problem processing your authentication data. Contact your "
++"administrator"
++msgstr ""
++
++#: cgi/cgi.c:358
++msgid ""
++"There was an x.509 mutual authentication configuration error. Contact your "
++"administrator."
++msgstr ""
++
++#: cgi/cgi.c:457
++msgid "This service requires that cookies be enabled."
++msgstr ""
++
++#: cgi/cgi.c:683
++msgid "Too many form fields configured."
++msgstr ""
++
++#: cgi/cgi.c:395 cgi/cgi.c:435
++msgid "Unable to determine referring service from query string."
++msgstr ""
++
++#: cgi/cgi.c:409
++msgid "Unable to determine required factors from query string."
++msgstr ""
++
++#: cgi/cgi.c:334
++msgid "Unable to retrieve IP address"
++msgstr ""
++
++#: cgi/cgi.c:328
++msgid "Unable to retrieve method"
++msgstr ""
++
++#: cgi/cgi.c:340
++msgid "Unable to retrieve server name"
++msgstr ""
++
++#: cgi/cgi.c:346
++msgid "Unable to retrieve server port"
++msgstr ""
++
++#: cgi/cgi.c:322
++msgid "Unable to retrieve the script name"
++msgstr ""
++
++#: cgi/cgi.c:755
++#, c-format
++msgid "Unknown authentication type '%s'"
++msgstr ""
++
++#: cgi/cgi.c:495 cgi/cgi.c:617 cgi/cgi.c:937
++msgid ""
++"We were unable to contact the authentication server.  Please try again later."
++msgstr ""
++
++#: cgi/cgi.c:519 cgi/cgi.c:639 cgi/cgi.c:841
++msgid ""
++"We were unable to contact the authentication server. Please try again later."
++msgstr ""
++
++#: cgi/cgi.c:606 cgi/cgi.c:926
++msgid "We were unable to create a service cookie. Please try again later."
++msgstr ""
++
++#: cgi/cgi.c:537 cgi/cgi.c:548 cgi/cgi.c:557 cgi/cgi.c:870 cgi/cgi.c:881
++#: cgi/cgi.c:890
++msgid "We were unable to locate a service matching the one provided."
++msgstr ""
++
++#: cgi/cgi.c:663
++msgid "cgi_init failed"
++msgstr ""
++
++#: cgi/cgi.c:517 cgi/cgi.c:637
++#, c-format
++msgid "cosign_login: basic login failed\n"
++msgstr ""
++
++#: cgi/cgi.c:535 cgi/cgi.c:868
++#, c-format
++msgid "no matching service for %s\n"
++msgstr ""
++
++#: cgi/cgi.c:545 cgi/cgi.c:878
++#, c-format
++msgid "regex substitution failed: %s into %s\n"
++msgstr ""
++
++#: cgi/cgi.c:555 cgi/cgi.c:888
++#, c-format
++msgid "requested v2 for v3 service %s\n"
++msgstr ""
+diff --git a/locale/zh/LC_MESSAGES/cosign.po b/locale/zh/LC_MESSAGES/cosign.po
+new file mode 100644
+index 0000000..ee86aa3
+--- /dev/null
++++ b/locale/zh/LC_MESSAGES/cosign.po
+@@ -0,0 +1,298 @@
++# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
++# This file is distributed under the same license as the PACKAGE package.
++#
++# Jiang Xin <worldhello.net@gmail.com>, 2010.
++msgid ""
++msgstr ""
++"Project-Id-Version: \n"
++"Report-Msgid-Bugs-To: \n"
++"POT-Creation-Date: 2010-03-30 14:40+0800\n"
++"PO-Revision-Date: 2010-03-30 15:57+0800\n"
++"Last-Translator: Jiang Xin <worldhello.net@gmail.com>\n"
++"Language-Team: Chinese Simplified <kde-i18n-doc@kde.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=UTF-8\n"
++"Content-Transfer-Encoding: 8bit\n"
++"X-Generator: Lokalize 1.0\n"
++"Plural-Forms: nplurals=2; plural=n != 1;\n"
++
++#: cgi/cgi.c:257
++#, c-format
++msgid "%s: %s=%s: too long\n"
++msgstr "%s: %s=%s: 太长\n"
++
++#: cgi/cgi.c:615
++#, c-format
++msgid "%s: cosign_register failed\n"
++msgstr "%s: cosign_register 注册失败\n"
++
++#: cgi/cgi.c:935
++#, c-format
++msgid "%s: implicit cosign_register failed\n"
++msgstr "%s: 隐含的 cosign_register 注册失败\n"
++
++#: cgi/cgi.c:187
++#, c-format
++msgid "%s: invalid setting for krbtkts: defaulting off.\n"
++msgstr "%s: 无效的 krbtkts 设置: 缺省关闭。\n"
++
++#: cgi/cgi.c:970
++#, c-format
++msgid "%s: mkcookie: failed\n"
++msgstr "%s: 创建 cookie 失败\n"
++
++#: cgi/cgi.c:604 cgi/cgi.c:924
++#, c-format
++msgid "%s: mkscookie failed\n"
++msgstr "%s: 创建服务 cookie 失败\n"
++
++#: cgi/cgi.c:253
++#, c-format
++msgid "%s: mkscookie failed.\n"
++msgstr "%s: 创建服务 cookie 失败。\n"
++
++#: cgi/cgi.c:594
++msgid "Additional authentication is required."
++msgstr "需要附加的认证。"
++
++#: cgi/cgi.c:714 cgi/cgi.c:766 cgi/cgi.c:800 cgi/cgi.c:812 cgi/cgi.c:852
++msgid "Authentication Required"
++msgstr "需要认证"
++
++#: cgi/cgi.c:427
++msgid "Bad service in query string."
++msgstr "query sting 中包含错误的服务名。"
++
++#: cgi/cgi.c:311
++#, c-format
++msgid "Couldn't read %s\n"
++msgstr "无法读取 %s\n"
++
++#: cgi/cgi.c:456
++msgid "Error: Cookies Required"
++msgstr "错误: 需要启用 cookies"
++
++#: cgi/cgi.c:936
++msgid "Error: Implicit Register Failed"
++msgstr "错误: 注册失败"
++
++#: cgi/cgi.c:475 cgi/cgi.c:974
++msgid "Error: Login Screen"
++msgstr "错误: 登录界面"
++
++#: cgi/cgi.c:108 cgi/cgi.c:120 cgi/cgi.c:135 cgi/cgi.c:148
++msgid "Error: Loop Breaker"
++msgstr "错误: 循环跳转"
++
++#: cgi/cgi.c:605 cgi/cgi.c:925
++msgid "Error: Make Service Cookie Failed"
++msgstr "错误: 生成服务 cookie 失败"
++
++#: cgi/cgi.c:371
++msgid "Error: Negotiate login failed"
++msgstr "Error: 协商方式登录失败"
++
++#: cgi/cgi.c:518 cgi/cgi.c:638 cgi/cgi.c:840
++msgid "Error: Please try later"
++msgstr "错误: 请稍后重试"
++
++#: cgi/cgi.c:616
++msgid "Error: Register Failed"
++msgstr "错误: 注册错误"
++
++#: cgi/cgi.c:321 cgi/cgi.c:327 cgi/cgi.c:333 cgi/cgi.c:339 cgi/cgi.c:345
++#: cgi/cgi.c:494 cgi/cgi.c:505 cgi/cgi.c:682
++msgid "Error: Server Configuration"
++msgstr "错误: 服务器配置"
++
++#: cgi/cgi.c:662
++msgid "Error: Server Error"
++msgstr "错误: 服务器错误"
++
++#: cgi/cgi.c:536 cgi/cgi.c:547 cgi/cgi.c:556 cgi/cgi.c:869 cgi/cgi.c:880
++#: cgi/cgi.c:889
++msgid "Error: Unknown service"
++msgstr "错误: 未知服务"
++
++#: cgi/cgi.c:394 cgi/cgi.c:426
++msgid "Error: Unrecognized Service"
++msgstr "错误: 无法识别的服务"
++
++#: cgi/cgi.c:357
++msgid "Error: X509 failed"
++msgstr "错误: X509 证书错误"
++
++#: cgi/cgi.c:408
++msgid "Error: malformatted factors"
++msgstr "错误: 认证因子格式错误"
++
++#: cgi/cgi.c:434
++msgid "Error: malformatted referrer"
++msgstr "错误: 返回地址格式错误"
++
++#: cgi/cgi.c:506
++msgid ""
++"Failed to initialise connections to the authentication server. Please try "
++"again later"
++msgstr "无法连接到认证服务器。请稍后重试"
++
++#: cgi/cgi.c:385
++#, c-format
++msgid ""
++"Kerberos ticket transfer is on,  but no tickets were found in the "
++"environment\n"
++msgstr "Kerberos ticket 传输打开，但是环境中无法找到 tickets\n"
++
++#: cgi/cgi.c:760 cgi/cgi.c:808
++msgid "Password Expired"
++msgstr "口令过期"
++
++#: cgi/cgi.c:770
++msgid "Password or Account Name incorrect. Is [caps lock] on?"
++msgstr "口令或者帐号不正确。是不是大小写锁定键被打开了？"
++
++#: cgi/cgi.c:1017
++msgid "Please Re-Authenticate."
++msgstr "请重新认证。"
++
++#: cgi/cgi.c:909
++msgid "Please complete all required fields to re-authenticate."
++msgstr "请填写所有要求的字段以便重新认证。"
++
++#: cgi/cgi.c:715 cgi/cgi.c:853
++msgid "Please enter your login and password."
++msgstr "请输入您的登录名和口令。"
++
++#: cgi/cgi.c:109 cgi/cgi.c:121 cgi/cgi.c:136 cgi/cgi.c:149 cgi/cgi.c:476
++#: cgi/cgi.c:975
++msgid "Please try again later."
++msgstr "请稍后重试。"
++
++#: cgi/cgi.c:801
++msgid "Primary authentication is required before secondary authentication."
++msgstr "需要先通过主要认证，然后进行双因子认证。"
++
++#: cgi/cgi.c:1015 cgi/cgi.c:1023
++msgid "Re-Authentication Required"
++msgstr "需要再次认证"
++
++#: cgi/cgi.c:1025
++msgid "Re-authenticate to confirm your new Internet address."
++msgstr "因为您IP地址改变，请重新认证。"
++
++#: cgi/cgi.c:372
++msgid ""
++"There was a problem processing your authentication data. Contact your "
++"administrator"
++msgstr "在处理您的认证数据时遇到错误。请联系管理员"
++
++#: cgi/cgi.c:358
++msgid ""
++"There was an x.509 mutual authentication configuration error. Contact your "
++"administrator."
++msgstr "发现 x.509 认证配置错误。请联系管理员"
++
++#: cgi/cgi.c:457
++msgid "This service requires that cookies be enabled."
++msgstr "这个服务需要启用 cookies。"
++
++#: cgi/cgi.c:683
++msgid "Too many form fields configured."
++msgstr "配置了太多的表单字段。"
++
++#: cgi/cgi.c:395 cgi/cgi.c:435
++msgid "Unable to determine referring service from query string."
++msgstr "无法从 query string 中确定服务的参考地址。"
++
++#: cgi/cgi.c:409
++msgid "Unable to determine required factors from query string."
++msgstr "无法从 query string 中确定认证因子。"
++
++#: cgi/cgi.c:334
++msgid "Unable to retrieve IP address"
++msgstr "无法获取IP地址"
++
++#: cgi/cgi.c:328
++msgid "Unable to retrieve method"
++msgstr "无法获取请求方式"
++
++#: cgi/cgi.c:340
++msgid "Unable to retrieve server name"
++msgstr "无法获取服务器名称"
++
++#: cgi/cgi.c:346
++msgid "Unable to retrieve server port"
++msgstr "无法获取服务端口"
++
++#: cgi/cgi.c:322
++msgid "Unable to retrieve the script name"
++msgstr "无法获取脚本名称"
++
++#: cgi/cgi.c:755
++#, c-format
++msgid "Unknown authentication type '%s'"
++msgstr "未知的认证类型 '%s'"
++
++#: cgi/cgi.c:495 cgi/cgi.c:617 cgi/cgi.c:937
++msgid ""
++"We were unable to contact the authentication server.  Please try again later."
++msgstr "无法连接到认证服务器。请稍后重试。"
++
++#: cgi/cgi.c:519 cgi/cgi.c:639 cgi/cgi.c:841
++msgid ""
++"We were unable to contact the authentication server. Please try again later."
++msgstr "无法连接到认证服务器。请稍后重试。"
++
++#: cgi/cgi.c:606 cgi/cgi.c:926
++msgid "We were unable to create a service cookie. Please try again later."
++msgstr "无法创建一个服务 cookie。请稍后重试。"
++
++#: cgi/cgi.c:537 cgi/cgi.c:548 cgi/cgi.c:557 cgi/cgi.c:870 cgi/cgi.c:881
++#: cgi/cgi.c:890
++msgid "We were unable to locate a service matching the one provided."
++msgstr "无法找到匹配的服务。"
++
++#: cgi/cgi.c:663
++msgid "cgi_init failed"
++msgstr "cgi_init 错误"
++
++#: cgi/cgi.c:517 cgi/cgi.c:637
++#, c-format
++msgid "cosign_login: basic login failed\n"
++msgstr "cosign_login: 基本认证失败\n"
++
++#: cgi/cgi.c:535 cgi/cgi.c:868
++#, c-format
++msgid "no matching service for %s\n"
++msgstr "没有匹配的服务名 %s\n"
++
++#: cgi/cgi.c:545 cgi/cgi.c:878
++#, c-format
++msgid "regex substitution failed: %s into %s\n"
++msgstr "正则表达式替换错误: %s 到 %s\n"
++
++#: cgi/cgi.c:555 cgi/cgi.c:888
++#, c-format
++msgid "requested v2 for v3 service %s\n"
++msgstr "对协议3的服务 %s 发起协议2的请求\n"
++
++msgid "Login failed: email or invite_code not provided."
++msgstr "登录失败: 请输入您的邮件地址和邀请码。"
++
++msgid "Login failed: invite factor has not setup yet."
++msgstr "登录失败: 邀请码认证尚未配置。"
++
++msgid "Login failed: provide your email address as login name."
++msgstr "登录失败: 请在用户名输入框输入您的邮件地址。"
++
++msgid "Login failed: user does not exist or wrong password."
++msgstr "登录失败: 用户不存在或口令错。"
++
++msgid "Login failed: user does not exist or wrong password.\n"
++msgstr "登录失败: 用户不存在或口令错。\n"
++
++msgid "Login failed: wrong invite code."
++msgstr "登录失败: 错误的邀请码。"
++
++msgid "Cannot connect to LDAP server.\n"
++msgstr "无法连接到 LDAP 服务器。\n"
+diff --git a/locale/zh_CN b/locale/zh_CN
+new file mode 120000
+index 0000000..147d659
+--- /dev/null
++++ b/locale/zh_CN
+@@ -0,0 +1 @@
++zh
+\ No newline at end of file
+diff --git a/locale/zh_TW b/locale/zh_TW
+new file mode 120000
+index 0000000..147d659
+--- /dev/null
++++ b/locale/zh_TW
+@@ -0,0 +1 @@
++zh
+\ No newline at end of file
+-- 
+tg: (f8c7d2b..) t/message_localize (depends on: t/factor_ldap t/factor_invite t/include_macro_for_templates)

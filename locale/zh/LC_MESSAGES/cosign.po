@@ -57,7 +57,7 @@ msgstr "需要附加的认证。"
 
 #: cgi/cgi.c:714 cgi/cgi.c:766 cgi/cgi.c:800 cgi/cgi.c:812 cgi/cgi.c:852
 msgid "Authentication Required"
-msgstr "需要认证"
+msgstr "登录"
 
 #: cgi/cgi.c:427
 msgid "Bad service in query string."

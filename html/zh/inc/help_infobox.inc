@@ -4,6 +4,7 @@
 					src="/cosign/images/circle.gif" alt="yellow circle" /> 是必须的。</p>
 					<p>使用本服务，意味着您已经接受我们的相关政策条款。</p>
 					<p class="noScript">这个页面在 JavaScript 启用下有更好的表现。</p>
+					$!include(../inc/*.html)
 				</div>
 				<div id="kerbInfo" class="infoBox">
 					<h4><a href="#mainInfo" class="hideInfo" id="kerbInfoHide">隐藏本信息</a> <a href="#l2header" class="toTop">返回顶部</a></h4>

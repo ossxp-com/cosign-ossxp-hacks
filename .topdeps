@@ -1,2 +1,3 @@
 t/custom_cosign_path
 t/javascript
+t/include_macro_for_templates

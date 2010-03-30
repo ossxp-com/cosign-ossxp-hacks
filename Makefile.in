@@ -22,6 +22,16 @@ ${ALL} filters/apache filters/apache2 filters/lighttpd:	FRC
 
 FRC:
 
+POT=locale/cosign.pot
+pot: $(POT)
+$(POT): cgi/cgi.c
+	xgettext -s -k_ -o $@ $^
+
+mo:: po
+mo:: locale/zh/LC_MESSAGES/cosign.mo
+locale/zh/LC_MESSAGES/cosign.mo: locale/zh/LC_MESSAGES/cosign.po
+	msgfmt -o $@ $<
+
 clean:
 	rm -f version.o
 	for i in ${ALL} ${FILTERS} ; \

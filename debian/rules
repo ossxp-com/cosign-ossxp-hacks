@@ -31,15 +31,6 @@ DEB_CONFIGURE_EXTRA_FLAGS += --enable-apache2=/usr/bin/apxs2 \
 ## DEB_CONFIGURE_SCRIPT_ENV += LDFLAGS=" -Wl,-z,defs -Wl,-O1"
 
 
-# post install
-$(patsubst %,install/%,$(DEB_ALL_PACKAGES)) ::
-	pkg=$(subst install/,,$@); \
-		script=$${pkg#ossxp-linux-}.py ;\
-		if [ -f debian/install/$$script ]; then \
-			mkdir -p debian/$$pkg/opt/ossxp/install/ ;\
-			install -m 750 debian/install/$$script debian/$$pkg/opt/ossxp/install/ ;\
-		fi
-
 # binary-fixup
 $(patsubst %,binary-fixup/%,$(DEB_ALL_PACKAGES)) ::
 	pkg=$(subst binary-fixup/,,$@); \

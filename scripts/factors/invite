@@ -1,0 +1,155 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+"""
+Invite factor: auth user agains predefined invite code.
+
+Usage: %(program)s [options] <invite_code>
+
+Options:
+
+    -h|--help
+            Print this message and exit.
+
+    -l|--loglevel debug|info|error
+            Set loglevel
+
+    -f|--logfile filename
+            Save log to file
+"""
+
+class DefaultConfig:
+    # { 'user': ['invite_code', ...], ... }
+    maps = { }
+
+import sys
+import os
+
+config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'conf')
+if config_path not in sys.path:
+    sys.path.insert(0, config_path)
+    try:
+        from config import InviteConfig as cfg
+    except:
+        cfg = DefaultConfig
+
+import getopt 
+import logging
+import re
+log = logging.getLogger(__name__)
+program = sys.argv[0]
+
+def usage(code=0, msg=''):
+    # CoSign does not like stderr, use stdout all the time.
+    fd = sys.stdout
+    print >> fd, __doc__ % { 'program':program }
+    if msg:
+        print >> fd, msg
+        if code:
+            log.error(msg)
+        else:
+            log.info(msg)
+    return code
+
+def invite_login(email, invite_code, cfg):
+    email = email.strip()
+    invite_code = invite_code.strip()
+
+    if not email or not invite_code:
+        print "0101: Login failed: email or invite_code not provided."
+        log.error("Parameters not set for invite_login")
+        return False
+
+    if not cfg:
+        print "0102: Login failed: invite factor has not setup yet."
+        log.error("Invite facter has not setup yet.")
+        return False
+
+    if not re.match(".*@.*\..*", email):
+        print "0103: Login failed: provide your email address as login name."
+        return False
+
+    match = None
+    for key, codes in cfg.maps.iteritems():
+        if invite_code in codes:
+            match = key
+            break
+
+    if match:
+        print "invite_%s" % match
+        return True
+    else:
+        print "0104: Login failed: wrong invite code."
+        return False
+
+def main(argv=None):
+    opt_loglevel = getattr(cfg, 'log_level', 'critical')
+    opt_logfile = getattr(cfg, 'log_file', None)
+
+    if argv is None:
+        argv = sys.argv[1:]
+
+    # CoSign pass parameters through stdin
+    # Get parameters: email invite_code
+    if not argv:
+        argv = [ raw_input(), raw_input() ]
+
+    try:
+        opts, args = getopt.getopt( 
+                argv, "l:f:h", 
+                ["help", "loglevel=", "logfile="])
+    except getopt.error, msg:
+        return usage(1, msg)
+
+    for opt, arg in opts:
+        if opt in ("-h", "--help"):
+            return usage(1)
+        elif opt in ("-l", "--loglevel"):
+            opt_loglevel = arg.lower()
+        elif opt in ("-f", "--logfile"):
+            opt_logfile = arg
+        else:
+            return usage(1, "Unknown options: %s" % opt)
+
+    if opt_loglevel == 'info':
+        loglevel = logging.INFO
+    elif opt_loglevel == 'warning':
+        loglevel = logging.WARNING
+    elif opt_loglevel == 'error':
+        loglevel = logging.ERROR
+    elif opt_loglevel == 'debug':
+        loglevel = logging.DEBUG
+    else:
+        loglevel = logging.CRITICAL
+
+    log_format = "%(levelname)s : %(asctime)-15s > %(message)s"
+    log_options = {}
+    log_options['format'] = log_format
+    log_options['level'] = loglevel
+        
+    logging.basicConfig(**log_options)
+
+    # log to file
+    if isinstance(opt_logfile, (str,unicode)):
+        if os.access(opt_logfile, os.W_OK):
+            logger_f = logging.FileHandler(opt_logfile)
+            logger_f.setLevel(loglevel)
+            logger_f.setFormatter(logging.Formatter(log_format))
+            # add file_logger to root logger
+            logging.getLogger('').addHandler(logger_f)
+        else:
+            print "Cannot open logfile: %s" % os.path.abspath(opt_logfile)
+
+    # Only 2 parameters: user_email invite_code
+    if len(args) != 2:
+        return usage(1, "Wrong arguments.")
+
+    if invite_login(args[0], args[1], cfg):
+        return 0
+    else:
+        return 1
+
+if __name__ == '__main__':
+    sys.exit(main())
+
+# vim: et ts=4 sw=4

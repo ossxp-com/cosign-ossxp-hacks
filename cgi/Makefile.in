@@ -85,7 +85,7 @@ info.o:	info.c
 	-c info.c
 
 info: info.o $(OBJ)
-	${CC} ${CFLAGS} -o info info.o $(OBJ) $(LDFLAGS)
+	${CC} ${CFLAGS} -o info info.o $(filter-out network.o,$(OBJ)) $(LDFLAGS)
 
 clean:
 	/bin/rm -rf *.o ${TARGETS}

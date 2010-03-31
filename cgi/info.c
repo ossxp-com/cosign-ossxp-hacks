@@ -20,8 +20,14 @@
 #include "cgi.h"
 #include "conf.h"
 #include "cosigncgi.h"
-#include "network.h"
 #include "subfile.h"
+#include "lang.h"
+
+#include <locale.h>
+#include <libintl.h>
+#define _(String) gettext (String)
+#define gettext_noop(String) String
+#define N_(String) gettext_noop (String)
 
 extern char	*cosign_version;
 char		*tmpldir = _COSIGN_TMPL_DIR;
@@ -36,12 +42,12 @@ struct cgi_list cl[] = {
 };
 
 static struct subfile_list sl[] = {
-#define SL_URL	0
-        { 'u', SUBF_STR, NULL },
+#define SL_LOGIN	0
+        { 'l', SUBF_STR_ESC, NULL },
 #define SL_TITLE	1
         { 't', SUBF_STR, NULL },
-#define SL_ERROR		2
-        { 'r', SUBF_STR_ESC, NULL },
+#define SL_ERROR	2
+        { 'e', SUBF_STR, NULL },
         { '\0', 0, NULL },
 };
 
@@ -54,6 +60,20 @@ main( int argc, char *argv[] )
     char		*ip_addr, *qs;
     char		*method = NULL;
     char		*script;
+    char		**lang;
+
+    bindtextdomain("cosign", _LOCALEDIR);
+    textdomain("cosign");
+    lang = get_accept_language();
+    while(*lang !=NULL)
+    {
+	if (strcmp(*lang, "zh")==0 || strcmp(*lang, "zh_CN")==0) {
+	    setlocale( LC_ALL, "zh_CN.UTF-8");
+	    break;
+	} else if (setlocale( LC_ALL, *lang) != NULL) {
+	    break;
+	}
+    }
 
     if ( argc == 2 && ( strncmp( argv[ 1 ], "-V", 2 ) == 0 )) {
 	printf( "%s\n", cosign_version );
@@ -70,24 +90,24 @@ main( int argc, char *argv[] )
     }
 
     if (( ip_addr = getenv( "REMOTE_ADDR" )) == NULL ) {
-	sl[ SL_TITLE ].sl_data = "Error: Server Error";
-	sl[ SL_ERROR ].sl_data = "REMOTE_ADDR not set";
+	sl[ SL_TITLE ].sl_data = _("Error: Server Error");
+	sl[ SL_ERROR ].sl_data = _("REMOTE_ADDR not set");
 	tmpl = ERROR_HTML;
 	subfile( tmpl, sl, 0 );
 	exit( 0 );
     }
 
     if (( script = getenv( "SCRIPT_NAME" )) == NULL ) {
-	sl[ SL_TITLE ].sl_data = "Error: Server Error";
-	sl[ SL_ERROR ].sl_data = "SCRIPT_NAME not set";
+	sl[ SL_TITLE ].sl_data = _("Error: Server Error");
+	sl[ SL_ERROR ].sl_data = _("SCRIPT_NAME not set");
 	tmpl = ERROR_HTML;
 	subfile( tmpl, sl, 0 );
 	exit( 0 );
     }
 
     if (( method = getenv( "REQUEST_METHOD" )) == NULL ) {
-	sl[ SL_TITLE ].sl_data = "Error: Server Error";
-	sl[ SL_ERROR ].sl_data = "REQUEST_METHOD not set";
+	sl[ SL_TITLE ].sl_data = _("Error: Server Error");
+	sl[ SL_ERROR ].sl_data = _("REQUEST_METHOD not set");
 	tmpl = ERROR_HTML;
 	subfile( tmpl, sl, 0 );
 	exit( 0 );
@@ -97,31 +117,25 @@ main( int argc, char *argv[] )
 	/* this is not a POST, display verify screen */
 	if ((( qs = getenv( "QUERY_STRING" )) != NULL ) && ( *qs != '\0' ))
 	{
-	    fprintf( stderr, ">>> qs: %s", qs);
+	    if (strncasecmp(qs, "looping", 4)==0) {
+		tmpl = LOOPING_HTML;
+	    } else if (strncasecmp(qs, "post_error", 4)==0) {
+		tmpl = POST_ERROR_HTML;
+	    } else if (strncasecmp(qs, "validation_error", 5)==0) {
+		tmpl = VALIDATION_ERROR_HTML;
+	    } else {
+		sl[ SL_TITLE ].sl_data = _("Error: Server Error");
+		sl[ SL_ERROR ].sl_data = _("Unable to determine template from query string.");
+		tmpl = ERROR_HTML;
+	    }
+	    subfile ( tmpl, sl, 0 );
+	    exit( 0 );
 	}
-	tmpl = ERROR_HTML;
-	sl[ SL_TITLE ].sl_data = "Info";
-	sl[ SL_ERROR ].sl_data = qs;
-	subfile ( tmpl, sl, 0 );
-	exit( 0 );
     }
 
-    if (( cgi = cgi_init()) == NULL ){
-	sl[ SL_TITLE ].sl_data = "Error: Server Error";
-	sl[ SL_ERROR ].sl_data = "cgi_init failed";
-	tmpl = ERROR_HTML;
-	subfile( tmpl, sl, 0 );
-	exit( 0 );
-    }
-
-    /* clobber the cosign cookie */
-    fputs( "Expires: Mon, 16 Apr 1973 13:10:00 GMT\n"
-	    "Last-Modified: Mon, 16 Apr 1973 13:10:00 GMT\n"
-	    "Cache-Control: no-store, no-cache, must-revalidate\n"
-	    "Cache-Control: pre-check=0, post-check=0, max-age=0\n"
-	    "Pragma: no-cache\n", stdout );
-
-    printf( "Location: %s\n\n", sl[ SL_URL ].sl_data );
+    tmpl = LOGIN_HTML;
+    sl[ SL_TITLE ].sl_data = _("Authentication Required");
+    subfile( tmpl, sl, 0 );
     exit( 0 );
 }
 

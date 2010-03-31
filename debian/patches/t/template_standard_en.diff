@@ -676,4 +676,4 @@ index ea68776..2df98c3 100755
  </body>
  </html>
 -- 
-tg: (acb2340..) t/template_standard_en (depends on: t/custom_cosign_path t/javascript t/include_macro_for_templates)
+tg: (5dd05a9..) t/template_standard_en (depends on: t/custom_cosign_path t/javascript t/include_macro_for_templates)

@@ -8076,4 +8076,4 @@ index 0000000..75db7fd
 +msgid "Cannot connect to LDAP server.\n"
 +msgstr "无法连接到 LDAP 服务器。\n"
 -- 
-tg: (1e5611a..) t/message_localize (depends on: t/factor_ldap t/factor_invite t/include_macro_for_templates)
+tg: (0b38d09..) t/message_localize (depends on: t/factor_ldap t/factor_invite t/include_macro_for_templates)

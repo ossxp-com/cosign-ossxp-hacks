@@ -8,3 +8,4 @@ struct subfile_list {
 #define SUBF_STR_ESC	2
 
 void subfile( char *, struct subfile_list *, int );
+void _subfile( char *, struct subfile_list *, int );

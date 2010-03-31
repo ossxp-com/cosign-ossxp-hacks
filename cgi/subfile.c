@@ -19,26 +19,26 @@
     void
 macro_include ( char *incfile, struct subfile_list *sl )
 {
-	int i;
+    int i;
 
-	if ( access(incfile, F_OK) == 0 ) {
-		_subfile( incfile, sl, -1);
-	}
-	else
+    if ( access(incfile, F_OK) == 0 ) {
+	_subfile( incfile, sl, -1);
+    }
+    else
+    {
+	glob_t globfiles;
+	if ( glob(incfile, 0, NULL, &globfiles) == 0)
 	{
-		glob_t globfiles;
-		if ( glob(incfile, 0, NULL, &globfiles) == 0)
+	    for (i=0; i< globfiles.gl_pathc; i++)
+	    {
+		if ( access(globfiles.gl_pathv[i], F_OK) == 0 )
 		{
-			for (i=0; i< globfiles.gl_pathc; i++)
-			{
-				if ( access(globfiles.gl_pathv[i], F_OK) == 0 )
-				{
-					_subfile( globfiles.gl_pathv[i], sl, -1);
-				}
-			}
-			globfree(&globfiles);
+		    _subfile( globfiles.gl_pathv[i], sl, -1);
 		}
+	    }
+	    globfree(&globfiles);
 	}
+    }
 }
 
 /*
@@ -139,47 +139,46 @@ _subfile( char *filename, struct subfile_list *sl, int nocache )
 		putchar( c );
 		continue;
 	    }
-	if ( c == '!' ) {
+	    if ( c == '!' ) {
 		char *s = malloc(9);
 		char *incfile = malloc(255);
 		fgets(s, 9, fs);
 		if (strncmp(s, "include(", 8) == 0)
 		{
-			strcpy(incfile, pdir);
-			strcat(incfile, "/");
-			i = strlen(incfile)-1;
-    			while (( c = getc( fs )) != EOF && i++ < 254 ) {
-				if (c==')')
-					break;
-				incfile[i] = c;
-			}
-			incfile[i] = '\0';
+		    strcpy(incfile, pdir);
+		    strcat(incfile, "/");
+		    i = strlen(incfile)-1;
+		    while (( c = getc( fs )) != EOF && i++ < 254 ) {
 			if (c==')')
-			{
-				macro_include(incfile, sl);
-			}
-			else
-			{
-				printf ("include(%s", incfile+strlen(pdir)+1);
-				if (c != EOF)
-					putchar( c );
-			}
+				break;
+			incfile[i] = c;
+		    }
+		    incfile[i] = '\0';
+		    if (c==')')
+		    {
+			macro_include(incfile, sl);
+		    }
+		    else
+		    {
+			printf ("include(%s", incfile+strlen(pdir)+1);
+			if (c != EOF)
+			    putchar( c );
+		    }
 		}
 		else
 		{
-			putchar( '$' );
-			putchar( c );
-			fseek(fs, -1*strlen(s), SEEK_CUR);
+		    putchar( '$' );
+		    putchar( c );
+		    fseek(fs, -1*strlen(s), SEEK_CUR);
 		}
 		if (s != NULL)
-			free(s);
+		    free(s);
 		if (incfile != NULL)
-			free(incfile);
+		    free(incfile);
 		s = NULL;
 		incfile = NULL;
 		continue;
-	}
-
+	    }
 
 	    for ( i = 0; sl[ i ].sl_letter != '\0'; i++ ) {
 		if ( sl[ i ].sl_letter == c ) {
@@ -221,4 +220,4 @@ _subfile( char *filename, struct subfile_list *sl, int nocache )
     return;
 }
 
-/* vim: set noet ts=8 sw=8 : */
+/* vim: set noet ts=8 sw=4 : */

@@ -115,4 +115,23 @@ get_accept_language()
     return lang;
 }
 
+    void
+init_locale()
+{
+    char	**lang;
+
+    bindtextdomain("cosign", _LOCALEDIR);
+    textdomain("cosign");
+    lang = get_accept_language();
+    while(*lang !=NULL)
+    {
+	if (strcmp(*lang, "zh")==0 || strcmp(*lang, "zh_CN")==0) {
+	    setlocale( LC_ALL, "zh_CN.UTF-8");
+	    break;
+	} else if (setlocale( LC_ALL, *lang) != NULL) {
+	    break;
+	}
+    }
+}
+
 // vim: noet ts=8 sw=4

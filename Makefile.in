@@ -3,7 +3,7 @@ srcdir=		@srcdir@
 CC=	@CC@
 ALL=	common libsnet libcgi cgi html daemon 
 FILTERS= @FILTERS@ 
-TARGETS= cgi html daemon ${FILTERS}
+TARGETS= cgi html daemon locale ${FILTERS}
 OPTOPTS= @OPTOPTS@ @UNIVERSAL_OPTOPTS@
 CFLAGS=	${OPTOPTS} @CFLAGS@
 LDFLAGS= @LDFLAGS@
@@ -43,7 +43,7 @@ distclean: clean
 	( cd libsnet ; make distclean )
 	( cd libcgi ; make distclean )
 	rm -f config.log config.status config.cache Makefile \
-	  libcgi/Makefile cgi/Makefile html/Makefile daemon/Makefile \
+	  libcgi/Makefile cgi/Makefile locale/Makefile html/Makefile daemon/Makefile \
 	  filters/apache/Makefile filters/apache2/Makefile \
 	  common/Makefile version.c filters/common/cosignpaths.h
 	rm -rf autom4te.cache

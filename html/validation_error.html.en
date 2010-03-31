@@ -16,7 +16,9 @@
 </head>
 <body>
 <div id="page">
-	<!--#include file="en/inc/header.inc" -->
+	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
+		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
+		</span> <strong>Our Home Page</strong></a> </div>
 	<div id="main">
 		<div id="uiRow">
 			<div id="leftUIcol">
@@ -46,6 +48,7 @@
 		<div id="uiBottom">&nbsp;</div>
 	</div>
 </div>
-<!--#include file="en/inc/footer.inc" -->
+<div id="foot">&copy; 2006 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
+		of the University of Michigan</a> </div>
 </body>
 </html>

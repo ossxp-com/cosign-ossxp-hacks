@@ -12,6 +12,29 @@
 #include <glob.h>
 
 
+void _subfile( char *, struct subfile_list *, int );
+int _macro_include ( char *, struct subfile_list * );
+void macro_include ( char *, struct subfile_list * );
+
+
+    char *
+str_replace(char *str, char *orig, char *rep)
+{
+    static char buffer[4096];
+    char *p;
+
+    if(!(p = strstr(str, orig)))
+	return str;
+
+    strncpy(buffer, str, p-str);
+    buffer[p-str] = '\0';
+
+    sprintf(buffer+(p-str), "%s%s", rep, p+strlen(orig));
+
+    return buffer;
+}
+
+
 /*
  * Macro for include other files.
  * Usage: $!include(filename)
@@ -19,10 +42,52 @@
     void
 macro_include ( char *incfile, struct subfile_list *sl )
 {
-    int i;
+    int		i;
+    char	**lang;
+    char	*newfile;
+
+    if (strstr(incfile, "%lang%") != NULL) {
+	lang = get_accept_language();
+	// substitue %lang% to zh, zh_TW, ..., en
+	while(*lang !=NULL)
+	{
+	    newfile = str_replace(incfile, "%lang%", *lang);
+	    if (_macro_include ( newfile, sl ) == 0 )
+	    {
+		break;
+	    }
+	    if (strcmp(*lang, "zh_TW")==0)
+	    {
+		strcpy(*lang, "zh");
+		continue;
+	    }
+	    lang++;
+	}
+	// fallback to en
+	newfile = str_replace(incfile, "%lang%", "en");
+	if (_macro_include ( newfile, sl ) == 0 )
+	    return;
+	
+	// remove %lang%/, or %lang%
+	newfile = (strstr(incfile, "%lang%/") != NULL) ? 
+	    str_replace(incfile, "%lang%/", "") : str_replace(incfile, "%lang%", "");
+	if (_macro_include ( newfile, sl ) == 0 )
+	    return;
+    } else {
+	_macro_include ( incfile, sl );
+    }
+    return;
+}
+
+
+    int
+_macro_include ( char *incfile, struct subfile_list *sl )
+{
+    int i, ret = 1;
 
     if ( access(incfile, F_OK) == 0 ) {
 	_subfile( incfile, sl, -1);
+	ret = 0;
     }
     else
     {
@@ -34,11 +99,13 @@ macro_include ( char *incfile, struct subfile_list *sl )
 		if ( access(globfiles.gl_pathv[i], F_OK) == 0 )
 		{
 		    _subfile( globfiles.gl_pathv[i], sl, -1);
+		    ret = 0;
 		}
 	    }
 	    globfree(&globfiles);
 	}
     }
+    return ret;
 }
 
 /*

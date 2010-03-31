@@ -37,6 +37,11 @@ TARGETS = logout cosign.cgi
 
 all: ${TARGETS}
 
+lang.o:	lang.c
+	${CC} ${CFLAGS} \
+	-D_LOCALEDIR=\"${LOCALEDIR}\" \
+	-c $^
+
 login.o:	login.c
 	${CC} ${CFLAGS} \
 	-D_COSIGN_TICKET_CACHE=\"${COSIGNTICKETCACHE}\" \
@@ -55,7 +60,6 @@ cgi.o:	cgi.c
 	-D_COSIGN_TLS_KEY=\"${COSIGNKEY}\" \
 	-D_COSIGN_CONF=\"${COSIGNCONF}\" \
 	-D_COSIGN_TMPL_DIR=\"${COSIGNTMPLDIR}\" \
-	-D_LOCALEDIR=\"${LOCALEDIR}\" \
 	-c cgi.c
 
 cosign.cgi: cgi.o login.o factor.o $(OBJ)

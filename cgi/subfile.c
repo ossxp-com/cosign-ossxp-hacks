@@ -19,6 +19,7 @@
 void _subfile( char *, struct subfile_list *, int );
 int _do_macro_include ( char *, struct subfile_list * );
 void do_macro_include ( char *, struct subfile_list * );
+void do_macro_gettext( char *);
 char * str_replace(char *, char *, char *);
 char * macro_process ( char *, struct subfile_list *, char *);
 
@@ -112,6 +113,8 @@ macro_process ( char *str, struct subfile_list *sl, char *filename )
     if ( strcasecmp(cmd, "include") == 0 ) {
 	snprintf(incfile, MAX_FN_LEN, "%s/%s", pdir, p);
 	do_macro_include(incfile, sl);
+    } else if ( strcmp(cmd, "_") == 0 ) {
+	do_macro_gettext(p);
     } else {
 	orig = str;
     }
@@ -192,6 +195,27 @@ _do_macro_include ( char *incfile, struct subfile_list *sl )
 	}
     }
     return ret;
+}
+
+    void
+do_macro_gettext( char *text)
+{
+    int		len;
+    char 	*from, *p;
+
+    from = strdup(text);
+    p = from;
+    len = strlen(from);
+
+    if ( (*from == '"' || *from == '\'') && *(from+len-1) == *from ) {
+	*(from+len-1) = '\0';
+	from++;
+	from = str_replace(from, "\\'", "'");
+	from = str_replace(from, "\\\"", "\"");
+    }
+    printf ("%s", _(from));
+    if (p)
+	free(p);
 }
 
 /*

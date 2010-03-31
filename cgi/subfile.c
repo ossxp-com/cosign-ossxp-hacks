@@ -54,7 +54,7 @@ macro_include ( char *incfile, struct subfile_list *sl )
 	    newfile = str_replace(incfile, "%lang%", *lang);
 	    if (_macro_include ( newfile, sl ) == 0 )
 	    {
-		break;
+		return;
 	    }
 	    if (strcmp(*lang, "zh_TW")==0)
 	    {

@@ -18,6 +18,7 @@ po: pot
 	    msgmerge  -s -o $$i/LC_MESSAGES/MAIN_POT.po $$i/LC_MESSAGES/cosign.po $(MAIN_POT); \
 	    msgmerge  -s -o $$i/LC_MESSAGES/SUB_POT.po  $$i/LC_MESSAGES/cosign.po $(SUB_POT); \
 	    msgcat    -s -o $$i/LC_MESSAGES/NEW_POT.po  $$i/LC_MESSAGES/MAIN_POT.po $$i/LC_MESSAGES/SUB_POT.po ; \
+	    mv $$i/LC_MESSAGES/NEW_POT.po  $$i/LC_MESSAGES/cosign.po ;\
 	done
 
 mo:
@@ -34,6 +35,6 @@ install : all
 	-mkdir -p $(DESTDIR)${LOCALEDIR}
 	cp -a cosign.pot ${TARGETS} $(DESTDIR)${LOCALEDIR}
 
-.PHONY: pot mo clean all install
+.PHONY: pot po mo clean all install
 
 # vim: noet ts=4 sw=4

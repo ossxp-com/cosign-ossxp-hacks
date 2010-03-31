@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-31 14:31+0800\n"
+"POT-Creation-Date: 2010-03-31 16:42+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,6 +51,40 @@ msgstr ""
 msgid "%s: mkscookie failed.\n"
 msgstr ""
 
+#: ../cgi/info.c:129
+msgid ""
+"<p>The Weblogin-protected site that  you were connecting to encountered an "
+"error while processing your authentication. Please delete your cookies, "
+"restart your browser, and try again.</p>\n"
+" <p>Browser is stuck in an infinite redirect loop. Possible reasons:</p>\n"
+" <ul>\n"
+" <li>Time of the server and your own pc are mismatch. Which cause the cookie "
+"can not be saved by your browser. Usually your clock is far ahead of time. </"
+"li>\n"
+" <li>The URL you visit is not the canonical name for the service, and cookie "
+"register URL is not the same domain with the URL you visit, and this may "
+"cause service cookie not valid. </li>\n"
+" </ul>\n"
+msgstr ""
+
+#: ../cgi/info.c:161
+msgid ""
+"<p>There is a problem with the URL to which you were redirected. Since this "
+"can potentially indicate phishing or other suspicious activity, we have "
+"stopped the redirect in order to protect your security.</p>\n"
+" <p>You may be able to access the web site or service if you try again with "
+"its official URL.</p>"
+msgstr ""
+
+#: ../cgi/info.c:150
+msgid ""
+"<p>You attempted to submit data to a Web Login-protected web site after your "
+"session had timed out. Your changes have not been saved.</p>\n"
+" <p>This can happen if your session has been idle for more than one hour or "
+"if you logged out (for example,  in another browser window) before "
+"submitting the data. </p>\n"
+msgstr ""
+
 #: ../cgi/cgi.c:587
 msgid "Additional authentication is required."
 msgstr ""
@@ -60,7 +94,7 @@ msgid "An unknown error occurred."
 msgstr ""
 
 #: ../cgi/cgi.c:707 ../cgi/cgi.c:759 ../cgi/cgi.c:793 ../cgi/cgi.c:805
-#: ../cgi/cgi.c:845 ../cgi/cgi.c:972 ../cgi/cgi.c:1028 ../cgi/info.c:137
+#: ../cgi/cgi.c:845 ../cgi/cgi.c:972 ../cgi/cgi.c:1028 ../cgi/info.c:180
 msgid "Authentication Required"
 msgstr ""
 
@@ -84,12 +118,20 @@ msgstr ""
 msgid "Bad service in query string."
 msgstr ""
 
+#: ../cgi/info.c:145
+msgid "Browser is stuck in an infinite redirect loop."
+msgstr ""
+
 #: ../cgi/login.c:410
 msgid "CC Initialize Error"
 msgstr ""
 
 #: ../cgi/login.c:417
 msgid "CC Storing Error"
+msgstr ""
+
+#: ../cgi/info.c:148
+msgid "Changes Not Saved"
 msgstr ""
 
 #: ../cgi/login.c:192
@@ -142,8 +184,8 @@ msgstr ""
 msgid "Error: Server Configuration"
 msgstr ""
 
-#: ../cgi/cgi.c:655 ../cgi/info.c:93 ../cgi/info.c:101 ../cgi/info.c:109
-#: ../cgi/info.c:127 ../cgi/logout.c:154 ../cgi/logout.c:162
+#: ../cgi/cgi.c:655 ../cgi/info.c:95 ../cgi/info.c:103 ../cgi/info.c:111
+#: ../cgi/info.c:170 ../cgi/logout.c:154 ../cgi/logout.c:162
 #: ../cgi/logout.c:170 ../cgi/logout.c:203
 msgid "Error: Server Error"
 msgstr ""
@@ -241,11 +283,11 @@ msgstr ""
 msgid "Provided login appears to be invalid"
 msgstr ""
 
-#: ../cgi/info.c:94 ../cgi/logout.c:155
+#: ../cgi/info.c:96 ../cgi/logout.c:155
 msgid "REMOTE_ADDR not set"
 msgstr ""
 
-#: ../cgi/info.c:110 ../cgi/logout.c:171
+#: ../cgi/info.c:112 ../cgi/logout.c:171
 msgid "REQUEST_METHOD not set"
 msgstr ""
 
@@ -257,7 +299,7 @@ msgstr ""
 msgid "Re-authenticate to confirm your new Internet address."
 msgstr ""
 
-#: ../cgi/info.c:102 ../cgi/logout.c:163
+#: ../cgi/info.c:104 ../cgi/logout.c:163
 msgid "SCRIPT_NAME not set"
 msgstr ""
 
@@ -301,6 +343,10 @@ msgstr ""
 msgid "Too many form fields configured."
 msgstr ""
 
+#: ../cgi/info.c:160
+msgid "URL validation failed"
+msgstr ""
+
 #: ../cgi/login.c:142
 msgid "Unable to connect to guest account database."
 msgstr ""
@@ -313,7 +359,7 @@ msgstr ""
 msgid "Unable to determine required factors from query string."
 msgstr ""
 
-#: ../cgi/info.c:128
+#: ../cgi/info.c:171
 msgid "Unable to determine template from query string."
 msgstr ""
 
@@ -372,6 +418,14 @@ msgstr ""
 msgid "We were unable to locate a service matching the one provided."
 msgstr ""
 
+#: ../cgi/info.c:149
+msgid "You were trying to POST, BUT Changes Not Saved"
+msgstr ""
+
+#: ../cgi/info.c:128
+msgid "Your browser is looping!"
+msgstr ""
+
 #: ../cgi/cgi.c:656 ../cgi/logout.c:204
 msgid "cgi_init failed"
 msgstr ""
@@ -398,4 +452,8 @@ msgstr ""
 
 #: ../cgi/login.c:342
 msgid "server configuration error"
+msgstr ""
+
+#: ../cgi/info.c:159
+msgid "weblogin: URL validation failed"
 msgstr ""

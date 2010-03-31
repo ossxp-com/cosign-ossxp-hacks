@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-03-30 14:40+0800\n"
-"PO-Revision-Date: 2010-03-30 15:57+0800\n"
+"PO-Revision-Date: 2010-03-31 17:02+0800\n"
 "Last-Translator: Jiang Xin <worldhello.net@gmail.com>\n"
 "Language-Team: Chinese Simplified <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -51,6 +51,56 @@ msgstr "%s: 创建服务 cookie 失败\n"
 msgid "%s: mkscookie failed.\n"
 msgstr "%s: 创建服务 cookie 失败。\n"
 
+#: ../cgi/info.c:129
+msgid ""
+"<p>The Weblogin-protected site that  you were connecting to encountered an "
+"error while processing your authentication. Please delete your cookies, "
+"restart your browser, and try again.</p>\n"
+" <p>Browser is stuck in an infinite redirect loop. Possible reasons:</p>\n"
+" <ul>\n"
+" <li>Time of the server and your own pc are mismatch. Which cause the cookie "
+"can not be saved by your browser. Usually your clock is far ahead of time. </"
+"li>\n"
+" <li>The URL you visit is not the canonical name for the service, and cookie "
+"register URL is not the same domain with the URL you visit, and this may "
+"cause service cookie not valid. </li>\n"
+" </ul>\n"
+msgstr ""
+"<p>您正在访问的受单点登录保护的站点在进行认证时遇到错误。请删除您的 cookies ， "
+"重启浏览器，然后重试。</p>\n"
+"<p>因为发生浏览器循环重定向，导致无法登录。可能的原因有：</p>\n"
+"<ul>\n"
+"<li>服务器的时钟和您本地的时钟不匹配，导致服务器发放的 cookie "
+"被您的浏览器错误的当做过期 cookie 而无法被设置。如果是这样的话， "
+"正确设置您机器的时钟；</li>\n"
+"<li>您访问的 URL 不是该服务的正规访问地址，注册 cookie 的 URL "
+"和应用的 URL 不再同一个域之中，导致服务 cookie 无效，进而发生重定向。</li>\n"
+" </ul>\n"
+
+#: ../cgi/info.c:161
+msgid ""
+"<p>There is a problem with the URL to which you were redirected. Since this "
+"can potentially indicate phishing or other suspicious activity, we have "
+"stopped the redirect in order to protect your security.</p>\n"
+" <p>You may be able to access the web site or service if you try again with "
+"its official URL.</p>"
+msgstr ""
+"<p>您正在重定向可疑地址。这意味着您可能受到网络钓鱼或者其他可疑行为的威胁。"
+"我们已经停止该可疑的重定向，以保护你的安全。</p> \n"
+"<p>您可以通过输入正确的网址访问相关服务。</p>"
+
+#: ../cgi/info.c:150
+msgid ""
+"<p>You attempted to submit data to a Web Login-protected web site after your "
+"session had timed out. Your changes have not been saved.</p>\n"
+" <p>This can happen if your session has been idle for more than one hour or "
+"if you logged out (for example,  in another browser window) before "
+"submitting the data. </p>\n"
+msgstr ""
+"<p>您正向一个受单点登录保护的 Web 站点提交，但是您的会话已经过期。 "
+"这导致您向受保护站点提交的数据没有被保存。</p>\n"
+"<p>这可能是因为超时导致会话退出，或者您在另外的窗口已经退出登录。</p>\n"
+
 #: ../cgi/cgi.c:587
 msgid "Additional authentication is required."
 msgstr "需要附加的认证。"
@@ -60,7 +110,7 @@ msgid "An unknown error occurred."
 msgstr "遇到一个未知错误。"
 
 #: ../cgi/cgi.c:707 ../cgi/cgi.c:759 ../cgi/cgi.c:793 ../cgi/cgi.c:805
-#: ../cgi/cgi.c:845 ../cgi/cgi.c:972 ../cgi/cgi.c:1028 ../cgi/info.c:137
+#: ../cgi/cgi.c:845 ../cgi/cgi.c:972 ../cgi/cgi.c:1028 ../cgi/info.c:180
 msgid "Authentication Required"
 msgstr "登录"
 
@@ -84,6 +134,10 @@ msgstr "需要登录 ( kerberos 错误 )"
 msgid "Bad service in query string."
 msgstr "query sting 中包含错误的服务名。"
 
+#: ../cgi/info.c:145
+msgid "Browser is stuck in an infinite redirect loop."
+msgstr "浏览器因发生了循环重定向而被终止。"
+
 #: ../cgi/login.c:410
 msgid "CC Initialize Error"
 msgstr "密钥缓存初始化错误"
@@ -94,6 +148,10 @@ msgstr "密钥缓存存储错误"
 
 msgid "Cannot connect to LDAP server.\n"
 msgstr "无法连接到 LDAP 服务器。\n"
+
+#: ../cgi/info.c:148
+msgid "Changes Not Saved"
+msgstr "修改没有保存"
 
 #: ../cgi/login.c:192
 msgid "Database Connection Problem"
@@ -145,8 +203,8 @@ msgstr "错误: 注册错误"
 msgid "Error: Server Configuration"
 msgstr "错误: 服务器配置"
 
-#: ../cgi/cgi.c:655 ../cgi/info.c:93 ../cgi/info.c:101 ../cgi/info.c:109
-#: ../cgi/info.c:127 ../cgi/logout.c:154 ../cgi/logout.c:162
+#: ../cgi/cgi.c:655 ../cgi/info.c:95 ../cgi/info.c:103 ../cgi/info.c:111
+#: ../cgi/info.c:170 ../cgi/logout.c:154 ../cgi/logout.c:162
 #: ../cgi/logout.c:170 ../cgi/logout.c:203
 msgid "Error: Server Error"
 msgstr "错误: 服务器错误"
@@ -262,11 +320,11 @@ msgstr "连接数据库遇到问题。"
 msgid "Provided login appears to be invalid"
 msgstr "提供的登录名无效"
 
-#: ../cgi/info.c:94 ../cgi/logout.c:155
+#: ../cgi/info.c:96 ../cgi/logout.c:155
 msgid "REMOTE_ADDR not set"
 msgstr "REMOTE_ADDR 未设置"
 
-#: ../cgi/info.c:110 ../cgi/logout.c:171
+#: ../cgi/info.c:112 ../cgi/logout.c:171
 msgid "REQUEST_METHOD not set"
 msgstr "REQUEST_METHOD 未设置"
 
@@ -278,7 +336,7 @@ msgstr "需要再次认证"
 msgid "Re-authenticate to confirm your new Internet address."
 msgstr "因为您IP地址改变，请重新认证。"
 
-#: ../cgi/info.c:102 ../cgi/logout.c:163
+#: ../cgi/info.c:104 ../cgi/logout.c:163
 msgid "SCRIPT_NAME not set"
 msgstr "SCRIPT_NAME 未设置"
 
@@ -322,6 +380,10 @@ msgstr "票据校验错误"
 msgid "Too many form fields configured."
 msgstr "配置了太多的表单字段。"
 
+#: ../cgi/info.c:160
+msgid "URL validation failed"
+msgstr "URL 校验失败"
+
 #: ../cgi/login.c:142
 msgid "Unable to connect to guest account database."
 msgstr "无法连接到访客帐号数据库。"
@@ -334,7 +396,7 @@ msgstr "无法从 query string 中确定服务的参考地址。"
 msgid "Unable to determine required factors from query string."
 msgstr "无法从 query string 中确定认证因子。"
 
-#: ../cgi/info.c:128
+#: ../cgi/info.c:171
 msgid "Unable to determine template from query string."
 msgstr "无法从 query string 中确定页面模板。"
 
@@ -393,6 +455,14 @@ msgstr "无法创建一个服务 cookie。请稍后重试。"
 msgid "We were unable to locate a service matching the one provided."
 msgstr "无法找到匹配的服务。"
 
+#: ../cgi/info.c:149
+msgid "You were trying to POST, BUT Changes Not Saved"
+msgstr "您正通过 POST 提交，但是提交未被保存"
+
+#: ../cgi/info.c:128
+msgid "Your browser is looping!"
+msgstr "浏览器发生循环重定向！"
+
 #: ../cgi/cgi.c:656 ../cgi/logout.c:204
 msgid "cgi_init failed"
 msgstr "cgi_init 错误"
@@ -421,4 +491,7 @@ msgstr "对协议3的服务 %s 发起协议2的请求\n"
 msgid "server configuration error"
 msgstr "服务器配置错误"
 
+#: ../cgi/info.c:159
+msgid "weblogin: URL validation failed"
+msgstr "单点登录：URL 校验失败"
 

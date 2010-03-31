@@ -115,8 +115,13 @@ main( int argc, char *argv[] )
 
     if ( strcmp( method, "GET" ) == 0 ) {
 	/* this is not a POST, display verify screen */
-	if ((( qs = getenv( "QUERY_STRING" )) != NULL ) && ( *qs != '\0' ))
-	{
+	if ((( qs = getenv( "QUERY_STRING" )) == NULL ) || ( *qs == '\0' )) {
+	    qs = getenv( "PATH_INFO" );
+	    while ( qs != NULL && ( *qs == '/' )) {
+		qs++;
+	    }
+	}
+	if ( qs != NULL && ( *qs != '\0' )) {
 	    if (strncasecmp(qs, "looping", 4)==0) {
 		tmpl = LOOPING_HTML;
 	    } else if (strncasecmp(qs, "post_error", 4)==0) {

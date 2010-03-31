@@ -16,12 +16,6 @@
 #include <time.h>
 #include <ctype.h>
 
-#include <locale.h>
-#include <libintl.h>
-#define _(String) gettext (String)
-#define gettext_noop(String) String
-#define N_(String) gettext_noop (String)
-
 #include <openssl/ssl.h>
 #include <snet.h>
 #include "cgi.h"
@@ -291,20 +285,8 @@ main( int argc, char *argv[] )
     regmatch_t			matches[ 2 ];
     int				nmatch = 2;
     CGIHANDLE			*cgi;
-    char			**lang;
 
-    bindtextdomain("cosign", _LOCALEDIR);
-    textdomain("cosign");
-    lang = get_accept_language();
-    while(*lang !=NULL)
-    {
-	if (strcmp(*lang, "zh")==0 || strcmp(*lang, "zh_CN")==0) {
-	    setlocale( LC_ALL, "zh_CN.UTF-8");
-	    break;
-	} else if (setlocale( LC_ALL, *lang) != NULL) {
-	    break;
-	}
-    }
+    init_locale();
 
     if ( argc == 2 ) {
 	if ( strcmp( argv[ 1 ], "-V" ) == 0 ) {

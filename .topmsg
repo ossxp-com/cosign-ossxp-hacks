@@ -1,6 +1,6 @@
 From: Jiang <jiangxin@ossxp.com>
-Subject: [PATCH] t/message_localize
+Subject: [PATCH] t/message_translation
 
-Translate CoSign error message using javascript.
+New locale dir and translate pot into po files.
 
 Signed-off-by: Jiang <jiangxin@ossxp.com>

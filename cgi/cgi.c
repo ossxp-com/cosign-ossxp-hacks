@@ -298,12 +298,12 @@ main( int argc, char *argv[] )
     lang = get_accept_language();
     while(*lang !=NULL)
     {
-        if (strcmp(*lang, "zh")==0 || strcmp(*lang, "zh_CN")==0) {
-          setlocale( LC_ALL, "zh_CN.UTF-8");
-          break;
-        } else if (setlocale( LC_ALL, *lang) != NULL) {
-          break;
-        }
+	if (strcmp(*lang, "zh")==0 || strcmp(*lang, "zh_CN")==0) {
+	    setlocale( LC_ALL, "zh_CN.UTF-8");
+	    break;
+	} else if (setlocale( LC_ALL, *lang) != NULL) {
+	    break;
+	}
     }
 
     if ( argc == 2 ) {
@@ -380,7 +380,7 @@ main( int argc, char *argv[] )
 		strcasecmp( auth_type, "Negotiate" ) == 0 ) {
 	    if ( negotiate_translate( remote_user, &login, &realm ) != 0 ) {
 		sl[ SL_TITLE ].sl_data = _("Error: Negotiate login failed");
-	 	sl[ SL_ERROR ].sl_data = _("There was a problem processing your"
+		sl[ SL_ERROR ].sl_data = _("There was a problem processing your"
 			" authentication data. Contact your administrator");
 		subfile( ERROR_HTML, sl, 0 );
 		exit ( 0 );
@@ -394,7 +394,7 @@ main( int argc, char *argv[] )
     if ( krbtkts ) {
 	if (( krbtkt_path = getenv( "KRB5CCNAME" )) == NULL ) {
 	    fprintf( stderr, _("Kerberos ticket transfer is on, "
-		     " but no tickets were found in the environment\n") );
+			" but no tickets were found in the environment\n") );
 	} else if ( strncmp( krbtkt_path, "FILE:", 5 ) == 0 ) {
 	    krbtkt_path += 5;
 	}
@@ -547,9 +547,9 @@ main( int argc, char *argv[] )
 	    sl[ SL_TITLE ].sl_data = _("Error: Unknown service");
 	    sl[ SL_ERROR ].sl_data = _("We were unable to locate a "
 		    "service matching the one provided.");
-		subfile( ERROR_HTML, sl, 0 );
-		exit( 0 );
-	    }
+	    subfile( ERROR_HTML, sl, 0 );
+	    exit( 0 );
+	}
 
 	if ( match_substitute( scookie->sl_wkurl, sizeof( matchbuf ),
 		matchbuf, nmatch, matches, service ) != 0 ) {
@@ -670,10 +670,10 @@ main( int argc, char *argv[] )
     tmpl = LOGIN_ERROR_HTML;
 
     if (( cgi = cgi_init()) == NULL ) {
-        sl[ SL_TITLE ].sl_data = _("Error: Server Error");
-        sl[ SL_ERROR ].sl_data = _("cgi_init failed");
-        subfile( ERROR_HTML, sl, 0 );
-        exit( 0 );
+	sl[ SL_TITLE ].sl_data = _("Error: Server Error");
+	sl[ SL_ERROR ].sl_data = _("cgi_init failed");
+	subfile( ERROR_HTML, sl, 0 );
+	exit( 0 );
     }  
 
     /* insert factor form fields into cl */
@@ -770,9 +770,9 @@ main( int argc, char *argv[] )
 	if ( rc == COSIGN_CGI_PASSWORD_EXPIRED ) {
 	    sl[ SL_TITLE ].sl_data = _("Password Expired");
 	    sl[ SL_ERROR ].sl_data = msg;
-            subfile( EXPIRED_ERROR_HTML, sl, 0 );
-            exit( 0 ); 
-        }
+	    subfile( EXPIRED_ERROR_HTML, sl, 0 );
+	    exit( 0 ); 
+	}
 
 	sl[ SL_TITLE ].sl_data = _("Authentication Required");
 	if ( msg != NULL && strlen( msg ) > 0 ) {
@@ -815,13 +815,13 @@ loggedin:
 	}
 	if (( rc = execfactor( fl, cl, &msg )) != COSIGN_CGI_OK ) {
 	    sl[ SL_ERROR ].sl_data = _(msg);
-            if ( rc == COSIGN_CGI_PASSWORD_EXPIRED ) {
-	        sl[ SL_TITLE ].sl_data = _("Password Expired");
-                subfile( EXPIRED_ERROR_HTML, sl, 0 );
-                exit( 0 );
-            } else {
-	        sl[ SL_TITLE ].sl_data = _("Authentication Required");
-            }
+	    if ( rc == COSIGN_CGI_PASSWORD_EXPIRED ) {
+		sl[ SL_TITLE ].sl_data = _("Password Expired");
+		subfile( EXPIRED_ERROR_HTML, sl, 0 );
+		exit( 0 );
+	    } else {
+		sl[ SL_TITLE ].sl_data = _("Authentication Required");
+	    }
 	    goto loginscreen;
 	}
 
@@ -880,9 +880,9 @@ loggedin:
 	    sl[ SL_TITLE ].sl_data = _("Error: Unknown service");
 	    sl[ SL_ERROR ].sl_data = _("We were unable to locate a "
 		    "service matching the one provided.");
-		subfile( ERROR_HTML, sl, 0 );
-		exit( 0 );
-	    }
+	    subfile( ERROR_HTML, sl, 0 );
+	    exit( 0 );
+	}
 
 	if ( match_substitute( scookie->sl_wkurl, sizeof( matchbuf ),
 		matchbuf, nmatch, matches, service ) != 0 ) {
@@ -1052,3 +1052,5 @@ loginscreen:
     subfile( tmpl, sl, 1 );
     exit( 0 );
 }
+
+// vim: noet ts=8 sw=4

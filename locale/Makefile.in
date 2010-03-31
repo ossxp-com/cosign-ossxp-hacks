@@ -2,14 +2,23 @@ prefix=@prefix@
 LOCALEDIR=@localedir@
 DESTDIR=
 INSTALL=     @INSTALL@
+MAIN_POT=cosign.pot
+SUB_POT=addition.pot
 
 TARGETS=zh
 
 all: mo
 
-pot: cosign.pot
-cosign.pot: ../cgi/cgi.c
+pot: $(MAIN_POT)
+cosign.pot: $(wildcard ../cgi/*.c)
 	xgettext -s -k_ -o $@ $^
+
+po: pot
+	for i in ${TARGETS}; do \
+	    msgmerge  -s -o $$i/LC_MESSAGES/MAIN_POT.po $$i/LC_MESSAGES/cosign.po $(MAIN_POT); \
+	    msgmerge  -s -o $$i/LC_MESSAGES/SUB_POT.po  $$i/LC_MESSAGES/cosign.po $(SUB_POT); \
+	    msgcat    -s -o $$i/LC_MESSAGES/NEW_POT.po  $$i/LC_MESSAGES/MAIN_POT.po $$i/LC_MESSAGES/SUB_POT.po ; \
+	done
 
 mo:
 	for i in ${TARGETS}; do \

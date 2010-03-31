@@ -8,6 +8,8 @@ CC=             @CC@
 APXS2=          @APXS2@
 APACHECTL2=     @APACHECTL2@
 INSTALL=        @INSTALL@
+DESTDIR=
+SBINDIR=@sbindir@
 
 #    The apach 2 apxs build process tends to leave a lot of junk lying around.
 APXS2JUNKFILES=	../../common/argcargv.slo ../../common/argcargv.lo \
@@ -56,7 +58,8 @@ mod_cosign.la: ${SRC}
 #   install the DSO file into the Apache installation
 #   and activate it in the Apache configuration
 install: all
-	$(APXS2) -i -a -n 'cosign' mod_cosign.la
+	-mkdir -p $(DESTDIR)${SBINDIR}
+	${INSTALL} -m 0755 -c .libs/mod_cosign.so $(DESTDIR)${SBINDIR}/;
 
 #   cleanup
 clean:

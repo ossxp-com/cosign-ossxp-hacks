@@ -11,17 +11,47 @@
 #include <libgen.h>
 #include <glob.h>
 
+
+/*
+ * Macro for include other files.
+ * Usage: $!include(filename)
+ */
+    void
+macro_include ( char *incfile, struct subfile_list *sl )
+{
+	int i;
+
+	if ( access(incfile, F_OK) == 0 ) {
+		_subfile( incfile, sl, -1);
+	}
+	else
+	{
+		glob_t globfiles;
+		if ( glob(incfile, 0, NULL, &globfiles) == 0)
+		{
+			for (i=0; i< globfiles.gl_pathc; i++)
+			{
+				if ( access(globfiles.gl_pathv[i], F_OK) == 0 )
+				{
+					_subfile( globfiles.gl_pathv[i], sl, -1);
+				}
+			}
+			globfree(&globfiles);
+		}
+	}
+}
+
+/*
+ * Substitute template file with multiple language support.
+ * Add language code prefix before template file, and
+ * call real _subfile procedure.
+ */
     void
 subfile( char *filename, struct subfile_list *sl, int nocache )
 {
-    FILE	*fs;
-    int 	c, i, j;
-    char	nasties[] = "<>(){}[]'`\" \\";
-
     char	**lang;
     char	*filename_i18n;
-    char	*pbuff = NULL;
-    char	*pdir;
+
     int tmplen = 0;
 
     tmplen = strlen(filename)+5;
@@ -55,6 +85,28 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
             filename = filename_i18n;
         }
     }
+
+    _subfile( filename, sl, nocache );
+
+    if (filename_i18n != NULL)
+        free(filename_i18n);
+
+    return;
+}
+
+
+/*
+ * Real subfile procedure. Do macro substitute.
+ */
+    void
+_subfile( char *filename, struct subfile_list *sl, int nocache )
+{
+    FILE	*fs;
+    int 	c, i, j;
+    char	nasties[] = "<>(){}[]'`\" \\";
+
+    char	*pbuff = NULL;
+    char	*pdir;
 
     if ( nocache > 0 ) {
 	fputs( "Expires: Mon, 16 Apr 1973 13:10:00 GMT\n"
@@ -104,24 +156,7 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
 			incfile[i] = '\0';
 			if (c==')')
 			{
-				if ( access(incfile, F_OK) == 0 ) {
-					subfile( incfile, sl, -1);
-				}
-				else
-				{
-					glob_t globfiles;
-					if ( glob(incfile, 0, NULL, &globfiles) == 0)
-					{
-						for (i=0; i< globfiles.gl_pathc; i++)
-						{
-							if ( access(globfiles.gl_pathv[i], F_OK) == 0 )
-							{
-								subfile( globfiles.gl_pathv[i], sl, -1);
-							}
-						}
-						globfree(&globfiles);
-					}
-				}
+				macro_include(incfile, sl);
 			}
 			else
 			{
@@ -181,8 +216,6 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
 	perror( filename );
     }
 
-    if (filename_i18n != NULL)
-        free(filename_i18n);
     if (pbuff != NULL)
         free(pbuff);
     return;

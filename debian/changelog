@@ -1,10 +1,11 @@
-ossxp-cosign3 (3.1.1-0.9+6) unstable; urgency=low
+ossxp-cosign3 (3.1.1-0.9+7) unstable; urgency=low
 
   * Template inclusion also parse using subfile.
   * Template refactor and add new factor: invite login.
   * New factor: ldap2 and invite.
   * CoSign CGI i18n.
   * New cgi: info.
+  * Static htmls serve like templates.
 
  -- Jiang Xin <jiangxin@ossxp.com>  Mon, 29 Mar 2010 15:26:39 +0800
 

@@ -1,5 +1,1 @@
 /opt/cosign/cgi-bin/cosign.cgi       /opt/cosign/cgi-bin/login
-/opt/cosign/lib/templates-local/en   /opt/cosign/lib/html/en
-/opt/cosign/lib/templates-local/zh   /opt/cosign/lib/html/zh
-/opt/cosign/lib/templates-local/en   /opt/cosign/lib/html_google/en
-/opt/cosign/lib/templates-local/zh   /opt/cosign/lib/html_google/zh

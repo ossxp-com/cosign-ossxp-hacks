@@ -6,10 +6,14 @@ New cgi: info. Which use templates to show static htmls.
 Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
- cgi/Makefile.in |   13 +++++-
- cgi/cosigncgi.h |    5 ++
- cgi/info.c      |  142 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 159 insertions(+), 1 deletions(-)
+ cgi/Makefile.in            |   13 +++-
+ cgi/cosigncgi.h            |    5 +
+ cgi/info.c                 |  185 ++++++++++++++++++++++++++++++++++++++++++++
+ html/Makefile.in           |    4 +-
+ html/looping.html          |   14 ++--
+ html/post_error.html       |   37 +++++++--
+ html/validation_error.html |   54 +++++++++++++
+ 7 files changed, 294 insertions(+), 18 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
 index 1a9b974..95af2d1 100755
@@ -61,10 +65,10 @@ index 2264fc9..97d4c79 100755
 +#define VALIDATION_ERROR_HTML "validation_error.html"
 diff --git a/cgi/info.c b/cgi/info.c
 new file mode 100755
-index 0000000..d1a71bb
+index 0000000..5601be0
 --- /dev/null
 +++ b/cgi/info.c
-@@ -0,0 +1,142 @@
+@@ -0,0 +1,185 @@
 +/*
 + * Copyright (c) 2002 Regents of The University of Michigan.
 + * All Rights Reserved.  See LICENSE.
@@ -115,6 +119,8 @@ index 0000000..d1a71bb
 +        { 't', SUBF_STR, NULL },
 +#define SL_ERROR	2
 +        { 'e', SUBF_STR, NULL },
++#define SL_DETAIL	3
++        { 'm', SUBF_STR, NULL },
 +        { '\0', 0, NULL },
 +};
 +
@@ -182,13 +188,54 @@ index 0000000..d1a71bb
 +
 +    if ( strcmp( method, "GET" ) == 0 ) {
 +	/* this is not a POST, display verify screen */
-+	if ((( qs = getenv( "QUERY_STRING" )) != NULL ) && ( *qs != '\0' ))
-+	{
++	if ((( qs = getenv( "QUERY_STRING" )) == NULL ) || ( *qs == '\0' )) {
++	    qs = getenv( "PATH_INFO" );
++	    while ( qs != NULL && ( *qs == '/' )) {
++		qs++;
++	    }
++	}
++	if ( qs != NULL && ( *qs != '\0' )) {
 +	    if (strncasecmp(qs, "looping", 4)==0) {
++		sl[ SL_TITLE ].sl_data = _("Your browser is looping!");
++		sl[ SL_DETAIL ].sl_data = _("<p>The Weblogin-protected site that "
++		    " you were connecting to encountered an error while"
++		    " processing your authentication. Please delete your"
++		    " cookies, restart your browser, and try again.</p>\n"
++		    " <p>Browser is stuck in an infinite redirect loop."
++		    " Possible reasons:</p>\n"
++		    " <ul>\n"
++		    " <li>Time of the server and your own pc are mismatch."
++		    " Which cause the cookie can not be saved by your browser."
++		    " Usually your clock is far ahead of time."
++		    " </li>\n"
++		    " <li>The URL you visit is not the canonical name for the"
++		    " service, and cookie register URL is not the same domain"
++		    " with the URL you visit, and this may cause service cookie"
++		    " not valid. </li>\n"
++		    " </ul>\n");
++		sl[ SL_ERROR ].sl_data = _("Browser is stuck in an infinite redirect loop.");
 +		tmpl = LOOPING_HTML;
 +	    } else if (strncasecmp(qs, "post_error", 4)==0) {
++		sl[ SL_TITLE ].sl_data = _("Changes Not Saved");
++		sl[ SL_ERROR ].sl_data = _("You were trying to POST, BUT Changes Not Saved");
++		sl[ SL_DETAIL ].sl_data = _("<p>You attempted to submit data"
++		    " to a Web Login-protected web site after your session"
++		    " had timed out. Your changes have not been saved.</p>\n"
++		    " <p>This can happen if your session has been idle for"
++		    " more than one hour or if you logged out (for example, "
++		    " in another browser window) before submitting the data."
++		    " </p>\n");
 +		tmpl = POST_ERROR_HTML;
 +	    } else if (strncasecmp(qs, "validation_error", 5)==0) {
++		sl[ SL_TITLE ].sl_data = _("weblogin: URL validation failed");
++		sl[ SL_ERROR ].sl_data = _("URL validation failed");
++		sl[ SL_DETAIL ].sl_data = _("<p>There is a problem with the"
++		    " URL to which you were redirected. Since this can"
++		    " potentially indicate phishing or other suspicious"
++		    " activity, we have stopped the redirect in order to"
++		    " protect your security.</p>\n"
++		    " <p>You may be able to access the web site or service"
++		    " if you try again with its official URL.</p>");
 +		tmpl = VALIDATION_ERROR_HTML;
 +	    } else {
 +		sl[ SL_TITLE ].sl_data = _("Error: Server Error");
@@ -207,5 +254,168 @@ index 0000000..d1a71bb
 +}
 +
 +// vim: noet ts=8 sw=4
+diff --git a/html/Makefile.in b/html/Makefile.in
+index 8785b78..c0e6514 100755
+--- a/html/Makefile.in
++++ b/html/Makefile.in
+@@ -1,5 +1,7 @@
+ TEMPLATES = error.html expired_error.html login.html login_error.html verify-logout.html reauth.html
+-HTML = cosign_base.css cosign_js.css post_error.html looping.html
++## static html also serve as template (jiangxin@ossxp.com)
++TEMPLATES += post_error.html looping.html validation_error.html
++HTML = cosign_base.css cosign_js.css
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+ TMPLDIR  = @prefix@/templates
+diff --git a/html/looping.html b/html/looping.html
+index 808ac19..a667522 100755
+--- a/html/looping.html
++++ b/html/looping.html
+@@ -4,7 +4,7 @@
+ <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+ <meta http-equiv="Pragma" content="no-cache" />
+ <meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
+-<title>Your browser is looping!</title>
++<title>$t</title>
+ <style type="text/css" media="screen">
+ /* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
+ 
+@@ -22,14 +22,12 @@
+ 	<div id="main">
+ 		<div id="uiRow">
+ 			<div id="leftUIcol">
+-				<h1 class="error">Authentication Error</h1>
+-				<p>The Web Login-protected site that you were connecting to encountered an error while
+-					processing your authentication. Please delete your cookies, restart your browser,
+-					and try again. If you need assistance, contact <a href="#">Technical Support (put
+-					URL here)</a>.</p>
++				<h1 class="error">$t</h1>
++				<p>
++				$m
++				<p>Please contact <a href="#">Technical Support (put URL here)</a> if you have any questions.</p>
+ 				<p><a href="#">Put URL to main CoSign page here</a></p>
+-				<p class="techInfo"><strong>Technical Info:</strong> Browser is stuck in an infinite
+-					redirect loop.</p>
++				<p class="techInfo"><strong>Technical Info:</strong> $e</p>
+ 			</div>
+ 			<form action="#" method="post" name="factors" id="rightUIcol">
+ 				<div class="factorHead">
+diff --git a/html/post_error.html b/html/post_error.html
+index 071fa03..a667522 100755
+--- a/html/post_error.html
++++ b/html/post_error.html
+@@ -4,9 +4,14 @@
+ <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+ <meta http-equiv="Pragma" content="no-cache" />
+ <meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
+-<title>You were trying to POST?</title>
++<title>$t</title>
+ <style type="text/css" media="screen">
+ /* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
++
++#rightUIcol .factorHead h2 {
++	background: none;
++	color: #999;
++}
+ </style>
+ </head>
+ <body>
+@@ -16,13 +21,29 @@
+ 		</span> <strong>Our Home Page</strong></a> </div>
+ 	<div id="main">
+ 		<div id="uiRow">
+-			<h1 class="error">Changes Not Saved</h1>
+-			<p>You attempted to submit data to a Web Login-protected web site after your session
+-				had timed out. Your changes have not been saved.</p>
+-			<p>This can happen if your session has been idle for more than one hour or if you logged
+-				out (for example, in another browser window) before submitting the data. Please contact <a href="#">Technical
+-				Support (put URL here)</a> if you have any questions.</p>
+-			<p><a href="#">Put URL to main CoSign page here</a></p>
++			<div id="leftUIcol">
++				<h1 class="error">$t</h1>
++				<p>
++				$m
++				<p>Please contact <a href="#">Technical Support (put URL here)</a> if you have any questions.</p>
++				<p><a href="#">Put URL to main CoSign page here</a></p>
++				<p class="techInfo"><strong>Technical Info:</strong> $e</p>
++			</div>
++			<form action="#" method="post" name="factors" id="rightUIcol">
++				<div class="factorHead">
++					<h2>ID &amp; Password</h2>
++				</div>
++				<div class="factorHead">
++					<h2>One Time Passcode</h2>
++				</div>
++				<div class="factorHead">
++					<h2>Certificate</h2>
++				</div>
++				<div id="loginButton">
++					<input type="submit" name="doLogin" value="Log In" disabled="disabled" />
++				</div>
++			</form>
++			<div class="clear">&nbsp;</div>
+ 		</div>
+ 		<div id="uiBottom">&nbsp;</div>
+ 	</div>
+diff --git a/html/validation_error.html b/html/validation_error.html
+new file mode 100755
+index 0000000..a667522
+--- /dev/null
++++ b/html/validation_error.html
+@@ -0,0 +1,54 @@
++<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
++<html xmlns="http://www.w3.org/1999/xhtml">
++<head>
++<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
++<meta http-equiv="Pragma" content="no-cache" />
++<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
++<title>$t</title>
++<style type="text/css" media="screen">
++/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
++
++#rightUIcol .factorHead h2 {
++	background: none;
++	color: #999;
++}
++</style>
++</head>
++<body>
++<div id="page">
++	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
++		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
++		</span> <strong>Our Home Page</strong></a> </div>
++	<div id="main">
++		<div id="uiRow">
++			<div id="leftUIcol">
++				<h1 class="error">$t</h1>
++				<p>
++				$m
++				<p>Please contact <a href="#">Technical Support (put URL here)</a> if you have any questions.</p>
++				<p><a href="#">Put URL to main CoSign page here</a></p>
++				<p class="techInfo"><strong>Technical Info:</strong> $e</p>
++			</div>
++			<form action="#" method="post" name="factors" id="rightUIcol">
++				<div class="factorHead">
++					<h2>ID &amp; Password</h2>
++				</div>
++				<div class="factorHead">
++					<h2>One Time Passcode</h2>
++				</div>
++				<div class="factorHead">
++					<h2>Certificate</h2>
++				</div>
++				<div id="loginButton">
++					<input type="submit" name="doLogin" value="Log In" disabled="disabled" />
++				</div>
++			</form>
++			<div class="clear">&nbsp;</div>
++		</div>
++		<div id="uiBottom">&nbsp;</div>
++	</div>
++</div>
++<div id="foot">&copy; 2006 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
++		of the University of Michigan</a> </div>
++</body>
++</html>
 -- 
 tg: (2a1e2d3..) t/static_htmls_to_templates (depends on: t/message_localize t/autotools_for_setup)

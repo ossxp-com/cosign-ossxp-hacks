@@ -36,11 +36,12 @@ if [ -z "$2" ] || \
     echo "a2ensite cosgin-cgi failed, seem like apache2 not installed."
 fi
 
-if [ -z "$2" ] || \
-    dpkg --compare-versions "$2" lt "3.1.1-0.4"; then
-    a2enmod include
-    a2enmod negotiation
-fi
+## Static files serve like templates also.
+#if [ -z "$2" ] || \
+#    dpkg --compare-versions "$2" lt "3.1.1-0.4"; then
+#    a2enmod include
+#    a2enmod negotiation
+#fi
 
 if [ -f /opt/cosign/lib/services-local/ldap_api.php ] && \
         dpkg --compare-versions "$2" lt "2.1.1-0.2.47"; then

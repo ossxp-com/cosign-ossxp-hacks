@@ -24,7 +24,7 @@ CosignCheckIP never
 ## Valid service URLs must match with this regex.
 ## Eg: CosignValidReference  ^https?:\/\/.*\.umich\.edu(/.*)?
 CosignValidReference  .
-CosignValidationErrorRedirect  https://weblogin.foo.bar/cosign/validation_error.html
+CosignValidationErrorRedirect  https://weblogin.foo.bar/cgi-bin/info/validation_error
 
 <Location /cosign/valid>
     SetHandler  cosign

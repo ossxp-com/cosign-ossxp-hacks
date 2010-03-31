@@ -6,10 +6,7 @@ Subject: [PATCH] t/template_standard_zh
 Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 
 ---
- html/Makefile.in                    |    4 +-
- html/looping.html.zh                |   55 ++++++++++++++++++++++++++
- html/post_error.html.zh             |   27 +++++++++++++
- html/validation_error.html.zh       |   26 ++++++++++++
+ html/Makefile.in                    |    2 +
  html/zh/error.html                  |   49 +++++++++++++++++++++++
  html/zh/expired_error.html          |   65 ++++++++++++++++++++++++++++++
  html/zh/inc/factor_invite.inc       |   74 +++++++++++++++++++++++++++++++++++
@@ -24,22 +21,18 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
  html/zh/inc/js_config.inc           |   11 +++++
  html/zh/login.html                  |   65 ++++++++++++++++++++++++++++++
  html/zh/login_error.html            |   65 ++++++++++++++++++++++++++++++
+ html/zh/looping.html                |   52 ++++++++++++++++++++++++
+ html/zh/post_error.html             |   52 ++++++++++++++++++++++++
  html/zh/reauth.html                 |   74 +++++++++++++++++++++++++++++++++++
+ html/zh/validation_error.html       |   52 ++++++++++++++++++++++++
  html/zh/verify-logout.html          |   47 ++++++++++++++++++++++
- 20 files changed, 684 insertions(+), 1 deletions(-)
+ 20 files changed, 731 insertions(+), 0 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
-index b5d6334..06e9031 100755
+index cc5b0dc..6d3d27d 100755
 --- a/html/Makefile.in
 +++ b/html/Makefile.in
-@@ -1,5 +1,5 @@
- TEMPLATES = error.html expired_error.html login.html login_error.html verify-logout.html reauth.html inc
--HTML = cosign_base.css cosign_js.css post_error.html.en looping.html.en validation_error.html.en
-+HTML = cosign_base.css cosign_js.css post_error.html.en looping.html.en validation_error.html.en post_error.html.zh looping.html.zh validation_error.html.zh
- prefix=@prefix@
- exec_prefix=@exec_prefix@
- TMPLDIR  = @prefix@/templates
-@@ -17,6 +17,8 @@ install : all
+@@ -19,6 +19,8 @@ install : all
  	for i in ${TEMPLATES}; do \
  	    cp -a $$i $(DESTDIR)${TMPLDIR}/en; \
  	done
@@ -48,132 +41,6 @@ index b5d6334..06e9031 100755
  	for i in ${HTML}; do \
  	    cp -a $$i $(DESTDIR)${HTMLDIR}/; \
  	done
-diff --git a/html/looping.html.zh b/html/looping.html.zh
-new file mode 100755
-index 0000000..9bce203
---- /dev/null
-+++ b/html/looping.html.zh
-@@ -0,0 +1,55 @@
-+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-+<html xmlns="http://www.w3.org/1999/xhtml">
-+<head>
-+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-+<meta http-equiv="Pragma" content="no-cache" />
-+<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
-+<title>Your browser is looping!</title>
-+<style type="text/css" media="screen">
-+/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
-+
-+#rightUIcol .factorHead h2 {
-+	background: none;
-+	color: #999;
-+}
-+</style>
-+</head>
-+<body>
-+<div id="page">
-+	<!--#include file="zh/inc/header.inc" -->
-+	<hr class="text" />
-+	<div id="main">
-+		<div id="uiRow">
-+			<div id="leftUIcol">
-+				<h1 class="error">认证失败</h1>
-+				<p>因为发生浏览器循环重定向，导致无法登录。</p>
-+        <ul>
-+          <li>这有可能是因为您本机时钟不正确，导致单点登录发放的 cookie 被您的浏览器错误的当做过期 cookie 而无法被设置。如果是这样的话，正确设置您机器的时钟；
-+          <li>也可能是您的 IP 地址改变，导致登录 cookie 失效。这是可能是因为本服务器设置了较为严格的 IP 地址检查。您需要删除 cookie，关闭浏览器，再重新登录；
-+          <li>或者是由于管理员对网站的配置错误造成的；
-+        </ul>
-+				<p>如果上述方法仍无法解决此问题，请联系管理员</p>
-+				<p class="techInfo"><strong>信息:</strong> 浏览器陷入循环重定向。</p>
-+			</div>
-+			<form action="#" method="post" name="factors" id="rightUIcol">
-+				<div class="factorHead">
-+					<h2>用户名 &amp; 口令</h2>
-+				</div>
-+				<div class="factorHead">
-+					<h2>一次性口令</h2>
-+				</div>
-+				<div class="factorHead">
-+					<h2>使用证书认证</h2>
-+				</div>
-+				<div id="loginButton">
-+					<input type="submit" name="doLogin" value="登录" disabled="disabled" />
-+				</div>
-+			</form>
-+			<div class="clear">&nbsp;</div>
-+		</div>
-+		<div id="uiBottom">&nbsp;</div>
-+	</div>
-+</div>
-+<!--#include file="zh/inc/footer.inc" -->
-+</body>
-+</html>
-diff --git a/html/post_error.html.zh b/html/post_error.html.zh
-new file mode 100755
-index 0000000..5dd6446
---- /dev/null
-+++ b/html/post_error.html.zh
-@@ -0,0 +1,27 @@
-+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-+<html xmlns="http://www.w3.org/1999/xhtml">
-+<head>
-+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-+<meta http-equiv="Pragma" content="no-cache" />
-+<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
-+<title>You were trying to POST?</title>
-+<style type="text/css" media="screen">
-+/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
-+</style>
-+</head>
-+<body>
-+<div id="page">
-+	<!--#include file="zh/inc/header.inc" -->
-+	<div id="main">
-+		<div id="uiRow">
-+			<h1 class="error">修改尚未保存</h1>
-+			<p>您的会话已经过期，导致您向受保护站点提交的数据没有被保存。</p>
-+			<p>这可能是因为超时导致会话退出，或者您在另外的窗口已经退出登录。如果有疑问，请联系管理员。</p>
-+			<p><a href="/">返回主页面</a></p>
-+		</div>
-+		<div id="uiBottom">&nbsp;</div>
-+	</div>
-+</div>
-+<!--#include file="zh/inc/footer.inc" -->
-+</body>
-+</html>
-diff --git a/html/validation_error.html.zh b/html/validation_error.html.zh
-new file mode 100755
-index 0000000..81bbaad
---- /dev/null
-+++ b/html/validation_error.html.zh
-@@ -0,0 +1,26 @@
-+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-+<html xmlns="http://www.w3.org/1999/xhtml">
-+<head>
-+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-+<meta http-equiv="Pragma" content="no-cache" />
-+<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
-+<title>weblogin: URL validation failed</title>
-+<style type="text/css" media="screen">
-+/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
-+</style>
-+</head>
-+<body>
-+<div id="page">
-+	<!--#include file="zh/inc/header.inc" -->
-+	<div id="main">
-+		<div id="uiRow">
-+			<h1 class="error">URL 验证失败</h1>
-+			<p>您正在重定向的页面存在问题，例如：网络钓鱼或者其他可疑网站。我们已经停止该可疑的重定向，以保护你的安全。</p>
-+			<p><a href="/">返回主页面</a></p>
-+		</div>
-+		<div id="uiBottom">&nbsp;</div>
-+	</div>
-+</div>
-+<!--#include file="zh/inc/footer.inc" -->
-+</body>
-+</html>
 diff --git a/html/zh/error.html b/html/zh/error.html
 new file mode 100644
 index 0000000..1d56429
@@ -710,6 +577,122 @@ index 0000000..94323bf
 +$!include(inc/footer.inc)
 +</body>
 +</html>
+diff --git a/html/zh/looping.html b/html/zh/looping.html
+new file mode 100755
+index 0000000..11cf401
+--- /dev/null
++++ b/html/zh/looping.html
+@@ -0,0 +1,52 @@
++<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
++<html xmlns="http://www.w3.org/1999/xhtml">
++<head>
++<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
++<meta http-equiv="Pragma" content="no-cache" />
++<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
++<title>$t</title>
++<style type="text/css" media="screen">
++/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
++
++#rightUIcol .factorHead h2 {
++	background: none;
++	color: #999;
++}
++</style>
++</head>
++<body>
++<div id="page">
++	$!include(inc/header.inc)
++	<hr class="text" />
++	<div id="main">
++		<div id="uiRow">
++			<div id="leftUIcol">
++				<h1 class="error">$t</h1>
++				<p>
++				$m
++				<p>Please contact <a href="#">Technical Support (put URL here)</a> if you have any questions.</p>
++				<p><a href="#">Put URL to main CoSign page here</a></p>
++				<p class="techInfo"><strong>Technical Info:</strong> $e</p>
++			</div>
++			<form action="#" method="post" name="factors" id="rightUIcol">
++				<div class="factorHead">
++					<h2>ID &amp; Password</h2>
++				</div>
++				<div class="factorHead">
++					<h2>One Time Passcode</h2>
++				</div>
++				<div class="factorHead">
++					<h2>Certificate</h2>
++				</div>
++				<div id="loginButton">
++					<input type="submit" name="doLogin" value="Log In" disabled="disabled" />
++				</div>
++			</form>
++			<div class="clear">&nbsp;</div>
++		</div>
++		<div id="uiBottom">&nbsp;</div>
++	</div>
++</div>
++$!include(inc/footer.inc)
++</body>
++</html>
+diff --git a/html/zh/post_error.html b/html/zh/post_error.html
+new file mode 100755
+index 0000000..11cf401
+--- /dev/null
++++ b/html/zh/post_error.html
+@@ -0,0 +1,52 @@
++<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
++<html xmlns="http://www.w3.org/1999/xhtml">
++<head>
++<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
++<meta http-equiv="Pragma" content="no-cache" />
++<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
++<title>$t</title>
++<style type="text/css" media="screen">
++/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
++
++#rightUIcol .factorHead h2 {
++	background: none;
++	color: #999;
++}
++</style>
++</head>
++<body>
++<div id="page">
++	$!include(inc/header.inc)
++	<hr class="text" />
++	<div id="main">
++		<div id="uiRow">
++			<div id="leftUIcol">
++				<h1 class="error">$t</h1>
++				<p>
++				$m
++				<p>Please contact <a href="#">Technical Support (put URL here)</a> if you have any questions.</p>
++				<p><a href="#">Put URL to main CoSign page here</a></p>
++				<p class="techInfo"><strong>Technical Info:</strong> $e</p>
++			</div>
++			<form action="#" method="post" name="factors" id="rightUIcol">
++				<div class="factorHead">
++					<h2>ID &amp; Password</h2>
++				</div>
++				<div class="factorHead">
++					<h2>One Time Passcode</h2>
++				</div>
++				<div class="factorHead">
++					<h2>Certificate</h2>
++				</div>
++				<div id="loginButton">
++					<input type="submit" name="doLogin" value="Log In" disabled="disabled" />
++				</div>
++			</form>
++			<div class="clear">&nbsp;</div>
++		</div>
++		<div id="uiBottom">&nbsp;</div>
++	</div>
++</div>
++$!include(inc/footer.inc)
++</body>
++</html>
 diff --git a/html/zh/reauth.html b/html/zh/reauth.html
 new file mode 100644
 index 0000000..0c8463f
@@ -790,6 +773,64 @@ index 0000000..0c8463f
 +</form>
 +</body>
 +</html>
+diff --git a/html/zh/validation_error.html b/html/zh/validation_error.html
+new file mode 100755
+index 0000000..11cf401
+--- /dev/null
++++ b/html/zh/validation_error.html
+@@ -0,0 +1,52 @@
++<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
++<html xmlns="http://www.w3.org/1999/xhtml">
++<head>
++<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
++<meta http-equiv="Pragma" content="no-cache" />
++<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
++<title>$t</title>
++<style type="text/css" media="screen">
++/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
++
++#rightUIcol .factorHead h2 {
++	background: none;
++	color: #999;
++}
++</style>
++</head>
++<body>
++<div id="page">
++	$!include(inc/header.inc)
++	<hr class="text" />
++	<div id="main">
++		<div id="uiRow">
++			<div id="leftUIcol">
++				<h1 class="error">$t</h1>
++				<p>
++				$m
++				<p>Please contact <a href="#">Technical Support (put URL here)</a> if you have any questions.</p>
++				<p><a href="#">Put URL to main CoSign page here</a></p>
++				<p class="techInfo"><strong>Technical Info:</strong> $e</p>
++			</div>
++			<form action="#" method="post" name="factors" id="rightUIcol">
++				<div class="factorHead">
++					<h2>ID &amp; Password</h2>
++				</div>
++				<div class="factorHead">
++					<h2>One Time Passcode</h2>
++				</div>
++				<div class="factorHead">
++					<h2>Certificate</h2>
++				</div>
++				<div id="loginButton">
++					<input type="submit" name="doLogin" value="Log In" disabled="disabled" />
++				</div>
++			</form>
++			<div class="clear">&nbsp;</div>
++		</div>
++		<div id="uiBottom">&nbsp;</div>
++	</div>
++</div>
++$!include(inc/footer.inc)
++</body>
++</html>
 diff --git a/html/zh/verify-logout.html b/html/zh/verify-logout.html
 new file mode 100644
 index 0000000..15320f0
@@ -844,4 +885,4 @@ index 0000000..15320f0
 +</body>
 +</html>
 -- 
-tg: (9bf8b58..) t/template_standard_zh (depends on: t/custom_cosign_path t/template_standard_en)
+tg: (379641b..) t/template_standard_zh (depends on: t/custom_cosign_path t/template_standard_en)

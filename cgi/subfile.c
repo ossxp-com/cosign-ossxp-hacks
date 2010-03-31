@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "subfile.h"
 #include "lang.h"
@@ -11,16 +12,25 @@
 #include <libgen.h>
 #include <glob.h>
 
+#define MAX_CMD		18
+#define MAX_FN_LEN	512
+#define MAX_LINE_BUFF	4096
 
 void _subfile( char *, struct subfile_list *, int );
-int _macro_include ( char *, struct subfile_list * );
-void macro_include ( char *, struct subfile_list * );
+int _do_macro_include ( char *, struct subfile_list * );
+void do_macro_include ( char *, struct subfile_list * );
+void do_macro_gettext( char *);
+char * str_replace(char *, char *, char *);
+char * macro_process ( char *, struct subfile_list *, char *);
 
-
+/*
+ * Warning: if the first two arguments are the same, and rep is longer than
+ * orig, it will fail.
+ */
     char *
 str_replace(char *str, char *orig, char *rep)
 {
-    static char buffer[4096];
+    static char buffer[MAX_LINE_BUFF+1];
     char *p;
 
     if(!(p = strstr(str, orig)))
@@ -34,15 +44,94 @@ str_replace(char *str, char *orig, char *rep)
     return buffer;
 }
 
+    char *
+macro_process ( char *str, struct subfile_list *sl, char *filename )
+{
+    char	cmd[MAX_CMD+1];
+    char	arg[MAX_LINE_BUFF+1];
+    char	*p, *orig, *text;
+    int		ch;
+    char	*pbuff = NULL;
+    char	*pdir;
+    char	incfile[MAX_FN_LEN+1];
+
+    //dirname change orignal buffer, so strdup before dirname.
+    pbuff = strdup(filename);
+    pdir = dirname (pbuff);
+
+    p = orig = text = str;
+    while ( *p && *p != '(' )
+	p++;
+
+    if (!*p || *p != '(' || p-text >= MAX_CMD)
+	return orig;
+
+    strncpy(cmd, text, p-text);
+    cmd[p-text] = '\0';
+
+    text = ++p;
+    while ( *p && isspace(*p) ) {
+	p++;
+    }
+    text = p;
+    ch = *p;
+
+    if (ch == '"' || ch == '\'') {
+	do {
+	    if (*p == '\\' && *(p+1))
+		p++;
+	    p++;
+	} while (*p && *p != ch);
+    }
+
+    while ( *p && *p != ')' ) {
+	p++;
+    }
+
+    if (!*p || *p != ')' || p-text >= MAX_LINE_BUFF)
+	return orig;
+    else
+	orig = p+1;
+
+    do {
+	--p;
+    } while ( isspace(*p) && p!=text );
+
+    if ( (ch == '"' || ch == '\'') && *p == ch ) {
+	text++;
+	p--;
+	strncpy(arg, text, p-text+1);
+	arg[p-text+1] = '\0';
+	p = str_replace(arg, "\\'", "'");
+	p = str_replace(p, "\\\"", "\"");
+    } else {
+	strncpy(arg, text, p-text+1);
+	arg[p-text+1] = '\0';
+	p = arg;
+    }
+
+    if ( strcasecmp(cmd, "include") == 0 ) {
+	snprintf(incfile, MAX_FN_LEN, "%s/%s", pdir, p);
+	do_macro_include(incfile, sl);
+    } else if ( strcmp(cmd, "_") == 0 ) {
+	do_macro_gettext(p);
+    } else {
+	orig = str;
+    }
+
+    if (pbuff != NULL)
+        free(pbuff);
+
+    return orig;
+}
 
 /*
  * Macro for include other files.
  * Usage: $!include(filename)
  */
     void
-macro_include ( char *incfile, struct subfile_list *sl )
+do_macro_include ( char *incfile, struct subfile_list *sl )
 {
-    int		i;
     char	**lang;
     char	*newfile;
 
@@ -52,7 +141,7 @@ macro_include ( char *incfile, struct subfile_list *sl )
 	while(*lang !=NULL)
 	{
 	    newfile = str_replace(incfile, "%lang%", *lang);
-	    if (_macro_include ( newfile, sl ) == 0 )
+	    if (_do_macro_include ( newfile, sl ) == 0 )
 	    {
 		return;
 	    }
@@ -65,23 +154,23 @@ macro_include ( char *incfile, struct subfile_list *sl )
 	}
 	// fallback to en
 	newfile = str_replace(incfile, "%lang%", "en");
-	if (_macro_include ( newfile, sl ) == 0 )
+	if (_do_macro_include ( newfile, sl ) == 0 )
 	    return;
 	
 	// remove %lang%/, or %lang%
 	newfile = (strstr(incfile, "%lang%/") != NULL) ? 
 	    str_replace(incfile, "%lang%/", "") : str_replace(incfile, "%lang%", "");
-	if (_macro_include ( newfile, sl ) == 0 )
+	if (_do_macro_include ( newfile, sl ) == 0 )
 	    return;
     } else {
-	_macro_include ( incfile, sl );
+	_do_macro_include ( incfile, sl );
     }
     return;
 }
 
 
     int
-_macro_include ( char *incfile, struct subfile_list *sl )
+_do_macro_include ( char *incfile, struct subfile_list *sl )
 {
     int i, ret = 1;
 
@@ -108,6 +197,27 @@ _macro_include ( char *incfile, struct subfile_list *sl )
     return ret;
 }
 
+    void
+do_macro_gettext( char *text)
+{
+    int		len;
+    char 	*from, *p;
+
+    from = strdup(text);
+    p = from;
+    len = strlen(from);
+
+    if ( (*from == '"' || *from == '\'') && *(from+len-1) == *from ) {
+	*(from+len-1) = '\0';
+	from++;
+	from = str_replace(from, "\\'", "'");
+	from = str_replace(from, "\\\"", "\"");
+    }
+    printf ("%s", _(from));
+    if (p)
+	free(p);
+}
+
 /*
  * Substitute template file with multiple language support.
  * Add language code prefix before template file, and
@@ -117,24 +227,15 @@ _macro_include ( char *incfile, struct subfile_list *sl )
 subfile( char *filename, struct subfile_list *sl, int nocache )
 {
     char	**lang;
-    char	*filename_i18n;
+    char	newfile[MAX_FN_LEN + 1];
 
-    int tmplen = 0;
-
-    tmplen = strlen(filename)+5;
-    filename_i18n = malloc(tmplen+1);
     lang = get_accept_language();
     while(*lang !=NULL)
     {
-        if (strlen(*lang)+1+strlen(filename) > tmplen)
+        snprintf(newfile, MAX_FN_LEN, "%s/%s", *lang, filename);
+        if (access(newfile, F_OK)==0)
         {
-            tmplen +=5;
-            filename_i18n=realloc(filename_i18n,tmplen+1);
-        }
-        snprintf(filename_i18n, tmplen, "%s/%s", *lang, filename);
-        if (access(filename_i18n, F_OK)==0)
-        {
-            filename = filename_i18n;
+            filename = newfile;
             break;
         }
         if (strcmp(*lang, "zh_TW")==0)
@@ -146,22 +247,23 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
     }
     if (access(filename, F_OK)!=0)
     {
-        snprintf(filename_i18n, tmplen, "%s/%s", "en", filename);
-        if (access(filename_i18n, F_OK)==0)
+        snprintf(newfile, MAX_FN_LEN, "%s/%s", "en", filename);
+        if (access(newfile, F_OK)==0)
         {
-            filename = filename_i18n;
+            filename = newfile;
         }
     }
 
     _subfile( filename, sl, nocache );
 
-    if (filename_i18n != NULL)
-        free(filename_i18n);
-
     return;
 }
 
+/*
+ * command
+ */
 
+    
 /*
  * Real subfile procedure. Do macro substitute.
  */
@@ -171,9 +273,6 @@ _subfile( char *filename, struct subfile_list *sl, int nocache )
     FILE	*fs;
     int 	c, i, j;
     char	nasties[] = "<>(){}[]'`\" \\";
-
-    char	*pbuff = NULL;
-    char	*pdir;
 
     if ( nocache > 0 ) {
 	fputs( "Expires: Mon, 16 Apr 1973 13:10:00 GMT\n"
@@ -192,9 +291,6 @@ _subfile( char *filename, struct subfile_list *sl, int nocache )
 	exit( 1 );
     }
 
-    pbuff = strdup(filename);
-    pdir = dirname (pbuff);
-
     while (( c = getc( fs )) != EOF ) {
 	if ( c == '$' ) {
 	    if (( c = getc( fs )) == EOF ) {
@@ -207,43 +303,21 @@ _subfile( char *filename, struct subfile_list *sl, int nocache )
 		continue;
 	    }
 	    if ( c == '!' ) {
-		char *s = malloc(9);
-		char *incfile = malloc(255);
-		fgets(s, 9, fs);
-		if (strncmp(s, "include(", 8) == 0)
-		{
-		    strcpy(incfile, pdir);
-		    strcat(incfile, "/");
-		    i = strlen(incfile)-1;
-		    while (( c = getc( fs )) != EOF && i++ < 254 ) {
-			if (c==')')
-				break;
-			incfile[i] = c;
-		    }
-		    incfile[i] = '\0';
-		    if (c==')')
-		    {
-			macro_include(incfile, sl);
-		    }
-		    else
-		    {
-			printf ("include(%s", incfile+strlen(pdir)+1);
-			if (c != EOF)
-			    putchar( c );
-		    }
-		}
-		else
-		{
+		// begin macro process
+		char *s = malloc(MAX_CMD+MAX_LINE_BUFF+1);
+		char *p;
+		fgets(s, MAX_CMD+MAX_LINE_BUFF, fs);
+		p = macro_process(s, sl, filename);
+		if (p==s) {
 		    putchar( '$' );
 		    putchar( c );
-		    fseek(fs, -1*strlen(s), SEEK_CUR);
+		    fseek(fs, -1*strlen(p), SEEK_CUR);
+		} else {
+		    fseek(fs, -1*strlen(p), SEEK_CUR);
 		}
 		if (s != NULL)
 		    free(s);
-		if (incfile != NULL)
-		    free(incfile);
 		s = NULL;
-		incfile = NULL;
 		continue;
 	    }
 
@@ -282,8 +356,6 @@ _subfile( char *filename, struct subfile_list *sl, int nocache )
 	perror( filename );
     }
 
-    if (pbuff != NULL)
-        free(pbuff);
     return;
 }
 

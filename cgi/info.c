@@ -48,6 +48,8 @@ static struct subfile_list sl[] = {
         { 't', SUBF_STR, NULL },
 #define SL_ERROR	2
         { 'e', SUBF_STR, NULL },
+#define SL_DETAIL	3
+        { 'm', SUBF_STR, NULL },
         { '\0', 0, NULL },
 };
 
@@ -123,10 +125,46 @@ main( int argc, char *argv[] )
 	}
 	if ( qs != NULL && ( *qs != '\0' )) {
 	    if (strncasecmp(qs, "looping", 4)==0) {
+		sl[ SL_TITLE ].sl_data = _("Your browser is looping!");
+		sl[ SL_DETAIL ].sl_data = _("<p>The Weblogin-protected site that "
+		    " you were connecting to encountered an error while"
+		    " processing your authentication. Please delete your"
+		    " cookies, restart your browser, and try again.</p>\n"
+		    " <p>Browser is stuck in an infinite redirect loop."
+		    " Possible reasons:</p>\n"
+		    " <ul>\n"
+		    " <li>Time of the server and your own pc are mismatch."
+		    " Which cause the cookie can not be saved by your browser."
+		    " Usually your clock is far ahead of time."
+		    " </li>\n"
+		    " <li>The URL you visit is not the canonical name for the"
+		    " service, and cookie register URL is not the same domain"
+		    " with the URL you visit, and this may cause service cookie"
+		    " not valid. </li>\n"
+		    " </ul>\n");
+		sl[ SL_ERROR ].sl_data = _("Browser is stuck in an infinite redirect loop.");
 		tmpl = LOOPING_HTML;
 	    } else if (strncasecmp(qs, "post_error", 4)==0) {
+		sl[ SL_TITLE ].sl_data = _("Changes Not Saved");
+		sl[ SL_ERROR ].sl_data = _("You were trying to POST, BUT Changes Not Saved");
+		sl[ SL_DETAIL ].sl_data = _("<p>You attempted to submit data"
+		    " to a Web Login-protected web site after your session"
+		    " had timed out. Your changes have not been saved.</p>\n"
+		    " <p>This can happen if your session has been idle for"
+		    " more than one hour or if you logged out (for example, "
+		    " in another browser window) before submitting the data."
+		    " </p>\n");
 		tmpl = POST_ERROR_HTML;
 	    } else if (strncasecmp(qs, "validation_error", 5)==0) {
+		sl[ SL_TITLE ].sl_data = _("weblogin: URL validation failed");
+		sl[ SL_ERROR ].sl_data = _("URL validation failed");
+		sl[ SL_DETAIL ].sl_data = _("<p>There is a problem with the"
+		    " URL to which you were redirected. Since this can"
+		    " potentially indicate phishing or other suspicious"
+		    " activity, we have stopped the redirect in order to"
+		    " protect your security.</p>\n"
+		    " <p>You may be able to access the web site or service"
+		    " if you try again with its official URL.</p>");
 		tmpl = VALIDATION_ERROR_HTML;
 	    } else {
 		sl[ SL_TITLE ].sl_data = _("Error: Server Error");

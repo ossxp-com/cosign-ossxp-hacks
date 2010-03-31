@@ -31,3 +31,8 @@ struct connlist * connlist_setup( char *, unsigned short );
 #define REAUTH_HTML     	"reauth.html"
 #define REDIRECT_HTML		"redirect.html"
 #define VERIFY_LOGOUT		"verify-logout.html"
+
+//static html also treat as template. ( Jiang Xin <jiangxin@ossxp.com>)
+#define LOOPING_HTML          "looping.html"
+#define POST_ERROR_HTML       "post_error.html"
+#define VALIDATION_ERROR_HTML "validation_error.html"

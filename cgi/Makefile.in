@@ -18,6 +18,7 @@ KEYTABPATH = @keytabpath@
 FRIEND_MYSQL_DB = @frienddbhost@
 FRIEND_MYSQL_LOGIN = @frienddblogin@
 FRIEND_MYSQL_PASSWD = @frienddbpasswd@
+DESTDIR=
 
 INCPATH=     @CPPFLAGS@ @KINC@ @MYSQLINC@ -I../common -I../libsnet -I../libcgi
 OPTOPTS=     @OPTOPTS@ @UNIVERSAL_OPTOPTS@
@@ -33,7 +34,7 @@ CFLAGS=      ${DEFS} ${OPTOPTS} @CFLAGS@ ${INCPATH}
 OBJ     = network.o subfile.o lang.o ../common/mkcookie.o ../common/fbase64.o \
 	../common/conf.o ../common/wildcard.o ../common/argcargv.o \
 	../version.o 
-TARGETS = logout cosign.cgi
+TARGETS = logout cosign.cgi info
 
 all: ${TARGETS}
 
@@ -80,11 +81,22 @@ logout.o:	logout.c
 logout: logout.o $(OBJ)
 	${CC} ${CFLAGS} -o logout logout.o $(OBJ) $(LDFLAGS)
 
+info.o:	info.c
+	${CC} ${CFLAGS} \
+	-D_COSIGN_CONF=\"${COSIGNCONF}\" \
+	-D_COSIGN_TMPL_DIR=\"${COSIGNTMPLDIR}\" \
+	-D_LOCALEDIR=\"${LOCALEDIR}\" \
+	-c info.c
+
+info: info.o $(OBJ)
+	${CC} ${CFLAGS} -o info info.o $(filter-out network.o,$(OBJ)) $(LDFLAGS)
+
 clean:
 	/bin/rm -rf *.o ${TARGETS}
 
 install : all
-	-mkdir -p ${exec_prefix}
-	-mkdir -p ${CGIDIR};
-	${INSTALL} -m 0755 -c cosign.cgi ${CGIDIR}/;
-	${INSTALL} -m 0755 -c logout ${CGIDIR}/;
+	-mkdir -p $(DESTDIR)${exec_prefix}
+	-mkdir -p $(DESTDIR)${CGIDIR};
+	${INSTALL} -m 0755 -c cosign.cgi $(DESTDIR)${CGIDIR}/;
+	${INSTALL} -m 0755 -c logout $(DESTDIR)${CGIDIR}/;
+	${INSTALL} -m 0755 -c info $(DESTDIR)${CGIDIR}/;

@@ -1,6 +1,6 @@
 From: Jiang <jiangxin@ossxp.com>
-Subject: [PATCH] t/message_localize
+Subject: [PATCH] t/static_htmls_to_templates
 
-Translate CoSign error message using javascript.
+New cgi: info. Which use templates to show static htmls.
 
 Signed-off-by: Jiang <jiangxin@ossxp.com>

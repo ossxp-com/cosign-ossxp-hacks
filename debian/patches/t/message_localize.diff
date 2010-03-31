@@ -8,12 +8,13 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
 ---
  cgi/Makefile.in      |    6 +
  cgi/cgi.c            |  310 ++++++++++++++++++++++++++------------------------
- cgi/lang.c           |   19 +++
+ cgi/lang.c           |   20 ++++
  cgi/lang.h           |    7 +
  cgi/login.c          |   87 +++++++-------
  cgi/logout.c         |   37 ++++---
+ cgi/subfile.c        |   24 ++++
  html/js/js_locale.js |   48 ++++++++
- 7 files changed, 305 insertions(+), 209 deletions(-)
+ 8 files changed, 330 insertions(+), 209 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
 index d8baf0b..47a874c 100755
@@ -696,10 +697,10 @@ index ae4ec41..6373b79 100755
 +
 +// vim: noet ts=8 sw=4
 diff --git a/cgi/lang.c b/cgi/lang.c
-index e9596b4..2b04e82 100644
+index e9596b4..588618d 100644
 --- a/cgi/lang.c
 +++ b/cgi/lang.c
-@@ -115,4 +115,23 @@ get_accept_language()
+@@ -115,4 +115,24 @@ get_accept_language()
      return lang;
  }
  
@@ -719,6 +720,7 @@ index e9596b4..2b04e82 100644
 +	} else if (setlocale( LC_ALL, *lang) != NULL) {
 +	    break;
 +	}
++	lang++;
 +    }
 +}
 +
@@ -1084,6 +1086,55 @@ index 5a0ea54..a050442 100755
  }
 +
 +// vim: noet ts=8 sw=4
+diff --git a/cgi/subfile.c b/cgi/subfile.c
+index 343a4d8..985070c 100644
+--- a/cgi/subfile.c
++++ b/cgi/subfile.c
+@@ -19,6 +19,7 @@
+ void _subfile( char *, struct subfile_list *, int );
+ int _do_macro_include ( char *, struct subfile_list * );
+ void do_macro_include ( char *, struct subfile_list * );
++void do_macro_gettext( char *);
+ char * str_replace(char *, char *, char *);
+ char * macro_process ( char *, struct subfile_list *, char *);
+ 
+@@ -112,6 +113,8 @@ macro_process ( char *str, struct subfile_list *sl, char *filename )
+     if ( strcasecmp(cmd, "include") == 0 ) {
+ 	snprintf(incfile, MAX_FN_LEN, "%s/%s", pdir, p);
+ 	do_macro_include(incfile, sl);
++    } else if ( strcmp(cmd, "_") == 0 ) {
++	do_macro_gettext(p);
+     } else {
+ 	orig = str;
+     }
+@@ -194,6 +197,27 @@ _do_macro_include ( char *incfile, struct subfile_list *sl )
+     return ret;
+ }
+ 
++    void
++do_macro_gettext( char *text)
++{
++    int		len;
++    char 	*from, *p;
++
++    from = strdup(text);
++    p = from;
++    len = strlen(from);
++
++    if ( (*from == '"' || *from == '\'') && *(from+len-1) == *from ) {
++	*(from+len-1) = '\0';
++	from++;
++	from = str_replace(from, "\\'", "'");
++	from = str_replace(from, "\\\"", "\"");
++    }
++    printf ("%s", _(from));
++    if (p)
++	free(p);
++}
++
+ /*
+  * Substitute template file with multiple language support.
+  * Add language code prefix before template file, and
 diff --git a/html/js/js_locale.js b/html/js/js_locale.js
 new file mode 100644
 index 0000000..15985fc
@@ -1139,4 +1190,4 @@ index 0000000..15985fc
 +
 +// vim: noet ts=4 sw=4
 -- 
-tg: (9317f69..) t/message_localize (depends on: t/factor_ldap t/factor_invite t/include_macro_for_templates)
+tg: (1ff13c5..) t/message_localize (depends on: t/factor_ldap t/factor_invite t/include_macro_for_templates)

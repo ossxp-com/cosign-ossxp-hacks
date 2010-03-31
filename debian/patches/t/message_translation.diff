@@ -7743,4 +7743,4 @@ index 0000000..0d97640
 +msgstr "单点登录：URL 校验失败"
 +
 -- 
-tg: (52aff2a..) t/message_translation (depends on: t/message_localize t/static_htmls_to_templates)
+tg: (47dc4fc..) t/message_translation (depends on: t/message_localize t/static_htmls_to_templates)

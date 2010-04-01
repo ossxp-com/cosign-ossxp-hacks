@@ -62,20 +62,8 @@ main( int argc, char *argv[] )
     char		*ip_addr, *qs;
     char		*method = NULL;
     char		*script;
-    char		**lang;
 
-    bindtextdomain("cosign", _LOCALEDIR);
-    textdomain("cosign");
-    lang = get_accept_language();
-    while(*lang !=NULL)
-    {
-	if (strcmp(*lang, "zh")==0 || strcmp(*lang, "zh_CN")==0) {
-	    setlocale( LC_ALL, "zh_CN.UTF-8");
-	    break;
-	} else if (setlocale( LC_ALL, *lang) != NULL) {
-	    break;
-	}
-    }
+    init_locale();
 
     if ( argc == 2 && ( strncmp( argv[ 1 ], "-V", 2 ) == 0 )) {
 	printf( "%s\n", cosign_version );

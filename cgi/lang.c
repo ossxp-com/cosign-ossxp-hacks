@@ -8,19 +8,21 @@
     char **
 get_accept_language()
 {
-    char *accept_language=NULL;
+    static char **accept_languages = NULL;
     char *p, *pnext, *buff;
     char **lang;
     int found = 0;
-    int i,j,k;
-    int _INIT_SIZE=3;
+    int i,j,k,m;
+    int array_size=8;
 
-    lang = calloc(sizeof(char*),_INIT_SIZE+1);
-    for (i=0; i<_INIT_SIZE; i++)
+    if (accept_languages != NULL)
+	return accept_languages;
+
+    lang = calloc(sizeof(char*),array_size+1);
+    for (i=0; i<array_size; i++)
 	lang[i]=NULL;
 
-    accept_language = getenv( "HTTP_ACCEPT_LANGUAGE" );
-    p = accept_language;
+    p = getenv( "HTTP_ACCEPT_LANGUAGE" );
 
     if (p != NULL)
     {
@@ -56,43 +58,38 @@ get_accept_language()
 
 		}
 
-		if (strcmp(buff, "zh_CN")==0 || strcmp(buff, "zh_SG")==0)
+		if (strcmp(buff, "zh_SG")==0)
 		{
 		    free(buff);
-		    buff = strdup("zh");
+		    buff = strdup("zh_CN");
 		}
 		else if (strcmp(buff, "zh_HK")==0)
 		{
 		    free(buff);
 		    buff = strdup("zh_TW");
 		}
-		else if (strncasecmp(buff, "en", 2)==0)
-		{
-		    free(buff);
-		    buff = strdup("en");
-		}
 		found = 0;
-		for (i=0; i< _INIT_SIZE; i++)
+		for (m=0; m< array_size; m++)
 		{
-		    if (lang[i]!=NULL && buff !=NULL && strcmp(lang[i],buff)==0)
+		    if (lang[m]!=NULL && buff !=NULL && strcmp(lang[m],buff)==0)
 		    {
 			found = 1;
 			break;
 		    }
-		    else if (lang[i] == NULL)
+		    else if (lang[m] == NULL)
 		    {
 			break;
 		    }
 		}
 		if (!found)
 		{
-		    if (i==_INIT_SIZE)
+		    if (m==array_size)
 		    {
-			_INIT_SIZE = _INIT_SIZE * 2 + 1;
-			lang = realloc(lang, _INIT_SIZE * sizeof(char *));
+			array_size = array_size * 2 + 1;
+			lang = realloc(lang, array_size * sizeof(char *));
 		    }
-		    lang[i] = buff;
-		    lang[i+1] = NULL;
+		    lang[m] = buff;
+		    lang[m+1] = NULL;
 		}
 	    }
 
@@ -106,29 +103,54 @@ get_accept_language()
 
     /*
     // Debug: print to stderr will be logged in apache log file.
-    for(i=0; i< _INIT_SIZE; i++)
+    for(i=0; i< array_size; i++)
     {
-    fprintf(stderr, "lang[%d] = %s\n", i, lang[i]);
+	if (lang[i] == NULL)
+	    break;
+	fprintf(stderr, "lang[%d] = %s\n", i, lang[i]);
     }
-     */
+    */
 
-    return lang;
+    return accept_languages = lang;
 }
 
     void
 init_locale()
 {
+#define MAX_LANG_CODE	20
     char	**lang;
+    char	*p;
+    char	lang_utf8[MAX_LANG_CODE+7] = "";
 
     bindtextdomain("cosign", _LOCALEDIR);
     textdomain("cosign");
     lang = get_accept_language();
     while(*lang !=NULL)
     {
-	if (strcmp(*lang, "zh")==0 || strcmp(*lang, "zh_CN")==0) {
-	    setlocale( LC_ALL, "zh_CN.UTF-8");
+	p = strchr(*lang, '.');
+	lang_utf8[0] = '\0';
+	if (p!=NULL && p-*lang < MAX_LANG_CODE) {
+	    strncpy(lang_utf8, *lang, p-*lang);
+	    lang_utf8[p-*lang] = '\0';
+	    strcat(lang_utf8, ".UTF-8");
+	} else if (strlen(*lang) < MAX_LANG_CODE) {
+	    strcpy(lang_utf8, *lang);
+	    strcat(lang_utf8, ".UTF-8");
+	}
+
+	if (lang_utf8[0] != '\0' && setlocale( LC_ALL, lang_utf8) != NULL) {
 	    break;
+	} else if (strcmp(*lang, "zh")==0) {
+	    if (setlocale( LC_ALL, "zh_CN.UTF-8") != NULL)
+		break;
+	    else if (setlocale( LC_ALL, "zh_CN") != NULL)
+		break;
+	    else if (setlocale( LC_ALL, *lang) != NULL)
+		break;
 	} else if (setlocale( LC_ALL, *lang) != NULL) {
+	    break;
+	} else if (strncmp(*lang, "en", 2)==0) {
+	    setlocale( LC_ALL, "C");
 	    break;
 	}
 	lang++;

@@ -8,8 +8,8 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 ---
  cgi/Makefile.in |    2 +-
  cgi/lang.c      |  118 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- cgi/lang.h      |   11 +++++
- 3 files changed, 130 insertions(+), 1 deletions(-)
+ cgi/lang.h      |   17 ++++++++
+ 3 files changed, 136 insertions(+), 1 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
 index e867410..d8baf0b 100755
@@ -26,7 +26,7 @@ index e867410..d8baf0b 100755
  TARGETS = logout cosign.cgi
 diff --git a/cgi/lang.c b/cgi/lang.c
 new file mode 100644
-index 0000000..e9596b4
+index 0000000..ed863d6
 --- /dev/null
 +++ b/cgi/lang.c
 @@ -0,0 +1,118 @@
@@ -40,19 +40,21 @@ index 0000000..e9596b4
 +    char **
 +get_accept_language()
 +{
-+    char *accept_language=NULL;
++    static char **accept_languages = NULL;
 +    char *p, *pnext, *buff;
 +    char **lang;
 +    int found = 0;
-+    int i,j,k;
-+    int _INIT_SIZE=3;
++    int i,j,k,m;
++    int array_size=8;
 +
-+    lang = calloc(sizeof(char*),_INIT_SIZE+1);
-+    for (i=0; i<_INIT_SIZE; i++)
++    if (accept_languages != NULL)
++	return accept_languages;
++
++    lang = calloc(sizeof(char*),array_size+1);
++    for (i=0; i<array_size; i++)
 +	lang[i]=NULL;
 +
-+    accept_language = getenv( "HTTP_ACCEPT_LANGUAGE" );
-+    p = accept_language;
++    p = getenv( "HTTP_ACCEPT_LANGUAGE" );
 +
 +    if (p != NULL)
 +    {
@@ -88,43 +90,38 @@ index 0000000..e9596b4
 +
 +		}
 +
-+		if (strcmp(buff, "zh_CN")==0 || strcmp(buff, "zh_SG")==0)
++		if (strcmp(buff, "zh_SG")==0)
 +		{
 +		    free(buff);
-+		    buff = strdup("zh");
++		    buff = strdup("zh_CN");
 +		}
 +		else if (strcmp(buff, "zh_HK")==0)
 +		{
 +		    free(buff);
 +		    buff = strdup("zh_TW");
 +		}
-+		else if (strncasecmp(buff, "en", 2)==0)
-+		{
-+		    free(buff);
-+		    buff = strdup("en");
-+		}
 +		found = 0;
-+		for (i=0; i< _INIT_SIZE; i++)
++		for (m=0; m< array_size; m++)
 +		{
-+		    if (lang[i]!=NULL && buff !=NULL && strcmp(lang[i],buff)==0)
++		    if (lang[m]!=NULL && buff !=NULL && strcmp(lang[m],buff)==0)
 +		    {
 +			found = 1;
 +			break;
 +		    }
-+		    else if (lang[i] == NULL)
++		    else if (lang[m] == NULL)
 +		    {
 +			break;
 +		    }
 +		}
 +		if (!found)
 +		{
-+		    if (i==_INIT_SIZE)
++		    if (m==array_size)
 +		    {
-+			_INIT_SIZE = _INIT_SIZE * 2 + 1;
-+			lang = realloc(lang, _INIT_SIZE * sizeof(char *));
++			array_size = array_size * 2 + 1;
++			lang = realloc(lang, array_size * sizeof(char *));
 +		    }
-+		    lang[i] = buff;
-+		    lang[i+1] = NULL;
++		    lang[m] = buff;
++		    lang[m+1] = NULL;
 +		}
 +	    }
 +
@@ -138,22 +135,25 @@ index 0000000..e9596b4
 +
 +    /*
 +    // Debug: print to stderr will be logged in apache log file.
-+    for(i=0; i< _INIT_SIZE; i++)
++    for(i=0; i< array_size; i++)
 +    {
-+    fprintf(stderr, "lang[%d] = %s\n", i, lang[i]);
++	if (lang[i] == NULL)
++	    break;
++	fprintf(stderr, "lang[%d] = %s\n", i, lang[i]);
 +    }
-+     */
++    */
 +
-+    return lang;
++    return accept_languages = lang;
 +}
++
 +
 +// vim: noet ts=8 sw=4
 diff --git a/cgi/lang.h b/cgi/lang.h
 new file mode 100644
-index 0000000..36b37dc
+index 0000000..3b32a78
 --- /dev/null
 +++ b/cgi/lang.h
-@@ -0,0 +1,11 @@
+@@ -0,0 +1,17 @@
 +/*
 + * Copyright (c) 2008 JiangXin, worldhello.net AT gmail.com
 + * All Rights Reserved.  See LICENSE.
@@ -161,6 +161,12 @@ index 0000000..36b37dc
 +
 +#ifndef _LANG_H
 +#define _LANG_H
++
++#include <locale.h>
++#include <libintl.h>
++#define _(String) gettext (String)
++#define gettext_noop(String) String
++#define N_(String) gettext_noop (String)
 +
 +char ** get_accept_language();
 +

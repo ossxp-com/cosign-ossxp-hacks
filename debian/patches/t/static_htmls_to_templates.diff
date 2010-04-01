@@ -7,13 +7,13 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
  cgi/Makefile.in            |   13 +++-
- cgi/cosigncgi.h            |    5 +
- cgi/info.c                 |  185 ++++++++++++++++++++++++++++++++++++++++++++
+ cgi/cosigncgi.h            |    5 ++
+ cgi/info.c                 |  173 ++++++++++++++++++++++++++++++++++++++++++++
  html/Makefile.in           |    4 +-
  html/looping.html          |   14 ++--
- html/post_error.html       |   37 +++++++--
- html/validation_error.html |   54 +++++++++++++
- 7 files changed, 294 insertions(+), 18 deletions(-)
+ html/post_error.html       |   37 ++++++++--
+ html/validation_error.html |   54 ++++++++++++++
+ 7 files changed, 282 insertions(+), 18 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
 index 1a9b974..95af2d1 100755
@@ -64,11 +64,11 @@ index 2264fc9..97d4c79 100755
 +#define POST_ERROR_HTML       "post_error.html"
 +#define VALIDATION_ERROR_HTML "validation_error.html"
 diff --git a/cgi/info.c b/cgi/info.c
-new file mode 100755
-index 0000000..5601be0
+new file mode 100644
+index 0000000..4a3e519
 --- /dev/null
 +++ b/cgi/info.c
-@@ -0,0 +1,185 @@
+@@ -0,0 +1,173 @@
 +/*
 + * Copyright (c) 2002 Regents of The University of Michigan.
 + * All Rights Reserved.  See LICENSE.
@@ -133,20 +133,8 @@ index 0000000..5601be0
 +    char		*ip_addr, *qs;
 +    char		*method = NULL;
 +    char		*script;
-+    char		**lang;
 +
-+    bindtextdomain("cosign", _LOCALEDIR);
-+    textdomain("cosign");
-+    lang = get_accept_language();
-+    while(*lang !=NULL)
-+    {
-+	if (strcmp(*lang, "zh")==0 || strcmp(*lang, "zh_CN")==0) {
-+	    setlocale( LC_ALL, "zh_CN.UTF-8");
-+	    break;
-+	} else if (setlocale( LC_ALL, *lang) != NULL) {
-+	    break;
-+	}
-+    }
++    init_locale();
 +
 +    if ( argc == 2 && ( strncmp( argv[ 1 ], "-V", 2 ) == 0 )) {
 +	printf( "%s\n", cosign_version );
@@ -418,4 +406,4 @@ index 0000000..a667522
 +</body>
 +</html>
 -- 
-tg: (9a6ac10..) t/static_htmls_to_templates (depends on: t/message_localize t/autotools_for_setup)
+tg: (4bbd693..) t/static_htmls_to_templates (depends on: t/message_localize t/autotools_for_setup)

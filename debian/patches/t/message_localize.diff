@@ -8,13 +8,13 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
 ---
  cgi/Makefile.in      |    6 +
  cgi/cgi.c            |  310 ++++++++++++++++++++++++++------------------------
- cgi/lang.c           |   20 ++++
- cgi/lang.h           |    7 +
+ cgi/lang.c           |   43 +++++++
+ cgi/lang.h           |    1 +
  cgi/login.c          |   87 +++++++-------
  cgi/logout.c         |   37 ++++---
  cgi/subfile.c        |   24 ++++
  html/js/js_locale.js |   48 ++++++++
- 8 files changed, 330 insertions(+), 209 deletions(-)
+ 8 files changed, 347 insertions(+), 209 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
 index d8baf0b..47a874c 100755
@@ -697,48 +697,65 @@ index ae4ec41..6373b79 100755
 +
 +// vim: noet ts=8 sw=4
 diff --git a/cgi/lang.c b/cgi/lang.c
-index e9596b4..588618d 100644
+index ed863d6..314d95e 100644
 --- a/cgi/lang.c
 +++ b/cgi/lang.c
-@@ -115,4 +115,24 @@ get_accept_language()
-     return lang;
+@@ -114,5 +114,48 @@ get_accept_language()
+     return accept_languages = lang;
  }
  
 +    void
 +init_locale()
 +{
++#define MAX_LANG_CODE	20
 +    char	**lang;
++    char	*p;
++    char	lang_utf8[MAX_LANG_CODE+7] = "";
 +
 +    bindtextdomain("cosign", _LOCALEDIR);
 +    textdomain("cosign");
 +    lang = get_accept_language();
 +    while(*lang !=NULL)
 +    {
-+	if (strcmp(*lang, "zh")==0 || strcmp(*lang, "zh_CN")==0) {
-+	    setlocale( LC_ALL, "zh_CN.UTF-8");
++	p = strchr(*lang, '.');
++	lang_utf8[0] = '\0';
++	if (p!=NULL && p-*lang < MAX_LANG_CODE) {
++	    strncpy(lang_utf8, *lang, p-*lang);
++	    lang_utf8[p-*lang] = '\0';
++	    strcat(lang_utf8, ".UTF-8");
++	} else if (strlen(*lang) < MAX_LANG_CODE) {
++	    strcpy(lang_utf8, *lang);
++	    strcat(lang_utf8, ".UTF-8");
++	}
++
++	if (lang_utf8[0] != '\0' && setlocale( LC_ALL, lang_utf8) != NULL) {
 +	    break;
++	} else if (strcmp(*lang, "zh")==0) {
++	    if (setlocale( LC_ALL, "zh_CN.UTF-8") != NULL)
++		break;
++	    else if (setlocale( LC_ALL, "zh_CN") != NULL)
++		break;
++	    else if (setlocale( LC_ALL, *lang) != NULL)
++		break;
 +	} else if (setlocale( LC_ALL, *lang) != NULL) {
++	    break;
++	} else if (strncmp(*lang, "en", 2)==0) {
++	    setlocale( LC_ALL, "C");
 +	    break;
 +	}
 +	lang++;
 +    }
 +}
 +
+ 
  // vim: noet ts=8 sw=4
 diff --git a/cgi/lang.h b/cgi/lang.h
-index 36b37dc..7726787 100644
+index 3b32a78..7726787 100644
 --- a/cgi/lang.h
 +++ b/cgi/lang.h
-@@ -6,6 +6,13 @@
- #ifndef _LANG_H
- #define _LANG_H
+@@ -13,5 +13,6 @@
+ #define N_(String) gettext_noop (String)
  
-+#include <locale.h>
-+#include <libintl.h>
-+#define _(String) gettext (String)
-+#define gettext_noop(String) String
-+#define N_(String) gettext_noop (String)
-+
  char ** get_accept_language();
 +void init_locale();
  
@@ -1087,7 +1104,7 @@ index 5a0ea54..a050442 100755
 +
 +// vim: noet ts=8 sw=4
 diff --git a/cgi/subfile.c b/cgi/subfile.c
-index 343a4d8..985070c 100644
+index 790dacf..ad196b3 100644
 --- a/cgi/subfile.c
 +++ b/cgi/subfile.c
 @@ -19,6 +19,7 @@
@@ -1107,7 +1124,7 @@ index 343a4d8..985070c 100644
      } else {
  	orig = str;
      }
-@@ -194,6 +197,27 @@ _do_macro_include ( char *incfile, struct subfile_list *sl )
+@@ -203,6 +206,27 @@ _do_macro_include ( char *incfile, struct subfile_list *sl )
      return ret;
  }
  
@@ -1190,4 +1207,4 @@ index 0000000..15985fc
 +
 +// vim: noet ts=4 sw=4
 -- 
-tg: (1ff13c5..) t/message_localize (depends on: t/factor_ldap t/factor_invite t/include_macro_for_templates)
+tg: (c44fe64..) t/message_localize (depends on: t/factor_ldap t/factor_invite t/include_macro_for_templates)

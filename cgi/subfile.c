@@ -137,7 +137,8 @@ do_macro_include ( char *incfile, struct subfile_list *sl )
 
     if (strstr(incfile, "%lang%") != NULL) {
 	lang = get_accept_language();
-	// substitue %lang% to zh, zh_TW, ..., en
+
+	// substitue %lang% to zh_CN, zh_TW, ..., en
 	while(*lang !=NULL)
 	{
 	    newfile = str_replace(incfile, "%lang%", *lang);
@@ -145,13 +146,21 @@ do_macro_include ( char *incfile, struct subfile_list *sl )
 	    {
 		return;
 	    }
-	    if (strcmp(*lang, "zh_TW")==0)
+	    if (strncmp(*lang, "zh_", 3)==0)
 	    {
-		strcpy(*lang, "zh");
-		continue;
+		newfile = str_replace(incfile, "%lang%", "zh");
+		if (_do_macro_include ( newfile, sl ) == 0 )
+		    return;
+	    }
+	    else if (strncmp(*lang, "en_", 3)==0)
+	    {
+		newfile = str_replace(incfile, "%lang%", "en");
+		if (_do_macro_include ( newfile, sl ) == 0 )
+		    return;
 	    }
 	    lang++;
 	}
+
 	// fallback to en
 	newfile = str_replace(incfile, "%lang%", "en");
 	if (_do_macro_include ( newfile, sl ) == 0 )
@@ -238,13 +247,20 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
             filename = newfile;
             break;
         }
-        if (strcmp(*lang, "zh_TW")==0)
-        {
-            strcpy(*lang, "zh");
-            continue;
-        }
+	if (strncmp(*lang, "zh_", 3)==0)
+	{
+	    strcpy(*lang, "zh");
+	    continue;
+	}
+	else if (strncmp(*lang, "en_", 3)==0)
+	{
+	    strcpy(*lang, "en");
+	    continue;
+	}
         lang++;
     }
+
+    // fallback to en
     if (access(filename, F_OK)!=0)
     {
         snprintf(newfile, MAX_FN_LEN, "%s/%s", "en", filename);
@@ -258,10 +274,6 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
 
     return;
 }
-
-/*
- * command
- */
 
     
 /*

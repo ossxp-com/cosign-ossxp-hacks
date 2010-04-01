@@ -131,6 +131,7 @@ init_locale()
 	} else if (setlocale( LC_ALL, *lang) != NULL) {
 	    break;
 	}
+	lang++;
     }
 }
 

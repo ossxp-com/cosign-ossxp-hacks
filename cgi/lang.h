@@ -6,6 +6,10 @@
 #ifndef _LANG_H
 #define _LANG_H
 
-char ** get_accept_language();
+#include <locale.h>
+#include <libintl.h>
+#define _(String) gettext (String)
+#define gettext_noop(String) String
+#define N_(String) gettext_noop (String)
 
 #endif

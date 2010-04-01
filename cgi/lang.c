@@ -117,17 +117,40 @@ get_accept_language()
     void
 init_locale()
 {
+#define MAX_LANG_CODE	20
     char	**lang;
+    char	*p;
+    char	lang_utf8[MAX_LANG_CODE+7] = "";
 
     bindtextdomain("cosign", _LOCALEDIR);
     textdomain("cosign");
     lang = get_accept_language();
     while(*lang !=NULL)
     {
-	if (strcmp(*lang, "zh")==0 || strcmp(*lang, "zh_CN")==0) {
-	    setlocale( LC_ALL, "zh_CN.UTF-8");
+	p = strchr(*lang, '.');
+	lang_utf8[0] = '\0';
+	if (p!=NULL && p-*lang < MAX_LANG_CODE) {
+	    strncpy(lang_utf8, *lang, p-*lang);
+	    lang_utf8[p-*lang] = '\0';
+	    strcat(lang_utf8, ".UTF-8");
+	} else if (strlen(*lang) < MAX_LANG_CODE) {
+	    strcpy(lang_utf8, *lang);
+	    strcat(lang_utf8, ".UTF-8");
+	}
+
+	if (lang_utf8[0] != '\0' && setlocale( LC_ALL, lang_utf8) != NULL) {
 	    break;
+	} else if (strcmp(*lang, "zh")==0) {
+	    if (setlocale( LC_ALL, "zh_CN.UTF-8") != NULL)
+		break;
+	    else if (setlocale( LC_ALL, "zh_CN") != NULL)
+		break;
+	    else if (setlocale( LC_ALL, *lang) != NULL)
+		break;
 	} else if (setlocale( LC_ALL, *lang) != NULL) {
+	    break;
+	} else if (strncmp(*lang, "en", 2)==0) {
+	    setlocale( LC_ALL, "C");
 	    break;
 	}
 	lang++;

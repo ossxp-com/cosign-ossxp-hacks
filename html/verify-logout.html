@@ -11,6 +11,11 @@
 <script type="text/javascript" src="/cosign/js/prototype.js"></script>
 <script type="text/javascript">
 	window.onload = function() {
+		try {
+			if (history.length <= 1) {
+				$('back').hide();
+			}
+		} catch (e) {}
 		Event.observe('back', 'click', function() {history.go(-1)});
 		$('logout').focus();
 	}
@@ -18,25 +23,25 @@
 </head>
 <body>
 <div id="page">
-  $!include(inc/header.inc)
+  $!include(inc/%lang%/header.inc)
 	<div id="main" class="logoutUI">
 		<div id="uiRow">
 		    <form name="f" method="post" action="/cgi-bin/logout">
-			<h1>Log Out</h1>
-			<p>You are about to log out of <a href="/services/">all weblogin applications</a>.
-				Are you sure you want to do this?</p>
+			<h1>$!_("Log Out")</h1>
+			<p>$!_("You are about to log out of <a href=\"/services/\">all weblogin applications</a>.")
+				$!_("Are you sure you want to do this?")</p>
 			<p>
-				<input type="button" id="back" value="Go Back" />
-				<input type="submit" id="logout" name="verify" value="Log Out" />
+				<input type="button" id="back" value="$!_("Go Back")" />
+				<input type="submit" id="logout" name="verify" value="$!_("Log Out")" />
 			</p>
-			<div class="redirect">After logout your browser
-			will redirect to: $u</div>
+			<div class="redirect">$!_("After logout your browser will redirect to:")
+			$u</div>
 			<input type="hidden" name="url" value="$u" />
 		</form>
 		</div>
 		<div id="uiBottom">&nbsp;</div>
 	</div>
 </div>
-$!include(inc/footer.inc)
+$!include(inc/%lang%/footer.inc)
 </body>
 </html>

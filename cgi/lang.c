@@ -86,7 +86,7 @@ get_accept_language()
 		    if (m==array_size)
 		    {
 			array_size = array_size * 2 + 1;
-			lang = realloc(lang, array_size * sizeof(char *));
+			lang = realloc(lang, array_size * sizeof(char *) + 1);
 		    }
 		    lang[m] = buff;
 		    lang[m+1] = NULL;

@@ -10,7 +10,7 @@ Architecture: all
 Section: ossxp
 Priority: optional
 Depends: openssl
-Suggests: cdbs
+Suggests:
 Conflicts: ossxp-cosign-common
 Description: Common files for CoSign cgi and daemon.
  CoSign is a Single Sign-On from weblogin.org
@@ -20,7 +20,7 @@ Architecture: any
 Section: ossxp
 Priority: optional
 Depends: openssl, ossxp-cosign3-common
-Suggests: cdbs
+Suggests:
 Conflicts: ossxp-cosign-daemon
 Description: CoSign daemons
  CoSign is a Single Sign-On from weblogin.org
@@ -30,7 +30,7 @@ Architecture: any
 Section: ossxp
 Priority: optional
 Depends: ossxp-apache2, openssl, ossxp-cosign3-common, libnet-ldap-perl, python-ldap
-Suggests: cdbs
+Suggests: ossxp-secure-fail2ban (>= 0.1-3)
 Conflicts: ossxp-cosign-cgi
 Description: CoSign login/logout CGIs
  CoSign is a Single Sign-On from weblogin.org
@@ -40,7 +40,7 @@ Architecture: any
 Section: ossxp
 Priority: optional
 Depends: ossxp-apache2, openssl, ossxp-cosign3-common
-Suggests: cdbs
+Suggests:
 Conflicts: ossxp-cosign-filter
 Description: CoSign filter for apache2
  CoSign is a Single Sign-On from weblogin.org

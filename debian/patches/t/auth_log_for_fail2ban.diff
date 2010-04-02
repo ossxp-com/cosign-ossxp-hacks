@@ -1,0 +1,53 @@
+From: Jiang <jiangxin@ossxp.com>
+Subject: [PATCH] t/auth_log_for_fail2ban
+
+Generate error if auth failed, used for fail2ban.
+
+Signed-off-by: Jiang <jiangxin@ossxp.com>
+
+---
+ cgi/cgi.c |   15 +++++++++++++--
+ 1 files changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/cgi/cgi.c b/cgi/cgi.c
+index ae4ec41..0038379 100755
+--- a/cgi/cgi.c
++++ b/cgi/cgi.c
+@@ -728,7 +728,11 @@ main( int argc, char *argv[] )
+ 					cl[ CL_PASSWORD ].cl_data, ip_addr,
+ 					cookie, &sp, &msg )) == COSIGN_CGI_OK) {
+ 		    goto loggedin;
+-	        }
++	        } else {
++		    fprintf( stderr, "CoSign: user %s authentication failure from host [%s]. (mysql)\n", username != NULL ? username : login, ip_addr);
++		    if ( msg != NULL && strlen( msg ) > 0 )
++			fprintf( stderr, "CoSign: auth failed. Error message: %s\n", msg);
++		}
+ 	    } else
+ # endif  /* SQL_FRIEND */
+ # ifdef KRB
+@@ -737,7 +741,11 @@ main( int argc, char *argv[] )
+ 				        cl[ CL_PASSWORD ].cl_data, ip_addr,
+ 					cookie, &sp, &msg )) == COSIGN_CGI_OK) {
+ 		    goto loggedin;
+-                }
++                } else {
++		    fprintf( stderr, "CoSign: user %s authentication failure from host [%s]. (KRB5)\n", username != NULL ? username : login, ip_addr);
++		    if ( msg != NULL && strlen( msg ) > 0 )
++			fprintf( stderr, "CoSign: auth failed. Error message: %s\n", msg);
++		}
+ 	    } else
+ #endif /* KRB5 */
+ 	    {
+@@ -794,6 +802,9 @@ loggedin:
+ 	}
+ 	if (( rc = execfactor( fl, cl, &msg )) != COSIGN_CGI_OK ) {
+ 	    sl[ SL_ERROR ].sl_data = msg;
++	    fprintf( stderr, "CoSign: user %s authentication failure from host [%s]. (factors)\n", login !=NULL ? login : "?", ip_addr);
++	    if ( msg != NULL && strlen( msg ) > 0 )
++		fprintf( stderr, "CoSign: auth failed. Error message: %s\n", msg);
+             if ( rc == COSIGN_CGI_PASSWORD_EXPIRED ) {
+ 	        sl[ SL_TITLE ].sl_data = "Password Expired";
+                 subfile( EXPIRED_ERROR_HTML, sl, 0 );
+-- 
+tg: (d1adc40..) t/auth_log_for_fail2ban (depends on: master)

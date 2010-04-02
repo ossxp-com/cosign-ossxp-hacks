@@ -41,7 +41,7 @@ index d8baf0b..47a874c 100755
  	${CC} ${CFLAGS} \
  	-D_COSIGN_TICKET_CACHE=\"${COSIGNTICKETCACHE}\" \
 diff --git a/cgi/cgi.c b/cgi/cgi.c
-index ae4ec41..6373b79 100755
+index 0038379..0270944 100755
 --- a/cgi/cgi.c
 +++ b/cgi/cgi.c
 @@ -26,6 +26,7 @@
@@ -463,7 +463,7 @@ index ae4ec41..6373b79 100755
  	    goto loginscreen;
  	}
  	login = sl[ SL_LOGIN ].sl_data = cl[ CL_LOGIN ].cl_data;
-@@ -742,23 +745,23 @@ main( int argc, char *argv[] )
+@@ -750,23 +753,23 @@ main( int argc, char *argv[] )
  #endif /* KRB5 */
  	    {
                  rc = COSIGN_CGI_ERROR;
@@ -495,7 +495,7 @@ index ae4ec41..6373b79 100755
  	}
  	goto loginscreen;
  
-@@ -787,20 +790,20 @@ loggedin:
+@@ -795,23 +798,23 @@ loggedin:
  	}
  
  	if (( fl->fl_flag == 2 ) && ( *ui.ui_login == '\0' )) {
@@ -509,6 +509,10 @@ index ae4ec41..6373b79 100755
  	}
  	if (( rc = execfactor( fl, cl, &msg )) != COSIGN_CGI_OK ) {
 -	    sl[ SL_ERROR ].sl_data = msg;
++	    sl[ SL_ERROR ].sl_data = _(msg);
+ 	    fprintf( stderr, "CoSign: user %s authentication failure from host [%s]. (factors)\n", login !=NULL ? login : "?", ip_addr);
+ 	    if ( msg != NULL && strlen( msg ) > 0 )
+ 		fprintf( stderr, "CoSign: auth failed. Error message: %s\n", msg);
 -            if ( rc == COSIGN_CGI_PASSWORD_EXPIRED ) {
 -	        sl[ SL_TITLE ].sl_data = "Password Expired";
 -                subfile( EXPIRED_ERROR_HTML, sl, 0 );
@@ -516,7 +520,6 @@ index ae4ec41..6373b79 100755
 -            } else {
 -	        sl[ SL_TITLE ].sl_data = "Authentication Required";
 -            }
-+	    sl[ SL_ERROR ].sl_data = _(msg);
 +	    if ( rc == COSIGN_CGI_PASSWORD_EXPIRED ) {
 +		sl[ SL_TITLE ].sl_data = _("Password Expired");
 +		subfile( EXPIRED_ERROR_HTML, sl, 0 );
@@ -527,7 +530,7 @@ index ae4ec41..6373b79 100755
  	    goto loginscreen;
  	}
  
-@@ -827,9 +830,9 @@ loggedin:
+@@ -838,9 +841,9 @@ loggedin:
  	if (( ui.ui_factors[ i ] == NULL ) ||
  		( strcmp( ui.ui_ipaddr, ip_addr ) != 0 )) {
  	    if ( cosign_login( head, cookie, ip_addr, login, msg, NULL ) < 0 ) {
@@ -540,7 +543,7 @@ index ae4ec41..6373b79 100755
  		subfile( ERROR_HTML, sl, 0 );
  		exit( 0 );
  	    }
-@@ -839,8 +842,8 @@ loggedin:
+@@ -850,8 +853,8 @@ loggedin:
      }
  
      if ( *ui.ui_login == '\0' ) {
@@ -551,7 +554,7 @@ index ae4ec41..6373b79 100755
  	goto loginscreen;
      }
  
-@@ -855,30 +858,30 @@ loggedin:
+@@ -866,30 +869,30 @@ loggedin:
  	    *p = '=';
  	}
  	if ( scookie == NULL ) {
@@ -597,7 +600,7 @@ index ae4ec41..6373b79 100755
  	    subfile( ERROR_HTML, sl, 0 );
  	    exit( 0 );
  	}
-@@ -896,8 +899,8 @@ loggedin:
+@@ -907,8 +910,8 @@ loggedin:
  		    }
  		}
  		if ( new_factors[ j ] == NULL ) {
@@ -608,7 +611,7 @@ index ae4ec41..6373b79 100755
  		    goto loginscreen;
  		}
  	    }
-@@ -911,10 +914,10 @@ loggedin:
+@@ -922,10 +925,10 @@ loggedin:
  	    /* cosign3 scheme, must generate new service cookie */
  	    if ( mkscookie( service, new_scookie,
  			    sizeof( new_scookie )) != 0 ) {
@@ -623,7 +626,7 @@ index ae4ec41..6373b79 100755
  		subfile( ERROR_HTML, sl, 0 );
  		exit( 0 );
  	    }
-@@ -922,10 +925,10 @@ loggedin:
+@@ -933,10 +936,10 @@ loggedin:
  	}
  
          if (( rc = cosign_register( head, cookie, ip_addr, service )) < 0 ) {
@@ -638,7 +641,7 @@ index ae4ec41..6373b79 100755
  	    subfile( ERROR_HTML, sl, 0 );
              exit( 0 );
          }
-@@ -957,14 +960,16 @@ loginscreen:
+@@ -968,14 +971,16 @@ loginscreen:
  	}
  
  	if ( mkcookie( sizeof( new_cookiebuf ), new_cookiebuf ) != 0 ) {
@@ -658,7 +661,7 @@ index ae4ec41..6373b79 100755
  	}
  	snprintf( new_cookie, sizeof( new_cookie ), "cosign=%s/%lu",
  		new_cookiebuf, tv.tv_sec );
-@@ -1002,23 +1007,26 @@ loginscreen:
+@@ -1013,23 +1018,26 @@ loginscreen:
  	if (( scookie != NULL ) && ( scookie->sl_flag & SL_REAUTH )) {
  	    sl[ SL_DFACTOR ].sl_data = NULL;
  	    sl[ SL_RFACTOR ].sl_data = smash( scookie->sl_factors );
@@ -690,7 +693,7 @@ index ae4ec41..6373b79 100755
  	    tmpl = LOGIN_ERROR_HTML;
  	}
      }
-@@ -1026,3 +1034,5 @@ loginscreen:
+@@ -1037,3 +1045,5 @@ loginscreen:
      subfile( tmpl, sl, 1 );
      exit( 0 );
  }
@@ -1207,4 +1210,4 @@ index 0000000..15985fc
 +
 +// vim: noet ts=4 sw=4
 -- 
-tg: (c44fe64..) t/message_localize (depends on: t/factor_ldap t/factor_invite t/include_macro_for_templates)
+tg: (abff349..) t/message_localize (depends on: t/factor_ldap t/factor_invite t/include_macro_for_templates t/auth_log_for_fail2ban)

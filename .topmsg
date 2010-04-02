@@ -1,0 +1,6 @@
+From: Jiang <jiangxin@ossxp.com>
+Subject: [PATCH] t/auth_log_for_fail2ban
+
+Generate error if auth failed, used for fail2ban.
+
+Signed-off-by: Jiang <jiangxin@ossxp.com>

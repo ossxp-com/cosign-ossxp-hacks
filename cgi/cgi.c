@@ -731,7 +731,11 @@ main( int argc, char *argv[] )
 					cl[ CL_PASSWORD ].cl_data, ip_addr,
 					cookie, &sp, &msg )) == COSIGN_CGI_OK) {
 		    goto loggedin;
-	        }
+	        } else {
+		    fprintf( stderr, "CoSign: user %s authentication failure from host [%s]. (mysql)\n", username != NULL ? username : login, ip_addr);
+		    if ( msg != NULL && strlen( msg ) > 0 )
+			fprintf( stderr, "CoSign: auth failed. Error message: %s\n", msg);
+		}
 	    } else
 # endif  /* SQL_FRIEND */
 # ifdef KRB
@@ -740,7 +744,11 @@ main( int argc, char *argv[] )
 				        cl[ CL_PASSWORD ].cl_data, ip_addr,
 					cookie, &sp, &msg )) == COSIGN_CGI_OK) {
 		    goto loggedin;
-                }
+                } else {
+		    fprintf( stderr, "CoSign: user %s authentication failure from host [%s]. (KRB5)\n", username != NULL ? username : login, ip_addr);
+		    if ( msg != NULL && strlen( msg ) > 0 )
+			fprintf( stderr, "CoSign: auth failed. Error message: %s\n", msg);
+		}
 	    } else
 #endif /* KRB5 */
 	    {
@@ -797,6 +805,9 @@ loggedin:
 	}
 	if (( rc = execfactor( fl, cl, &msg )) != COSIGN_CGI_OK ) {
 	    sl[ SL_ERROR ].sl_data = _(msg);
+	    fprintf( stderr, "CoSign: user %s authentication failure from host [%s]. (factors)\n", login !=NULL ? login : "?", ip_addr);
+	    if ( msg != NULL && strlen( msg ) > 0 )
+		fprintf( stderr, "CoSign: auth failed. Error message: %s\n", msg);
 	    if ( rc == COSIGN_CGI_PASSWORD_EXPIRED ) {
 		sl[ SL_TITLE ].sl_data = _("Password Expired");
 		subfile( EXPIRED_ERROR_HTML, sl, 0 );

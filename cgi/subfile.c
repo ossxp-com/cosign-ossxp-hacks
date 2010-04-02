@@ -12,6 +12,11 @@
 #include <libgen.h>
 #include <glob.h>
 
+#include <netinet/in.h>
+#include <openssl/ssl.h>
+#include <snet.h>
+#include "cosigncgi.h"
+
 #define MAX_CMD		18
 #define MAX_FN_LEN	512
 #define MAX_LINE_BUFF	4096
@@ -268,6 +273,28 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
         {
             filename = newfile;
         }
+    }
+
+    // If template not exist, fallback to ERROR_HTML
+    if (access(filename, F_OK)!=0)
+    {
+	if ( strcmp(filename, LOGIN_ERROR_HTML) == 0 )
+	    return subfile( LOGIN_HTML, sl, nocache );
+
+	else if ( strcmp(filename, EXPIRED_ERROR_HTML) == 0 )
+	    return subfile( LOGIN_HTML, sl, nocache );
+
+	else if ( strcmp(filename, REDIRECT_HTML) == 0 )
+	    return subfile( ERROR_HTML, sl, nocache );
+
+	else if ( strcmp(filename, LOOPING_HTML) == 0 )
+	    return subfile( ERROR_HTML, sl, nocache );
+
+	else if ( strcmp(filename, POST_ERROR_HTML) == 0 )
+	    return subfile( ERROR_HTML, sl, nocache );
+
+	else if ( strcmp(filename, VALIDATION_ERROR_HTML) == 0 )
+	    return subfile( ERROR_HTML, sl, nocache );
     }
 
     _subfile( filename, sl, nocache );

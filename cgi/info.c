@@ -65,6 +65,8 @@ main( int argc, char *argv[] )
 
     init_locale();
 
+    sl[ SL_DETAIL ].sl_data = _(SL_DEFAULT_ERROR_MESSAGE);
+
     if ( argc == 2 && ( strncmp( argv[ 1 ], "-V", 2 ) == 0 )) {
 	printf( "%s\n", cosign_version );
 	exit( 0 );

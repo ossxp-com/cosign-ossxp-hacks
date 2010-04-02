@@ -1,3 +1,4 @@
 t/factor_ldap
 t/factor_invite
 t/include_macro_for_templates
+t/auth_log_for_fail2ban

@@ -32,10 +32,11 @@ struct connlist * connlist_setup( char *, unsigned short );
 #define REDIRECT_HTML		"redirect.html"
 #define VERIFY_LOGOUT		"verify-logout.html"
 
+#include "lang.h"
 #define	SL_DEFAULT_ERROR_MESSAGE    \
-	"<p>Web Login is unavailable due to an internal error. We apologize" \
+	_("<p>Web Login is unavailable due to an internal error. We apologize" \
 	" for any inconvenience this may cause and are working to restore"   \
-	" service as soon as possible. Please try again later.</p>"
+	" service as soon as possible. Please try again later.</p>")
 
 //static html also treat as template. ( Jiang Xin <jiangxin@ossxp.com>)
 #define LOOPING_HTML          "looping.html"

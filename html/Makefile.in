@@ -19,8 +19,6 @@ install : all
 	for i in ${TEMPLATES}; do \
 	    [ -f $$i ] && cp -a $$i $(DESTDIR)${TMPLDIR}; \
 	done
-	# Templates for zh_cn
-	cp -a zh $(DESTDIR)${TMPLDIR}/
 	for i in ${HTML}; do \
 	    cp -a $$i $(DESTDIR)${HTMLDIR}/; \
 	done

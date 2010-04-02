@@ -41,6 +41,8 @@ struct cgi_list cl[] = {
         { "verify", CGI_TYPE_STRING, NULL },
 #define CL_URL 		1
         { "url", CGI_TYPE_STRING, NULL },
+#define SL_DETAIL	2
+        { 'm', SUBF_STR, NULL },
         { NULL, CGI_TYPE_UNDEF, NULL },
 };
 
@@ -134,6 +136,8 @@ main( int argc, char *argv[] )
     char		*script;
 
     init_locale();
+
+    sl[ SL_DETAIL ].sl_data = _(SL_DEFAULT_ERROR_MESSAGE);
 
     if ( argc == 2 && ( strncmp( argv[ 1 ], "-V", 2 ) == 0 )) {
 	printf( "%s\n", cosign_version );

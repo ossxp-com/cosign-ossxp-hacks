@@ -47,4 +47,3 @@
 					<p>Note: The two fields, password and invite code input fields are exclusive. The other is disabled when one is focus and has inupt.
 					</p>
 				</div>
-			</div>

@@ -105,6 +105,10 @@ cosign_choose_conn( struct connlist *head, void *netparams,
 	    return( -1 );
 
 	case COSIGN_RETRY :
+	    if (cur->conn_next != NULL) {
+		fprintf( stderr,
+		    "cosign_choose_conn: server %s returned UNKNOWN\n", inet_ntoa(cur->conn_sin.sin_addr) );
+	    }
 	    retry = 1;
 	    break;
 
@@ -137,6 +141,10 @@ cosign_choose_conn( struct connlist *head, void *netparams,
 	    return( -1 );
 
 	case COSIGN_RETRY :
+	    if (cur->conn_next != NULL) {
+		fprintf( stderr,
+		    "cosign_choose_conn: server %s returned UNKNOWN\n", inet_ntoa(cur->conn_sin.sin_addr) );
+	    }
 	    retry = 1;
 	    break;
 
@@ -152,10 +160,7 @@ cosign_choose_conn( struct connlist *head, void *netparams,
         }
     }
 
-    if ( retry ) {
-	fprintf( stderr,
-		"cosign_choose_conn: some servers returned UNKNOWN\n");
-    } else {
+    if ( !retry ) {
 	fprintf( stderr,
 		"cosign_choose_conn: all servers returned ERROR\n");
     }
@@ -658,3 +663,4 @@ done:
     return( err );
 }
 
+// vim: noet ts=8 sw=4

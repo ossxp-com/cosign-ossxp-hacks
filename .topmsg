@@ -1,0 +1,7 @@
+From: Jiang <jiangxin@ossxp.com>
+Subject: [PATCH] t/bugfix_no_retry_report
+
+Do not generate log: some servers returned UNKNOWN.
+Generate only necessary with the server IP.
+
+Signed-off-by: Jiang <jiangxin@ossxp.com>

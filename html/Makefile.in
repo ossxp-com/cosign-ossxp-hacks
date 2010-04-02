@@ -14,13 +14,11 @@ all: ${TEMPLATES}
 
 install : all
 	-mkdir -p $(DESTDIR)${exec_prefix}
-	-mkdir -p $(DESTDIR)${TMPLDIR}/en
+	-mkdir -p $(DESTDIR)${TMPLDIR}
 	-mkdir -p $(DESTDIR)${HTMLDIR}
 	for i in ${TEMPLATES}; do \
-	    cp -a $$i $(DESTDIR)${TMPLDIR}/en; \
+	    [ -f $$i ] && cp -a $$i $(DESTDIR)${TMPLDIR}; \
 	done
-	# Templates for zh_cn
-	cp -a zh $(DESTDIR)${TMPLDIR}/
 	# Templates in google style, contains both en and zh_cn style
 	cp -a templates_google $(DESTDIR)${prefix}
 	for i in ${HTML}; do \

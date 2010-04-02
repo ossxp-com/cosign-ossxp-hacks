@@ -16,7 +16,7 @@ install : all
 	-mkdir -p $(DESTDIR)${exec_prefix}
 	-mkdir -p $(DESTDIR)${TMPLDIR}
 	-mkdir -p $(DESTDIR)${HTMLDIR}
-	for i in ${TEMPLATES}; do \
+	-for i in ${TEMPLATES}; do \
 	    [ -f $$i ] && cp -a $$i $(DESTDIR)${TMPLDIR}; \
 	done
 	for i in ${HTML}; do \
@@ -31,3 +31,5 @@ install : all
 	cp services/*.html $(DESTDIR)${SERVICESDIR}/
 
 clean:
+
+.PHONY: clean all ${TEMPLATES}

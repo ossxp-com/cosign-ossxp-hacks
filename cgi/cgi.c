@@ -90,6 +90,8 @@ static struct subfile_list sl[] = {
         { 'f', SUBF_STR_ESC, NULL },
 #define SL_DFACTOR	6
         { 'd', SUBF_STR_ESC, NULL },
+#define SL_DETAIL	7
+        { 'm', SUBF_STR, NULL },
         { '\0', 0, NULL },
 };
 
@@ -287,6 +289,8 @@ main( int argc, char *argv[] )
     CGIHANDLE			*cgi;
 
     init_locale();
+
+    sl[ SL_DETAIL ].sl_data = _(SL_DEFAULT_ERROR_MESSAGE);
 
     if ( argc == 2 ) {
 	if ( strcmp( argv[ 1 ], "-V" ) == 0 ) {

@@ -1,0 +1,57 @@
+From: Jiang <jiangxin@ossxp.com>
+Subject: [PATCH] t/bugfix_no_retry_report
+
+Do not generate log: some servers returned UNKNOWN.
+Generate only necessary with the server IP.
+
+Signed-off-by: Jiang <jiangxin@ossxp.com>
+
+---
+ cgi/network.c |   14 ++++++++++----
+ 1 files changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/cgi/network.c b/cgi/network.c
+index 1697645..faca7db 100755
+--- a/cgi/network.c
++++ b/cgi/network.c
+@@ -105,6 +105,10 @@ cosign_choose_conn( struct connlist *head, void *netparams,
+ 	    return( -1 );
+ 
+ 	case COSIGN_RETRY :
++	    if (cur->conn_next != NULL) {
++		fprintf( stderr,
++		    "cosign_choose_conn: server %s returned UNKNOWN\n", inet_ntoa(cur->conn_sin.sin_addr) );
++	    }
+ 	    retry = 1;
+ 	    break;
+ 
+@@ -137,6 +141,10 @@ cosign_choose_conn( struct connlist *head, void *netparams,
+ 	    return( -1 );
+ 
+ 	case COSIGN_RETRY :
++	    if (cur->conn_next != NULL) {
++		fprintf( stderr,
++		    "cosign_choose_conn: server %s returned UNKNOWN\n", inet_ntoa(cur->conn_sin.sin_addr) );
++	    }
+ 	    retry = 1;
+ 	    break;
+ 
+@@ -152,10 +160,7 @@ cosign_choose_conn( struct connlist *head, void *netparams,
+         }
+     }
+ 
+-    if ( retry ) {
+-	fprintf( stderr,
+-		"cosign_choose_conn: some servers returned UNKNOWN\n");
+-    } else {
++    if ( !retry ) {
+ 	fprintf( stderr,
+ 		"cosign_choose_conn: all servers returned ERROR\n");
+     }
+@@ -658,3 +663,4 @@ done:
+     return( err );
+ }
+ 
++// vim: noet ts=8 sw=4
+-- 
+tg: (d1adc40..) t/bugfix_no_retry_report (depends on: master)

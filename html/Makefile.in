@@ -17,7 +17,7 @@ install : all
 	-mkdir -p $(DESTDIR)${TMPLDIR}
 	-mkdir -p $(DESTDIR)${HTMLDIR}
 	-for i in ${TEMPLATES}; do \
-	    [ -f $$i ] && cp -a $$i $(DESTDIR)${TMPLDIR}; \
+	    [ -e $$i ] && cp -a $$i $(DESTDIR)${TMPLDIR}; \
 	done
 	for i in ${HTML}; do \
 	    cp -a $$i $(DESTDIR)${HTMLDIR}/; \

@@ -17,7 +17,7 @@ install : all
 	-mkdir -p $(DESTDIR)${TMPLDIR}
 	-mkdir -p $(DESTDIR)${HTMLDIR}
 	-for i in ${TEMPLATES}; do \
-	    [ -f $$i ] && cp -a $$i $(DESTDIR)${TMPLDIR}; \
+	    [ -e $$i ] && cp -a $$i $(DESTDIR)${TMPLDIR}; \
 	done
 	# Templates in google style, contains both en and zh_cn style
 	cp -a templates_google $(DESTDIR)${prefix}

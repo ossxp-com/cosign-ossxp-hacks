@@ -700,7 +700,7 @@ index 0038379..0270944 100755
 +
 +// vim: noet ts=8 sw=4
 diff --git a/cgi/lang.c b/cgi/lang.c
-index ed863d6..314d95e 100644
+index 4fc6c02..23de430 100644
 --- a/cgi/lang.c
 +++ b/cgi/lang.c
 @@ -114,5 +114,48 @@ get_accept_language()
@@ -1210,4 +1210,4 @@ index 0000000..15985fc
 +
 +// vim: noet ts=4 sw=4
 -- 
-tg: (abff349..) t/message_localize (depends on: t/factor_ldap t/factor_invite t/include_macro_for_templates t/auth_log_for_fail2ban)
+tg: (0309833..) t/message_localize (depends on: t/factor_ldap t/factor_invite t/include_macro_for_templates t/auth_log_for_fail2ban)

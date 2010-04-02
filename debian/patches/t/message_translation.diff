@@ -7758,4 +7758,4 @@ index 0000000..cbc107c
 +msgstr "单点登录：URL 校验失败"
 +
 -- 
-tg: (809ab71..) t/message_translation (depends on: t/message_localize t/static_htmls_to_templates)
+tg: (8ae7582..) t/message_translation (depends on: t/message_localize t/static_htmls_to_templates)

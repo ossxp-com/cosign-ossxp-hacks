@@ -538,4 +538,4 @@ index 0000000..a667522
 +</body>
 +</html>
 -- 
-tg: (54fb881..) t/static_htmls_to_templates (depends on: t/message_localize t/autotools_for_setup)
+tg: (cebe8df..) t/static_htmls_to_templates (depends on: t/message_localize t/autotools_for_setup)

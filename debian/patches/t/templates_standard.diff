@@ -1351,4 +1351,4 @@ index ea68776..f03c141 100755
  </body>
  </html>
 -- 
-tg: (f5eca63..) t/templates_standard (depends on: t/custom_cosign_path t/javascript t/include_macro_for_templates t/static_htmls_to_templates)
+tg: (8319370..) t/templates_standard (depends on: t/custom_cosign_path t/javascript t/include_macro_for_templates t/static_htmls_to_templates)

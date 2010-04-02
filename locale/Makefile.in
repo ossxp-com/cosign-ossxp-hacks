@@ -9,9 +9,8 @@ TARGETS=zh
 
 all: mo
 
-pot: $(MAIN_POT)
-cosign.pot: $(wildcard ../cgi/*.c)
-	xgettext -s -k_ -o $@ $^
+pot: $(wildcard ../cgi/*.c) ../cgi/cosigncgi.h
+	xgettext -s -k_ -o cosign.pot $^
 
 po: pot
 	for i in ${TARGETS}; do \
@@ -33,7 +32,7 @@ clean:
 
 install : all
 	-mkdir -p $(DESTDIR)${LOCALEDIR}
-	cp -a cosign.pot ${TARGETS} $(DESTDIR)${LOCALEDIR}
+	cp -a $(MAIN_POT) ${TARGETS} $(DESTDIR)${LOCALEDIR}
 
 .PHONY: pot po mo clean all install
 

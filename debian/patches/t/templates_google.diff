@@ -54,13 +54,13 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
  45 files changed, 2066 insertions(+), 0 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
-index 6d3d27d..be0140b 100755
+index 54ad8a0..d5595be 100755
 --- a/html/Makefile.in
 +++ b/html/Makefile.in
-@@ -21,6 +21,8 @@ install : all
+@@ -19,6 +19,8 @@ install : all
+ 	-for i in ${TEMPLATES}; do \
+ 	    [ -e $$i ] && cp -a $$i $(DESTDIR)${TMPLDIR}; \
  	done
- 	# Templates for zh_cn
- 	cp -a zh $(DESTDIR)${TMPLDIR}/
 +	# Templates in google style, contains both en and zh_cn style
 +	cp -a templates_google $(DESTDIR)${prefix}
  	for i in ${HTML}; do \
@@ -2395,4 +2395,4 @@ index 0000000..e391b70
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
 -- 
-tg: (22a0b09..) t/templates_google (depends on: t/template_standard_zh)
+tg: (57c5f4b..) t/templates_google (depends on: t/templates_standard)

@@ -1,0 +1,1354 @@
+From: Jiang Xin <worldhello.net@gmail.com>
+Subject: [PATCH] t/template_standard_en
+
+<patch description>
+
+Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
+
+---
+ html/Makefile.in                 |   10 ++-
+ html/error.html                  |   28 +++----
+ html/expired_error.html          |  167 -------------------------------------
+ html/inc/factor_invite.inc       |   74 +++++++++++++++++
+ html/inc/factor_kx509.inc        |   11 +++
+ html/inc/factor_login.inc        |   24 ++++++
+ html/inc/factor_login_reauth.inc |   21 +++++
+ html/inc/factor_otp.inc          |   16 ++++
+ html/inc/footer.inc              |    2 +
+ html/inc/header.inc              |    3 +
+ html/inc/help_hotkey.inc         |   12 +++
+ html/inc/help_infobox.inc        |   49 +++++++++++
+ html/inc/js_config.inc           |   11 +++
+ html/login.html                  |  129 +++--------------------------
+ html/login_error.html            |  168 --------------------------------------
+ html/looping.html                |   54 ------------
+ html/post_error.html             |   54 ------------
+ html/reauth.html                 |  145 +++++----------------------------
+ html/validation_error.html       |   54 ------------
+ html/verify-logout.html          |   28 ++++---
+ 20 files changed, 291 insertions(+), 769 deletions(-)
+
+diff --git a/html/Makefile.in b/html/Makefile.in
+index c0e6514..54ad8a0 100755
+--- a/html/Makefile.in
++++ b/html/Makefile.in
+@@ -1,4 +1,4 @@
+-TEMPLATES = error.html expired_error.html login.html login_error.html verify-logout.html reauth.html
++TEMPLATES = error.html expired_error.html login.html login_error.html verify-logout.html reauth.html inc
+ ## static html also serve as template (jiangxin@ossxp.com)
+ TEMPLATES += post_error.html looping.html validation_error.html
+ HTML = cosign_base.css cosign_js.css
+@@ -16,11 +16,11 @@ install : all
+ 	-mkdir -p $(DESTDIR)${exec_prefix}
+ 	-mkdir -p $(DESTDIR)${TMPLDIR}
+ 	-mkdir -p $(DESTDIR)${HTMLDIR}
+-	for i in ${TEMPLATES}; do \
+-	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${TMPLDIR}/; \
++	-for i in ${TEMPLATES}; do \
++	    [ -e $$i ] && cp -a $$i $(DESTDIR)${TMPLDIR}; \
+ 	done
+ 	for i in ${HTML}; do \
+-	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${HTMLDIR}/; \
++	    cp -a $$i $(DESTDIR)${HTMLDIR}/; \
+ 	done
+ 	-mkdir -p $(DESTDIR)${HTMLDIR}/images
+ 	cp images/*.gif $(DESTDIR)${HTMLDIR}/images/
+@@ -31,3 +31,5 @@ install : all
+ 	cp services/*.html $(DESTDIR)${SERVICESDIR}/
+ 
+ clean:
++
++.PHONY: clean all ${TEMPLATES}
+diff --git a/html/error.html b/html/error.html
+index 3a3a08f..9865b2c 100755
+--- a/html/error.html
++++ b/html/error.html
+@@ -1,7 +1,7 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
++<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ <meta http-equiv="Pragma" content="no-cache" />
+ <meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
+ <title>$t</title>
+@@ -16,31 +16,28 @@
+ </head>
+ <body>
+ <div id="page">
+-	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
+-		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
+-		</span> <strong>Our Home Page</strong></a> </div>
++  $!include(inc/%lang%/header.inc)
+ 	<div id="main">
+ 		<div id="uiRow">
+ 			<div id="leftUIcol">
+-				<h1 class="error">Web Login is Unavailable</h1>
+-				<p>Web Login is unavailable due to an internal error. We apologize for any inconvenience
+-					this may cause and are working to restore service as soon as possible. Please try
+-					again later.</p>
+-			<p class="techInfo"><strong>Technical
+-			Info:</strong> $e</p>
++				<h1 class="error">$t</h1>
++				<p>
++				$m
++				<p>$!_("Please contact technical support if you have any questions.")</p>
++				<p class="techInfo"><strong>$!_("Technical Info:")</strong> $e</p>
+ 			</div>
+ 			<form action="#" method="post" name="factors" id="rightUIcol">
+ 				<div class="factorHead">
+-					<h2>ID &amp; Password</h2>
++					<h2>$!_("ID &amp; Password")</h2>
+ 				</div>
+ 				<div class="factorHead">
+-					<h2>One Time Passcode</h2>
++					<h2>$!_("One Time Passcode")</h2>
+ 				</div>
+ 				<div class="factorHead">
+-					<h2>Certificate</h2>
++					<h2>$!_("Certificate")</h2>
+ 				</div>
+ 				<div id="loginButton">
+-					<input type="submit" name="doLogin" value="Log In" disabled="disabled" />
++					<input type="submit" name="doLogin" value="$!_("Log In")" disabled="disabled" />
+ 				</div>
+ 			</form>
+ 			<div class="clear">&nbsp;</div>
+@@ -48,7 +45,6 @@
+ 		<div id="uiBottom">&nbsp;</div>
+ 	</div>
+ </div>
+-<div id="foot">&copy; 2006 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
+-		of the University of Michigan</a> </div>
++$!include(inc/%lang%/footer.inc)
+ </body>
+ </html>
+diff --git a/html/expired_error.html b/html/expired_error.html
+deleted file mode 100644
+index 0185219..0000000
+--- a/html/expired_error.html
++++ /dev/null
+@@ -1,167 +0,0 @@
+-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+-<html xmlns="http://www.w3.org/1999/xhtml">
+-<head>
+-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+-<meta http-equiv="Pragma" content="no-cache" />
+-<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
+-<title>$t</title>
+-<style type="text/css" media="screen">
+-/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
+-</style>
+-<script type="text/javascript" src="/cosign/js/prototype.js"></script>
+-<script type="text/javascript" src="/cosign/js/scriptaculous.js"></script>
+-<script type="text/javascript" src="/cosign/js/effects.js"></script>
+-<script type="text/javascript" src="/cosign/js/cosign.js"></script>
+-<script type="text/javascript">
+-	var link = document.createElement('link');
+-	link.setAttribute('rel', 'stylesheet');
+-	link.setAttribute('type', 'text/css');
+-	link.setAttribute('href', '/cosign/cosign_js.css');
+-	document.getElementsByTagName('head')[0].appendChild(link);
+-	window.onload = function() {
+-		var cosign = new Cosign('$f');
+-		cosign.setSatisfied('$d');
+-		cosign.addFactor(['friend','UMICH.EDU'],'kerbTitle','kerberos');
+-		cosign.addFactor('otp','otpTitle','otp');
+-		cosign.addFactor('kx509','kx509Title','kx509');
+-		cosign.addInfoBox('kerbInfo','kerbInfoShow','kerbInfoHide');
+-		cosign.addInfoBox('otpInfo','otpInfoShow','otpInfoHide');
+-		cosign.addInfoBox('kx509Info','kx509InfoShow','kx509InfoHide');
+-		cosign.initUI();
+-	}
+-	</script>
+-</head>
+-<body>
+-<div id="page">
+-	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
+-		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
+-		</span> <strong>Our Home Page</strong></a> </div>
+-	<hr class="text" />
+-	<ul class="text">
+-		<li><a href="#instruct" title="Jump to the Web Login instructions [ALT + 1 Windows / CONTROL + 1 Mac]" accesskey="1">Jump
+-				to the Web Login instructions</a></li>
+-		<li><a href="#error" title="Jump to the error message (if present) [ALT + 2 Windows / CONTROL + 2 Mac]" accesskey="2">Jump
+-				to the error message (if present)</a></li>
+-		<li><a href="#kerberos" title="Jump to the ID and Password section [ALT + 3 Windows / CONTROL + 3 Mac]" accesskey="3">Jump
+-				to the ID and Password section</a></li>
+-		<li><a href="#otp" title="Jump to the One Time Passcode section [ALT + 4 Windows / CONTROL + 4 Mac]"  accesskey="4">Jump
+-				to the One Time Passcode section</a></li>
+-		<li><a href="#kx509" title="Jump to the Certificate section [ALT + 5 Windows / CONTROL + 5 Mac]" accesskey="5">Jump
+-				to the Certificate section</a></li>
+-	</ul>
+-	<hr class="text" />
+-	<div id="main">
+-		<div id="uiRow">
+-			<div id="leftUIcol">
+-				<h1 id="instruct">Password Expired</h1>
+-				<p>Replace this text with information about reseting a password. <a href="http://domain.edu/passwd?ref=$r">reset</a></p>
+-				<p class="jsOnly">Authentication
+-				sections marked with a <img
+-				src="/cosign/images/circle.gif" alt="yellow circle" /> are
+-					required.</p>
+-				<p>By using this service you agree to adhere to our policies and guidelines.</p>
+-				<p class="noScript">This page displays best when JavaScript is enabled in your web
+-					browser.</p>
+-				<div id="kerbInfo" class="infoBox">
+-					<h4><a href="#mainInfo" class="hideInfo" id="kerbInfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
+-							to Top</a></h4>
+-					<h3>Need an Account?</h3>
+-					<p>Replace this text with information about obtaining an account. Lorem ipsum dolor
+-						sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean vitae
+-						orci. Mauris vulputate ornare urna.</p>
+-					<h3>Forgot Your Password?</h3>
+-					<p>Replace this text with information about resetting your password. Lorem ipsum
+-						dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean
+-						vitae orci. Mauris vulputate ornare urna.</p>
+-				</div>
+-				<div id="otpInfo" class="infoBox">
+-					<h4><a href="#mainInfo" class="hideInfo" id="otpInfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
+-							to Top</a></h4>
+-					<h3>Get a Token</h3>
+-					<p>Replace this with text about using one time passcodes. Lorem ipsum dolor sit amet,
+-						consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean vitae orci.
+-						Mauris vulputate ornare urna.</p>
+-				</div>
+-				<div id="kx509Info" class="infoBox">
+-					<h4><a href="#mainInfo" class="hideInfo" id="kx509InfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
+-							to Top</a></h4>
+-					<h3>Download KX.509</h3>
+-					<p>The KX.509 service provides a client/server application that uses Kerberos to
+-						acquire a short-term X.509 certificate. This makes it possible for web-browsers
+-						to authenticate a user to any CoSign-protected web services silently instead of
+-						prompting the user for a name and password. At U-M, this service can be used by
+-						those who know their Uniqname and Kerberos password.</p>
+-				</div>
+-			</div>
+-			<form action="/cgi-bin/login" method="post" name="factors" id="rightUIcol">
+-				<input type="hidden" name="required"
+-				value="$f" />
+-				<input type="hidden" name="ref"
+-				value="$r" />
+-				<input type="hidden" name="service"
+-				value="$c" />
+-				<div id="error">$e</div>
+-				<div class="factorHead"> <a href="#" tabindex="10">Help</a>
+-					<h2 id="kerbTitle"><span>&nbsp;</span>ID &amp; Password</h2>
+-					<div class="authComplete" style="display: none;">Authentication Complete</div>
+-				</div>
+-				<div class="factor" id="kerberos">
+-					<table>
+-						<tr>
+-							<td><label for="login">Login</label></td>
+-							<td><input
+-							id="login"
+-							name="login"
+-							type="text"
+-							value="$l" size="18" tabindex="1" /></td>
+-						</tr>
+-						<tr>
+-							<td><label for="password">Password</label></td>
+-							<td><input id="password" name="password" type="password" value="" size="18" tabindex="2" /></td>
+-						</tr>
+-						<tr class="capsLock" style="display: none;">
+-							<td>&nbsp;</td>
+-							<td>Caps Lock is on</td>
+-						</tr>
+-					</table>
+-					Need <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">an account or password help?</a> </div>
+-				<div class="factorHead"> <a href="#" tabindex="11">Help</a>
+-					<h2 id="otpTitle"><span>&nbsp;</span>One Time Passcode</h2>
+-					<div class="authComplete" style="display: none;">Authentication Complete</div>
+-				</div>
+-				<div class="factor" id="otp">
+-					<table>
+-						<tr>
+-							<td><label for="passcode" id="pCodeLabel">Passcode</label></td>
+-							<td><input id="passcode" name="passcode" type="password" value="" size="18" tabindex="3" /></td>
+-						</tr>
+-						<tr class="capsLock" style="display: none;">
+-							<td>&nbsp;</td>
+-							<td>Caps Lock is on</td>
+-						</tr>
+-					</table>
+-					Manage your <a href="#otpInfo" id="otpInfoShow" tabindex="8">token</a> </div>
+-				<div class="factorHead"> <a href="#" tabindex="12">Help</a>
+-					<h2 id="kx509Title"><span>&nbsp;</span>Certificate</h2>
+-					<div class="authComplete" style="display: none;">Authentication Complete</div>
+-				</div>
+-				<div class="factor" id="kx509">
+-					<p class="note">You must have k.x-509 software installed and configured.</p>
+-					<p>
+-						<input name="useKX509" id="useKX509" type="checkbox" value="1" tabindex="5" />
+-						<label for="useKX509">Authenticate using a certificate</label>
+-					</p>
+-					Download <a href="#kx509Info" id="kx509InfoShow" tabindex="9">k.x-509 software</a> </div>
+-				<div id="loginButton">
+-					<input type="submit" name="doLogin" value="Log In" tabindex="6" />
+-				</div>
+-			</form>
+-			<div class="clear">&nbsp;</div>
+-		</div>
+-		<div id="uiBottom">&nbsp;</div>
+-	</div>
+-</div>
+-
+-
+-</body>
+-</html>
+diff --git a/html/inc/factor_invite.inc b/html/inc/factor_invite.inc
+new file mode 100644
+index 0000000..aec3508
+--- /dev/null
++++ b/html/inc/factor_invite.inc
+@@ -0,0 +1,74 @@
++        <script type="text/javascript">
++          function factor_invite_observe() {
++            var input_p = $('password');
++            var input_i = $('invite');
++            var input_l = $('login');
++            var form_login = input_i.up('form');
++
++            Event.observe( form_login, 'submit', function(e) {
++                  if (input_p.textLength > 0 && input_l.value.length == 0)
++                  {
++                    alert($!_("\"Please enter your login and password.\""));
++                    input_l.focus();
++                    Event.stop(e);
++                  }
++                  if (input_i.textLength > 0 && !input_l.value.include("@"))
++                  {
++                    alert($!_("\"Please input your email address into username field.\""));
++                    input_l.focus();
++                    Event.stop(e);
++                  }
++                  return true;
++              });
++
++            Event.observe( $('invite'), 'focus', function() {
++                  try {
++                    parent = input_p.up('div')
++                    if (!parent.visible())
++                      new Effect.Appear(parent,{duration:0.20});
++                  } catch ( e ) {;}
++                  input_p.disable().clear().up('tr').hide();
++              });
++
++            Event.observe( $('password'), 'focus', function() {
++                  input_i.disable().clear();
++              });
++
++            Event.observe( $('invite'), 'blur', function() {
++                if (this.textLength > 0) {
++                  input_p.disable().clear().up('tr').hide();
++                  if (!input_l.value.include("@")) {
++                    input_l.select();
++                  }
++                } else {
++                  input_p.enable().up('tr').show();
++                }
++              });
++
++            Event.observe( $('password'), 'blur', function() {
++                if (this.textLength > 0)
++                  input_i.disable().clear();
++                else
++                  input_i.enable();
++              });
++          }
++
++          Event.observe(window, 'load', factor_invite_observe);
++        </script>
++				<div class="factorHead" style="display: none;">
++					<h2 id="inviteloginTitle"><span>&nbsp;</span>$!_("Invite Code")</h2>
++					<div class="authComplete" style="display: none;">$!_("Authentication Complete")</div>
++				</div>
++				<div class="factor" id="invitelogin" style="display: none;">
++					<table>
++						<tr>
++							<td><label for="invite">$!_("Invite code:")</label></td>
++							<td><input id="invite" name="invite" type="password" value="" size="18" tabindex="5" /></td>
++						</tr>
++						<tr class="capsLock" style="display: none;">
++							<td>&nbsp;</td>
++							<td>$!_("Caps Lock is on")</td>
++						</tr>
++					</table>
++					<a href="#inviteinfo" id="inviteInfoShow" tabindex="10">$!_("What is invite code?")</a> </div>
++
+diff --git a/html/inc/factor_kx509.inc b/html/inc/factor_kx509.inc
+new file mode 100644
+index 0000000..37d48b2
+--- /dev/null
++++ b/html/inc/factor_kx509.inc
+@@ -0,0 +1,11 @@
++				<div class="factorHead" style="display: none;">
++					<h2 id="kx509Title"><span>&nbsp;</span>$!_("Certificate")</h2>
++					<div class="authComplete" style="display: none;">$!_("Authentication Complete")</div>
++				</div>
++				<div class="factor" id="kx509" style="display: none;">
++					<p class="note">$!_("You must have k.x-509 software installed and configured.")</p>
++					<p>
++						<input name="useKX509" id="useKX509" type="checkbox" value="1" tabindex="4" />
++						<label for="useKX509">$!_("Authenticate using a certificate")</label>
++					</p>
++					$!_("Download") <a href="#kx509Info" id="kx509InfoShow" tabindex="9">$!_("k.x-509 software")</a> </div>
+diff --git a/html/inc/factor_login.inc b/html/inc/factor_login.inc
+new file mode 100644
+index 0000000..7ed0a64
+--- /dev/null
++++ b/html/inc/factor_login.inc
+@@ -0,0 +1,24 @@
++				<div class="factorHead" style="display: none;">
++					<h2 id="kerbTitle"><span>&nbsp;</span>$!_("ID &amp; Password")</h2>
++					<div class="authComplete" style="display: none;">$!_("Authentication Complete")</div>
++				</div>
++				<div class="factor" id="kerberos" style="display: none;">
++					<table>
++						<tr>
++							<td><label for="login">$!_("Login")</label></td>
++							<td><input
++							id="login"
++							name="login"
++							type="text"
++							value="$l" size="18" tabindex="1" /></td>
++						</tr>
++						<tr>
++							<td><label for="password">$!_("Password")</label></td>
++							<td><input id="password" name="password" type="password" value="" size="18" tabindex="2" /></td>
++						</tr>
++						<tr class="capsLock" style="display: none;">
++							<td>&nbsp;</td>
++							<td>$!_("Caps Lock is on")</td>
++						</tr>
++					</table>
++					<a href="#kerbInfo" id="kerbInfoShow" tabindex="7">$!_("Need an account or password help?")</a> </div>
+diff --git a/html/inc/factor_login_reauth.inc b/html/inc/factor_login_reauth.inc
+new file mode 100644
+index 0000000..6dfe398
+--- /dev/null
++++ b/html/inc/factor_login_reauth.inc
+@@ -0,0 +1,21 @@
++				<div class="factorHead" style="display: none;">
++					<h2 id="kerbTitle"><span>&nbsp;</span>$!_("ID &amp; Password")</h2>
++					<div class="authComplete" style="display: none;">$!_("Authentication Complete")</div>
++				</div>
++				<div class="factor" id="kerberos" style="display: none;">
++					<table>
++						<tr>
++							<td><label for="login">$!_("Login")</label></td>
++							<td
++							id="login">$l (<a href="/cgi-bin/logout" class="switchUser" id="switchUserR" tabindex="1">$!_("Switch Users")</a>)</td>
++						</tr>
++						<tr>
++							<td><label for="password">$!_("Password")</label></td>
++							<td><input id="password" name="password" type="password" value="" size="18" tabindex="2" /></td>
++						</tr>
++						<tr class="capsLock" style="display: none;">
++							<td>&nbsp;</td>
++							<td>$!_("Caps Lock is on")</td>
++						</tr>
++					</table>
++					<a href="#kerbInfo" id="kerbInfoShow" tabindex="7">$!_("Need an account or password help?")</a> </div>
+diff --git a/html/inc/factor_otp.inc b/html/inc/factor_otp.inc
+new file mode 100644
+index 0000000..765331f
+--- /dev/null
++++ b/html/inc/factor_otp.inc
+@@ -0,0 +1,16 @@
++				<div class="factorHead" style="display: none;">
++					<h2 id="otpTitle"><span>&nbsp;</span>$!_("One Time Passcode")</h2>
++					<div class="authComplete" style="display: none;">$!_("Authentication Complete")</div>
++				</div>
++				<div class="factor" id="otp" style="display: none;">
++					<table>
++						<tr>
++							<td><label for="passcode" id="pCodeLabel">$!_("Passcode")</label></td>
++							<td><input id="passcode" name="passcode" type="password" value="" size="18" tabindex="3" /></td>
++						</tr>
++						<tr class="capsLock" style="display: none;">
++							<td>&nbsp;</td>
++							<td>$!_("Caps Lock is on")</td>
++						</tr>
++					</table>
++					<a href="#otpInfo" id="otpInfoShow" tabindex="8">$!_("Manage your token")</a> </div>
+diff --git a/html/inc/footer.inc b/html/inc/footer.inc
+new file mode 100644
+index 0000000..5a15383
+--- /dev/null
++++ b/html/inc/footer.inc
+@@ -0,0 +1,2 @@
++<div id="foot">&copy; 2006 - 2010 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
++		of the University of Michigan</a>, <a href="http://www.ossxp.com/">OSSXP Powered</a> </div>
+diff --git a/html/inc/header.inc b/html/inc/header.inc
+new file mode 100644
+index 0000000..f0a35bc
+--- /dev/null
++++ b/html/inc/header.inc
+@@ -0,0 +1,3 @@
++	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
++		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
++		</span> <strong>Our Home Page</strong></a> </div>
+diff --git a/html/inc/help_hotkey.inc b/html/inc/help_hotkey.inc
+new file mode 100644
+index 0000000..eea5e31
+--- /dev/null
++++ b/html/inc/help_hotkey.inc
+@@ -0,0 +1,12 @@
++	<ul class="text">
++		<li><a href="#instruct" title="Jump to the Web Login instructions [ALT + 1 Windows / CONTROL + 1 Mac]" accesskey="1">Jump
++				to the Web Login instructions</a></li>
++		<li><a href="#error" title="Jump to the error message (if present) [ALT + 2 Windows / CONTROL + 2 Mac]" accesskey="2">Jump
++				to the error message (if present)</a></li>
++		<li><a href="#kerberos" title="Jump to the ID and Password section [ALT + 3 Windows / CONTROL + 3 Mac]" accesskey="3">Jump
++				to the ID and Password section</a></li>
++		<li><a href="#otp" title="Jump to the One Time Passcode section [ALT + 4 Windows / CONTROL + 4 Mac]"  accesskey="4">Jump
++				to the One Time Passcode section</a></li>
++		<li><a href="#kx509" title="Jump to the Certificate section [ALT + 5 Windows / CONTROL + 5 Mac]" accesskey="5">Jump
++				to the Certificate section</a></li>
++	</ul>
+diff --git a/html/inc/help_infobox.inc b/html/inc/help_infobox.inc
+new file mode 100644
+index 0000000..b3cc7a5
+--- /dev/null
++++ b/html/inc/help_infobox.inc
+@@ -0,0 +1,49 @@
++				<div id="mainInfo">
++					<p>Please enter your authentication information and click the &quot;Log&nbsp;In&quot; button
++						to continue.</p>
++					<p class="jsOnly">Authentication
++					sections marked with a <img
++					src="/cosign/images/circle.gif" alt="yellow circle" /> are
++						required.</p>
++				<p>By using this service you agree to adhere to our policies and guidelines.</p>
++				</div>
++				<p class="noScript">This page displays best when JavaScript is enabled in your web
++					browser.</p>
++				<div id="kerbInfo" class="infoBox">
++					<h4><a href="#mainInfo" class="hideInfo" id="kerbInfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
++							to Top</a></h4>
++					<h3>Need an Account?</h3>
++					<p>Replace this text with information about obtaining an account. Lorem ipsum dolor
++						sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean vitae
++						orci. Mauris vulputate ornare urna.</p>
++					<h3>Forgot Your Password?</h3>
++					<p>Replace this text with information about resetting your password. Lorem ipsum
++						dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean
++						vitae orci. Mauris vulputate ornare urna.</p>
++				</div>
++				<div id="otpInfo" class="infoBox">
++					<h4><a href="#mainInfo" class="hideInfo" id="otpInfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
++							to Top</a></h4>
++					<h3>Get a Token</h3>
++					<p>Replace this with text about using one time passcodes. Lorem ipsum dolor sit amet,
++						consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean vitae orci.
++						Mauris vulputate ornare urna.</p>
++				</div>
++				<div id="kx509Info" class="infoBox">
++					<h4><a href="#mainInfo" class="hideInfo" id="kx509InfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
++							to Top</a></h4>
++					<h3>Download KX.509</h3>
++					<p>The KX.509 service provides a client/server application that uses Kerberos to
++						acquire a short-term X.509 certificate. This makes it possible for web-browsers
++						to authenticate a user to any CoSign-protected web services silently instead of
++						prompting the user for a name and password. At U-M, this service can be used by
++						those who know their Uniqname and Kerberos password.</p>
++				</div>
++				<div id="inviteInfo" class="infoBox">
++					<h4><a href="#mainInfo" class="hideInfo" id="inviteInfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
++							to Top</a></h4>
++					<h3>About invite code</h3>
++					<p>Invite code is assigned by administrator. Before input your invite code, you must provide your email address as your login name.
++					<p>Note: The two fields, password and invite code input fields are exclusive. The other is disabled when one is focus and has inupt.
++					</p>
++				</div>
+diff --git a/html/inc/js_config.inc b/html/inc/js_config.inc
+new file mode 100644
+index 0000000..517d465
+--- /dev/null
++++ b/html/inc/js_config.inc
+@@ -0,0 +1,11 @@
++		cosign.addFactor(['ldap','friend'],'kerbTitle','kerberos');
++		cosign.addFactor('otp','otpTitle','otp');
++		cosign.addFactor('kx509','kx509Title','kx509');
++		cosign.addFactor('invite','inviteloginTitle','invitelogin');
++		cosign.addInfoBox('kerbInfo','kerbInfoShow','kerbInfoHide');
++		cosign.addInfoBox('otpInfo','otpInfoShow','otpInfoHide');
++		cosign.addInfoBox('kx509Info','kx509InfoShow','kx509InfoHide');
++		cosign.addInfoBox('inviteInfo','inviteInfoShow','inviteInfoHide');
++		cosign.setDefaultOpen('ldap');
++		//cosign.setDisabledFactors('otp,kx509');
++		cosign.initUI();
+diff --git a/html/login.html b/html/login.html
+index 98fa0e1..b0b55e9 100755
+--- a/html/login.html
++++ b/html/login.html
+@@ -1,7 +1,7 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
++<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ <meta http-equiv="Pragma" content="no-cache" />
+ <meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
+ <title>$t</title>
+@@ -21,78 +21,21 @@
+ 	window.onload = function() {
+ 		var cosign = new Cosign('$f');
+ 		cosign.setSatisfied('$d');
+-		cosign.addFactor(['friend','UMICH.EDU'],'kerbTitle','kerberos');
+-		cosign.addFactor('otp','otpTitle','otp');
+-		cosign.addFactor('kx509','kx509Title','kx509');
+-		cosign.addInfoBox('kerbInfo','kerbInfoShow','kerbInfoHide');
+-		cosign.addInfoBox('otpInfo','otpInfoShow','otpInfoHide');
+-		cosign.addInfoBox('kx509Info','kx509InfoShow','kx509InfoHide');
+-		cosign.initUI();
++		$!include(inc/js_config.inc)
+ 	}
+-	</script>
++</script>
+ </head>
+ <body>
+ <div id="page">
+-	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
+-		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
+-		</span> <strong>Our Home Page</strong></a> </div>
++  $!include(inc/%lang%/header.inc)
+ 	<hr class="text" />
+-	<ul class="text">
+-		<li><a href="#instruct" title="Jump to the Web Login instructions [ALT + 1 Windows / CONTROL + 1 Mac]" accesskey="1">Jump
+-				to the Web Login instructions</a></li>
+-		<li><a href="#error" title="Jump to the error message (if present) [ALT + 2 Windows / CONTROL + 2 Mac]" accesskey="2">Jump
+-				to the error message (if present)</a></li>
+-		<li><a href="#kerberos" title="Jump to the ID and Password section [ALT + 3 Windows / CONTROL + 3 Mac]" accesskey="3">Jump
+-				to the ID and Password section</a></li>
+-		<li><a href="#otp" title="Jump to the One Time Passcode section [ALT + 4 Windows / CONTROL + 4 Mac]"  accesskey="4">Jump
+-				to the One Time Passcode section</a></li>
+-		<li><a href="#kx509" title="Jump to the Certificate section [ALT + 5 Windows / CONTROL + 5 Mac]" accesskey="5">Jump
+-				to the Certificate section</a></li>
+-	</ul>
++	$!include(inc/help_hotkey.inc)
+ 	<hr class="text" />
+ 	<div id="main">
+ 		<div id="uiRow">
+ 			<div id="leftUIcol">
+-				<h1 id="instruct">Authentication Required</h1>
+-				<p>Please enter your authentication information and click the &quot;Log&nbsp;In&quot; button
+-					to continue.</p>
+-				<p class="jsOnly">Authentication
+-				sections marked with a <img
+-				src="/cosign/images/circle.gif" alt="yellow circle" /> are
+-					required.</p>
+-				<p>By using this service you agree to adhere to our policies and guidelines.</p>
+-				<p class="noScript">This page displays best when JavaScript is enabled in your web
+-					browser.</p>
+-				<div id="kerbInfo" class="infoBox">
+-					<h4><a href="#mainInfo" class="hideInfo" id="kerbInfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
+-							to Top</a></h4>
+-					<h3>Need an Account?</h3>
+-					<p>Replace this text with information about obtaining an account. Lorem ipsum dolor
+-						sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean vitae
+-						orci. Mauris vulputate ornare urna.</p>
+-					<h3>Forgot Your Password?</h3>
+-					<p>Replace this text with information about resetting your password. Lorem ipsum
+-						dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean
+-						vitae orci. Mauris vulputate ornare urna.</p>
+-				</div>
+-				<div id="otpInfo" class="infoBox">
+-					<h4><a href="#mainInfo" class="hideInfo" id="otpInfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
+-							to Top</a></h4>
+-					<h3>Get a Token</h3>
+-					<p>Replace this with text about using one time passcodes. Lorem ipsum dolor sit amet,
+-						consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean vitae orci.
+-						Mauris vulputate ornare urna.</p>
+-				</div>
+-				<div id="kx509Info" class="infoBox">
+-					<h4><a href="#mainInfo" class="hideInfo" id="kx509InfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
+-							to Top</a></h4>
+-					<h3>Download KX.509</h3>
+-					<p>The KX.509 service provides a client/server application that uses Kerberos to
+-						acquire a short-term X.509 certificate. This makes it possible for web-browsers
+-						to authenticate a user to any CoSign-protected web services silently instead of
+-						prompting the user for a name and password. At U-M, this service can be used by
+-						those who know their Uniqname and Kerberos password.</p>
+-				</div>
++				<h1 id="instruct">$t</h1>
++				$!include(inc/help_infobox.inc)
+ 			</div>
+ 			<form action="/cgi-bin/login" method="post" name="factors" id="rightUIcol">
+ 				<input type="hidden" name="required"
+@@ -101,56 +44,13 @@
+ 				value="$r" />
+ 				<input type="hidden" name="service"
+ 				value="$c" />
+-				<!--div id="error">$e</div-->
+-				<div class="factorHead"> <a href="#" tabindex="10">Help</a>
+-					<h2 id="kerbTitle"><span>&nbsp;</span>ID &amp; Password</h2>
+-					<div class="authComplete" style="display: none;">Authentication Complete</div>
+-				</div>
+-				<div class="factor" id="kerberos">
+-					<table>
+-						<tr>
+-							<td><label for="login">Login</label></td>
+-							<td><input id="login" name="login" type="text" value="" size="18" tabindex="1" /></td>
+-						</tr>
+-						<tr>
+-							<td><label for="password">Password</label></td>
+-							<td><input id="password" name="password" type="password" value="" size="18" tabindex="2" /></td>
+-						</tr>
+-						<tr class="capsLock" style="display: none;">
+-							<td>&nbsp;</td>
+-							<td>Caps Lock is on</td>
+-						</tr>
+-					</table>
+-					Need <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">an account or password help?</a> </div>
+-				<div class="factorHead"> <a href="#" tabindex="11">Help</a>
+-					<h2 id="otpTitle"><span>&nbsp;</span>One Time Passcode</h2>
+-					<div class="authComplete" style="display: none;">Authentication Complete</div>
+-				</div>
+-				<div class="factor" id="otp">
+-					<table>
+-						<tr>
+-							<td><label for="passcode" id="pCodeLabel">Passcode</label></td>
+-							<td><input id="passcode" name="passcode" type="password" value="" size="18" tabindex="3" /></td>
+-						</tr>
+-						<tr class="capsLock" style="display: none;">
+-							<td>&nbsp;</td>
+-							<td>Caps Lock is on</td>
+-						</tr>
+-					</table>
+-					Manage your <a href="#otpInfo" id="otpInfoShow" tabindex="8">token</a> </div>
+-				<div class="factorHead"> <a href="#" tabindex="12">Help</a>
+-					<h2 id="kx509Title"><span>&nbsp;</span>Certificate</h2>
+-					<div class="authComplete" style="display: none;">Authentication Complete</div>
+-				</div>
+-				<div class="factor" id="kx509">
+-					<p class="note">You must have k.x-509 software installed and configured.</p>
+-					<p>
+-						<input name="useKX509" id="useKX509" type="checkbox" value="1" tabindex="5" />
+-						<label for="useKX509">Authenticate using a certificate</label>
+-					</p>
+-					Download <a href="#kx509Info" id="kx509InfoShow" tabindex="9">k.x-509 software</a> </div>
++				<div id="error" style="display: none;">$e</div>
++				$!include(inc/factor_login.inc)
++				$!include(inc/factor_otp.inc)
++				$!include(inc/factor_kx509.inc)
++				$!include(inc/factor_invite.inc)
+ 				<div id="loginButton">
+-					<input type="submit" name="doLogin" value="Log In" tabindex="6" />
++					<input type="submit" name="doLogin" value="$!_("Log In")" tabindex="6" />
+ 				</div>
+ 			</form>
+ 			<div class="clear">&nbsp;</div>
+@@ -158,7 +58,6 @@
+ 		<div id="uiBottom">&nbsp;</div>
+ 	</div>
+ </div>
+-<div id="foot">&copy; 2006 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
+-		of the University of Michigan</a> </div>
++$!include(inc/%lang%/footer.inc)
+ </body>
+ </html>
+diff --git a/html/login_error.html b/html/login_error.html
+deleted file mode 100755
+index 3cf1c94..0000000
+--- a/html/login_error.html
++++ /dev/null
+@@ -1,168 +0,0 @@
+-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+-<html xmlns="http://www.w3.org/1999/xhtml">
+-<head>
+-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+-<meta http-equiv="Pragma" content="no-cache" />
+-<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
+-<title>$t</title>
+-<style type="text/css" media="screen">
+-/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
+-</style>
+-<script type="text/javascript" src="/cosign/js/prototype.js"></script>
+-<script type="text/javascript" src="/cosign/js/scriptaculous.js"></script>
+-<script type="text/javascript" src="/cosign/js/effects.js"></script>
+-<script type="text/javascript" src="/cosign/js/cosign.js"></script>
+-<script type="text/javascript">
+-	var link = document.createElement('link');
+-	link.setAttribute('rel', 'stylesheet');
+-	link.setAttribute('type', 'text/css');
+-	link.setAttribute('href', '/cosign/cosign_js.css');
+-	document.getElementsByTagName('head')[0].appendChild(link);
+-	window.onload = function() {
+-		var cosign = new Cosign('$f');
+-		cosign.setSatisfied('$d');
+-		cosign.addFactor(['friend','UMICH.EDU'],'kerbTitle','kerberos');
+-		cosign.addFactor('otp','otpTitle','otp');
+-		cosign.addFactor('kx509','kx509Title','kx509');
+-		cosign.addInfoBox('kerbInfo','kerbInfoShow','kerbInfoHide');
+-		cosign.addInfoBox('otpInfo','otpInfoShow','otpInfoHide');
+-		cosign.addInfoBox('kx509Info','kx509InfoShow','kx509InfoHide');
+-		cosign.initUI();
+-	}
+-	</script>
+-</head>
+-<body>
+-<div id="page">
+-	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
+-		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
+-		</span> <strong>Our Home Page</strong></a> </div>
+-	<hr class="text" />
+-	<ul class="text">
+-		<li><a href="#instruct" title="Jump to the Web Login instructions [ALT + 1 Windows / CONTROL + 1 Mac]" accesskey="1">Jump
+-				to the Web Login instructions</a></li>
+-		<li><a href="#error" title="Jump to the error message (if present) [ALT + 2 Windows / CONTROL + 2 Mac]" accesskey="2">Jump
+-				to the error message (if present)</a></li>
+-		<li><a href="#kerberos" title="Jump to the ID and Password section [ALT + 3 Windows / CONTROL + 3 Mac]" accesskey="3">Jump
+-				to the ID and Password section</a></li>
+-		<li><a href="#otp" title="Jump to the One Time Passcode section [ALT + 4 Windows / CONTROL + 4 Mac]"  accesskey="4">Jump
+-				to the One Time Passcode section</a></li>
+-		<li><a href="#kx509" title="Jump to the Certificate section [ALT + 5 Windows / CONTROL + 5 Mac]" accesskey="5">Jump
+-				to the Certificate section</a></li>
+-	</ul>
+-	<hr class="text" />
+-	<div id="main">
+-		<div id="uiRow">
+-			<div id="leftUIcol">
+-				<h1 id="instruct">Authentication Required</h1>
+-				<p>Please enter your authentication information and click the &quot;Log&nbsp;In&quot; button
+-					to continue.</p>
+-				<p class="jsOnly">Authentication
+-				sections marked with a <img
+-				src="/cosign/images/circle.gif" alt="yellow circle" /> are
+-					required.</p>
+-				<p>By using this service you agree to adhere to our policies and guidelines.</p>
+-				<p class="noScript">This page displays best when JavaScript is enabled in your web
+-					browser.</p>
+-				<div id="kerbInfo" class="infoBox">
+-					<h4><a href="#mainInfo" class="hideInfo" id="kerbInfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
+-							to Top</a></h4>
+-					<h3>Need an Account?</h3>
+-					<p>Replace this text with information about obtaining an account. Lorem ipsum dolor
+-						sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean vitae
+-						orci. Mauris vulputate ornare urna.</p>
+-					<h3>Forgot Your Password?</h3>
+-					<p>Replace this text with information about resetting your password. Lorem ipsum
+-						dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean
+-						vitae orci. Mauris vulputate ornare urna.</p>
+-				</div>
+-				<div id="otpInfo" class="infoBox">
+-					<h4><a href="#mainInfo" class="hideInfo" id="otpInfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
+-							to Top</a></h4>
+-					<h3>Get a Token</h3>
+-					<p>Replace this with text about using one time passcodes. Lorem ipsum dolor sit amet,
+-						consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean vitae orci.
+-						Mauris vulputate ornare urna.</p>
+-				</div>
+-				<div id="kx509Info" class="infoBox">
+-					<h4><a href="#mainInfo" class="hideInfo" id="kx509InfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
+-							to Top</a></h4>
+-					<h3>Download KX.509</h3>
+-					<p>The KX.509 service provides a client/server application that uses Kerberos to
+-						acquire a short-term X.509 certificate. This makes it possible for web-browsers
+-						to authenticate a user to any CoSign-protected web services silently instead of
+-						prompting the user for a name and password. At U-M, this service can be used by
+-						those who know their Uniqname and Kerberos password.</p>
+-				</div>
+-			</div>
+-			<form action="/cgi-bin/login" method="post" name="factors" id="rightUIcol">
+-				<input type="hidden" name="required"
+-				value="$f" />
+-				<input type="hidden" name="ref"
+-				value="$r" />
+-				<input type="hidden" name="service"
+-				value="$c" />
+-				<div id="error">$e</div>
+-				<div class="factorHead"> <a href="#" tabindex="10">Help</a>
+-					<h2 id="kerbTitle"><span>&nbsp;</span>ID &amp; Password</h2>
+-					<div class="authComplete" style="display: none;">Authentication Complete</div>
+-				</div>
+-				<div class="factor" id="kerberos">
+-					<table>
+-						<tr>
+-							<td><label for="login">Login</label></td>
+-							<td><input
+-							id="login"
+-							name="login"
+-							type="text"
+-							value="$l" size="18" tabindex="1" /></td>
+-						</tr>
+-						<tr>
+-							<td><label for="password">Password</label></td>
+-							<td><input id="password" name="password" type="password" value="" size="18" tabindex="2" /></td>
+-						</tr>
+-						<tr class="capsLock" style="display: none;">
+-							<td>&nbsp;</td>
+-							<td>Caps Lock is on</td>
+-						</tr>
+-					</table>
+-					Need <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">an account or password help?</a> </div>
+-				<div class="factorHead"> <a href="#" tabindex="11">Help</a>
+-					<h2 id="otpTitle"><span>&nbsp;</span>One Time Passcode</h2>
+-					<div class="authComplete" style="display: none;">Authentication Complete</div>
+-				</div>
+-				<div class="factor" id="otp">
+-					<table>
+-						<tr>
+-							<td><label for="passcode" id="pCodeLabel">Passcode</label></td>
+-							<td><input id="passcode" name="passcode" type="password" value="" size="18" tabindex="3" /></td>
+-						</tr>
+-						<tr class="capsLock" style="display: none;">
+-							<td>&nbsp;</td>
+-							<td>Caps Lock is on</td>
+-						</tr>
+-					</table>
+-					Manage your <a href="#otpInfo" id="otpInfoShow" tabindex="8">token</a> </div>
+-				<div class="factorHead"> <a href="#" tabindex="12">Help</a>
+-					<h2 id="kx509Title"><span>&nbsp;</span>Certificate</h2>
+-					<div class="authComplete" style="display: none;">Authentication Complete</div>
+-				</div>
+-				<div class="factor" id="kx509">
+-					<p class="note">You must have k.x-509 software installed and configured.</p>
+-					<p>
+-						<input name="useKX509" id="useKX509" type="checkbox" value="1" tabindex="5" />
+-						<label for="useKX509">Authenticate using a certificate</label>
+-					</p>
+-					Download <a href="#kx509Info" id="kx509InfoShow" tabindex="9">k.x-509 software</a> </div>
+-				<div id="loginButton">
+-					<input type="submit" name="doLogin" value="Log In" tabindex="6" />
+-				</div>
+-			</form>
+-			<div class="clear">&nbsp;</div>
+-		</div>
+-		<div id="uiBottom">&nbsp;</div>
+-	</div>
+-</div>
+-<div id="foot">&copy; 2006 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
+-		of the University of Michigan</a> </div>
+-</body>
+-</html>
+diff --git a/html/looping.html b/html/looping.html
+deleted file mode 100755
+index a667522..0000000
+--- a/html/looping.html
++++ /dev/null
+@@ -1,54 +0,0 @@
+-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+-<html xmlns="http://www.w3.org/1999/xhtml">
+-<head>
+-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+-<meta http-equiv="Pragma" content="no-cache" />
+-<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
+-<title>$t</title>
+-<style type="text/css" media="screen">
+-/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
+-
+-#rightUIcol .factorHead h2 {
+-	background: none;
+-	color: #999;
+-}
+-</style>
+-</head>
+-<body>
+-<div id="page">
+-	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
+-		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
+-		</span> <strong>Our Home Page</strong></a> </div>
+-	<div id="main">
+-		<div id="uiRow">
+-			<div id="leftUIcol">
+-				<h1 class="error">$t</h1>
+-				<p>
+-				$m
+-				<p>Please contact <a href="#">Technical Support (put URL here)</a> if you have any questions.</p>
+-				<p><a href="#">Put URL to main CoSign page here</a></p>
+-				<p class="techInfo"><strong>Technical Info:</strong> $e</p>
+-			</div>
+-			<form action="#" method="post" name="factors" id="rightUIcol">
+-				<div class="factorHead">
+-					<h2>ID &amp; Password</h2>
+-				</div>
+-				<div class="factorHead">
+-					<h2>One Time Passcode</h2>
+-				</div>
+-				<div class="factorHead">
+-					<h2>Certificate</h2>
+-				</div>
+-				<div id="loginButton">
+-					<input type="submit" name="doLogin" value="Log In" disabled="disabled" />
+-				</div>
+-			</form>
+-			<div class="clear">&nbsp;</div>
+-		</div>
+-		<div id="uiBottom">&nbsp;</div>
+-	</div>
+-</div>
+-<div id="foot">&copy; 2006 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
+-		of the University of Michigan</a> </div>
+-</body>
+-</html>
+diff --git a/html/post_error.html b/html/post_error.html
+deleted file mode 100755
+index a667522..0000000
+--- a/html/post_error.html
++++ /dev/null
+@@ -1,54 +0,0 @@
+-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+-<html xmlns="http://www.w3.org/1999/xhtml">
+-<head>
+-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+-<meta http-equiv="Pragma" content="no-cache" />
+-<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
+-<title>$t</title>
+-<style type="text/css" media="screen">
+-/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
+-
+-#rightUIcol .factorHead h2 {
+-	background: none;
+-	color: #999;
+-}
+-</style>
+-</head>
+-<body>
+-<div id="page">
+-	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
+-		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
+-		</span> <strong>Our Home Page</strong></a> </div>
+-	<div id="main">
+-		<div id="uiRow">
+-			<div id="leftUIcol">
+-				<h1 class="error">$t</h1>
+-				<p>
+-				$m
+-				<p>Please contact <a href="#">Technical Support (put URL here)</a> if you have any questions.</p>
+-				<p><a href="#">Put URL to main CoSign page here</a></p>
+-				<p class="techInfo"><strong>Technical Info:</strong> $e</p>
+-			</div>
+-			<form action="#" method="post" name="factors" id="rightUIcol">
+-				<div class="factorHead">
+-					<h2>ID &amp; Password</h2>
+-				</div>
+-				<div class="factorHead">
+-					<h2>One Time Passcode</h2>
+-				</div>
+-				<div class="factorHead">
+-					<h2>Certificate</h2>
+-				</div>
+-				<div id="loginButton">
+-					<input type="submit" name="doLogin" value="Log In" disabled="disabled" />
+-				</div>
+-			</form>
+-			<div class="clear">&nbsp;</div>
+-		</div>
+-		<div id="uiBottom">&nbsp;</div>
+-	</div>
+-</div>
+-<div id="foot">&copy; 2006 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
+-		of the University of Michigan</a> </div>
+-</body>
+-</html>
+diff --git a/html/reauth.html b/html/reauth.html
+index c70b0f2..d1f0f72 100755
+--- a/html/reauth.html
++++ b/html/reauth.html
+@@ -1,7 +1,7 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
++<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ <meta http-equiv="Pragma" content="no-cache" />
+ <meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
+ <title>$t</title>
+@@ -20,141 +20,39 @@
+ 	document.getElementsByTagName('head')[0].appendChild(link);
+ 	window.onload = function() {
+ 		var cosign = new Cosign('$f');
+-		cosign.setDefaultOpen( 'UMICH.EDU' );
+-		cosign.addFactor(['friend','UMICH.EDU'],'kerbTitle','kerberos');
+-		cosign.addFactor('otp','otpTitle','otp');
+-		cosign.addFactor('kx509','kx509Title','kx509');
+-		cosign.addInfoBox('kerbInfo','kerbInfoShow','kerbInfoHide');
+-		cosign.addInfoBox('otpInfo','otpInfoShow','otpInfoHide');
+-		cosign.addInfoBox('kx509Info','kx509InfoShow','kx509InfoHide');
+ 		cosign.setSubmitLink('switchUserL', 'switchUserForm');
+ 		cosign.setSubmitLink('switchUserR', 'switchUserForm');
+-		cosign.initUI();
++		$!include(inc/js_config.inc)
+ 	}
+-	</script>
++</script>
+ </head>
+ <body>
+ <div id="page">
+-	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
+-		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
+-		</span> <strong>Our Home Page</strong></a> </div>
++  $!include(inc/%lang%/header.inc)
+ 	<hr class="text" />
+-	<ul class="text">
+-		<li><a href="#instruct" title="Jump to the Web Login instructions [ALT + 1 Windows / CONTROL + 1 Mac]" accesskey="1">Jump
+-				to the Web Login instructions</a></li>
+-		<li><a href="#error" title="Jump to the error message (if present) [ALT + 2 Windows / CONTROL + 2 Mac]" accesskey="2">Jump
+-				to the error message (if present)</a></li>
+-		<li><a href="#kerberos" title="Jump to the ID and Password section [ALT + 3 Windows / CONTROL + 3 Mac]" accesskey="3">Jump
+-				to the ID and Password section</a></li>
+-		<li><a href="#otp" title="Jump to the One Time Passcode section [ALT + 4 Windows / CONTROL + 4 Mac]"  accesskey="4">Jump
+-				to the One Time Passcode section</a></li>
+-		<li><a href="#kx509" title="Jump to the Certificate section [ALT + 5 Windows / CONTROL + 5 Mac]" accesskey="5">Jump
+-				to the Certificate section</a></li>
+-	</ul>
++	$!include(inc/help_hotkey.inc)
+ 	<hr class="text" />
+ 	<div id="main">
+ 		<div id="uiRow">
+ 			<div id="leftUIcol">
+-				<h1 id="instruct">Re-Authentication Required</h1>
+-				<p>To protect your personal information, you must verify your password. Please type
+-					your password and click the Re-Authenticate button to continue.</p>
+-				<p>If you are not $l, you may <a href="/cgi-bin/logout" id="switchUserL">Switch
+-						Users</a> and log in as yourself.</p>
+-				<p class="jsOnly">Authentication
+-				sections marked with a <img
+-				src="/cosign/images/circle.gif" alt="yellow circle" /> are
+-					required.</p>
+-				<p>By using this service you agree to adhere to our policies and guidelines.</p>
+-				<p class="noScript">This page displays best when JavaScript is enabled in your web
+-					browser.</p>
+-				<div id="kerbInfo" class="infoBox">
+-					<h4><a href="#mainInfo" class="hideInfo" id="kerbInfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
+-							to Top</a></h4>
+-					<h3>Need an Account?</h3>
+-					<p>Replace this text with information about obtaining an account. Lorem ipsum dolor
+-						sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean vitae
+-						orci. Mauris vulputate ornare urna.</p>
+-					<h3>Forgot Your Password?</h3>
+-					<p>Replace this text with information about resetting your password. Lorem ipsum
+-						dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean
+-						vitae orci. Mauris vulputate ornare urna.</p>
+-				</div>
+-				<div id="otpInfo" class="infoBox">
+-					<h4><a href="#mainInfo" class="hideInfo" id="otpInfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
+-							to Top</a></h4>
+-					<h3>Get a Token</h3>
+-					<p>Replace this with text about using one time passcodes. Lorem ipsum dolor sit amet,
+-						consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean vitae orci.
+-						Mauris vulputate ornare urna.</p>
+-				</div>
+-				<div id="kx509Info" class="infoBox">
+-					<h4><a href="#mainInfo" class="hideInfo" id="kx509InfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
+-							to Top</a></h4>
+-					<h3>Download KX.509</h3>
+-					<p>The KX.509 service provides a client/server application that uses Kerberos to
+-						acquire a short-term X.509 certificate. This makes it possible for web-browsers
+-						to authenticate a user to any CoSign-protected web services silently instead of
+-						prompting the user for a name and password. At U-M, this service can be used by
+-						those who know their Uniqname and Kerberos password.</p>
+-				</div>
++				<h1 id="instruct">$t</h1>
++				$!include(inc/help_infobox.inc)
+ 			</div>
+ 			<form action="/cgi-bin/login" method="post" name="factors" id="rightUIcol">
+-			<input type="hidden" name="required" value="$f" />
+-			<input type="hidden" name="ref" value="$r" />
+-			<input type="hidden" name="service" value="$c" />
+-			<input type="hidden" name="reauth" value="true" />
+-			<div id="error">$e</div>
+-				<div class="factorHead"> <a href="#" tabindex="10">Help</a>
+-					<h2 id="kerbTitle"><span>&nbsp;</span>ID &amp; Password</h2>
+-					<div class="authComplete" style="display: none;">Authentication Complete</div>
+-				</div>
+-				<div class="factor" id="kerberos">
+-					<table>
+-						<tr>
+-							<td><label for="login">Login</label></td>
+-							<td
+-							id="login">$l (<a href="/cgi-bin/logout" class="switchUser" id="switchUserR" tabindex="1">Switch
+-									Users</a>)</td>
+-						</tr>
+-						<tr>
+-							<td><label for="password">Password</label></td>
+-							<td><input id="password" name="password" type="password" value="" size="18" tabindex="2" /></td>
+-						</tr>
+-						<tr class="capsLock" style="display: none;">
+-							<td>&nbsp;</td>
+-							<td>Caps Lock is on</td>
+-						</tr>
+-					</table>
+-					Need <a href="#kerbInfo" id="kerbInfoShow" tabindex="7">an account or password help?</a> </div>
+-				<div class="factorHead"> <a href="#" tabindex="11">Help</a>
+-					<h2 id="otpTitle"><span>&nbsp;</span>One Time Passcode</h2>
+-					<div class="authComplete" style="display: none;">Authentication Complete</div>
+-				</div>
+-				<div class="factor" id="otp">
+-					<table>
+-						<tr>
+-							<td><label for="passcode" id="pCodeLabel">Passcode</label></td>
+-							<td><input id="passcode" name="passcode" type="password" value="" size="18" tabindex="3" /></td>
+-						</tr>
+-						<tr class="capsLock" style="display: none;">
+-							<td>&nbsp;</td>
+-							<td>Caps Lock is on</td>
+-						</tr>
+-					</table>
+-					Manage your <a href="#otpInfo" id="otpInfoShow" tabindex="8">token</a> </div>
+-				<div class="factorHead"> <a href="#" tabindex="12">Help</a>
+-					<h2 id="kx509Title"><span>&nbsp;</span>Certificate</h2>
+-					<div class="authComplete" style="display: none;">Authentication Complete</div>
+-				</div>
+-				<div class="factor" id="kx509">
+-					<p class="note">You must have k.x-509 software installed and configured.</p>
+-					<p>
+-						<input name="useKX509" id="useKX509" type="checkbox" value="1" tabindex="5" />
+-						<label for="useKX509">Authenticate using a certificate</label>
+-					</p>
+-					Download <a href="#kx509Info" id="kx509InfoShow" tabindex="9">k.x-509 software</a> </div>
++				<input type="hidden" name="required"
++				value="$f" />
++				<input type="hidden" name="ref"
++				value="$r" />
++				<input type="hidden" name="service"
++				value="$c" />
++				<input type="hidden" name="reauth" value="true" />
++				<div id="error" style="display: none;">$e</div>
++				$!include(inc/factor_login_reauth.inc)
++				$!include(inc/factor_otp.inc)
++				$!include(inc/factor_kx509.inc)
++				$!include(inc/factor_invite.inc)
+ 				<div id="loginButton">
+-					<input type="submit" name="doLogin" value="Log In" tabindex="6" />
++					<input type="submit" name="doLogin" value="$!_("Log In")" tabindex="6" />
+ 				</div>
+ 			</form>
+ 			<div class="clear">&nbsp;</div>
+@@ -162,8 +60,7 @@
+ 		<div id="uiBottom">&nbsp;</div>
+ 	</div>
+ </div>
+-<div id="foot">&copy; 2006 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
+-		of the University of Michigan</a> </div>
++$!include(inc/%lang%/footer.inc)
+ <form name="switch" id="switchUserForm" action="/cgi-bin/logout" enctype="application/x-www-form-urlencoded" method="post">
+ 	<input type="hidden" name="url" value="$r" />
+ 	<input type="hidden" name="service" value="$c" />
+diff --git a/html/validation_error.html b/html/validation_error.html
+deleted file mode 100755
+index a667522..0000000
+--- a/html/validation_error.html
++++ /dev/null
+@@ -1,54 +0,0 @@
+-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+-<html xmlns="http://www.w3.org/1999/xhtml">
+-<head>
+-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+-<meta http-equiv="Pragma" content="no-cache" />
+-<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
+-<title>$t</title>
+-<style type="text/css" media="screen">
+-/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
+-
+-#rightUIcol .factorHead h2 {
+-	background: none;
+-	color: #999;
+-}
+-</style>
+-</head>
+-<body>
+-<div id="page">
+-	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
+-		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
+-		</span> <strong>Our Home Page</strong></a> </div>
+-	<div id="main">
+-		<div id="uiRow">
+-			<div id="leftUIcol">
+-				<h1 class="error">$t</h1>
+-				<p>
+-				$m
+-				<p>Please contact <a href="#">Technical Support (put URL here)</a> if you have any questions.</p>
+-				<p><a href="#">Put URL to main CoSign page here</a></p>
+-				<p class="techInfo"><strong>Technical Info:</strong> $e</p>
+-			</div>
+-			<form action="#" method="post" name="factors" id="rightUIcol">
+-				<div class="factorHead">
+-					<h2>ID &amp; Password</h2>
+-				</div>
+-				<div class="factorHead">
+-					<h2>One Time Passcode</h2>
+-				</div>
+-				<div class="factorHead">
+-					<h2>Certificate</h2>
+-				</div>
+-				<div id="loginButton">
+-					<input type="submit" name="doLogin" value="Log In" disabled="disabled" />
+-				</div>
+-			</form>
+-			<div class="clear">&nbsp;</div>
+-		</div>
+-		<div id="uiBottom">&nbsp;</div>
+-	</div>
+-</div>
+-<div id="foot">&copy; 2006 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
+-		of the University of Michigan</a> </div>
+-</body>
+-</html>
+diff --git a/html/verify-logout.html b/html/verify-logout.html
+index ea68776..f03c141 100755
+--- a/html/verify-logout.html
++++ b/html/verify-logout.html
+@@ -1,7 +1,7 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
++<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ <meta http-equiv="Pragma" content="no-cache" />
+ <meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
+ <title>$t</title>
+@@ -11,6 +11,11 @@
+ <script type="text/javascript" src="/cosign/js/prototype.js"></script>
+ <script type="text/javascript">
+ 	window.onload = function() {
++		try {
++			if (history.length <= 1) {
++				$('back').hide();
++			}
++		} catch (e) {}
+ 		Event.observe('back', 'click', function() {history.go(-1)});
+ 		$('logout').focus();
+ 	}
+@@ -18,28 +23,25 @@
+ </head>
+ <body>
+ <div id="page">
+-	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
+-		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
+-		</span> <strong>Our Home Page</strong></a> </div>
++  $!include(inc/%lang%/header.inc)
+ 	<div id="main" class="logoutUI">
+ 		<div id="uiRow">
+ 		    <form name="f" method="post" action="/cgi-bin/logout">
+-			<h1>Log Out</h1>
+-			<p>You are about to log out of <a href="/services/">all weblogin applications</a>.
+-				Are you sure you want to do this?</p>
++			<h1>$!_("Log Out")</h1>
++			<p>$!_("You are about to log out of <a href=\"/services/\">all weblogin applications</a>.")
++				$!_("Are you sure you want to do this?")</p>
+ 			<p>
+-				<input type="button" id="back" value="Go Back" />
+-				<input type="submit" id="logout" name="verify" value="Log Out" />
++				<input type="button" id="back" value="$!_("Go Back")" />
++				<input type="submit" id="logout" name="verify" value="$!_("Log Out")" />
+ 			</p>
+-			<div class="redirect">After logout your browser
+-			will redirect to: $u</div>
++			<div class="redirect">$!_("After logout your browser will redirect to:")
++			$u</div>
+ 			<input type="hidden" name="url" value="$u" />
+ 		</form>
+ 		</div>
+ 		<div id="uiBottom">&nbsp;</div>
+ 	</div>
+ </div>
+-<div id="foot">&copy; 2006 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
+-		of the University of Michigan</a> </div>
++$!include(inc/%lang%/footer.inc)
+ </body>
+ </html>
+-- 
+tg: (f5eca63..) t/templates_standard (depends on: t/custom_cosign_path t/javascript t/include_macro_for_templates t/static_htmls_to_templates)

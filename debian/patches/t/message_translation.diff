@@ -9,11 +9,11 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  Makefile.in                     |    4 +-
  configure                       | 4527 +++++++++++++++++++--------------------
  configure.ac                    |    1 +
- locale/Makefile.in              |   40 +
+ locale/Makefile.in              |   39 +
  locale/addition.pot             |   32 +
- locale/cosign.pot               |  459 ++++
- locale/zh/LC_MESSAGES/cosign.po |  497 +++++
- 7 files changed, 3183 insertions(+), 2377 deletions(-)
+ locale/cosign.pot               |  466 ++++
+ locale/zh/LC_MESSAGES/cosign.po |  506 +++++
+ 7 files changed, 3198 insertions(+), 2377 deletions(-)
 
 diff --git a/Makefile.in b/Makefile.in
 index 26f46dc..1c713cc 100755
@@ -6692,10 +6692,10 @@ index 8f11d2c..e8ad02d 100755
  
 diff --git a/locale/Makefile.in b/locale/Makefile.in
 new file mode 100644
-index 0000000..3dccd48
+index 0000000..042963e
 --- /dev/null
 +++ b/locale/Makefile.in
-@@ -0,0 +1,40 @@
+@@ -0,0 +1,39 @@
 +prefix=@prefix@
 +LOCALEDIR=@localedir@
 +DESTDIR=
@@ -6707,9 +6707,8 @@ index 0000000..3dccd48
 +
 +all: mo
 +
-+pot: $(MAIN_POT)
-+cosign.pot: $(wildcard ../cgi/*.c)
-+	xgettext -s -k_ -o $@ $^
++pot: $(wildcard ../cgi/*.c) ../cgi/cosigncgi.h
++	xgettext -s -k_ -o cosign.pot $^
 +
 +po: pot
 +	for i in ${TARGETS}; do \
@@ -6731,7 +6730,7 @@ index 0000000..3dccd48
 +
 +install : all
 +	-mkdir -p $(DESTDIR)${LOCALEDIR}
-+	cp -a cosign.pot ${TARGETS} $(DESTDIR)${LOCALEDIR}
++	cp -a $(MAIN_POT) ${TARGETS} $(DESTDIR)${LOCALEDIR}
 +
 +.PHONY: pot po mo clean all install
 +
@@ -6776,10 +6775,10 @@ index 0000000..ab77f7c
 +msgstr ""
 diff --git a/locale/cosign.pot b/locale/cosign.pot
 new file mode 100644
-index 0000000..5f28b55
+index 0000000..5297202
 --- /dev/null
 +++ b/locale/cosign.pot
-@@ -0,0 +1,459 @@
+@@ -0,0 +1,466 @@
 +# SOME DESCRIPTIVE TITLE.
 +# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 +# This file is distributed under the same license as the PACKAGE package.
@@ -6790,7 +6789,7 @@ index 0000000..5f28b55
 +msgstr ""
 +"Project-Id-Version: PACKAGE VERSION\n"
 +"Report-Msgid-Bugs-To: \n"
-+"POT-Creation-Date: 2010-03-31 16:42+0800\n"
++"POT-Creation-Date: 2010-04-02 15:16+0800\n"
 +"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 +"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 +"Language-Team: LANGUAGE <LL@li.org>\n"
@@ -6798,42 +6797,42 @@ index 0000000..5f28b55
 +"Content-Type: text/plain; charset=CHARSET\n"
 +"Content-Transfer-Encoding: 8bit\n"
 +
-+#: ../cgi/cgi.c:252
++#: ../cgi/cgi.c:254
 +#, c-format
 +msgid "%s: %s=%s: too long\n"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:608
++#: ../cgi/cgi.c:612
 +#, c-format
 +msgid "%s: cosign_register failed\n"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:928
++#: ../cgi/cgi.c:943
 +#, c-format
 +msgid "%s: implicit cosign_register failed\n"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:182
++#: ../cgi/cgi.c:184
 +#, c-format
 +msgid "%s: invalid setting for krbtkts: defaulting off.\n"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:963
++#: ../cgi/cgi.c:978
 +#, c-format
 +msgid "%s: mkcookie: failed\n"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:597 ../cgi/cgi.c:917
++#: ../cgi/cgi.c:601 ../cgi/cgi.c:932
 +#, c-format
 +msgid "%s: mkscookie failed\n"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:248
++#: ../cgi/cgi.c:250
 +#, c-format
 +msgid "%s: mkscookie failed.\n"
 +msgstr ""
 +
-+#: ../cgi/info.c:129
++#: ../cgi/info.c:119
 +msgid ""
 +"<p>The Weblogin-protected site that  you were connecting to encountered an "
 +"error while processing your authentication. Please delete your cookies, "
@@ -6849,7 +6848,7 @@ index 0000000..5f28b55
 +" </ul>\n"
 +msgstr ""
 +
-+#: ../cgi/info.c:161
++#: ../cgi/info.c:151
 +msgid ""
 +"<p>There is a problem with the URL to which you were redirected. Since this "
 +"can potentially indicate phishing or other suspicious activity, we have "
@@ -6858,7 +6857,14 @@ index 0000000..5f28b55
 +"its official URL.</p>"
 +msgstr ""
 +
-+#: ../cgi/info.c:150
++#: ../cgi/cosigncgi.h:37
++msgid ""
++"<p>Web Login is unavailable due to an internal error. We apologize for any "
++"inconvenience this may cause and are working to restore service as soon as "
++"possible. Please try again later.</p>"
++msgstr ""
++
++#: ../cgi/info.c:140
 +msgid ""
 +"<p>You attempted to submit data to a Web Login-protected web site after your "
 +"session had timed out. Your changes have not been saved.</p>\n"
@@ -6867,384 +6873,384 @@ index 0000000..5f28b55
 +"submitting the data. </p>\n"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:587
++#: ../cgi/cgi.c:591
 +msgid "Additional authentication is required."
 +msgstr ""
 +
-+#: ../cgi/login.c:293 ../cgi/login.c:301
++#: ../cgi/login.c:299 ../cgi/login.c:307
 +msgid "An unknown error occurred."
 +msgstr ""
 +
-+#: ../cgi/cgi.c:707 ../cgi/cgi.c:759 ../cgi/cgi.c:793 ../cgi/cgi.c:805
-+#: ../cgi/cgi.c:845 ../cgi/cgi.c:972 ../cgi/cgi.c:1028 ../cgi/info.c:180
++#: ../cgi/cgi.c:711 ../cgi/cgi.c:771 ../cgi/cgi.c:805 ../cgi/cgi.c:820
++#: ../cgi/cgi.c:860 ../cgi/cgi.c:987 ../cgi/cgi.c:1043 ../cgi/info.c:170
 +msgid "Authentication Required"
 +msgstr ""
 +
-+#: ../cgi/login.c:268 ../cgi/login.c:275
++#: ../cgi/login.c:274 ../cgi/login.c:281
 +msgid "Authentication Required ( kerberos error )"
 +msgstr ""
 +
-+#: ../cgi/login.c:284
++#: ../cgi/login.c:290
 +msgid "Authentication Required ( krb realm error )"
 +msgstr ""
 +
-+#: ../cgi/login.c:294 ../cgi/login.c:309
++#: ../cgi/login.c:300 ../cgi/login.c:315
 +msgid "Authentication Required (kerberos error)"
 +msgstr ""
 +
-+#: ../cgi/login.c:302
++#: ../cgi/login.c:308
 +msgid "Authentication Required (krbpath error)"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:420
++#: ../cgi/cgi.c:424
 +msgid "Bad service in query string."
 +msgstr ""
 +
-+#: ../cgi/info.c:145
++#: ../cgi/info.c:135
 +msgid "Browser is stuck in an infinite redirect loop."
 +msgstr ""
 +
-+#: ../cgi/login.c:410
++#: ../cgi/login.c:416
 +msgid "CC Initialize Error"
 +msgstr ""
 +
-+#: ../cgi/login.c:417
++#: ../cgi/login.c:423
 +msgid "CC Storing Error"
 +msgstr ""
 +
-+#: ../cgi/info.c:148
++#: ../cgi/info.c:138
 +msgid "Changes Not Saved"
 +msgstr ""
 +
-+#: ../cgi/login.c:192
++#: ../cgi/login.c:196
 +msgid "Database Connection Problem"
 +msgstr ""
 +
-+#: ../cgi/login.c:143
++#: ../cgi/login.c:147
 +msgid "Database Problem"
 +msgstr ""
 +
-+#: ../cgi/login.c:333
++#: ../cgi/login.c:339
 +msgid "Error"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:449
++#: ../cgi/cgi.c:453
 +msgid "Error: Cookies Required"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:929
++#: ../cgi/cgi.c:944
 +msgid "Error: Implicit Register Failed"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:468 ../cgi/cgi.c:967
++#: ../cgi/cgi.c:472 ../cgi/cgi.c:982
 +msgid "Error: Login Screen"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:103 ../cgi/cgi.c:115 ../cgi/cgi.c:130 ../cgi/cgi.c:143
++#: ../cgi/cgi.c:105 ../cgi/cgi.c:117 ../cgi/cgi.c:132 ../cgi/cgi.c:145
 +msgid "Error: Loop Breaker"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:598 ../cgi/cgi.c:918
++#: ../cgi/cgi.c:602 ../cgi/cgi.c:933
 +msgid "Error: Make Service Cookie Failed"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:364
++#: ../cgi/cgi.c:368
 +msgid "Error: Negotiate login failed"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:511 ../cgi/cgi.c:631 ../cgi/cgi.c:833 ../cgi/login.c:235
-+#: ../cgi/login.c:434
++#: ../cgi/cgi.c:515 ../cgi/cgi.c:635 ../cgi/cgi.c:848 ../cgi/login.c:239
++#: ../cgi/login.c:440
 +msgid "Error: Please try later"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:609
++#: ../cgi/cgi.c:613
 +msgid "Error: Register Failed"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:314 ../cgi/cgi.c:320 ../cgi/cgi.c:326 ../cgi/cgi.c:332
-+#: ../cgi/cgi.c:338 ../cgi/cgi.c:487 ../cgi/cgi.c:498 ../cgi/cgi.c:675
++#: ../cgi/cgi.c:318 ../cgi/cgi.c:324 ../cgi/cgi.c:330 ../cgi/cgi.c:336
++#: ../cgi/cgi.c:342 ../cgi/cgi.c:491 ../cgi/cgi.c:502 ../cgi/cgi.c:679
 +msgid "Error: Server Configuration"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:655 ../cgi/info.c:95 ../cgi/info.c:103 ../cgi/info.c:111
-+#: ../cgi/info.c:170 ../cgi/logout.c:154 ../cgi/logout.c:162
-+#: ../cgi/logout.c:170 ../cgi/logout.c:203
++#: ../cgi/cgi.c:659 ../cgi/info.c:85 ../cgi/info.c:93 ../cgi/info.c:101
++#: ../cgi/info.c:160 ../cgi/logout.c:158 ../cgi/logout.c:166
++#: ../cgi/logout.c:174 ../cgi/logout.c:207
 +msgid "Error: Server Error"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:529 ../cgi/cgi.c:540 ../cgi/cgi.c:549 ../cgi/cgi.c:862
-+#: ../cgi/cgi.c:873 ../cgi/cgi.c:882
++#: ../cgi/cgi.c:533 ../cgi/cgi.c:544 ../cgi/cgi.c:553 ../cgi/cgi.c:877
++#: ../cgi/cgi.c:888 ../cgi/cgi.c:897
 +msgid "Error: Unknown service"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:387 ../cgi/cgi.c:419
++#: ../cgi/cgi.c:391 ../cgi/cgi.c:423
 +msgid "Error: Unrecognized Service"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:350
++#: ../cgi/cgi.c:354
 +msgid "Error: X509 failed"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:401
++#: ../cgi/cgi.c:405
 +msgid "Error: malformatted factors"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:427
++#: ../cgi/cgi.c:431
 +msgid "Error: malformatted referrer"
 +msgstr ""
 +
-+#: ../cgi/logout.c:275
++#: ../cgi/logout.c:279
 +msgid ""
 +"Failed to initialise connections to the authentication server. Please quit "
 +"your browser to complete logout."
 +msgstr ""
 +
-+#: ../cgi/cgi.c:499
++#: ../cgi/cgi.c:503
 +msgid ""
 +"Failed to initialise connections to the authentication server. Please try "
 +"again later"
 +msgstr ""
 +
-+#: ../cgi/login.c:164 ../cgi/login.c:174
++#: ../cgi/login.c:168 ../cgi/login.c:178
 +msgid "Invalid Input"
 +msgstr ""
 +
-+#: ../cgi/login.c:355
++#: ../cgi/login.c:361
 +msgid "KT Resolve Error"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:378
++#: ../cgi/cgi.c:382
 +#, c-format
 +msgid ""
 +"Kerberos ticket transfer is on,  but no tickets were found in the "
 +"environment\n"
 +msgstr ""
 +
-+#: ../cgi/logout.c:197
++#: ../cgi/logout.c:201
 +msgid "Logout Requested"
 +msgstr ""
 +
-+#: ../cgi/logout.c:230
++#: ../cgi/logout.c:234
 +msgid "Logout Requested (again?)"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:753 ../cgi/cgi.c:801
++#: ../cgi/cgi.c:765 ../cgi/cgi.c:816
 +msgid "Password Expired"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:763
++#: ../cgi/cgi.c:775
 +msgid "Password or Account Name incorrect. Is [caps lock] on?"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:1012
++#: ../cgi/cgi.c:1027
 +msgid "Please Re-Authenticate."
 +msgstr ""
 +
-+#: ../cgi/cgi.c:902
++#: ../cgi/cgi.c:917
 +msgid "Please complete all required fields to re-authenticate."
 +msgstr ""
 +
-+#: ../cgi/cgi.c:708 ../cgi/cgi.c:846
++#: ../cgi/cgi.c:712 ../cgi/cgi.c:861
 +msgid "Please enter your login and password."
 +msgstr ""
 +
-+#: ../cgi/cgi.c:104 ../cgi/cgi.c:116 ../cgi/cgi.c:131 ../cgi/cgi.c:144
-+#: ../cgi/cgi.c:469 ../cgi/cgi.c:968
++#: ../cgi/cgi.c:106 ../cgi/cgi.c:118 ../cgi/cgi.c:133 ../cgi/cgi.c:146
++#: ../cgi/cgi.c:473 ../cgi/cgi.c:983
 +msgid "Please try again later."
 +msgstr ""
 +
-+#: ../cgi/cgi.c:794
++#: ../cgi/cgi.c:806
 +msgid "Primary authentication is required before secondary authentication."
 +msgstr ""
 +
-+#: ../cgi/login.c:191
++#: ../cgi/login.c:195
 +msgid "Problems connecting to the database."
 +msgstr ""
 +
-+#: ../cgi/login.c:163 ../cgi/login.c:173
++#: ../cgi/login.c:167 ../cgi/login.c:177
 +msgid "Provided login appears to be invalid"
 +msgstr ""
 +
-+#: ../cgi/info.c:96 ../cgi/logout.c:155
++#: ../cgi/info.c:86 ../cgi/logout.c:159
 +msgid "REMOTE_ADDR not set"
 +msgstr ""
 +
-+#: ../cgi/info.c:112 ../cgi/logout.c:171
++#: ../cgi/info.c:102 ../cgi/logout.c:175
 +msgid "REQUEST_METHOD not set"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:1010 ../cgi/cgi.c:1018
++#: ../cgi/cgi.c:1025 ../cgi/cgi.c:1033
 +msgid "Re-Authentication Required"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:1020
++#: ../cgi/cgi.c:1035
 +msgid "Re-authenticate to confirm your new Internet address."
 +msgstr ""
 +
-+#: ../cgi/info.c:104 ../cgi/logout.c:163
++#: ../cgi/info.c:94 ../cgi/logout.c:167
 +msgid "SCRIPT_NAME not set"
 +msgstr ""
 +
-+#: ../cgi/logout.c:261 ../cgi/logout.c:274
++#: ../cgi/logout.c:265 ../cgi/logout.c:278
 +msgid "Server Configuration Error"
 +msgstr ""
 +
-+#: ../cgi/login.c:368
++#: ../cgi/login.c:374
 +msgid "Server Principal Error"
 +msgstr ""
 +
-+#: ../cgi/login.c:182
++#: ../cgi/login.c:186
 +msgid "Server Problem"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:365
++#: ../cgi/cgi.c:369
 +msgid ""
 +"There was a problem processing your authentication data. Contact your "
 +"administrator"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:351
++#: ../cgi/cgi.c:355
 +msgid ""
 +"There was an x.509 mutual authentication configuration error. Contact your "
 +"administrator."
 +msgstr ""
 +
-+#: ../cgi/cgi.c:450
++#: ../cgi/cgi.c:454
 +msgid "This service requires that cookies be enabled."
 +msgstr ""
 +
-+#: ../cgi/login.c:343
++#: ../cgi/login.c:349
 +msgid "Ticket Verification Error"
 +msgstr ""
 +
-+#: ../cgi/login.c:383
++#: ../cgi/login.c:389
 +msgid "Ticket Verify Error"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:676
++#: ../cgi/cgi.c:680
 +msgid "Too many form fields configured."
 +msgstr ""
 +
-+#: ../cgi/info.c:160
++#: ../cgi/info.c:150
 +msgid "URL validation failed"
 +msgstr ""
 +
-+#: ../cgi/login.c:142
++#: ../cgi/login.c:146
 +msgid "Unable to connect to guest account database."
 +msgstr ""
 +
-+#: ../cgi/cgi.c:388 ../cgi/cgi.c:428
++#: ../cgi/cgi.c:392 ../cgi/cgi.c:432
 +msgid "Unable to determine referring service from query string."
 +msgstr ""
 +
-+#: ../cgi/cgi.c:402
++#: ../cgi/cgi.c:406
 +msgid "Unable to determine required factors from query string."
 +msgstr ""
 +
-+#: ../cgi/info.c:171
++#: ../cgi/info.c:161
 +msgid "Unable to determine template from query string."
 +msgstr ""
 +
-+#: ../cgi/login.c:181
++#: ../cgi/login.c:185
 +msgid "Unable to query guest account database."
 +msgstr ""
 +
-+#: ../cgi/cgi.c:327
++#: ../cgi/cgi.c:331
 +msgid "Unable to retrieve IP address"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:321
++#: ../cgi/cgi.c:325
 +msgid "Unable to retrieve method"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:333
++#: ../cgi/cgi.c:337
 +msgid "Unable to retrieve server name"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:339
++#: ../cgi/cgi.c:343
 +msgid "Unable to retrieve server port"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:315
++#: ../cgi/cgi.c:319
 +msgid "Unable to retrieve the script name"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:748
++#: ../cgi/cgi.c:760
 +#, c-format
 +msgid "Unknown authentication type '%s'"
 +msgstr ""
 +
-+#: ../cgi/logout.c:262
++#: ../cgi/logout.c:266
 +msgid ""
 +"We were unable to contact the authentication server.  Please quit your web "
 +"browser to complete logout."
 +msgstr ""
 +
-+#: ../cgi/cgi.c:488 ../cgi/cgi.c:610 ../cgi/cgi.c:930
++#: ../cgi/cgi.c:492 ../cgi/cgi.c:614 ../cgi/cgi.c:945
 +msgid ""
 +"We were unable to contact the authentication server.  Please try again later."
 +msgstr ""
 +
-+#: ../cgi/cgi.c:512 ../cgi/cgi.c:632 ../cgi/cgi.c:834 ../cgi/login.c:233
-+#: ../cgi/login.c:432
++#: ../cgi/cgi.c:516 ../cgi/cgi.c:636 ../cgi/cgi.c:849 ../cgi/login.c:237
++#: ../cgi/login.c:438
 +msgid ""
 +"We were unable to contact the authentication server. Please try again later."
 +msgstr ""
 +
-+#: ../cgi/cgi.c:599 ../cgi/cgi.c:919
++#: ../cgi/cgi.c:603 ../cgi/cgi.c:934
 +msgid "We were unable to create a service cookie. Please try again later."
 +msgstr ""
 +
-+#: ../cgi/cgi.c:530 ../cgi/cgi.c:541 ../cgi/cgi.c:550 ../cgi/cgi.c:863
-+#: ../cgi/cgi.c:874 ../cgi/cgi.c:883
++#: ../cgi/cgi.c:534 ../cgi/cgi.c:545 ../cgi/cgi.c:554 ../cgi/cgi.c:878
++#: ../cgi/cgi.c:889 ../cgi/cgi.c:898
 +msgid "We were unable to locate a service matching the one provided."
 +msgstr ""
 +
-+#: ../cgi/info.c:149
++#: ../cgi/info.c:139
 +msgid "You were trying to POST, BUT Changes Not Saved"
 +msgstr ""
 +
-+#: ../cgi/info.c:128
++#: ../cgi/info.c:118
 +msgid "Your browser is looping!"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:656 ../cgi/logout.c:204
++#: ../cgi/cgi.c:660 ../cgi/logout.c:208
 +msgid "cgi_init failed"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:510 ../cgi/cgi.c:630
++#: ../cgi/cgi.c:514 ../cgi/cgi.c:634
 +#, c-format
 +msgid "cosign_login: basic login failed\n"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:528 ../cgi/cgi.c:861
++#: ../cgi/cgi.c:532 ../cgi/cgi.c:876
 +#, c-format
 +msgid "no matching service for %s\n"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:538 ../cgi/cgi.c:871
++#: ../cgi/cgi.c:542 ../cgi/cgi.c:886
 +#, c-format
 +msgid "regex substitution failed: %s into %s\n"
 +msgstr ""
 +
-+#: ../cgi/cgi.c:548 ../cgi/cgi.c:881
++#: ../cgi/cgi.c:552 ../cgi/cgi.c:896
 +#, c-format
 +msgid "requested v2 for v3 service %s\n"
 +msgstr ""
 +
-+#: ../cgi/login.c:342
++#: ../cgi/login.c:348
 +msgid "server configuration error"
 +msgstr ""
 +
-+#: ../cgi/info.c:159
++#: ../cgi/info.c:149
 +msgid "weblogin: URL validation failed"
 +msgstr ""
 diff --git a/locale/zh/LC_MESSAGES/cosign.po b/locale/zh/LC_MESSAGES/cosign.po
 new file mode 100644
-index 0000000..0d97640
+index 0000000..cbc107c
 --- /dev/null
 +++ b/locale/zh/LC_MESSAGES/cosign.po
-@@ -0,0 +1,497 @@
+@@ -0,0 +1,506 @@
 +# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 +# This file is distributed under the same license as the PACKAGE package.
 +#
@@ -7253,8 +7259,8 @@ index 0000000..0d97640
 +msgstr ""
 +"Project-Id-Version: \n"
 +"Report-Msgid-Bugs-To: \n"
-+"POT-Creation-Date: 2010-03-30 14:40+0800\n"
-+"PO-Revision-Date: 2010-03-31 17:02+0800\n"
++"POT-Creation-Date: 2010-04-02 15:16+0800\n"
++"PO-Revision-Date: 2010-04-02 15:17+0800\n"
 +"Last-Translator: Jiang Xin <worldhello.net@gmail.com>\n"
 +"Language-Team: Chinese Simplified <kde-i18n-doc@kde.org>\n"
 +"MIME-Version: 1.0\n"
@@ -7263,42 +7269,42 @@ index 0000000..0d97640
 +"X-Generator: Lokalize 1.0\n"
 +"Plural-Forms: nplurals=2; plural=n != 1;\n"
 +
-+#: ../cgi/cgi.c:252
++#: ../cgi/cgi.c:254
 +#, c-format
 +msgid "%s: %s=%s: too long\n"
 +msgstr "%s: %s=%s: 太长\n"
 +
-+#: ../cgi/cgi.c:608
++#: ../cgi/cgi.c:612
 +#, c-format
 +msgid "%s: cosign_register failed\n"
 +msgstr "%s: cosign_register 注册失败\n"
 +
-+#: ../cgi/cgi.c:928
++#: ../cgi/cgi.c:943
 +#, c-format
 +msgid "%s: implicit cosign_register failed\n"
 +msgstr "%s: 隐含的 cosign_register 注册失败\n"
 +
-+#: ../cgi/cgi.c:182
++#: ../cgi/cgi.c:184
 +#, c-format
 +msgid "%s: invalid setting for krbtkts: defaulting off.\n"
 +msgstr "%s: 无效的 krbtkts 设置: 缺省关闭。\n"
 +
-+#: ../cgi/cgi.c:963
++#: ../cgi/cgi.c:978
 +#, c-format
 +msgid "%s: mkcookie: failed\n"
 +msgstr "%s: 创建 cookie 失败\n"
 +
-+#: ../cgi/cgi.c:597 ../cgi/cgi.c:917
++#: ../cgi/cgi.c:601 ../cgi/cgi.c:932
 +#, c-format
 +msgid "%s: mkscookie failed\n"
 +msgstr "%s: 创建服务 cookie 失败\n"
 +
-+#: ../cgi/cgi.c:248
++#: ../cgi/cgi.c:250
 +#, c-format
 +msgid "%s: mkscookie failed.\n"
 +msgstr "%s: 创建服务 cookie 失败。\n"
 +
-+#: ../cgi/info.c:129
++#: ../cgi/info.c:119
 +msgid ""
 +"<p>The Weblogin-protected site that  you were connecting to encountered an "
 +"error while processing your authentication. Please delete your cookies, "
@@ -7313,18 +7319,18 @@ index 0000000..0d97640
 +"cause service cookie not valid. </li>\n"
 +" </ul>\n"
 +msgstr ""
-+"<p>您正在访问的受单点登录保护的站点在进行认证时遇到错误。请删除您的 cookies ， "
-+"重启浏览器，然后重试。</p>\n"
++"<p>您正在访问的受单点登录保护的站点在进行认证时遇到错误。请删除您的 "
++"cookies ， 重启浏览器，然后重试。</p>\n"
 +"<p>因为发生浏览器循环重定向，导致无法登录。可能的原因有：</p>\n"
 +"<ul>\n"
-+"<li>服务器的时钟和您本地的时钟不匹配，导致服务器发放的 cookie "
-+"被您的浏览器错误的当做过期 cookie 而无法被设置。如果是这样的话， "
-+"正确设置您机器的时钟；</li>\n"
-+"<li>您访问的 URL 不是该服务的正规访问地址，注册 cookie 的 URL "
-+"和应用的 URL 不再同一个域之中，导致服务 cookie 无效，进而发生重定向。</li>\n"
++"<li>服务器的时钟和您本地的时钟不匹配，导致服务器发放的 cookie 被您的浏览器错"
++"误的当做过期 cookie 而无法被设置。如果是这样的话， 正确设置您机器的时钟；</"
++"li>\n"
++"<li>您访问的 URL 不是该服务的正规访问地址，注册 cookie 的 URL 和应用的 URL 不"
++"再同一个域之中，导致服务 cookie 无效，进而发生重定向。</li>\n"
 +" </ul>\n"
 +
-+#: ../cgi/info.c:161
++#: ../cgi/info.c:151
 +msgid ""
 +"<p>There is a problem with the URL to which you were redirected. Since this "
 +"can potentially indicate phishing or other suspicious activity, we have "
@@ -7332,11 +7338,20 @@ index 0000000..0d97640
 +" <p>You may be able to access the web site or service if you try again with "
 +"its official URL.</p>"
 +msgstr ""
-+"<p>您正在重定向可疑地址。这意味着您可能受到网络钓鱼或者其他可疑行为的威胁。"
-+"我们已经停止该可疑的重定向，以保护你的安全。</p> \n"
++"<p>您正在重定向可疑地址。这意味着您可能受到网络钓鱼或者其他可疑行为的威胁。我"
++"们已经停止该可疑的重定向，以保护你的安全。</p> \n"
 +"<p>您可以通过输入正确的网址访问相关服务。</p>"
 +
-+#: ../cgi/info.c:150
++#: ../cgi/cosigncgi.h:37
++msgid ""
++"<p>Web Login is unavailable due to an internal error. We apologize for any "
++"inconvenience this may cause and are working to restore service as soon as "
++"possible. Please try again later.</p>"
++msgstr ""
++"<p>单点登录不可用。</p> "
++"<p>内部错误导致单点登录不可用。非常抱歉，我们会尽快修复。请稍后重试。</p>"
++
++#: ../cgi/info.c:140
 +msgid ""
 +"<p>You attempted to submit data to a Web Login-protected web site after your "
 +"session had timed out. Your changes have not been saved.</p>\n"
@@ -7344,160 +7359,160 @@ index 0000000..0d97640
 +"if you logged out (for example,  in another browser window) before "
 +"submitting the data. </p>\n"
 +msgstr ""
-+"<p>您正向一个受单点登录保护的 Web 站点提交，但是您的会话已经过期。 "
-+"这导致您向受保护站点提交的数据没有被保存。</p>\n"
++"<p>您正向一个受单点登录保护的 Web 站点提交，但是您的会话已经过期。 这导致您向"
++"受保护站点提交的数据没有被保存。</p>\n"
 +"<p>这可能是因为超时导致会话退出，或者您在另外的窗口已经退出登录。</p>\n"
 +
-+#: ../cgi/cgi.c:587
++#: ../cgi/cgi.c:591
 +msgid "Additional authentication is required."
 +msgstr "需要附加的认证。"
 +
-+#: ../cgi/login.c:293 ../cgi/login.c:301
++#: ../cgi/login.c:299 ../cgi/login.c:307
 +msgid "An unknown error occurred."
 +msgstr "遇到一个未知错误。"
 +
-+#: ../cgi/cgi.c:707 ../cgi/cgi.c:759 ../cgi/cgi.c:793 ../cgi/cgi.c:805
-+#: ../cgi/cgi.c:845 ../cgi/cgi.c:972 ../cgi/cgi.c:1028 ../cgi/info.c:180
++#: ../cgi/cgi.c:711 ../cgi/cgi.c:771 ../cgi/cgi.c:805 ../cgi/cgi.c:820
++#: ../cgi/cgi.c:860 ../cgi/cgi.c:987 ../cgi/cgi.c:1043 ../cgi/info.c:170
 +msgid "Authentication Required"
 +msgstr "登录"
 +
-+#: ../cgi/login.c:268 ../cgi/login.c:275
++#: ../cgi/login.c:274 ../cgi/login.c:281
 +msgid "Authentication Required ( kerberos error )"
 +msgstr "需要登录 ( kerberos 错误 )"
 +
-+#: ../cgi/login.c:284
++#: ../cgi/login.c:290
 +msgid "Authentication Required ( krb realm error )"
 +msgstr "需要登录 ( kerberos 域错误 )"
 +
-+#: ../cgi/login.c:294 ../cgi/login.c:309
++#: ../cgi/login.c:300 ../cgi/login.c:315
 +msgid "Authentication Required (kerberos error)"
 +msgstr "需要登录 ( kerberos 错误 )"
 +
-+#: ../cgi/login.c:302
++#: ../cgi/login.c:308
 +msgid "Authentication Required (krbpath error)"
 +msgstr "需要登录 ( kerberos 错误 )"
 +
-+#: ../cgi/cgi.c:420
++#: ../cgi/cgi.c:424
 +msgid "Bad service in query string."
 +msgstr "query sting 中包含错误的服务名。"
 +
-+#: ../cgi/info.c:145
++#: ../cgi/info.c:135
 +msgid "Browser is stuck in an infinite redirect loop."
 +msgstr "浏览器因发生了循环重定向而被终止。"
 +
-+#: ../cgi/login.c:410
++#: ../cgi/login.c:416
 +msgid "CC Initialize Error"
 +msgstr "密钥缓存初始化错误"
 +
-+#: ../cgi/login.c:417
++#: ../cgi/login.c:423
 +msgid "CC Storing Error"
 +msgstr "密钥缓存存储错误"
 +
 +msgid "Cannot connect to LDAP server.\n"
 +msgstr "无法连接到 LDAP 服务器。\n"
 +
-+#: ../cgi/info.c:148
++#: ../cgi/info.c:138
 +msgid "Changes Not Saved"
 +msgstr "修改没有保存"
 +
-+#: ../cgi/login.c:192
++#: ../cgi/login.c:196
 +msgid "Database Connection Problem"
 +msgstr "数据库连接错误"
 +
-+#: ../cgi/login.c:143
++#: ../cgi/login.c:147
 +msgid "Database Problem"
 +msgstr "数据库错误"
 +
-+#: ../cgi/login.c:333
++#: ../cgi/login.c:339
 +msgid "Error"
 +msgstr "错误"
 +
-+#: ../cgi/cgi.c:449
++#: ../cgi/cgi.c:453
 +msgid "Error: Cookies Required"
 +msgstr "错误: 需要启用 cookies"
 +
-+#: ../cgi/cgi.c:929
++#: ../cgi/cgi.c:944
 +msgid "Error: Implicit Register Failed"
 +msgstr "错误: 注册失败"
 +
-+#: ../cgi/cgi.c:468 ../cgi/cgi.c:967
++#: ../cgi/cgi.c:472 ../cgi/cgi.c:982
 +msgid "Error: Login Screen"
 +msgstr "错误: 登录界面"
 +
-+#: ../cgi/cgi.c:103 ../cgi/cgi.c:115 ../cgi/cgi.c:130 ../cgi/cgi.c:143
++#: ../cgi/cgi.c:105 ../cgi/cgi.c:117 ../cgi/cgi.c:132 ../cgi/cgi.c:145
 +msgid "Error: Loop Breaker"
 +msgstr "错误: 循环跳转"
 +
-+#: ../cgi/cgi.c:598 ../cgi/cgi.c:918
++#: ../cgi/cgi.c:602 ../cgi/cgi.c:933
 +msgid "Error: Make Service Cookie Failed"
 +msgstr "错误: 生成服务 cookie 失败"
 +
-+#: ../cgi/cgi.c:364
++#: ../cgi/cgi.c:368
 +msgid "Error: Negotiate login failed"
 +msgstr "Error: 协商方式登录失败"
 +
-+#: ../cgi/cgi.c:511 ../cgi/cgi.c:631 ../cgi/cgi.c:833 ../cgi/login.c:235
-+#: ../cgi/login.c:434
++#: ../cgi/cgi.c:515 ../cgi/cgi.c:635 ../cgi/cgi.c:848 ../cgi/login.c:239
++#: ../cgi/login.c:440
 +msgid "Error: Please try later"
 +msgstr "错误: 请稍后重试"
 +
-+#: ../cgi/cgi.c:609
++#: ../cgi/cgi.c:613
 +msgid "Error: Register Failed"
 +msgstr "错误: 注册错误"
 +
-+#: ../cgi/cgi.c:314 ../cgi/cgi.c:320 ../cgi/cgi.c:326 ../cgi/cgi.c:332
-+#: ../cgi/cgi.c:338 ../cgi/cgi.c:487 ../cgi/cgi.c:498 ../cgi/cgi.c:675
++#: ../cgi/cgi.c:318 ../cgi/cgi.c:324 ../cgi/cgi.c:330 ../cgi/cgi.c:336
++#: ../cgi/cgi.c:342 ../cgi/cgi.c:491 ../cgi/cgi.c:502 ../cgi/cgi.c:679
 +msgid "Error: Server Configuration"
 +msgstr "错误: 服务器配置"
 +
-+#: ../cgi/cgi.c:655 ../cgi/info.c:95 ../cgi/info.c:103 ../cgi/info.c:111
-+#: ../cgi/info.c:170 ../cgi/logout.c:154 ../cgi/logout.c:162
-+#: ../cgi/logout.c:170 ../cgi/logout.c:203
++#: ../cgi/cgi.c:659 ../cgi/info.c:85 ../cgi/info.c:93 ../cgi/info.c:101
++#: ../cgi/info.c:160 ../cgi/logout.c:158 ../cgi/logout.c:166
++#: ../cgi/logout.c:174 ../cgi/logout.c:207
 +msgid "Error: Server Error"
 +msgstr "错误: 服务器错误"
 +
-+#: ../cgi/cgi.c:529 ../cgi/cgi.c:540 ../cgi/cgi.c:549 ../cgi/cgi.c:862
-+#: ../cgi/cgi.c:873 ../cgi/cgi.c:882
++#: ../cgi/cgi.c:533 ../cgi/cgi.c:544 ../cgi/cgi.c:553 ../cgi/cgi.c:877
++#: ../cgi/cgi.c:888 ../cgi/cgi.c:897
 +msgid "Error: Unknown service"
 +msgstr "错误: 未知服务"
 +
-+#: ../cgi/cgi.c:387 ../cgi/cgi.c:419
++#: ../cgi/cgi.c:391 ../cgi/cgi.c:423
 +msgid "Error: Unrecognized Service"
 +msgstr "错误: 无法识别的服务"
 +
-+#: ../cgi/cgi.c:350
++#: ../cgi/cgi.c:354
 +msgid "Error: X509 failed"
 +msgstr "错误: X509 证书错误"
 +
-+#: ../cgi/cgi.c:401
++#: ../cgi/cgi.c:405
 +msgid "Error: malformatted factors"
 +msgstr "错误: 认证因子格式错误"
 +
-+#: ../cgi/cgi.c:427
++#: ../cgi/cgi.c:431
 +msgid "Error: malformatted referrer"
 +msgstr "错误: 返回地址格式错误"
 +
-+#: ../cgi/logout.c:275
++#: ../cgi/logout.c:279
 +msgid ""
 +"Failed to initialise connections to the authentication server. Please quit "
 +"your browser to complete logout."
 +msgstr "无法初始化连接到认证服务器。请退出浏览器以便完全退出。"
 +
-+#: ../cgi/cgi.c:499
++#: ../cgi/cgi.c:503
 +msgid ""
 +"Failed to initialise connections to the authentication server. Please try "
 +"again later"
 +msgstr "无法连接到认证服务器。请稍后重试"
 +
-+#: ../cgi/login.c:164 ../cgi/login.c:174
++#: ../cgi/login.c:168 ../cgi/login.c:178
 +msgid "Invalid Input"
 +msgstr "无效输入"
 +
-+#: ../cgi/login.c:355
++#: ../cgi/login.c:361
 +msgid "KT Resolve Error"
 +msgstr "密钥表解析失败"
 +
-+#: ../cgi/cgi.c:378
++#: ../cgi/cgi.c:382
 +#, c-format
 +msgid ""
 +"Kerberos ticket transfer is on,  but no tickets were found in the "
@@ -7522,225 +7537,225 @@ index 0000000..0d97640
 +msgid "Login failed: wrong invite code."
 +msgstr "登录失败: 错误的邀请码。"
 +
-+#: ../cgi/logout.c:197
++#: ../cgi/logout.c:201
 +msgid "Logout Requested"
 +msgstr "退出登录"
 +
-+#: ../cgi/logout.c:230
++#: ../cgi/logout.c:234
 +msgid "Logout Requested (again?)"
 +msgstr "退出登录（重复?）"
 +
-+#: ../cgi/cgi.c:753 ../cgi/cgi.c:801
++#: ../cgi/cgi.c:765 ../cgi/cgi.c:816
 +msgid "Password Expired"
 +msgstr "口令过期"
 +
-+#: ../cgi/cgi.c:763
++#: ../cgi/cgi.c:775
 +msgid "Password or Account Name incorrect. Is [caps lock] on?"
 +msgstr "口令或者帐号不正确。是不是大小写锁定键被打开了？"
 +
-+#: ../cgi/cgi.c:1012
++#: ../cgi/cgi.c:1027
 +msgid "Please Re-Authenticate."
 +msgstr "请重新认证。"
 +
-+#: ../cgi/cgi.c:902
++#: ../cgi/cgi.c:917
 +msgid "Please complete all required fields to re-authenticate."
 +msgstr "请填写所有要求的字段以便重新认证。"
 +
-+#: ../cgi/cgi.c:708 ../cgi/cgi.c:846
++#: ../cgi/cgi.c:712 ../cgi/cgi.c:861
 +msgid "Please enter your login and password."
 +msgstr "请输入您的登录名和口令。"
 +
-+#: ../cgi/cgi.c:104 ../cgi/cgi.c:116 ../cgi/cgi.c:131 ../cgi/cgi.c:144
-+#: ../cgi/cgi.c:469 ../cgi/cgi.c:968
++#: ../cgi/cgi.c:106 ../cgi/cgi.c:118 ../cgi/cgi.c:133 ../cgi/cgi.c:146
++#: ../cgi/cgi.c:473 ../cgi/cgi.c:983
 +msgid "Please try again later."
 +msgstr "请稍后重试。"
 +
-+#: ../cgi/cgi.c:794
++#: ../cgi/cgi.c:806
 +msgid "Primary authentication is required before secondary authentication."
 +msgstr "需要先通过主要认证，然后进行双因子认证。"
 +
-+#: ../cgi/login.c:191
++#: ../cgi/login.c:195
 +msgid "Problems connecting to the database."
 +msgstr "连接数据库遇到问题。"
 +
-+#: ../cgi/login.c:163 ../cgi/login.c:173
++#: ../cgi/login.c:167 ../cgi/login.c:177
 +msgid "Provided login appears to be invalid"
 +msgstr "提供的登录名无效"
 +
-+#: ../cgi/info.c:96 ../cgi/logout.c:155
++#: ../cgi/info.c:86 ../cgi/logout.c:159
 +msgid "REMOTE_ADDR not set"
 +msgstr "REMOTE_ADDR 未设置"
 +
-+#: ../cgi/info.c:112 ../cgi/logout.c:171
++#: ../cgi/info.c:102 ../cgi/logout.c:175
 +msgid "REQUEST_METHOD not set"
 +msgstr "REQUEST_METHOD 未设置"
 +
-+#: ../cgi/cgi.c:1010 ../cgi/cgi.c:1018
++#: ../cgi/cgi.c:1025 ../cgi/cgi.c:1033
 +msgid "Re-Authentication Required"
 +msgstr "需要再次认证"
 +
-+#: ../cgi/cgi.c:1020
++#: ../cgi/cgi.c:1035
 +msgid "Re-authenticate to confirm your new Internet address."
 +msgstr "因为您IP地址改变，请重新认证。"
 +
-+#: ../cgi/info.c:104 ../cgi/logout.c:163
++#: ../cgi/info.c:94 ../cgi/logout.c:167
 +msgid "SCRIPT_NAME not set"
 +msgstr "SCRIPT_NAME 未设置"
 +
-+#: ../cgi/logout.c:261 ../cgi/logout.c:274
++#: ../cgi/logout.c:265 ../cgi/logout.c:278
 +msgid "Server Configuration Error"
 +msgstr "服务器配置错误"
 +
-+#: ../cgi/login.c:368
++#: ../cgi/login.c:374
 +msgid "Server Principal Error"
 +msgstr "服务器错误"
 +
-+#: ../cgi/login.c:182
++#: ../cgi/login.c:186
 +msgid "Server Problem"
 +msgstr "服务器错误"
 +
-+#: ../cgi/cgi.c:365
++#: ../cgi/cgi.c:369
 +msgid ""
 +"There was a problem processing your authentication data. Contact your "
 +"administrator"
 +msgstr "在处理您的认证数据时遇到错误。请联系管理员"
 +
-+#: ../cgi/cgi.c:351
++#: ../cgi/cgi.c:355
 +msgid ""
 +"There was an x.509 mutual authentication configuration error. Contact your "
 +"administrator."
 +msgstr "发现 x.509 认证配置错误。请联系管理员"
 +
-+#: ../cgi/cgi.c:450
++#: ../cgi/cgi.c:454
 +msgid "This service requires that cookies be enabled."
 +msgstr "这个服务需要启用 cookies。"
 +
-+#: ../cgi/login.c:343
++#: ../cgi/login.c:349
 +msgid "Ticket Verification Error"
 +msgstr "票据校验错误"
 +
-+#: ../cgi/login.c:383
++#: ../cgi/login.c:389
 +msgid "Ticket Verify Error"
 +msgstr "票据校验错误"
 +
-+#: ../cgi/cgi.c:676
++#: ../cgi/cgi.c:680
 +msgid "Too many form fields configured."
 +msgstr "配置了太多的表单字段。"
 +
-+#: ../cgi/info.c:160
++#: ../cgi/info.c:150
 +msgid "URL validation failed"
 +msgstr "URL 校验失败"
 +
-+#: ../cgi/login.c:142
++#: ../cgi/login.c:146
 +msgid "Unable to connect to guest account database."
 +msgstr "无法连接到访客帐号数据库。"
 +
-+#: ../cgi/cgi.c:388 ../cgi/cgi.c:428
++#: ../cgi/cgi.c:392 ../cgi/cgi.c:432
 +msgid "Unable to determine referring service from query string."
 +msgstr "无法从 query string 中确定服务的参考地址。"
 +
-+#: ../cgi/cgi.c:402
++#: ../cgi/cgi.c:406
 +msgid "Unable to determine required factors from query string."
 +msgstr "无法从 query string 中确定认证因子。"
 +
-+#: ../cgi/info.c:171
++#: ../cgi/info.c:161
 +msgid "Unable to determine template from query string."
 +msgstr "无法从 query string 中确定页面模板。"
 +
-+#: ../cgi/login.c:181
++#: ../cgi/login.c:185
 +msgid "Unable to query guest account database."
 +msgstr "无法在访客帐号数据库中查询。"
 +
-+#: ../cgi/cgi.c:327
++#: ../cgi/cgi.c:331
 +msgid "Unable to retrieve IP address"
 +msgstr "无法获取IP地址"
 +
-+#: ../cgi/cgi.c:321
++#: ../cgi/cgi.c:325
 +msgid "Unable to retrieve method"
 +msgstr "无法获取请求方式"
 +
-+#: ../cgi/cgi.c:333
++#: ../cgi/cgi.c:337
 +msgid "Unable to retrieve server name"
 +msgstr "无法获取服务器名称"
 +
-+#: ../cgi/cgi.c:339
++#: ../cgi/cgi.c:343
 +msgid "Unable to retrieve server port"
 +msgstr "无法获取服务端口"
 +
-+#: ../cgi/cgi.c:315
++#: ../cgi/cgi.c:319
 +msgid "Unable to retrieve the script name"
 +msgstr "无法获取脚本名称"
 +
-+#: ../cgi/cgi.c:748
++#: ../cgi/cgi.c:760
 +#, c-format
 +msgid "Unknown authentication type '%s'"
 +msgstr "未知的认证类型 '%s'"
 +
-+#: ../cgi/logout.c:262
++#: ../cgi/logout.c:266
 +msgid ""
 +"We were unable to contact the authentication server.  Please quit your web "
 +"browser to complete logout."
 +msgstr "无法连接到认证服务器。请退出浏览器以便完全退出。"
 +
-+#: ../cgi/cgi.c:488 ../cgi/cgi.c:610 ../cgi/cgi.c:930
++#: ../cgi/cgi.c:492 ../cgi/cgi.c:614 ../cgi/cgi.c:945
 +msgid ""
 +"We were unable to contact the authentication server.  Please try again later."
 +msgstr "无法连接到认证服务器。请稍后重试。"
 +
-+#: ../cgi/cgi.c:512 ../cgi/cgi.c:632 ../cgi/cgi.c:834 ../cgi/login.c:233
-+#: ../cgi/login.c:432
++#: ../cgi/cgi.c:516 ../cgi/cgi.c:636 ../cgi/cgi.c:849 ../cgi/login.c:237
++#: ../cgi/login.c:438
 +msgid ""
 +"We were unable to contact the authentication server. Please try again later."
 +msgstr "无法连接到认证服务器。请稍后重试。"
 +
-+#: ../cgi/cgi.c:599 ../cgi/cgi.c:919
++#: ../cgi/cgi.c:603 ../cgi/cgi.c:934
 +msgid "We were unable to create a service cookie. Please try again later."
 +msgstr "无法创建一个服务 cookie。请稍后重试。"
 +
-+#: ../cgi/cgi.c:530 ../cgi/cgi.c:541 ../cgi/cgi.c:550 ../cgi/cgi.c:863
-+#: ../cgi/cgi.c:874 ../cgi/cgi.c:883
++#: ../cgi/cgi.c:534 ../cgi/cgi.c:545 ../cgi/cgi.c:554 ../cgi/cgi.c:878
++#: ../cgi/cgi.c:889 ../cgi/cgi.c:898
 +msgid "We were unable to locate a service matching the one provided."
 +msgstr "无法找到匹配的服务。"
 +
-+#: ../cgi/info.c:149
++#: ../cgi/info.c:139
 +msgid "You were trying to POST, BUT Changes Not Saved"
 +msgstr "您正通过 POST 提交，但是提交未被保存"
 +
-+#: ../cgi/info.c:128
++#: ../cgi/info.c:118
 +msgid "Your browser is looping!"
 +msgstr "浏览器发生循环重定向！"
 +
-+#: ../cgi/cgi.c:656 ../cgi/logout.c:204
++#: ../cgi/cgi.c:660 ../cgi/logout.c:208
 +msgid "cgi_init failed"
 +msgstr "cgi_init 错误"
 +
-+#: ../cgi/cgi.c:510 ../cgi/cgi.c:630
++#: ../cgi/cgi.c:514 ../cgi/cgi.c:634
 +#, c-format
 +msgid "cosign_login: basic login failed\n"
 +msgstr "cosign_login: 基本认证失败\n"
 +
-+#: ../cgi/cgi.c:528 ../cgi/cgi.c:861
++#: ../cgi/cgi.c:532 ../cgi/cgi.c:876
 +#, c-format
 +msgid "no matching service for %s\n"
 +msgstr "没有匹配的服务名 %s\n"
 +
-+#: ../cgi/cgi.c:538 ../cgi/cgi.c:871
++#: ../cgi/cgi.c:542 ../cgi/cgi.c:886
 +#, c-format
 +msgid "regex substitution failed: %s into %s\n"
 +msgstr "正则表达式替换错误: %s 到 %s\n"
 +
-+#: ../cgi/cgi.c:548 ../cgi/cgi.c:881
++#: ../cgi/cgi.c:552 ../cgi/cgi.c:896
 +#, c-format
 +msgid "requested v2 for v3 service %s\n"
 +msgstr "对协议3的服务 %s 发起协议2的请求\n"
 +
-+#: ../cgi/login.c:342
++#: ../cgi/login.c:348
 +msgid "server configuration error"
 +msgstr "服务器配置错误"
 +
-+#: ../cgi/info.c:159
++#: ../cgi/info.c:149
 +msgid "weblogin: URL validation failed"
 +msgstr "单点登录：URL 校验失败"
 +
 -- 
-tg: (3fb3822..) t/message_translation (depends on: t/message_localize t/static_htmls_to_templates)
+tg: (809ab71..) t/message_translation (depends on: t/message_localize t/static_htmls_to_templates)

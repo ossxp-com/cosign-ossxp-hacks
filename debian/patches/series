@@ -12,6 +12,5 @@ t/message_localize.diff -p1
 t/static_htmls_to_templates.diff -p1
 t/message_translation.diff -p1
 t/services_template.diff -p1
-t/template_standard_en.diff -p1
-t/template_standard_zh.diff -p1
+t/templates_standard.diff -p1
 t/templates_google.diff -p1

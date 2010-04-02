@@ -7,13 +7,17 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
  cgi/Makefile.in            |   13 +++-
- cgi/cosigncgi.h            |    5 ++
- cgi/info.c                 |  173 ++++++++++++++++++++++++++++++++++++++++++++
+ cgi/cgi.c                  |    4 +
+ cgi/cosigncgi.h            |   11 +++
+ cgi/info.c                 |  175 ++++++++++++++++++++++++++++++++++++++++++++
+ cgi/login.c                |    6 ++
+ cgi/logout.c               |    4 +
+ cgi/subfile.c              |   27 +++++++
  html/Makefile.in           |    4 +-
  html/looping.html          |   14 ++--
- html/post_error.html       |   37 ++++++++--
+ html/post_error.html       |   37 +++++++--
  html/validation_error.html |   54 ++++++++++++++
- 7 files changed, 282 insertions(+), 18 deletions(-)
+ 11 files changed, 331 insertions(+), 18 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
 index 1a9b974..95af2d1 100755
@@ -50,14 +54,42 @@ index 1a9b974..95af2d1 100755
  	${INSTALL} -m 0755 -c cosign.cgi $(DESTDIR)${CGIDIR}/;
  	${INSTALL} -m 0755 -c logout $(DESTDIR)${CGIDIR}/;
 +	${INSTALL} -m 0755 -c info $(DESTDIR)${CGIDIR}/;
+diff --git a/cgi/cgi.c b/cgi/cgi.c
+index 0270944..a946c46 100755
+--- a/cgi/cgi.c
++++ b/cgi/cgi.c
+@@ -90,6 +90,8 @@ static struct subfile_list sl[] = {
+         { 'f', SUBF_STR_ESC, NULL },
+ #define SL_DFACTOR	6
+         { 'd', SUBF_STR_ESC, NULL },
++#define SL_DETAIL	7
++        { 'm', SUBF_STR, NULL },
+         { '\0', 0, NULL },
+ };
+ 
+@@ -288,6 +290,8 @@ main( int argc, char *argv[] )
+ 
+     init_locale();
+ 
++    sl[ SL_DETAIL ].sl_data = SL_DEFAULT_ERROR_MESSAGE;
++
+     if ( argc == 2 ) {
+ 	if ( strcmp( argv[ 1 ], "-V" ) == 0 ) {
+ 	    printf( "%s\n", cosign_version );
 diff --git a/cgi/cosigncgi.h b/cgi/cosigncgi.h
-index 2264fc9..97d4c79 100755
+index 2264fc9..f4bae00 100755
 --- a/cgi/cosigncgi.h
 +++ b/cgi/cosigncgi.h
-@@ -31,3 +31,8 @@ struct connlist * connlist_setup( char *, unsigned short );
+@@ -31,3 +31,14 @@ struct connlist * connlist_setup( char *, unsigned short );
  #define REAUTH_HTML     	"reauth.html"
  #define REDIRECT_HTML		"redirect.html"
  #define VERIFY_LOGOUT		"verify-logout.html"
++
++#include "lang.h"
++#define	SL_DEFAULT_ERROR_MESSAGE    \
++	_("<p>Web Login is unavailable due to an internal error. We apologize" \
++	" for any inconvenience this may cause and are working to restore"   \
++	" service as soon as possible. Please try again later.</p>")
 +
 +//static html also treat as template. ( Jiang Xin <jiangxin@ossxp.com>)
 +#define LOOPING_HTML          "looping.html"
@@ -65,10 +97,10 @@ index 2264fc9..97d4c79 100755
 +#define VALIDATION_ERROR_HTML "validation_error.html"
 diff --git a/cgi/info.c b/cgi/info.c
 new file mode 100644
-index 0000000..4a3e519
+index 0000000..552ddcc
 --- /dev/null
 +++ b/cgi/info.c
-@@ -0,0 +1,173 @@
+@@ -0,0 +1,175 @@
 +/*
 + * Copyright (c) 2002 Regents of The University of Michigan.
 + * All Rights Reserved.  See LICENSE.
@@ -135,6 +167,8 @@ index 0000000..4a3e519
 +    char		*script;
 +
 +    init_locale();
++
++    sl[ SL_DETAIL ].sl_data = SL_DEFAULT_ERROR_MESSAGE;
 +
 +    if ( argc == 2 && ( strncmp( argv[ 1 ], "-V", 2 ) == 0 )) {
 +	printf( "%s\n", cosign_version );
@@ -242,6 +276,104 @@ index 0000000..4a3e519
 +}
 +
 +// vim: noet ts=8 sw=4
+diff --git a/cgi/login.c b/cgi/login.c
+index 05bc875..204c852 100644
+--- a/cgi/login.c
++++ b/cgi/login.c
+@@ -64,6 +64,8 @@ static struct subfile_list sl[] = {
+         { 'e', SUBF_STR, NULL },
+ #define SL_RFACTOR		5
+         { 'f', SUBF_STR_ESC, NULL },
++#define SL_DETAIL	6
++        { 'm', SUBF_STR, NULL },
+         { '\0', 0, NULL },
+ };
+ 
+@@ -137,6 +139,8 @@ cosign_login_mysql( struct connlist *head, char *cosignname, char *id,
+ 
+     lcgi_configure();
+ 
++    sl[ SL_DETAIL ].sl_data = SL_DEFAULT_ERROR_MESSAGE;
++
+     if ( !mysql_real_connect( &friend_db, friend_db_name, friend_login, friend_passwd, "friend", 3306, NULL, 0 )) {
+ 	fprintf( stderr, mysql_error( &friend_db ));
+ 	sl[ SL_ERROR ].sl_data = _("Unable to connect to guest account database.");
+@@ -263,6 +267,8 @@ cosign_login_krb5( struct connlist *head, char *cosignname, char *id,
+ 
+     lcgi_configure();
+ 
++    sl[ SL_DETAIL ].sl_data = SL_DEFAULT_ERROR_MESSAGE;
++
+     if (( kerror = krb5_init_context( &kcontext ))) {
+ 	sl[ SL_ERROR ].sl_data = _( (char *)error_message( kerror ) );
+ 	sl[ SL_TITLE ].sl_data = _("Authentication Required ( kerberos error )");
+diff --git a/cgi/logout.c b/cgi/logout.c
+index a050442..de5e87f 100755
+--- a/cgi/logout.c
++++ b/cgi/logout.c
+@@ -41,6 +41,8 @@ struct cgi_list cl[] = {
+         { "verify", CGI_TYPE_STRING, NULL },
+ #define CL_URL 		1
+         { "url", CGI_TYPE_STRING, NULL },
++#define SL_DETAIL	2
++        { 'm', SUBF_STR, NULL },
+         { NULL, CGI_TYPE_UNDEF, NULL },
+ };
+ 
+@@ -135,6 +137,8 @@ main( int argc, char *argv[] )
+ 
+     init_locale();
+ 
++    sl[ SL_DETAIL ].sl_data = SL_DEFAULT_ERROR_MESSAGE;
++
+     if ( argc == 2 && ( strncmp( argv[ 1 ], "-V", 2 ) == 0 )) {
+ 	printf( "%s\n", cosign_version );
+ 	exit( 0 );
+diff --git a/cgi/subfile.c b/cgi/subfile.c
+index ad196b3..65322aa 100644
+--- a/cgi/subfile.c
++++ b/cgi/subfile.c
+@@ -12,6 +12,11 @@
+ #include <libgen.h>
+ #include <glob.h>
+ 
++#include <netinet/in.h>
++#include <openssl/ssl.h>
++#include <snet.h>
++#include "cosigncgi.h"
++
+ #define MAX_CMD		18
+ #define MAX_FN_LEN	512
+ #define MAX_LINE_BUFF	4096
+@@ -270,6 +275,28 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
+         }
+     }
+ 
++    // If template not exist, fallback to ERROR_HTML
++    if (access(filename, F_OK)!=0)
++    {
++	if ( strcmp(filename, LOGIN_ERROR_HTML) == 0 )
++	    return subfile( LOGIN_HTML, sl, nocache );
++
++	else if ( strcmp(filename, EXPIRED_ERROR_HTML) == 0 )
++	    return subfile( LOGIN_HTML, sl, nocache );
++
++	else if ( strcmp(filename, REDIRECT_HTML) == 0 )
++	    return subfile( ERROR_HTML, sl, nocache );
++
++	else if ( strcmp(filename, LOOPING_HTML) == 0 )
++	    return subfile( ERROR_HTML, sl, nocache );
++
++	else if ( strcmp(filename, POST_ERROR_HTML) == 0 )
++	    return subfile( ERROR_HTML, sl, nocache );
++
++	else if ( strcmp(filename, VALIDATION_ERROR_HTML) == 0 )
++	    return subfile( ERROR_HTML, sl, nocache );
++    }
++
+     _subfile( filename, sl, nocache );
+ 
+     return;
 diff --git a/html/Makefile.in b/html/Makefile.in
 index 8785b78..c0e6514 100755
 --- a/html/Makefile.in

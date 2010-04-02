@@ -139,7 +139,7 @@ cosign_login_mysql( struct connlist *head, char *cosignname, char *id,
 
     lcgi_configure();
 
-    sl[ SL_DETAIL ].sl_data = _(SL_DEFAULT_ERROR_MESSAGE);
+    sl[ SL_DETAIL ].sl_data = SL_DEFAULT_ERROR_MESSAGE;
 
     if ( !mysql_real_connect( &friend_db, friend_db_name, friend_login, friend_passwd, "friend", 3306, NULL, 0 )) {
 	fprintf( stderr, mysql_error( &friend_db ));
@@ -267,7 +267,7 @@ cosign_login_krb5( struct connlist *head, char *cosignname, char *id,
 
     lcgi_configure();
 
-    sl[ SL_DETAIL ].sl_data = _(SL_DEFAULT_ERROR_MESSAGE);
+    sl[ SL_DETAIL ].sl_data = SL_DEFAULT_ERROR_MESSAGE;
 
     if (( kerror = krb5_init_context( &kcontext ))) {
 	sl[ SL_ERROR ].sl_data = _( (char *)error_message( kerror ) );

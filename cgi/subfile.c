@@ -227,7 +227,7 @@ do_macro_gettext( char *text)
 	from = str_replace(from, "\\'", "'");
 	from = str_replace(from, "\\\"", "\"");
     }
-    printf ("%s", _(from));
+    printf ("%s", dgettext("template", from));
     if (p)
 	free(p);
 }

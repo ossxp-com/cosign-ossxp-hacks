@@ -19,6 +19,8 @@ install : all
 	-for i in ${TEMPLATES}; do \
 	    [ -e $$i ] && cp -a $$i $(DESTDIR)${TMPLDIR}; \
 	done
+	# Templates in google style, contains both en and zh_cn style
+	cp -a templates_google $(DESTDIR)${prefix}
 	for i in ${HTML}; do \
 	    cp -a $$i $(DESTDIR)${HTMLDIR}/; \
 	done

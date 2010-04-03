@@ -1,0 +1,148 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
+<title>$t</title>
+$!include(inc/js.inc)
+$!include(inc/css.inc)
+</head>
+<body dir="ltr" onload="gaia_setFocus();">
+<div id="main">
+  $!include(inc/header.inc)
+  <br>
+  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
+    <tbody>
+      <tr>
+        <td valign="top" width="75%">
+          <div style="font-size: 83%;">
+            <b>
+            登录后以访问如下系统:
+            </b>
+            <br><br>
+            如果不登录，您可能无法访问某些系统，或者访问受限。
+            登录后，您可以编辑个人资料，使用我们提供的各项服务。
+            <br><br>
+            在右侧提供的对话框内完成登录。或者如果管理者支持，也可以 <a href="https://weblogin.foo.bar/members/signup.php">自建帐号</a>。
+            <br><br>
+
+            $!include(inc/*.html)
+
+          </div>
+        </td>
+        <td style="padding-left: 10px;" align="center" valign="top">
+          <form id="gaia_loginform" action="/cgi-bin/login" method="post" name="factors">
+            <input type="hidden" name="required" value="$f" />
+            <input type="hidden" name="ref" value="$r" />
+            <input type="hidden" name="service" value="$c" />
+            <div id="error">$e</div>
+            <div id="gaia_loginbox">
+            <table class="form-noindent" border="0" cellpadding="5" cellspacing="3" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;" bgcolor="#e8eefa" nowrap="nowrap" valign="top">
+                    <div class="loginBox">
+                      <table id="gaia_table" align="center" border="0" cellpadding="1" cellspacing="0">
+                        <tbody>
+                          <tr>
+                            <td colspan="2" align="center">
+                              <table>
+                                <tbody>
+                                  <tr>
+                                    <td valign="top">
+                                      用您的
+                                    </td>
+                                    <td valign="middle">
+                                      <font size="+0"><b>帐号</b></font>
+                                    </td>
+                                    <td valign="top">
+                                      登录
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colspan="2" align="center">
+                            </td>
+                          </tr>
+                          <tr>
+                            <td nowrap="nowrap">
+                            <div align="right">
+                            <span class="gaia le lbl">
+                            用户名:
+                            </span>
+                            </div>
+                            </td>
+                            <td>
+                            <input id="login" name="login" type="text" value="$l" size="18" tabindex="1" />
+                            </td>
+                          </tr>
+                          <tr>
+                            <td></td>
+                            <td align="left">
+                            </td>
+                          </tr>
+                          <tr>
+                            <td align="right">
+                            <span class="gaia le lbl">
+                            口令:
+                            </span>
+                            </td>
+                            <td>
+                            <input id="password" name="password" type="password" value="" size="18" tabindex="2" />
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                            </td>
+                            <td align="left">
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                            </td>
+                            <td align="left">
+                            <input type="submit" name="doLogin" value="登录" tabindex="6" />
+                            </td>
+                          </tr>
+                          <tr id="ga-fprow">
+                            <td colspan="2" class="gaia le fpwd" align="center" height="33" valign="bottom">
+                            <a href="https://weblogin.foo.bar/members/lostpwd.php" target="_top">
+                            忘记口令？
+                            </a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+          </form>
+          <br>
+          <table class="form-noindent" border="0" cellpadding="6" cellspacing="3" width="100%">
+            <tbody>
+              <tr>
+                <td style="font-size: 83%;" align="center" bgcolor="#e8eefa">
+                  <b>需要帐号的自助式服务？
+                  </b><br>
+                  <a href="https://weblogin.foo.bar/members/signup.php">
+                  <b>创建一个新帐号</b>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+  <br>
+  $!include(inc/footer.inc)
+</body>
+</html>
+<!-- vim: set ts=2 sw=2 et : -->

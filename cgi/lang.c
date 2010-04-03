@@ -130,6 +130,7 @@ init_locale()
     char	**lang;
     char	*p;
     char	lang_utf8[MAX_LANG_CODE+7] = "";
+    int		found = 0;
 
     bindtextdomain("cosign", _LOCALEDIR);
     textdomain("cosign");
@@ -148,22 +149,29 @@ init_locale()
 	}
 
 	if (lang_utf8[0] != '\0' && setlocale( LC_ALL, lang_utf8) != NULL) {
-	    break;
+	    found = 1;
 	} else if (strcmp(*lang, "zh")==0) {
 	    if (setlocale( LC_ALL, "zh_CN.UTF-8") != NULL)
-		break;
+		found = 1;
 	    else if (setlocale( LC_ALL, "zh_CN") != NULL)
-		break;
+		found = 1;
 	    else if (setlocale( LC_ALL, *lang) != NULL)
-		break;
+		found = 1;
 	} else if (setlocale( LC_ALL, *lang) != NULL) {
-	    break;
+	    found = 1;
 	} else if (strncmp(*lang, "en", 2)==0) {
 	    setlocale( LC_ALL, "C");
-	    break;
+	    found = 1;
 	}
+	if (found)
+	    break;
 	lang++;
     }
+
+    if (!found)
+	setlocale( LC_ALL, "C");
+
+    return;
 }
 
 
@@ -172,7 +180,11 @@ init_locale()
 
 char *my_lang_buff[] = {
     "",
+    "zz",
     "zh",
+    "zh-tw",
+    "zh-sg",
+    "zh-hk",
     "zz,zz,",
     "zz,zz ,zz  ",
     "zz,zz ;q=3,zz  ;q=2, zz    ;q=1,",
@@ -192,14 +204,14 @@ char *my_lang_buff[] = {
     "zh,zh-cn;q=0.5,zh-tw;q=0.8,zh-hk",
     "en,zh-sg,zh,zh-sg,zh-cn,zh-tw,ar,it,",
     "it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh-tw,ar,it,",
-    "it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh-tw,ar,it,it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh-tw,ar,it,ko,jp-jp",
-    "it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh,zh-tw,ar,it",
+    "it,en,en_us,zh-sg,zh,zh-sg,zh-cn,zh-tw,ar,it,it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh-tw,ar,it,ko,jp-jp",
+    "it,zh-sg,en_us,en,zh,zh-sg,zh-cn,zh,zh-tw,ar,it",
     "it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh,zh-tw,ar,it,zr1",
-    "it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh,zh-tw,ar,it,zr1,zr2",
-    "it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh,zh-tw,ar,it,zr1,zr2,zr3",
-    "it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh,zh-tw,ar,it,zr1,zr2,zr3,zr4",
-    "it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh,zh-tw,ar,it,zr1,zr2,zr3,zr4,zr5",
-    "it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh,zh-tw,ar,it,zr1,zr2,zr3,zr4,zr5, zr6",
+    "it,zh,en_us,en,zh-sg,zh-sg,zh-cn,zh,zh-tw,ar,it,zr1,zr2",
+    "it,zh,zh-cn,en_us,en,zh-sg,zh-sg,zh,zh-tw,ar,it,zr1,zr2,zr3",
+    "it,zh-hk,en_us,en,zh-sg,zh,zh-sg,zh,zh-cn,ar,it,zr1,zr2,zr3,zr4",
+    "it,zh-tw,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh,ar,it,zr1,zr2,zr3,zr4,zr5",
+    "it,zh,en_us,en,zh-aa,zh,zh-ab,zh-ac,zh,zh-ad,ar,it,zr1,zr2,zr3,zr4,zr5, zr6",
     "it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh,zh-tw,ar,it,zr1,zr2,zr3,zr4,zr5, zr6;q=1,zr7",
     "it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh,zh-tw,ar,it,zr1,zr2,zr3,zr4,zr5, zr6;q=1,zr7,zr8",
     "it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh,zh-tw,ar,it,zr1,zr2,zr3,zr4,zr5, zr6;q=1,zr7,zr8,zr9",
@@ -237,6 +249,13 @@ main()
 	}
 	printf("\n");
 
+    }
+    for (i=0; i< num; i++)
+    {
+	char *p;
+	init_locale();
+	p = setlocale( LC_ALL, NULL );
+	printf ("locale: %s.\n", p == NULL? "" : p);
     }	
 }
 

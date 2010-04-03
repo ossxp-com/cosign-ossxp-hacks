@@ -130,6 +130,7 @@ init_locale()
     char	**lang;
     char	*p;
     char	lang_utf8[MAX_LANG_CODE+7] = "";
+    int		found = 0;
 
     bindtextdomain("cosign", _LOCALEDIR);
     textdomain("cosign");
@@ -148,22 +149,29 @@ init_locale()
 	}
 
 	if (lang_utf8[0] != '\0' && setlocale( LC_ALL, lang_utf8) != NULL) {
-	    break;
+	    found = 1;
 	} else if (strcmp(*lang, "zh")==0) {
 	    if (setlocale( LC_ALL, "zh_CN.UTF-8") != NULL)
-		break;
+		found = 1;
 	    else if (setlocale( LC_ALL, "zh_CN") != NULL)
-		break;
+		found = 1;
 	    else if (setlocale( LC_ALL, *lang) != NULL)
-		break;
+		found = 1;
 	} else if (setlocale( LC_ALL, *lang) != NULL) {
-	    break;
+	    found = 1;
 	} else if (strncmp(*lang, "en", 2)==0) {
 	    setlocale( LC_ALL, "C");
-	    break;
+	    found = 1;
 	}
+	if (found)
+	    break;
 	lang++;
     }
+
+    if (!found)
+	setlocale( LC_ALL, "C");
+
+    return;
 }
 
 
@@ -242,6 +250,13 @@ main()
 	printf("\n");
 
     }
+    for (i=0; i< num; i++)
+    {
+	char *p;
+	init_locale();
+	p = setlocale( LC_ALL, NULL );
+	printf ("locale: %s.\n", p == NULL? "" : p);
+    }	
 }
 
 #endif

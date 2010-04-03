@@ -22,12 +22,12 @@ po: pot
 
 mo:
 	for i in ${TARGETS}; do \
-	  (cd $$i/LC_MESSAGES; msgfmt -o cosign.mo cosign.po); \
+	  (cd $$i/LC_MESSAGES; msgfmt -o cosign.mo cosign.po; msgfmt -o template.mo template.po); \
 	done
 
 clean:
 	-@for i in ${TARGETS}; do \
-		(cd $$i/LC_MESSAGES; rm -f cosign.mo); \
+		(cd $$i/LC_MESSAGES; rm -f *.mo); \
 		done
 
 install : all

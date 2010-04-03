@@ -1,0 +1,125 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-04-03 23:41+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: error.html:26
+msgid "Please contact technical support if you have any questions."
+msgstr ""
+
+#: error.html:27
+msgid "Technical Info:"
+msgstr ""
+
+#: error.html:31 inc/factor_login.inc:2 inc/factor_login_reauth.inc:2
+msgid "ID &amp; Password"
+msgstr ""
+
+#: error.html:34 inc/factor_otp.inc:2
+msgid "One Time Passcode"
+msgstr ""
+
+#: error.html:37 inc/factor_kx509.inc:2
+msgid "Certificate"
+msgstr ""
+
+#: verify-logout.html:30
+msgid "Log Out"
+msgstr ""
+
+#: verify-logout.html:31
+msgid ""
+"You are about to log out of <a href=\"/services/\">all weblogin "
+"applications</a>."
+msgstr ""
+
+#: verify-logout.html:32
+msgid "Are you sure you want to do this?"
+msgstr ""
+
+#: verify-logout.html:37
+msgid "After logout your browser will redirect to:"
+msgstr ""
+
+#: inc/factor_invite.inc:11
+msgid "\"Please enter your login and password.\""
+msgstr ""
+
+#: inc/factor_invite.inc:17
+msgid "\"Please input your email address into username field.\""
+msgstr ""
+
+#: inc/factor_invite.inc:59
+msgid "Invite Code"
+msgstr ""
+
+#: inc/factor_invite.inc:60 inc/factor_kx509.inc:3 inc/factor_login.inc:3
+#: inc/factor_login_reauth.inc:3 inc/factor_otp.inc:3
+msgid "Authentication Complete"
+msgstr ""
+
+#: inc/factor_invite.inc:65
+msgid "Invite code:"
+msgstr ""
+
+#: inc/factor_invite.inc:70 inc/factor_login.inc:21
+#: inc/factor_login_reauth.inc:18 inc/factor_otp.inc:13
+msgid "Caps Lock is on"
+msgstr ""
+
+#: inc/factor_invite.inc:73
+msgid "What is invite code?"
+msgstr ""
+
+#: inc/factor_kx509.inc:6
+msgid "You must have k.x-509 software installed and configured."
+msgstr ""
+
+#: inc/factor_kx509.inc:9
+msgid "Authenticate using a certificate"
+msgstr ""
+
+#: inc/factor_kx509.inc:11
+msgid "Download"
+msgstr ""
+
+#: inc/factor_kx509.inc:11
+msgid "k.x-509 software"
+msgstr ""
+
+#: inc/factor_login.inc:8 inc/factor_login_reauth.inc:8
+msgid "Login"
+msgstr ""
+
+#: inc/factor_login.inc:16 inc/factor_login_reauth.inc:13
+msgid "Password"
+msgstr ""
+
+#: inc/factor_login.inc:24 inc/factor_login_reauth.inc:21
+msgid "Need an account or password help?"
+msgstr ""
+
+#: inc/factor_login_reauth.inc:10
+msgid "Switch Users"
+msgstr ""
+
+#: inc/factor_otp.inc:8
+msgid "Passcode"
+msgstr ""
+
+#: inc/factor_otp.inc:16
+msgid "Manage your token"
+msgstr ""

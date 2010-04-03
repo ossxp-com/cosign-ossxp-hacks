@@ -1,6 +1,7 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 SBINDIR=@sbindir@
+LOCALEDIR=@localedir@
 CGIDIR  = @prefix@/cgi-ssl
 HTMLDIR  = @prefix@/html
 COSIGNCADIR=@cosigncadir@
@@ -30,12 +31,20 @@ INSTALL=     @INSTALL@
 CFLAGS=      ${DEFS} ${OPTOPTS} @CFLAGS@ ${INCPATH}
 
 
-OBJ     = network.o subfile.o ../common/mkcookie.o ../common/fbase64.o \
+OBJ     = network.o subfile.o lang.o ../common/mkcookie.o ../common/fbase64.o \
 	../common/conf.o ../common/wildcard.o ../common/argcargv.o \
 	../version.o 
-TARGETS = logout cosign.cgi
+TARGETS = logout cosign.cgi info
 
 all: ${TARGETS}
+
+lang.o:	lang.c
+	${CC} ${CFLAGS} \
+	-D_LOCALEDIR=\"${LOCALEDIR}\" \
+	-c $^
+
+lang: lang.c
+	gcc -g3 -D_DEBUG -D_LOCALEDIR=\"/opt/cosign/lib/share/locale\" -o $@ $^
 
 login.o:	login.c
 	${CC} ${CFLAGS} \
@@ -75,6 +84,16 @@ logout.o:	logout.c
 logout: logout.o $(OBJ)
 	${CC} ${CFLAGS} -o logout logout.o $(OBJ) $(LDFLAGS)
 
+info.o:	info.c
+	${CC} ${CFLAGS} \
+	-D_COSIGN_CONF=\"${COSIGNCONF}\" \
+	-D_COSIGN_TMPL_DIR=\"${COSIGNTMPLDIR}\" \
+	-D_LOCALEDIR=\"${LOCALEDIR}\" \
+	-c info.c
+
+info: info.o $(OBJ)
+	${CC} ${CFLAGS} -o info info.o $(filter-out network.o,$(OBJ)) $(LDFLAGS)
+
 clean:
 	/bin/rm -rf *.o ${TARGETS}
 
@@ -83,3 +102,4 @@ install : all
 	-mkdir -p $(DESTDIR)${CGIDIR};
 	${INSTALL} -m 0755 -c cosign.cgi $(DESTDIR)${CGIDIR}/;
 	${INSTALL} -m 0755 -c logout $(DESTDIR)${CGIDIR}/;
+	${INSTALL} -m 0755 -c info $(DESTDIR)${CGIDIR}/;

@@ -22,6 +22,7 @@
 #include "cosigncgi.h"
 #include "network.h"
 #include "subfile.h"
+#include "lang.h"
 
 extern char	*cosign_version;
 char		*cosign_host =_COSIGN_HOST;
@@ -40,6 +41,8 @@ struct cgi_list cl[] = {
         { "verify", CGI_TYPE_STRING, NULL },
 #define CL_URL 		1
         { "url", CGI_TYPE_STRING, NULL },
+#define SL_DETAIL	2
+        { 'm', SUBF_STR, NULL },
         { NULL, CGI_TYPE_UNDEF, NULL },
 };
 
@@ -132,6 +135,10 @@ main( int argc, char *argv[] )
     struct connlist	*head;
     char		*script;
 
+    init_locale();
+
+    sl[ SL_DETAIL ].sl_data = SL_DEFAULT_ERROR_MESSAGE;
+
     if ( argc == 2 && ( strncmp( argv[ 1 ], "-V", 2 ) == 0 )) {
 	printf( "%s\n", cosign_version );
 	exit( 0 );
@@ -148,24 +155,24 @@ main( int argc, char *argv[] )
     }
 
     if (( ip_addr = getenv( "REMOTE_ADDR" )) == NULL ) {
-        sl[ SL_TITLE ].sl_data = "Error: Server Error";
-        sl[ SL_ERROR ].sl_data = "REMOTE_ADDR not set";
+        sl[ SL_TITLE ].sl_data = _("Error: Server Error");
+        sl[ SL_ERROR ].sl_data = _("REMOTE_ADDR not set");
         tmpl = ERROR_HTML;
         subfile( tmpl, sl, 0 );
 	exit( 0 );
     }
 
     if (( script = getenv( "SCRIPT_NAME" )) == NULL ) {
-        sl[ SL_TITLE ].sl_data = "Error: Server Error";
-        sl[ SL_ERROR ].sl_data = "SCRIPT_NAME not set";
+        sl[ SL_TITLE ].sl_data = _("Error: Server Error");
+        sl[ SL_ERROR ].sl_data = _("SCRIPT_NAME not set");
         tmpl = ERROR_HTML;
         subfile( tmpl, sl, 0 );
 	exit( 0 );
     }
 
     if (( method = getenv( "REQUEST_METHOD" )) == NULL ) {
-	sl[ SL_TITLE ].sl_data = "Error: Server Error";
-        sl[ SL_ERROR ].sl_data = "REQUEST_METHOD not set";
+	sl[ SL_TITLE ].sl_data = _("Error: Server Error");
+        sl[ SL_ERROR ].sl_data = _("REQUEST_METHOD not set");
 	tmpl = ERROR_HTML;
 	subfile( tmpl, sl, 0 );
 	exit( 0 );
@@ -191,14 +198,14 @@ main( int argc, char *argv[] )
 	    /* if url check fails, default logout URL will be used */
 	}
 
-	sl[ SL_TITLE ].sl_data = "Logout Requested";
+	sl[ SL_TITLE ].sl_data = _("Logout Requested");
 	subfile ( tmpl, sl, 0 );
 	exit( 0 );
     }
 
     if (( cgi = cgi_init()) == NULL ){
-        sl[ SL_TITLE ].sl_data = "Error: Server Error";
-        sl[ SL_ERROR ].sl_data = "cgi_init failed";
+        sl[ SL_TITLE ].sl_data = _("Error: Server Error");
+        sl[ SL_ERROR ].sl_data = _("cgi_init failed");
         tmpl = ERROR_HTML;
         subfile( tmpl, sl, 0 );
 	exit( 0 );
@@ -224,7 +231,7 @@ main( int argc, char *argv[] )
      * screen again.
      */
     if ( cl[ CL_VERIFY ].cl_data == NULL ) {
-	sl[ SL_TITLE ].sl_data = "Logout Requested (again?)";
+	sl[ SL_TITLE ].sl_data = _("Logout Requested (again?)");
 	subfile ( tmpl, sl, 0 );
 	exit( 0 );
     }
@@ -255,10 +262,10 @@ main( int argc, char *argv[] )
 
     /* setup conn and ssl and hostlist to tell cosignd we're logged out */
     if (( head = connlist_setup( cosign_host, cosign_port )) == NULL ) {
-        sl[ SL_TITLE ].sl_data = "Server Configuration Error";
-        sl[ SL_ERROR ].sl_data = "We were unable to contact the "
+        sl[ SL_TITLE ].sl_data = _("Server Configuration Error");
+        sl[ SL_ERROR ].sl_data = _("We were unable to contact the "
 		"authentication server.  Please quit your web browser "
-		"to complete logout.";
+		"to complete logout.");
         tmpl = ERROR_HTML;
         subfile( tmpl, sl, 0 );
         exit( 0 );
@@ -268,10 +275,10 @@ main( int argc, char *argv[] )
     SSL_library_init();
 
     if ( cosign_ssl( cryptofile, certfile, cadir, &ctx )) {
-        sl[ SL_TITLE ].sl_data = "Server Configuration Error";
-        sl[ SL_ERROR ].sl_data = "Failed to initialise connections to "
+        sl[ SL_TITLE ].sl_data = _("Server Configuration Error");
+        sl[ SL_ERROR ].sl_data = _("Failed to initialise connections to "
 		"the authentication server. Please quit your browser to "
-		"complete logout.";
+		"complete logout.");
         tmpl = ERROR_HTML;
         subfile( tmpl, sl, 0 );
         exit( 0 );
@@ -293,3 +300,5 @@ main( int argc, char *argv[] )
     printf( "Location: %s\n\n", sl[ SL_URL ].sl_data );
     exit( 0 );
 }
+
+// vim: noet ts=8 sw=4

@@ -133,6 +133,7 @@ init_locale()
     int		found = 0;
 
     bindtextdomain("cosign", _LOCALEDIR);
+    bindtextdomain("template",  _TEMPLATE_LOCALEDIR);
     textdomain("cosign");
     lang = get_accept_language();
     while(*lang !=NULL)

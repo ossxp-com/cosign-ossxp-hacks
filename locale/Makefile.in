@@ -1,9 +1,8 @@
 prefix=@prefix@
 LOCALEDIR=@localedir@
+COSIGNTMPLDIR = @prefix@/templates
 DESTDIR=
 INSTALL=     @INSTALL@
-MAIN_POT=cosign.pot
-SUB_POT=addition.pot
 
 TARGETS=zh
 
@@ -14,8 +13,8 @@ pot: $(wildcard ../cgi/*.c) ../cgi/cosigncgi.h
 
 po: pot
 	for i in ${TARGETS}; do \
-	    msgmerge  -s -o $$i/LC_MESSAGES/MAIN_POT.po $$i/LC_MESSAGES/cosign.po $(MAIN_POT); \
-	    msgmerge  -s -o $$i/LC_MESSAGES/SUB_POT.po  $$i/LC_MESSAGES/cosign.po $(SUB_POT); \
+	    msgmerge  -s -o $$i/LC_MESSAGES/MAIN_POT.po $$i/LC_MESSAGES/cosign.po cosign.pot; \
+	    msgmerge  -s -o $$i/LC_MESSAGES/SUB_POT.po  $$i/LC_MESSAGES/cosign.po addition.pot; \
 	    msgcat    -s -o $$i/LC_MESSAGES/NEW_POT.po  $$i/LC_MESSAGES/MAIN_POT.po $$i/LC_MESSAGES/SUB_POT.po ; \
 	    mv $$i/LC_MESSAGES/NEW_POT.po  $$i/LC_MESSAGES/cosign.po ;\
 	done
@@ -32,7 +31,15 @@ clean:
 
 install : all
 	-mkdir -p $(DESTDIR)${LOCALEDIR}
-	cp -a $(MAIN_POT) ${TARGETS} $(DESTDIR)${LOCALEDIR}
+	-mkdir -p $(DESTDIR)${COSIGNTMPLDIR}/locale
+	cp cosign.pot   $(DESTDIR)${LOCALEDIR}
+	cp template.pot $(DESTDIR)${COSIGNTMPLDIR}/locale
+	for i in ${TARGETS}; do \
+		mkdir -p $(DESTDIR)${LOCALEDIR}/$$i/LC_MESSAGES; \
+		cp $$i/LC_MESSAGES/cosign.* $(DESTDIR)${LOCALEDIR}/$$i/LC_MESSAGES/; \
+		mkdir -p $(DESTDIR)${COSIGNTMPLDIR}/locale/$$i/LC_MESSAGES; \
+		cp $$i/LC_MESSAGES/template.* $(DESTDIR)${COSIGNTMPLDIR}/locale/$$i/LC_MESSAGES/; \
+	done
 
 .PHONY: pot po mo clean all install
 

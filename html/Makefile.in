@@ -1,4 +1,4 @@
-TEMPLATES = error.html expired_error.html login.html login_error.html verify-logout.html reauth.html
+TEMPLATES = error.html expired_error.html login.html login_error.html verify-logout.html reauth.html inc
 ## static html also serve as template (jiangxin@ossxp.com)
 TEMPLATES += post_error.html looping.html validation_error.html
 HTML = cosign_base.css cosign_js.css
@@ -16,11 +16,11 @@ install : all
 	-mkdir -p $(DESTDIR)${exec_prefix}
 	-mkdir -p $(DESTDIR)${TMPLDIR}
 	-mkdir -p $(DESTDIR)${HTMLDIR}
-	for i in ${TEMPLATES}; do \
-	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${TMPLDIR}/; \
+	-for i in ${TEMPLATES}; do \
+	    [ -e $$i ] && cp -a $$i $(DESTDIR)${TMPLDIR}; \
 	done
 	for i in ${HTML}; do \
-	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${HTMLDIR}/; \
+	    cp -a $$i $(DESTDIR)${HTMLDIR}/; \
 	done
 	-mkdir -p $(DESTDIR)${HTMLDIR}/images
 	cp images/*.gif $(DESTDIR)${HTMLDIR}/images/
@@ -31,3 +31,5 @@ install : all
 	cp services/*.html services/*.php $(DESTDIR)${SERVICESDIR}/
 
 clean:
+
+.PHONY: clean all ${TEMPLATES}

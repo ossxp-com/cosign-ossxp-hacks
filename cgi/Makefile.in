@@ -41,6 +41,7 @@ all: ${TARGETS}
 lang.o:	lang.c
 	${CC} ${CFLAGS} \
 	-D_LOCALEDIR=\"${LOCALEDIR}\" \
+	-D_TEMPLATE_LOCALEDIR=\"${COSIGNTMPLDIR}-local/locale\" \
 	-c $^
 
 lang: lang.c

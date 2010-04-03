@@ -1,9 +1,9 @@
-From: Jiang Xin <worldhello.net@gmail.com>
+From: Jiang <jiangxin@ossxp.com>
 Subject: [PATCH] t/templates_google
 
 <patch description>
 
-Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
+Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
  html/Makefile.in                                |    2 +
@@ -54,7 +54,7 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
  45 files changed, 2066 insertions(+), 0 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
-index 54ad8a0..d5595be 100755
+index 104fde2..00dd477 100755
 --- a/html/Makefile.in
 +++ b/html/Makefile.in
 @@ -19,6 +19,8 @@ install : all
@@ -2395,4 +2395,4 @@ index 0000000..e391b70
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
 -- 
-tg: (0daba8e..) t/templates_google (depends on: t/templates_standard)
+tg: (8407801..) t/templates_google (depends on: t/templates_standard)

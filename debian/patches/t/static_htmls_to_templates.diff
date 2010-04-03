@@ -20,7 +20,7 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  11 files changed, 331 insertions(+), 18 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
-index 1a9b974..95af2d1 100755
+index e49c9aa..45a42dc 100755
 --- a/cgi/Makefile.in
 +++ b/cgi/Makefile.in
 @@ -34,7 +34,7 @@ CFLAGS=      ${DEFS} ${OPTOPTS} @CFLAGS@ ${INCPATH}
@@ -32,7 +32,7 @@ index 1a9b974..95af2d1 100755
  
  all: ${TARGETS}
  
-@@ -81,6 +81,16 @@ logout.o:	logout.c
+@@ -85,6 +85,16 @@ logout.o:	logout.c
  logout: logout.o $(OBJ)
  	${CC} ${CFLAGS} -o logout logout.o $(OBJ) $(LDFLAGS)
  
@@ -49,7 +49,7 @@ index 1a9b974..95af2d1 100755
  clean:
  	/bin/rm -rf *.o ${TARGETS}
  
-@@ -89,3 +99,4 @@ install : all
+@@ -93,3 +103,4 @@ install : all
  	-mkdir -p $(DESTDIR)${CGIDIR};
  	${INSTALL} -m 0755 -c cosign.cgi $(DESTDIR)${CGIDIR}/;
  	${INSTALL} -m 0755 -c logout $(DESTDIR)${CGIDIR}/;
@@ -330,7 +330,7 @@ index a050442..de5e87f 100755
  	printf( "%s\n", cosign_version );
  	exit( 0 );
 diff --git a/cgi/subfile.c b/cgi/subfile.c
-index ad196b3..65322aa 100644
+index e087d1e..f5b8a9e 100644
 --- a/cgi/subfile.c
 +++ b/cgi/subfile.c
 @@ -12,6 +12,11 @@
@@ -538,4 +538,4 @@ index 0000000..a667522
 +</body>
 +</html>
 -- 
-tg: (cebe8df..) t/static_htmls_to_templates (depends on: t/message_localize t/autotools_for_setup)
+tg: (09ee436..) t/static_htmls_to_templates (depends on: t/message_localize t/autotools_for_setup)

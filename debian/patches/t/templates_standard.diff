@@ -1,9 +1,9 @@
-From: Jiang Xin <worldhello.net@gmail.com>
-Subject: [PATCH] t/template_standard_en
+From: Jiang <jiangxin@ossxp.com>
+Subject: [PATCH] t/templates_standard
 
 <patch description>
 
-Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
+Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
  html/Makefile.in                 |   10 ++-
@@ -29,7 +29,7 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
  20 files changed, 291 insertions(+), 769 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
-index c0e6514..54ad8a0 100755
+index ef80e66..104fde2 100755
 --- a/html/Makefile.in
 +++ b/html/Makefile.in
 @@ -1,4 +1,4 @@
@@ -54,7 +54,7 @@ index c0e6514..54ad8a0 100755
  	-mkdir -p $(DESTDIR)${HTMLDIR}/images
  	cp images/*.gif $(DESTDIR)${HTMLDIR}/images/
 @@ -31,3 +31,5 @@ install : all
- 	cp services/*.html $(DESTDIR)${SERVICESDIR}/
+ 	cp services/*.html services/*.php $(DESTDIR)${SERVICESDIR}/
  
  clean:
 +
@@ -1351,4 +1351,4 @@ index ea68776..f03c141 100755
  </body>
  </html>
 -- 
-tg: (8319370..) t/templates_standard (depends on: t/custom_cosign_path t/javascript t/include_macro_for_templates t/static_htmls_to_templates)
+tg: (6511b61..) t/templates_standard (depends on: master t/autotools_for_setup t/static_htmls_to_templates t/javascript t/services_template)

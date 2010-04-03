@@ -1,7 +1,8 @@
-ossxp-cosign3 (3.1.1-1.1+1) unstable; urgency=low
+ossxp-cosign3 (3.1.1-1.1+2) unstable; urgency=low
 
   * Simplify templates.
   * bugfix for Lang.c realloc.
+  * Add unittest for lang.c
 
  -- Jiang Xin <jiangxin@ossxp.com>  Fri, 02 Apr 2010 10:14:25 +0800
 

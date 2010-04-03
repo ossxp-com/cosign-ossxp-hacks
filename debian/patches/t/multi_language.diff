@@ -6,16 +6,16 @@ Subject: [PATCH] t/multi_language
 Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 
 ---
- cgi/Makefile.in |    2 +-
- cgi/lang.c      |  118 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- cgi/lang.h      |   17 ++++++++
- 3 files changed, 136 insertions(+), 1 deletions(-)
+ cgi/Makefile.in |    5 +-
+ cgi/lang.c      |  205 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ cgi/lang.h      |   17 +++++
+ 3 files changed, 226 insertions(+), 1 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
-index e867410..d8baf0b 100755
+index e867410..175a2ef 100755
 --- a/cgi/Makefile.in
 +++ b/cgi/Makefile.in
-@@ -29,7 +29,7 @@ INSTALL=     @INSTALL@
+@@ -29,13 +29,16 @@ INSTALL=     @INSTALL@
  CFLAGS=      ${DEFS} ${OPTOPTS} @CFLAGS@ ${INCPATH}
  
  
@@ -24,12 +24,21 @@ index e867410..d8baf0b 100755
  	../common/conf.o ../common/wildcard.o ../common/argcargv.o \
  	../version.o 
  TARGETS = logout cosign.cgi
+ 
+ all: ${TARGETS}
+ 
++lang: lang.c
++	gcc -g3 -D_DEBUG -o $@ $^
++
+ login.o:	login.c
+ 	${CC} ${CFLAGS} \
+ 	-D_COSIGN_TICKET_CACHE=\"${COSIGNTICKETCACHE}\" \
 diff --git a/cgi/lang.c b/cgi/lang.c
 new file mode 100644
-index 0000000..4fc6c02
+index 0000000..12970bc
 --- /dev/null
 +++ b/cgi/lang.c
-@@ -0,0 +1,118 @@
+@@ -0,0 +1,205 @@
 +#include <stdio.h>
 +#include <string.h>
 +#include <stdlib.h>
@@ -37,15 +46,26 @@ index 0000000..4fc6c02
 +
 +#include "lang.h"
 +
++#ifdef _DEBUG
++    #define getenv mygetenv
++    char *mygetenv( char *);
++#endif
++
 +    char **
 +get_accept_language()
 +{
++#ifdef _DEBUG
++    #define _ACCEPT_LANGS_ARRAY 8
++    char **accept_languages = NULL;
++#else
++    #define _ACCEPT_LANGS_ARRAY 8
 +    static char **accept_languages = NULL;
++#endif
 +    char *p, *pnext, *buff;
 +    char **lang;
 +    int found = 0;
 +    int i,j,k,m;
-+    int array_size=8;
++    int array_size = _ACCEPT_LANGS_ARRAY;
 +
 +    if (accept_languages != NULL)
 +	return accept_languages;
@@ -61,6 +81,9 @@ index 0000000..4fc6c02
 +	while(1)
 +	{
 +	    int i=0;
++
++	    while (isspace(*p)) p++;
++
 +	    while (1)
 +	    {
 +		char c = *(p+i);
@@ -69,11 +92,16 @@ index 0000000..4fc6c02
 +		i++;
 +	    }
 +	    if (i>0)
++	    {
 +		buff = strndup(p,i);
++		while (--i >= 0 && isspace(buff[i])) buff[i] = '\0';
++	    }
 +	    else
++	    {
 +		buff = NULL;
++	    }
 +
-+	    if (buff!=NULL)
++	    if (buff!=NULL && strlen(buff)>0)
 +	    {
 +		for (j=0,k=0; j < strlen(buff); j++)
 +		{
@@ -133,19 +161,87 @@ index 0000000..4fc6c02
 +	}
 +    }
 +
-+    /*
-+    // Debug: print to stderr will be logged in apache log file.
-+    for(i=0; i< array_size; i++)
-+    {
-+	if (lang[i] == NULL)
-+	    break;
-+	fprintf(stderr, "lang[%d] = %s\n", i, lang[i]);
-+    }
-+    */
-+
 +    return accept_languages = lang;
 +}
 +
++#ifdef _DEBUG
++#define getenv mygetenv
++
++char *my_lang_buff[] = {
++    "",
++    "zz",
++    "zh",
++    "zh-tw",
++    "zh-sg",
++    "zh-hk",
++    "zz,zz,",
++    "zz,zz ,zz  ",
++    "zz,zz ;q=3,zz  ;q=2, zz    ;q=1,",
++    "hh,hh,hh, ,, ,   ,    ,",
++    "h1;q=1,h2;q=2",
++    "h1;q=1,h2;q=2,h2",
++    "h1;q=1,h2;q=2,h2,h3",
++    "h1;q=1,h2;q=2,h2,h3,h4",
++    "h1;q=1,h2;q=2,h3,h4,h5",
++    "h1;q=1,h2;q=2,h3,h4,h5,h6",
++    "h1;q=1,h2;q=2,h3,h4,h5,h6,h7",
++    "h1;q=1,h2;q=2,h3,h4,h5,h6,h7,h8",
++    "h1;q=1,h2;q=2,h3,h4,h5,h6,h7,h8,h9",
++    "h1;q=1,h2;q=2,h3,h4,h5,h6,h7,h8,h9,h10",
++    "h1;q=1,h2;q=2,h3,h4,h5,h6,h7,h8,h9,h10,h11",
++    "h1;q=1,h2;q=2,h3,h4,h5,h6,h7,h8,h9,h10,h11,h12",
++    "zh,zh-cn;q=0.5,zh-tw;q=0.8,zh-hk",
++    "en,zh-sg,zh,zh-sg,zh-cn,zh-tw,ar,it,",
++    "it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh-tw,ar,it,",
++    "it,en,en_us,zh-sg,zh,zh-sg,zh-cn,zh-tw,ar,it,it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh-tw,ar,it,ko,jp-jp",
++    "it,zh-sg,en_us,en,zh,zh-sg,zh-cn,zh,zh-tw,ar,it",
++    "it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh,zh-tw,ar,it,zr1",
++    "it,zh,en_us,en,zh-sg,zh-sg,zh-cn,zh,zh-tw,ar,it,zr1,zr2",
++    "it,zh,zh-cn,en_us,en,zh-sg,zh-sg,zh,zh-tw,ar,it,zr1,zr2,zr3",
++    "it,zh-hk,en_us,en,zh-sg,zh,zh-sg,zh,zh-cn,ar,it,zr1,zr2,zr3,zr4",
++    "it,zh-tw,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh,ar,it,zr1,zr2,zr3,zr4,zr5",
++    "it,zh,en_us,en,zh-aa,zh,zh-ab,zh-ac,zh,zh-ad,ar,it,zr1,zr2,zr3,zr4,zr5, zr6",
++    "it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh,zh-tw,ar,it,zr1,zr2,zr3,zr4,zr5, zr6;q=1,zr7",
++    "it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh,zh-tw,ar,it,zr1,zr2,zr3,zr4,zr5, zr6;q=1,zr7,zr8",
++    "it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh,zh-tw,ar,it,zr1,zr2,zr3,zr4,zr5, zr6;q=1,zr7,zr8,zr9",
++    };
++
++    char *mygetenv( char *ignore)
++{
++    static int		loop = -1;
++    int num;
++
++    loop++;
++    num = sizeof(my_lang_buff)/sizeof(*my_lang_buff);
++
++    return my_lang_buff[loop%num];
++}
++
++    int
++main()
++{
++    char	**lang, **orig;
++    int		i,j;
++    int num = sizeof(my_lang_buff)/sizeof(*my_lang_buff);
++
++    for (i=0; i< num; i++)
++    {
++	lang = get_accept_language();
++	orig = lang;
++	j=0;
++	while (*(lang++) != NULL) j++;
++	printf ("num: %d. ", j);
++	lang = orig;
++	while (*lang != NULL) {
++	    printf("%s,", *lang);
++	    lang++;
++	}
++	printf("\n");
++
++    }
++}
++
++#endif
 +
 +// vim: noet ts=8 sw=4
 diff --git a/cgi/lang.h b/cgi/lang.h

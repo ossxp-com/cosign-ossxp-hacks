@@ -1,9 +1,26 @@
-pot:
-	xgettext -d template -o template.pot -L C -k_  \
+POFILES = $(wildcard */LC_MESSAGES/*.po)
+MOFILES = $(POFILES:po=mo)
+DOMAIN = template
+
+all: mo
+
+po: $(POFILES)
+mo: $(MOFILES)
+pot: $(DOMAIN).pot
+
+$(POFILES): $(DOMAIN).pot
+	msgmerge $@ $< -o $@.new
+	mv $@.new $@
+
+$(DOMAIN).pot:
+	xgettext --default-domain=$(DOMAIN) -L C -k_  \
+		--no-location \
+		-o $(DOMAIN).pot \
 		../*.html ../inc/*
 
-po:
+%.mo: %.po
+	msgfmt -o $@ $<
 
-mo:
+#.PHONY: pot po mo $(DOMAIN).pot
 
 # vim: noet ts=4 sw=4

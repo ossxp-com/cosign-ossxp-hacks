@@ -8,13 +8,13 @@
             Event.observe( form_login, 'submit', function(e) {
                   if (input_p.textLength > 0 && input_l.value.length == 0)
                   {
-                    alert($!_("\"Please enter your login and password.\""));
+                    alert("$!_("Please enter your login and password.")");
                     input_l.focus();
                     Event.stop(e);
                   }
                   if (input_i.textLength > 0 && !input_l.value.include("@"))
                   {
-                    alert($!_("\"Please input your email address into username field.\""));
+                    alert("$!_("Please input your email address into username field.")");
                     input_l.focus();
                     Event.stop(e);
                   }

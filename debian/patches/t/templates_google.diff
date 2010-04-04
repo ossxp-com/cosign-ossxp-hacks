@@ -54,10 +54,10 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  45 files changed, 2066 insertions(+), 0 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
-index 104fde2..00dd477 100755
+index a2b3507..507197a 100755
 --- a/html/Makefile.in
 +++ b/html/Makefile.in
-@@ -19,6 +19,8 @@ install : all
+@@ -22,6 +22,8 @@ install : all
  	-for i in ${TEMPLATES}; do \
  	    [ -e $$i ] && cp -a $$i $(DESTDIR)${TMPLDIR}; \
  	done
@@ -2395,4 +2395,4 @@ index 0000000..e391b70
 +</html>
 +<!-- vim: set ts=2 sw=2 et : -->
 -- 
-tg: (8407801..) t/templates_google (depends on: t/templates_standard)
+tg: (520a26e..) t/templates_google (depends on: t/templates_standard)

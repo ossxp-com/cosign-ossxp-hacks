@@ -12,15 +12,15 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  cgi/info.c                 |  175 ++++++++++++++++++++++++++++++++++++++++++++
  cgi/login.c                |    6 ++
  cgi/logout.c               |    4 +
- cgi/subfile.c              |   27 +++++++
+ cgi/subfile.c              |   22 ++++++
  html/Makefile.in           |    4 +-
  html/looping.html          |   14 ++--
  html/post_error.html       |   37 +++++++--
  html/validation_error.html |   54 ++++++++++++++
- 11 files changed, 331 insertions(+), 18 deletions(-)
+ 11 files changed, 326 insertions(+), 18 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
-index e49c9aa..45a42dc 100755
+index bef6995..245a649 100755
 --- a/cgi/Makefile.in
 +++ b/cgi/Makefile.in
 @@ -34,7 +34,7 @@ CFLAGS=      ${DEFS} ${OPTOPTS} @CFLAGS@ ${INCPATH}
@@ -32,7 +32,7 @@ index e49c9aa..45a42dc 100755
  
  all: ${TARGETS}
  
-@@ -85,6 +85,16 @@ logout.o:	logout.c
+@@ -89,6 +89,16 @@ logout.o:	logout.c
  logout: logout.o $(OBJ)
  	${CC} ${CFLAGS} -o logout logout.o $(OBJ) $(LDFLAGS)
  
@@ -49,7 +49,7 @@ index e49c9aa..45a42dc 100755
  clean:
  	/bin/rm -rf *.o ${TARGETS}
  
-@@ -93,3 +103,4 @@ install : all
+@@ -97,3 +107,4 @@ install : all
  	-mkdir -p $(DESTDIR)${CGIDIR};
  	${INSTALL} -m 0755 -c cosign.cgi $(DESTDIR)${CGIDIR}/;
  	${INSTALL} -m 0755 -c logout $(DESTDIR)${CGIDIR}/;
@@ -330,22 +330,10 @@ index a050442..de5e87f 100755
  	printf( "%s\n", cosign_version );
  	exit( 0 );
 diff --git a/cgi/subfile.c b/cgi/subfile.c
-index e087d1e..f5b8a9e 100644
+index f36e72b..a35f903 100644
 --- a/cgi/subfile.c
 +++ b/cgi/subfile.c
-@@ -12,6 +12,11 @@
- #include <libgen.h>
- #include <glob.h>
- 
-+#include <netinet/in.h>
-+#include <openssl/ssl.h>
-+#include <snet.h>
-+#include "cosigncgi.h"
-+
- #define MAX_CMD		18
- #define MAX_FN_LEN	512
- #define MAX_LINE_BUFF	4096
-@@ -270,6 +275,28 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
+@@ -322,6 +322,28 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
          }
      }
  
@@ -538,4 +526,4 @@ index 0000000..a667522
 +</body>
 +</html>
 -- 
-tg: (09ee436..) t/static_htmls_to_templates (depends on: t/message_localize t/autotools_for_setup)
+tg: (a564edf..) t/static_htmls_to_templates (depends on: t/message_localize t/autotools_for_setup)

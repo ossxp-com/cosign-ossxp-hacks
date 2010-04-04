@@ -6,39 +6,50 @@ Subject: [PATCH] t/templates_standard
 Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
- html/Makefile.in                 |   10 ++-
- html/error.html                  |   28 +++----
- html/expired_error.html          |  167 -------------------------------------
- html/inc/factor_invite.inc       |   74 +++++++++++++++++
- html/inc/factor_kx509.inc        |   11 +++
- html/inc/factor_login.inc        |   24 ++++++
- html/inc/factor_login_reauth.inc |   21 +++++
- html/inc/factor_otp.inc          |   16 ++++
- html/inc/footer.inc              |    2 +
- html/inc/header.inc              |    3 +
- html/inc/help_hotkey.inc         |   12 +++
- html/inc/help_infobox.inc        |   49 +++++++++++
- html/inc/js_config.inc           |   11 +++
- html/login.html                  |  129 +++--------------------------
- html/login_error.html            |  168 --------------------------------------
- html/looping.html                |   54 ------------
- html/post_error.html             |   54 ------------
- html/reauth.html                 |  145 +++++----------------------------
- html/validation_error.html       |   54 ------------
- html/verify-logout.html          |   28 ++++---
- 20 files changed, 291 insertions(+), 769 deletions(-)
+ html/Makefile.in                       |   13 ++-
+ html/error.html                        |   28 ++---
+ html/expired_error.html                |  167 ------------------------
+ html/inc/factor_invite.inc             |   74 +++++++++++
+ html/inc/factor_kx509.inc              |   11 ++
+ html/inc/factor_login.inc              |   24 ++++
+ html/inc/factor_login_reauth.inc       |   21 +++
+ html/inc/factor_otp.inc                |   16 +++
+ html/inc/footer.inc                    |    3 +
+ html/inc/header.inc                    |    3 +
+ html/inc/help_hotkey.inc               |    7 +
+ html/inc/help_infobox.inc              |   51 ++++++++
+ html/inc/js_config.inc                 |   11 ++
+ html/locale/.gitignore                 |    1 +
+ html/locale/Makefile                   |   26 ++++
+ html/locale/template.pot               |  204 ++++++++++++++++++++++++++++++
+ html/locale/zh/LC_MESSAGES/template.po |  218 ++++++++++++++++++++++++++++++++
+ html/login.html                        |  129 ++-----------------
+ html/login_error.html                  |  168 ------------------------
+ html/looping.html                      |   54 --------
+ html/post_error.html                   |   54 --------
+ html/reauth.html                       |  145 +++------------------
+ html/validation_error.html             |   54 --------
+ html/verify-logout.html                |   28 +++--
+ 24 files changed, 741 insertions(+), 769 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
-index ef80e66..104fde2 100755
+index ef80e66..a2b3507 100755
 --- a/html/Makefile.in
 +++ b/html/Makefile.in
 @@ -1,4 +1,4 @@
 -TEMPLATES = error.html expired_error.html login.html login_error.html verify-logout.html reauth.html
-+TEMPLATES = error.html expired_error.html login.html login_error.html verify-logout.html reauth.html inc
++TEMPLATES = error.html expired_error.html login.html login_error.html verify-logout.html reauth.html inc locale
  ## static html also serve as template (jiangxin@ossxp.com)
  TEMPLATES += post_error.html looping.html validation_error.html
  HTML = cosign_base.css cosign_js.css
-@@ -16,11 +16,11 @@ install : all
+@@ -12,15 +12,18 @@ DESTDIR=
+ 
+ all: ${TEMPLATES}
+ 
++locale:
++	cd $@; ${MAKE} all
++
+ install : all
  	-mkdir -p $(DESTDIR)${exec_prefix}
  	-mkdir -p $(DESTDIR)${TMPLDIR}
  	-mkdir -p $(DESTDIR)${HTMLDIR}
@@ -53,7 +64,7 @@ index ef80e66..104fde2 100755
  	done
  	-mkdir -p $(DESTDIR)${HTMLDIR}/images
  	cp images/*.gif $(DESTDIR)${HTMLDIR}/images/
-@@ -31,3 +31,5 @@ install : all
+@@ -31,3 +34,5 @@ install : all
  	cp services/*.html services/*.php $(DESTDIR)${SERVICESDIR}/
  
  clean:
@@ -298,7 +309,7 @@ index 0185219..0000000
 -</html>
 diff --git a/html/inc/factor_invite.inc b/html/inc/factor_invite.inc
 new file mode 100644
-index 0000000..aec3508
+index 0000000..1ce4934
 --- /dev/null
 +++ b/html/inc/factor_invite.inc
 @@ -0,0 +1,74 @@
@@ -312,13 +323,13 @@ index 0000000..aec3508
 +            Event.observe( form_login, 'submit', function(e) {
 +                  if (input_p.textLength > 0 && input_l.value.length == 0)
 +                  {
-+                    alert($!_("\"Please enter your login and password.\""));
++                    alert("$!_("Please enter your login and password.")");
 +                    input_l.focus();
 +                    Event.stop(e);
 +                  }
 +                  if (input_i.textLength > 0 && !input_l.value.include("@"))
 +                  {
-+                    alert($!_("\"Please input your email address into username field.\""));
++                    alert("$!_("Please input your email address into username field.")");
 +                    input_l.focus();
 +                    Event.stop(e);
 +                  }
@@ -474,92 +485,90 @@ index 0000000..765331f
 +					<a href="#otpInfo" id="otpInfoShow" tabindex="8">$!_("Manage your token")</a> </div>
 diff --git a/html/inc/footer.inc b/html/inc/footer.inc
 new file mode 100644
-index 0000000..5a15383
+index 0000000..0b3e229
 --- /dev/null
 +++ b/html/inc/footer.inc
-@@ -0,0 +1,2 @@
-+<div id="foot">&copy; 2006 - 2010 <a href="http://www.umich.edu/~regents/" title="Regents of the University of Michigan"> Regents
-+		of the University of Michigan</a>, <a href="http://www.ossxp.com/">OSSXP Powered</a> </div>
+@@ -0,0 +1,3 @@
++<div id="foot">$!_("&copy; 2006 - 2010 <a href=\"http://www.umich.edu/~regents/\""
++	" title=\"Regents of the University of Michigan\"> Regents of the University of"
++	" Michigan</a>, <a href=\"http://www.ossxp.com/\">OSSXP Powered</a>")</div>
 diff --git a/html/inc/header.inc b/html/inc/header.inc
 new file mode 100644
-index 0000000..f0a35bc
+index 0000000..82d6ead
 --- /dev/null
 +++ b/html/inc/header.inc
 @@ -0,0 +1,3 @@
-+	<div id="head"> <a id="mast" href="#" title="Link to Homepage"><span>
++	<div id="head"> <a id="mast" href="#" title="$!_("Link to Homepage")"><span>
 +		<!--A small logo for when CSS is disabled goes here. <img src="#" alt="" width="16" height="16" />//-->
-+		</span> <strong>Our Home Page</strong></a> </div>
++		</span> <strong>$!_("Our Home Page")</strong></a> </div>
 diff --git a/html/inc/help_hotkey.inc b/html/inc/help_hotkey.inc
 new file mode 100644
-index 0000000..eea5e31
+index 0000000..95c1d82
 --- /dev/null
 +++ b/html/inc/help_hotkey.inc
-@@ -0,0 +1,12 @@
+@@ -0,0 +1,7 @@
 +	<ul class="text">
-+		<li><a href="#instruct" title="Jump to the Web Login instructions [ALT + 1 Windows / CONTROL + 1 Mac]" accesskey="1">Jump
-+				to the Web Login instructions</a></li>
-+		<li><a href="#error" title="Jump to the error message (if present) [ALT + 2 Windows / CONTROL + 2 Mac]" accesskey="2">Jump
-+				to the error message (if present)</a></li>
-+		<li><a href="#kerberos" title="Jump to the ID and Password section [ALT + 3 Windows / CONTROL + 3 Mac]" accesskey="3">Jump
-+				to the ID and Password section</a></li>
-+		<li><a href="#otp" title="Jump to the One Time Passcode section [ALT + 4 Windows / CONTROL + 4 Mac]"  accesskey="4">Jump
-+				to the One Time Passcode section</a></li>
-+		<li><a href="#kx509" title="Jump to the Certificate section [ALT + 5 Windows / CONTROL + 5 Mac]" accesskey="5">Jump
-+				to the Certificate section</a></li>
++		<li><a href="#instruct" title="$!_("Jump to the Web Login instructions") [ALT + 1 Windows / CONTROL + 1 Mac]" accesskey="1">$!_("Jump to the Web Login instructions")</a></li>
++		<li><a href="#error" title="$!_("Jump to the error message (if present)") [ALT + 2 Windows / CONTROL + 2 Mac]" accesskey="2">$!_("Jump to the error message (if present)")</a></li>
++		<li><a href="#kerberos" title="$!_("Jump to the ID and Password section") [ALT + 3 Windows / CONTROL + 3 Mac]" accesskey="3">$!_("Jump to the ID and Password section")</a></li>
++		<li><a href="#otp" title="$!_("Jump to the One Time Passcode section") [ALT + 4 Windows / CONTROL + 4 Mac]"  accesskey="4">$!_("Jump to the One Time Passcode section")</a></li>
++		<li><a href="#kx509" title="$!_("Jump to the Certificate section") [ALT + 5 Windows / CONTROL + 5 Mac]" accesskey="5">$!_("Jump to the Certificate section")</a></li>
 +	</ul>
 diff --git a/html/inc/help_infobox.inc b/html/inc/help_infobox.inc
 new file mode 100644
-index 0000000..b3cc7a5
+index 0000000..1f3164b
 --- /dev/null
 +++ b/html/inc/help_infobox.inc
-@@ -0,0 +1,49 @@
+@@ -0,0 +1,51 @@
 +				<div id="mainInfo">
-+					<p>Please enter your authentication information and click the &quot;Log&nbsp;In&quot; button
-+						to continue.</p>
-+					<p class="jsOnly">Authentication
-+					sections marked with a <img
-+					src="/cosign/images/circle.gif" alt="yellow circle" /> are
-+						required.</p>
-+				<p>By using this service you agree to adhere to our policies and guidelines.</p>
++					<p>$!_("Please enter your authentication information and click the &quot;Log&nbsp;In&quot; button"
++					  " to continue.")</p>
++					<p class="jsOnly">$!_("Authentication"
++					  " sections marked with a <img"
++					  " src=\"/cosign/images/circle.gif\" alt=\"yellow circle\" /> are"
++					  " required.")</p>
++					<p>$!_("By using this service you agree to adhere to our policies and guidelines.")</p>
 +				</div>
-+				<p class="noScript">This page displays best when JavaScript is enabled in your web
-+					browser.</p>
++				<p class="noScript">$!_("This page displays best when JavaScript is enabled in your web"
++				  " browser.")</p>
++
 +				<div id="kerbInfo" class="infoBox">
-+					<h4><a href="#mainInfo" class="hideInfo" id="kerbInfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
-+							to Top</a></h4>
-+					<h3>Need an Account?</h3>
-+					<p>Replace this text with information about obtaining an account. Lorem ipsum dolor
-+						sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean vitae
-+						orci. Mauris vulputate ornare urna.</p>
-+					<h3>Forgot Your Password?</h3>
-+					<p>Replace this text with information about resetting your password. Lorem ipsum
-+						dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean
-+						vitae orci. Mauris vulputate ornare urna.</p>
++					<h4><a href="#mainInfo" class="hideInfo" id="kerbInfoHide">$!_("Hide this Information")</a> <a href="#l2header" class="toTop">$!_("Back"
++					  " to Top")</a></h4>
++					<h3>$!_("Need an Account?")</h3>
++					<p>$!_("Replace this text with information about obtaining an account. Lorem ipsum dolor"
++					  " sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean vitae"
++					  " orci. Mauris vulputate ornare urna.")</p>
++					<h3>$!_("Forgot Your Password?")</h3>
++					<p>$!_("Replace this text with information about resetting your password. Lorem ipsum"
++					  " dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean"
++					  " vitae orci. Mauris vulputate ornare urna.")</p>
 +				</div>
 +				<div id="otpInfo" class="infoBox">
-+					<h4><a href="#mainInfo" class="hideInfo" id="otpInfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
-+							to Top</a></h4>
-+					<h3>Get a Token</h3>
-+					<p>Replace this with text about using one time passcodes. Lorem ipsum dolor sit amet,
-+						consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean vitae orci.
-+						Mauris vulputate ornare urna.</p>
++					<h4><a href="#mainInfo" class="hideInfo" id="otpInfoHide">$!_("Hide this Information")</a> <a href="#l2header" class="toTop">$!_("Back"
++					  " to Top")</a></h4>
++					<h3>$!_("Get a Token")</h3>
++					<p>$!_("Replace this with text about using one time passcodes. Lorem ipsum dolor sit amet,"
++					  " consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean vitae orci."
++					  " Mauris vulputate ornare urna.")</p>
 +				</div>
 +				<div id="kx509Info" class="infoBox">
-+					<h4><a href="#mainInfo" class="hideInfo" id="kx509InfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
-+							to Top</a></h4>
-+					<h3>Download KX.509</h3>
-+					<p>The KX.509 service provides a client/server application that uses Kerberos to
-+						acquire a short-term X.509 certificate. This makes it possible for web-browsers
-+						to authenticate a user to any CoSign-protected web services silently instead of
-+						prompting the user for a name and password. At U-M, this service can be used by
-+						those who know their Uniqname and Kerberos password.</p>
++					<h4><a href="#mainInfo" class="hideInfo" id="kx509InfoHide">$!_("Hide this Information")</a> <a href="#l2header" class="toTop">$!_("Back"
++					  " to Top")</a></h4>
++					<h3>$!_("Download KX.509")</h3>
++					<p>$!_("The KX.509 service provides a client/server application that uses Kerberos to"
++					  " acquire a short-term X.509 certificate. This makes it possible for web-browsers"
++					  " to authenticate a user to any CoSign-protected web services silently instead of"
++					  " prompting the user for a name and password. At U-M, this service can be used by"
++					  " those who know their Uniqname and Kerberos password.")</p>
 +				</div>
 +				<div id="inviteInfo" class="infoBox">
-+					<h4><a href="#mainInfo" class="hideInfo" id="inviteInfoHide">Hide this Information</a> <a href="#l2header" class="toTop">Back
-+							to Top</a></h4>
-+					<h3>About invite code</h3>
-+					<p>Invite code is assigned by administrator. Before input your invite code, you must provide your email address as your login name.
-+					<p>Note: The two fields, password and invite code input fields are exclusive. The other is disabled when one is focus and has inupt.
++					<h4><a href="#mainInfo" class="hideInfo" id="inviteInfoHide">$!_("Hide this Information")</a> <a href="#l2header" class="toTop">$!_("Back"
++					  " to Top")</a></h4>
++					<h3>$!_("About invite code")</h3>
++					<p>$!_("Invite code is assigned by administrator. Before input your invite code, you must provide your email address as your login name.")
++          </p>
++					<p>$!_("Note: The two fields, password and invite code input fields are exclusive. The other is disabled when one is focus and has inupt.")
 +					</p>
 +				</div>
 diff --git a/html/inc/js_config.inc b/html/inc/js_config.inc
@@ -579,6 +588,479 @@ index 0000000..517d465
 +		cosign.setDefaultOpen('ldap');
 +		//cosign.setDisabledFactors('otp,kx509');
 +		cosign.initUI();
+diff --git a/html/locale/.gitignore b/html/locale/.gitignore
+new file mode 100644
+index 0000000..cd1f2c9
+--- /dev/null
++++ b/html/locale/.gitignore
+@@ -0,0 +1 @@
++*.mo
+diff --git a/html/locale/Makefile b/html/locale/Makefile
+new file mode 100644
+index 0000000..33d5e0d
+--- /dev/null
++++ b/html/locale/Makefile
+@@ -0,0 +1,26 @@
++POFILES = $(wildcard */LC_MESSAGES/*.po)
++MOFILES = $(POFILES:po=mo)
++DOMAIN = template
++
++all: mo
++
++po: $(POFILES)
++mo: $(MOFILES)
++pot: $(DOMAIN).pot
++
++$(POFILES): $(DOMAIN).pot
++	msgmerge $@ $< -o $@.new
++	mv $@.new $@
++
++$(DOMAIN).pot:
++	xgettext --default-domain=$(DOMAIN) -L C -k_  \
++		--no-location \
++		-o $(DOMAIN).pot \
++		../*.html ../inc/*
++
++%.mo: %.po
++	msgfmt -o $@ $<
++
++#.PHONY: pot po mo $(DOMAIN).pot
++
++# vim: noet ts=4 sw=4
+diff --git a/html/locale/template.pot b/html/locale/template.pot
+new file mode 100644
+index 0000000..0463987
+--- /dev/null
++++ b/html/locale/template.pot
+@@ -0,0 +1,204 @@
++# SOME DESCRIPTIVE TITLE.
++# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
++# This file is distributed under the same license as the PACKAGE package.
++# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
++#
++#, fuzzy
++msgid ""
++msgstr ""
++"Project-Id-Version: PACKAGE VERSION\n"
++"Report-Msgid-Bugs-To: \n"
++"POT-Creation-Date: 2010-04-04 11:50+0800\n"
++"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
++"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
++"Language-Team: LANGUAGE <LL@li.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=CHARSET\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Please contact technical support if you have any questions."
++msgstr ""
++
++msgid "Technical Info:"
++msgstr ""
++
++msgid "ID &amp; Password"
++msgstr ""
++
++msgid "One Time Passcode"
++msgstr ""
++
++msgid "Certificate"
++msgstr ""
++
++msgid "Log Out"
++msgstr ""
++
++msgid ""
++"You are about to log out of <a href=\"/services/\">all weblogin "
++"applications</a>."
++msgstr ""
++
++msgid "Are you sure you want to do this?"
++msgstr ""
++
++msgid "After logout your browser will redirect to:"
++msgstr ""
++
++msgid "Invite Code"
++msgstr ""
++
++msgid "Authentication Complete"
++msgstr ""
++
++msgid "Invite code:"
++msgstr ""
++
++msgid "Caps Lock is on"
++msgstr ""
++
++msgid "What is invite code?"
++msgstr ""
++
++msgid "You must have k.x-509 software installed and configured."
++msgstr ""
++
++msgid "Authenticate using a certificate"
++msgstr ""
++
++msgid "Download"
++msgstr ""
++
++msgid "k.x-509 software"
++msgstr ""
++
++msgid "Login"
++msgstr ""
++
++msgid "Password"
++msgstr ""
++
++msgid "Need an account or password help?"
++msgstr ""
++
++msgid "Switch Users"
++msgstr ""
++
++msgid "Passcode"
++msgstr ""
++
++msgid "Manage your token"
++msgstr ""
++
++msgid ""
++"&copy; 2006 - 2010 <a href=\"http://www.umich.edu/~regents/\" title="
++"\"Regents of the University of Michigan\"> Regents of the University of "
++"Michigan</a>, <a href=\"http://www.ossxp.com/\">OSSXP Powered</a>"
++msgstr ""
++
++msgid "Our Home Page"
++msgstr ""
++
++msgid "Jump to the Web Login instructions"
++msgstr ""
++
++msgid "Jump to the error message (if present)"
++msgstr ""
++
++msgid "Jump to the ID and Password section"
++msgstr ""
++
++msgid "Jump to the One Time Passcode section"
++msgstr ""
++
++msgid "Jump to the Certificate section"
++msgstr ""
++
++msgid ""
++"Please enter your authentication information and click the &quot;Log&nbsp;"
++"In&quot; button to continue."
++msgstr ""
++
++msgid ""
++"Authentication sections marked with a <img src=\"/cosign/images/circle.gif\" "
++"alt=\"yellow circle\" /> are required."
++msgstr ""
++
++msgid ""
++"By using this service you agree to adhere to our policies and guidelines."
++msgstr ""
++
++msgid "This page displays best when JavaScript is enabled in your web browser."
++msgstr ""
++
++msgid "Hide this Information"
++msgstr ""
++
++msgid "Back to Top"
++msgstr ""
++
++msgid "Need an Account?"
++msgstr ""
++
++msgid ""
++"Replace this text with information about obtaining an account. Lorem ipsum "
++"dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. "
++"Aenean vitae orci. Mauris vulputate ornare urna."
++msgstr ""
++
++msgid "Forgot Your Password?"
++msgstr ""
++
++msgid ""
++"Replace this text with information about resetting your password. Lorem "
++"ipsum dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non "
++"lacus. Aenean vitae orci. Mauris vulputate ornare urna."
++msgstr ""
++
++msgid "Get a Token"
++msgstr ""
++
++msgid ""
++"Replace this with text about using one time passcodes. Lorem ipsum dolor sit "
++"amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean "
++"vitae orci. Mauris vulputate ornare urna."
++msgstr ""
++
++msgid "Download KX.509"
++msgstr ""
++
++msgid ""
++"The KX.509 service provides a client/server application that uses Kerberos "
++"to acquire a short-term X.509 certificate. This makes it possible for web-"
++"browsers to authenticate a user to any CoSign-protected web services "
++"silently instead of prompting the user for a name and password. At U-M, this "
++"service can be used by those who know their Uniqname and Kerberos password."
++msgstr ""
++
++msgid "About invite code"
++msgstr ""
++
++msgid ""
++"Invite code is assigned by administrator. Before input your invite code, you "
++"must provide your email address as your login name."
++msgstr ""
++
++msgid ""
++"Note: The two fields, password and invite code input fields are exclusive. "
++"The other is disabled when one is focus and has inupt."
++msgstr ""
++
++msgid "Log In"
++msgstr ""
++
++msgid "Go Back"
++msgstr ""
++
++msgid "Link to Homepage"
++msgstr ""
++
++msgid "Please enter your login and password."
++msgstr ""
++
++msgid "Please input your email address into username field."
++msgstr ""
+diff --git a/html/locale/zh/LC_MESSAGES/template.po b/html/locale/zh/LC_MESSAGES/template.po
+new file mode 100644
+index 0000000..d68f18d
+--- /dev/null
++++ b/html/locale/zh/LC_MESSAGES/template.po
+@@ -0,0 +1,218 @@
++# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
++# This file is distributed under the same license as the PACKAGE package.
++#
++# Jiang Xin <worldhello.net@gmail.com>, 2010.
++msgid ""
++msgstr ""
++"Project-Id-Version: \n"
++"Report-Msgid-Bugs-To: \n"
++"POT-Creation-Date: 2010-04-04 11:50+0800\n"
++"PO-Revision-Date: 2010-04-04 20:38+0800\n"
++"Last-Translator: Jiang Xin <worldhello.net@gmail.com>\n"
++"Language-Team: Chinese Simplified <kde-i18n-doc@kde.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=UTF-8\n"
++"Content-Transfer-Encoding: 8bit\n"
++"X-Generator: Lokalize 1.0\n"
++"Plural-Forms: nplurals=2; plural=n != 1;\n"
++
++msgid "Please contact technical support if you have any questions."
++msgstr "如果您有问题，请联系管理员。"
++
++msgid "Technical Info:"
++msgstr "技术信息："
++
++msgid "ID &amp; Password"
++msgstr "用户名和口令"
++
++msgid "One Time Passcode"
++msgstr "一次性口令登录"
++
++msgid "Certificate"
++msgstr "证书"
++
++msgid "Log Out"
++msgstr "退出"
++
++msgid ""
++"You are about to log out of <a href=\"/services/\">all weblogin "
++"applications</a>."
++msgstr "您将要退出 <a href=\"/services/\">所有服务</a>。"
++
++msgid "Are you sure you want to do this?"
++msgstr "您确认要这么做么？"
++
++msgid "After logout your browser will redirect to:"
++msgstr "退出登录后浏览器将重定向到："
++
++msgid "Invite Code"
++msgstr "邀请码认证"
++
++msgid "Authentication Complete"
++msgstr "认证成功"
++
++msgid "Invite code:"
++msgstr "邀请码："
++
++msgid "Caps Lock is on"
++msgstr "大小写锁定键开启"
++
++msgid "What is invite code?"
++msgstr "什么是邀请码？"
++
++msgid "You must have k.x-509 software installed and configured."
++msgstr "您必须安装并配置 k.x-509 软件。"
++
++msgid "Authenticate using a certificate"
++msgstr "使用证书认证"
++
++msgid "Download"
++msgstr "下载"
++
++msgid "k.x-509 software"
++msgstr "k.x-509 软件"
++
++msgid "Login"
++msgstr "登录"
++
++msgid "Password"
++msgstr "口令"
++
++msgid "Need an account or password help?"
++msgstr "需要创建帐号或者找回口令？"
++
++msgid "Switch Users"
++msgstr "切换用户"
++
++msgid "Passcode"
++msgstr "口令"
++
++msgid "Manage your token"
++msgstr "管理你的密钥"
++
++msgid ""
++"&copy; 2006 - 2010 <a href=\"http://www.umich.edu/~regents/\" title="
++"\"Regents of the University of Michigan\"> Regents of the University of "
++"Michigan</a>, <a href=\"http://www.ossxp.com/\">OSSXP Powered</a>"
++msgstr ""
++"&copy; 2006 - 2010 <a href=\"http://www.umich.edu/~regents/\" title=\"密歇根"
++"大学\">密歇根大学</a>, <a href=\"http://www.ossxp.com/\">群英汇技术支持</a>"
++
++msgid "Our Home Page"
++msgstr "我们的主页"
++
++msgid "Jump to the Web Login instructions"
++msgstr "跳转到 Web 登录说明"
++
++msgid "Jump to the error message (if present)"
++msgstr "跳转到错误信息（如果有的话）"
++
++msgid "Jump to the ID and Password section"
++msgstr "跳转到用户名和口令登录"
++
++msgid "Jump to the One Time Passcode section"
++msgstr "跳转到一次性口令登录"
++
++msgid "Jump to the Certificate section"
++msgstr "跳转到证书登录"
++
++msgid ""
++"Please enter your authentication information and click the &quot;Log&nbsp;"
++"In&quot; button to continue."
++msgstr ""
++"在右侧选择任一种登录方式，输入登录信息，之后按 &quot;登录按钮&quot; 完成登"
++"录。"
++
++msgid ""
++"Authentication sections marked with a <img src=\"/cosign/images/circle.gif\" "
++"alt=\"yellow circle\" /> are required."
++msgstr ""
++"标记为 <img src=\"/cosign/images/circle.gif\" alt=\"黄色圆圈\" /> 的认证方式"
++"是必须的。"
++
++msgid ""
++"By using this service you agree to adhere to our policies and guidelines."
++msgstr "使用本服务，意味着您已经接受我们的相关政策条款。"
++
++msgid "This page displays best when JavaScript is enabled in your web browser."
++msgstr "这个页面在 JavaScript 启用下有更好的表现。"
++
++msgid "Hide this Information"
++msgstr "隐藏本信息"
++
++msgid "Back to Top"
++msgstr "返回顶部"
++
++msgid "Need an Account?"
++msgstr "需要创建帐号？"
++
++msgid ""
++"Replace this text with information about obtaining an account. Lorem ipsum "
++"dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. "
++"Aenean vitae orci. Mauris vulputate ornare urna."
++msgstr "替换本段内容为创建帐号的相关指示..."
++
++msgid "Forgot Your Password?"
++msgstr "忘记口令？"
++
++msgid ""
++"Replace this text with information about resetting your password. Lorem "
++"ipsum dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non "
++"lacus. Aenean vitae orci. Mauris vulputate ornare urna."
++msgstr "替换本段内容为重置密码的相关指示..."
++
++msgid "Get a Token"
++msgstr "获取一个令牌"
++
++msgid ""
++"Replace this with text about using one time passcodes. Lorem ipsum dolor sit "
++"amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean "
++"vitae orci. Mauris vulputate ornare urna."
++msgstr "替换本段内容为一次性口令的相关指示..."
++
++msgid "Download KX.509"
++msgstr "下载 KX.509"
++
++msgid ""
++"The KX.509 service provides a client/server application that uses Kerberos "
++"to acquire a short-term X.509 certificate. This makes it possible for web-"
++"browsers to authenticate a user to any CoSign-protected web services "
++"silently instead of prompting the user for a name and password. At U-M, this "
++"service can be used by those who know their Uniqname and Kerberos password."
++msgstr ""
++"服务 KX.509 提供了一个 客户端/服务器 应用，使用 Kerberos 来获取一个短期的 "
++"X.509 证书。使得浏览器连接任何 CoSign 保护的网站不再需要输入用户名和口令，而"
++"自动登录。 在密歇根大学，这项服务由知道唯一名称和 Kerberos 口令的用户使用。"
++
++msgid "About invite code"
++msgstr "关于邀请码"
++
++msgid ""
++"Invite code is assigned by administrator. Before input your invite code, you "
++"must provide your email address as your login name."
++msgstr ""
++"邀请码由管理员进行设置，为特殊用户提供无须用户注册即可访问某些服务。 注意在输"
++"入邀请码的同时，您需要在登录名字段输入您的邮件地址。"
++
++msgid ""
++"Note: The two fields, password and invite code input fields are exclusive. "
++"The other is disabled when one is focus and has inupt."
++msgstr ""
++"注意：口令字段和邀请码字段互斥。当选择其中之一并且输入了口令或者邀请码则另外"
++"一个字段自动禁用， 直到您将当前的口令或者邀请码录入框的内容清空。"
++
++msgid "Log In"
++msgstr "登录"
++
++msgid "Go Back"
++msgstr "返回"
++
++msgid "Link to Homepage"
++msgstr "返回主页"
++
++msgid "Please enter your login and password."
++msgstr "请输入您的用户名和口令。"
++
++msgid "Please input your email address into username field."
++msgstr "请在用户名字段输入您的邮件地址。"
++
 diff --git a/html/login.html b/html/login.html
 index 98fa0e1..b0b55e9 100755
 --- a/html/login.html
@@ -1351,4 +1833,4 @@ index ea68776..f03c141 100755
  </body>
  </html>
 -- 
-tg: (6511b61..) t/templates_standard (depends on: master t/autotools_for_setup t/static_htmls_to_templates t/javascript t/services_template)
+tg: (3c46204..) t/templates_standard (depends on: master t/autotools_for_setup t/static_htmls_to_templates t/javascript t/services_template)

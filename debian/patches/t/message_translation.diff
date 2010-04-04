@@ -6,16 +6,14 @@ New locale dir and translate pot into po files.
 Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
- Makefile.in                       |    4 +-
- configure                         | 4527 ++++++++++++++++++-------------------
- configure.ac                      |    1 +
- locale/Makefile.in                |   46 +
- locale/addition.pot               |   32 +
- locale/cosign.pot                 |  466 ++++
- locale/template.pot               |  125 +
- locale/zh/LC_MESSAGES/cosign.po   |  506 +++++
- locale/zh/LC_MESSAGES/template.po |  125 +
- 9 files changed, 3455 insertions(+), 2377 deletions(-)
+ Makefile.in                     |    4 +-
+ configure                       | 4527 +++++++++++++++++++--------------------
+ configure.ac                    |    1 +
+ locale/Makefile.in              |   41 +
+ locale/addition.pot             |   32 +
+ locale/cosign.pot               |  466 ++++
+ locale/zh/LC_MESSAGES/cosign.po |  506 +++++
+ 7 files changed, 3200 insertions(+), 2377 deletions(-)
 
 diff --git a/Makefile.in b/Makefile.in
 index 26f46dc..1c713cc 100755
@@ -6694,54 +6692,49 @@ index 8f11d2c..e8ad02d 100755
  
 diff --git a/locale/Makefile.in b/locale/Makefile.in
 new file mode 100644
-index 0000000..3b1ddd0
+index 0000000..54b7be5
 --- /dev/null
 +++ b/locale/Makefile.in
-@@ -0,0 +1,46 @@
+@@ -0,0 +1,41 @@
 +prefix=@prefix@
 +LOCALEDIR=@localedir@
-+COSIGNTMPLDIR = @prefix@/templates
 +DESTDIR=
 +INSTALL=     @INSTALL@
 +
-+TARGETS=zh
++POFILES = $(wildcard */LC_MESSAGES/*.po)
++MOFILES = $(POFILES:po=mo)
++DOMAIN = cosign
 +
 +all: mo
 +
-+pot: $(wildcard ../cgi/*.c) ../cgi/cosigncgi.h
-+	xgettext -s -k_ -o cosign.pot $^
 +
-+po: pot
-+	for i in ${TARGETS}; do \
-+	    msgmerge  -s -o $$i/LC_MESSAGES/MAIN_POT.po $$i/LC_MESSAGES/cosign.po cosign.pot; \
-+	    msgmerge  -s -o $$i/LC_MESSAGES/SUB_POT.po  $$i/LC_MESSAGES/cosign.po addition.pot; \
-+	    msgcat    -s -o $$i/LC_MESSAGES/NEW_POT.po  $$i/LC_MESSAGES/MAIN_POT.po $$i/LC_MESSAGES/SUB_POT.po ; \
-+	    mv $$i/LC_MESSAGES/NEW_POT.po  $$i/LC_MESSAGES/cosign.po ;\
-+	done
++mo: $(MOFILES)
++po: $(POFILES)
++pot: $(DOMAIN).pot
 +
-+mo:
-+	for i in ${TARGETS}; do \
-+	  (cd $$i/LC_MESSAGES; msgfmt -o cosign.mo cosign.po; msgfmt -o template.mo template.po); \
-+	done
++$(DOMAIN).pot: $(wildcard ../cgi/*.c) ../cgi/cosigncgi.h
++	xgettext --default-domain=$(DOMAIN) -L C -k_  \
++		--no-location \
++		-o $(DOMAIN).pot \
++		$^
++
++$(POFILES): $(DOMAIN).pot addition.pot
++	msgmerge $@ $< -o $@.main
++	msgmerge $@ addition.pot -o $@.sub
++	msgcat -s -o $@ $@.main $@.sub
++	-@rm -f $@.main $@.sub
++
++%.mo: %.po
++	msgfmt -o $@ $<
 +
 +clean:
-+	-@for i in ${TARGETS}; do \
-+		(cd $$i/LC_MESSAGES; rm -f *.mo); \
-+		done
++	-@find . -name "*.mo" | xargs rm
 +
 +install : all
 +	-mkdir -p $(DESTDIR)${LOCALEDIR}
-+	-mkdir -p $(DESTDIR)${COSIGNTMPLDIR}/locale
-+	cp cosign.pot   $(DESTDIR)${LOCALEDIR}
-+	cp template.pot $(DESTDIR)${COSIGNTMPLDIR}/locale
-+	for i in ${TARGETS}; do \
-+		mkdir -p $(DESTDIR)${LOCALEDIR}/$$i/LC_MESSAGES; \
-+		cp $$i/LC_MESSAGES/cosign.* $(DESTDIR)${LOCALEDIR}/$$i/LC_MESSAGES/; \
-+		mkdir -p $(DESTDIR)${COSIGNTMPLDIR}/locale/$$i/LC_MESSAGES; \
-+		cp $$i/LC_MESSAGES/template.* $(DESTDIR)${COSIGNTMPLDIR}/locale/$$i/LC_MESSAGES/; \
-+	done
++	cp -a . $(DESTDIR)${LOCALEDIR}
 +
-+.PHONY: pot po mo clean all install
++.PHONY: pot po mo $(DOMAIN).pot
 +
 +# vim: noet ts=4 sw=4
 diff --git a/locale/addition.pot b/locale/addition.pot
@@ -7253,137 +7246,6 @@ index 0000000..5297202
 +
 +#: ../cgi/info.c:149
 +msgid "weblogin: URL validation failed"
-+msgstr ""
-diff --git a/locale/template.pot b/locale/template.pot
-new file mode 100644
-index 0000000..749f996
---- /dev/null
-+++ b/locale/template.pot
-@@ -0,0 +1,125 @@
-+# SOME DESCRIPTIVE TITLE.
-+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-+# This file is distributed under the same license as the PACKAGE package.
-+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-+#
-+#, fuzzy
-+msgid ""
-+msgstr ""
-+"Project-Id-Version: PACKAGE VERSION\n"
-+"Report-Msgid-Bugs-To: \n"
-+"POT-Creation-Date: 2010-04-03 23:41+0800\n"
-+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-+"Language-Team: LANGUAGE <LL@li.org>\n"
-+"MIME-Version: 1.0\n"
-+"Content-Type: text/plain; charset=CHARSET\n"
-+"Content-Transfer-Encoding: 8bit\n"
-+
-+#: error.html:26
-+msgid "Please contact technical support if you have any questions."
-+msgstr ""
-+
-+#: error.html:27
-+msgid "Technical Info:"
-+msgstr ""
-+
-+#: error.html:31 inc/factor_login.inc:2 inc/factor_login_reauth.inc:2
-+msgid "ID &amp; Password"
-+msgstr ""
-+
-+#: error.html:34 inc/factor_otp.inc:2
-+msgid "One Time Passcode"
-+msgstr ""
-+
-+#: error.html:37 inc/factor_kx509.inc:2
-+msgid "Certificate"
-+msgstr ""
-+
-+#: verify-logout.html:30
-+msgid "Log Out"
-+msgstr ""
-+
-+#: verify-logout.html:31
-+msgid ""
-+"You are about to log out of <a href=\"/services/\">all weblogin "
-+"applications</a>."
-+msgstr ""
-+
-+#: verify-logout.html:32
-+msgid "Are you sure you want to do this?"
-+msgstr ""
-+
-+#: verify-logout.html:37
-+msgid "After logout your browser will redirect to:"
-+msgstr ""
-+
-+#: inc/factor_invite.inc:11
-+msgid "\"Please enter your login and password.\""
-+msgstr ""
-+
-+#: inc/factor_invite.inc:17
-+msgid "\"Please input your email address into username field.\""
-+msgstr ""
-+
-+#: inc/factor_invite.inc:59
-+msgid "Invite Code"
-+msgstr ""
-+
-+#: inc/factor_invite.inc:60 inc/factor_kx509.inc:3 inc/factor_login.inc:3
-+#: inc/factor_login_reauth.inc:3 inc/factor_otp.inc:3
-+msgid "Authentication Complete"
-+msgstr ""
-+
-+#: inc/factor_invite.inc:65
-+msgid "Invite code:"
-+msgstr ""
-+
-+#: inc/factor_invite.inc:70 inc/factor_login.inc:21
-+#: inc/factor_login_reauth.inc:18 inc/factor_otp.inc:13
-+msgid "Caps Lock is on"
-+msgstr ""
-+
-+#: inc/factor_invite.inc:73
-+msgid "What is invite code?"
-+msgstr ""
-+
-+#: inc/factor_kx509.inc:6
-+msgid "You must have k.x-509 software installed and configured."
-+msgstr ""
-+
-+#: inc/factor_kx509.inc:9
-+msgid "Authenticate using a certificate"
-+msgstr ""
-+
-+#: inc/factor_kx509.inc:11
-+msgid "Download"
-+msgstr ""
-+
-+#: inc/factor_kx509.inc:11
-+msgid "k.x-509 software"
-+msgstr ""
-+
-+#: inc/factor_login.inc:8 inc/factor_login_reauth.inc:8
-+msgid "Login"
-+msgstr ""
-+
-+#: inc/factor_login.inc:16 inc/factor_login_reauth.inc:13
-+msgid "Password"
-+msgstr ""
-+
-+#: inc/factor_login.inc:24 inc/factor_login_reauth.inc:21
-+msgid "Need an account or password help?"
-+msgstr ""
-+
-+#: inc/factor_login_reauth.inc:10
-+msgid "Switch Users"
-+msgstr ""
-+
-+#: inc/factor_otp.inc:8
-+msgid "Passcode"
-+msgstr ""
-+
-+#: inc/factor_otp.inc:16
-+msgid "Manage your token"
 +msgstr ""
 diff --git a/locale/zh/LC_MESSAGES/cosign.po b/locale/zh/LC_MESSAGES/cosign.po
 new file mode 100644
@@ -7897,136 +7759,5 @@ index 0000000..cbc107c
 +msgid "weblogin: URL validation failed"
 +msgstr "单点登录：URL 校验失败"
 +
-diff --git a/locale/zh/LC_MESSAGES/template.po b/locale/zh/LC_MESSAGES/template.po
-new file mode 100644
-index 0000000..504f872
---- /dev/null
-+++ b/locale/zh/LC_MESSAGES/template.po
-@@ -0,0 +1,125 @@
-+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-+# This file is distributed under the same license as the PACKAGE package.
-+#
-+# Jiang Xin <worldhello.net@gmail.com>, 2010.
-+msgid ""
-+msgstr ""
-+"Project-Id-Version: \n"
-+"Report-Msgid-Bugs-To: \n"
-+"POT-Creation-Date: 2010-04-03 23:41+0800\n"
-+"PO-Revision-Date: 2010-04-02 17:43+0800\n"
-+"Last-Translator: Jiang Xin <worldhello.net@gmail.com>\n"
-+"Language-Team: Chinese Simplified <kde-i18n-doc@kde.org>\n"
-+"MIME-Version: 1.0\n"
-+"Content-Type: text/plain; charset=UTF-8\n"
-+"Content-Transfer-Encoding: 8bit\n"
-+"X-Generator: Lokalize 1.0\n"
-+"Plural-Forms: nplurals=2; plural=n != 1;\n"
-+
-+#: error.html:26
-+msgid "Please contact technical support if you have any questions."
-+msgstr "如果您有问题，请联系管理员。"
-+
-+#: error.html:27
-+msgid "Technical Info:"
-+msgstr "技术信息："
-+
-+#: error.html:31 inc/factor_login.inc:2 inc/factor_login_reauth.inc:2
-+msgid "ID &amp; Password"
-+msgstr "用户名和口令"
-+
-+#: error.html:34 inc/factor_otp.inc:2
-+msgid "One Time Passcode"
-+msgstr "一次性口令登录"
-+
-+#: error.html:37 inc/factor_kx509.inc:2
-+msgid "Certificate"
-+msgstr "证书"
-+
-+#: verify-logout.html:30
-+msgid "Log Out"
-+msgstr "退出"
-+
-+#: verify-logout.html:31
-+msgid ""
-+"You are about to log out of <a href=\"/services/\">all weblogin "
-+"applications</a>."
-+msgstr "您将要退出 <a href=\"/services/\">所有服务</a>。"
-+
-+#: verify-logout.html:32
-+msgid "Are you sure you want to do this?"
-+msgstr "您确认要这么做么？"
-+
-+#: verify-logout.html:37
-+msgid "After logout your browser will redirect to:"
-+msgstr "退出登录后浏览器将重定向到："
-+
-+#: inc/factor_invite.inc:11
-+msgid "\"Please enter your login and password.\""
-+msgstr "\"请输入您的用户名和口令。\""
-+
-+#: inc/factor_invite.inc:17
-+msgid "\"Please input your email address into username field.\""
-+msgstr "\"请在用户名字段输入您的邮件地址。\""
-+
-+#: inc/factor_invite.inc:59
-+msgid "Invite Code"
-+msgstr "邀请码认证"
-+
-+#: inc/factor_invite.inc:60 inc/factor_kx509.inc:3 inc/factor_login.inc:3
-+#: inc/factor_login_reauth.inc:3 inc/factor_otp.inc:3
-+msgid "Authentication Complete"
-+msgstr "认证成功"
-+
-+#: inc/factor_invite.inc:65
-+msgid "Invite code:"
-+msgstr "邀请码："
-+
-+#: inc/factor_invite.inc:70 inc/factor_login.inc:21
-+#: inc/factor_login_reauth.inc:18 inc/factor_otp.inc:13
-+msgid "Caps Lock is on"
-+msgstr "大小写锁定键开启"
-+
-+#: inc/factor_invite.inc:73
-+msgid "What is invite code?"
-+msgstr "什么是邀请码？"
-+
-+#: inc/factor_kx509.inc:6
-+msgid "You must have k.x-509 software installed and configured."
-+msgstr "您必须安装并配置 k.x-509 软件。"
-+
-+#: inc/factor_kx509.inc:9
-+msgid "Authenticate using a certificate"
-+msgstr "使用证书认证"
-+
-+#: inc/factor_kx509.inc:11
-+msgid "Download"
-+msgstr "下载"
-+
-+#: inc/factor_kx509.inc:11
-+msgid "k.x-509 software"
-+msgstr "k.x-509 软件"
-+
-+#: inc/factor_login.inc:8 inc/factor_login_reauth.inc:8
-+msgid "Login"
-+msgstr "登录"
-+
-+#: inc/factor_login.inc:16 inc/factor_login_reauth.inc:13
-+msgid "Password"
-+msgstr "口令"
-+
-+#: inc/factor_login.inc:24 inc/factor_login_reauth.inc:21
-+msgid "Need an account or password help?"
-+msgstr "需要创建帐号或者找回口令？"
-+
-+#: inc/factor_login_reauth.inc:10
-+msgid "Switch Users"
-+msgstr "切换用户"
-+
-+#: inc/factor_otp.inc:8
-+msgid "Passcode"
-+msgstr "口令"
-+
-+#: inc/factor_otp.inc:16
-+msgid "Manage your token"
-+msgstr "管理你的密钥"
 -- 
-tg: (3cad622..) t/message_translation (depends on: t/message_localize t/static_htmls_to_templates)
+tg: (a2008a8..) t/message_translation (depends on: t/message_localize t/static_htmls_to_templates)

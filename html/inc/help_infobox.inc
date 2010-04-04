@@ -6,6 +6,7 @@
 					  " src=\"/cosign/images/circle.gif\" alt=\"yellow circle\" /> are"
 					  " required.")</p>
 					<p>$!_("By using this service you agree to adhere to our policies and guidelines.")</p>
+					$!include(%lang%/*.html)
 				</div>
 				<p class="noScript">$!_("This page displays best when JavaScript is enabled in your web"
 				  " browser.")</p>

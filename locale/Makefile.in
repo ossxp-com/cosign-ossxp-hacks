@@ -3,39 +3,39 @@ LOCALEDIR=@localedir@
 DESTDIR=
 INSTALL=     @INSTALL@
 
-TARGETS=zh
+POFILES = $(wildcard */LC_MESSAGES/*.po)
+MOFILES = $(POFILES:po=mo)
+DOMAIN = cosign
 
 all: mo
 
-pot: $(wildcard ../cgi/*.c) ../cgi/cosigncgi.h
-	xgettext -s -k_ -o cosign.pot $^
 
-po: pot
-	for i in ${TARGETS}; do \
-	    msgmerge  -s -o $$i/LC_MESSAGES/MAIN_POT.po $$i/LC_MESSAGES/cosign.po cosign.pot; \
-	    msgmerge  -s -o $$i/LC_MESSAGES/SUB_POT.po  $$i/LC_MESSAGES/cosign.po addition.pot; \
-	    msgcat    -s -o $$i/LC_MESSAGES/NEW_POT.po  $$i/LC_MESSAGES/MAIN_POT.po $$i/LC_MESSAGES/SUB_POT.po ; \
-	    mv $$i/LC_MESSAGES/NEW_POT.po  $$i/LC_MESSAGES/cosign.po ;\
-	done
+mo: $(MOFILES)
+po: $(POFILES)
+pot: $(DOMAIN).pot
 
-mo:
-	for i in ${TARGETS}; do \
-	  (cd $$i/LC_MESSAGES; msgfmt -o cosign.mo cosign.po; \
-	done
+$(DOMAIN).pot: $(wildcard ../cgi/*.c) ../cgi/cosigncgi.h
+	xgettext --default-domain=$(DOMAIN) -L C -k_  \
+		--no-location \
+		-o $(DOMAIN).pot \
+		$^
+
+$(POFILES): $(DOMAIN).pot addition.pot
+	msgmerge $@ $< -o $@.main
+	msgmerge $@ addition.pot -o $@.sub
+	msgcat -s -o $@ $@.main $@.sub
+	-@rm -f $@.main $@.sub
+
+%.mo: %.po
+	msgfmt -o $@ $<
 
 clean:
-	-@for i in ${TARGETS}; do \
-		(cd $$i/LC_MESSAGES; rm -f *.mo); \
-		done
+	-@find . -name "*.mo" | xargs rm
 
 install : all
 	-mkdir -p $(DESTDIR)${LOCALEDIR}
-	cp cosign.pot   $(DESTDIR)${LOCALEDIR}
-	for i in ${TARGETS}; do \
-		mkdir -p $(DESTDIR)${LOCALEDIR}/$$i/LC_MESSAGES; \
-		cp $$i/LC_MESSAGES/cosign.* $(DESTDIR)${LOCALEDIR}/$$i/LC_MESSAGES/; \
-	done
+	cp -a . $(DESTDIR)${LOCALEDIR}
 
-.PHONY: pot po mo clean all install
+.PHONY: pot po mo $(DOMAIN).pot
 
 # vim: noet ts=4 sw=4

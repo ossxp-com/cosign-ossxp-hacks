@@ -9,6 +9,15 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  html/Makefile.in                       |   13 ++-
  html/error.html                        |   28 ++---
  html/expired_error.html                |  167 ------------------------
+ html/inc/en/0000.html                  |    2 +
+ html/inc/en/0010_wiki.html             |   15 +++
+ html/inc/en/0015_blog.html             |   15 +++
+ html/inc/en/0020_scm.html              |   21 +++
+ html/inc/en/0030_bugtrac.html          |   19 +++
+ html/inc/en/0035_testlink.html         |   15 +++
+ html/inc/en/0040_comm.html             |   15 +++
+ html/inc/en/1000_account.html          |   16 +++
+ html/inc/en/9000.html                  |    2 +
  html/inc/factor_invite.inc             |   74 +++++++++++
  html/inc/factor_kx509.inc              |   11 ++
  html/inc/factor_login.inc              |   24 ++++
@@ -17,8 +26,17 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  html/inc/footer.inc                    |    3 +
  html/inc/header.inc                    |    3 +
  html/inc/help_hotkey.inc               |    7 +
- html/inc/help_infobox.inc              |   51 ++++++++
+ html/inc/help_infobox.inc              |   52 ++++++++
  html/inc/js_config.inc                 |   11 ++
+ html/inc/zh/0000.html                  |    2 +
+ html/inc/zh/0010_wiki.html             |   15 +++
+ html/inc/zh/0015_blog.html             |   15 +++
+ html/inc/zh/0020_scm.html              |   21 +++
+ html/inc/zh/0030_bugtrac.html          |   19 +++
+ html/inc/zh/0035_testlink.html         |   15 +++
+ html/inc/zh/0040_comm.html             |   15 +++
+ html/inc/zh/1000_account.html          |   16 +++
+ html/inc/zh/9000.html                  |    2 +
  html/locale/.gitignore                 |    1 +
  html/locale/Makefile                   |   26 ++++
  html/locale/template.pot               |  204 ++++++++++++++++++++++++++++++
@@ -30,7 +48,7 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  html/reauth.html                       |  145 +++------------------
  html/validation_error.html             |   54 --------
  html/verify-logout.html                |   28 +++--
- 24 files changed, 741 insertions(+), 769 deletions(-)
+ 42 files changed, 982 insertions(+), 769 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
 index ef80e66..a2b3507 100755
@@ -307,6 +325,180 @@ index 0185219..0000000
 -
 -</body>
 -</html>
+diff --git a/html/inc/en/0000.html b/html/inc/en/0000.html
+new file mode 100644
+index 0000000..cd6c895
+--- /dev/null
++++ b/html/inc/en/0000.html
+@@ -0,0 +1,2 @@
++            <table border="0" cellpadding="4">
++              <tbody>
+diff --git a/html/inc/en/0010_wiki.html b/html/inc/en/0010_wiki.html
+new file mode 100644
+index 0000000..846469b
+--- /dev/null
++++ b/html/inc/en/0010_wiki.html
+@@ -0,0 +1,15 @@
++                <tr>
++                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
++                  <td aligh='right' vliagn='middle'>
++                    <img src="/cosign/images/services/moinmoin.gif" alt="Wiki">
++                  </td>
++                  <td style="font-size: 83%;">
++                    <u>
++                    <a name="wiki" href="http://wiki.foo.bar/wiki/action/login/Main?action=login&login=1">Knowledge Management</a>
++                    </u>
++                    <br>
++                    <small>
++                    Collaborative and powerful community websites. Start to contribute..oO
++                    </small>
++                  </td>
++                </tr>
+diff --git a/html/inc/en/0015_blog.html b/html/inc/en/0015_blog.html
+new file mode 100644
+index 0000000..2805ea1
+--- /dev/null
++++ b/html/inc/en/0015_blog.html
+@@ -0,0 +1,15 @@
++                <tr>
++                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
++                  <td aligh='right' vliagn='middle'>
++                    <img src="/cosign/images/services/blog.gif" alt="Blog">
++                  </td>
++                  <td style="font-size: 83%;">
++                    <u>
++                    <a name="blog" href="http://blog.foo.bar/">Web log</a>
++                    </u>
++                    <br>
++                    <small>
++                    Speak loud, and share your feelings, opinions, ideas, with others...
++                    </small>
++                  </td>
++                </tr>
+diff --git a/html/inc/en/0020_scm.html b/html/inc/en/0020_scm.html
+new file mode 100644
+index 0000000..6648764
+--- /dev/null
++++ b/html/inc/en/0020_scm.html
+@@ -0,0 +1,21 @@
++                <tr>
++                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
++                  <td aligh='right' vliagn='middle'>
++                    <img src="/cosign/images/services/subversion.gif" alt="Subversion">
++                  </td>
++                  <td style="font-size: 83%;">
++                    <u>
++                    Version Control: <a name="websvn" href="http://svn.foo.bar/websvn/">Subversion</a>, 
++                      <a name="git" href="http://git.foo.bar/">Git</a>,
++                      <a name="hg" href="http://hg.foo.bar/">Mercurial</a>
++                    </u>
++                    <br>
++                    <small>
++                    SVN - Best for commercial software development and a centralized develop team.
++                    <br>
++                    Git - For team members all around the world. The power you may have never seen.
++                    <br>
++                    Hg - Lightweight DVCS. Single user and team can all benefit from it.
++                    </small>
++                  </td>
++                </tr>
+diff --git a/html/inc/en/0030_bugtrac.html b/html/inc/en/0030_bugtrac.html
+new file mode 100644
+index 0000000..371b8c2
+--- /dev/null
++++ b/html/inc/en/0030_bugtrac.html
+@@ -0,0 +1,19 @@
++                <tr>
++                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
++                  <td aligh='right' vliagn='middle'>
++                    <img src="/cosign/images/services/pm.gif" alt="Project Management">
++
++                  </td>
++                  <td style="font-size: 83%;">
++                    <u>
++                    Project Management: <a name="trac" href="http://trac.foo.bar/">Trac</a>,
++                    <a name="redmine" href="http://redmine.foo.bar/">Redmine</a>
++                    </u>
++                    <br>
++                    <small>
++                    Trac - Trac, a bug tracking system with deep SCM integration.
++                    <br>
++                    Redmine - A trac clone using ROR. Support multiple project.
++                    </small>
++                  </td>
++                </tr>
+diff --git a/html/inc/en/0035_testlink.html b/html/inc/en/0035_testlink.html
+new file mode 100644
+index 0000000..22b623b
+--- /dev/null
++++ b/html/inc/en/0035_testlink.html
+@@ -0,0 +1,15 @@
++                <tr>
++                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
++                  <td aligh='right' vliagn='middle'>
++                    <img src="/cosign/images/services/tl.gif" alt="Testlink">
++                  </td>
++                  <td style="font-size: 83%;">
++                    <u>
++                    Test Lifecyle Management: <a name="testlink" href="http://testlink.foo.bar/">TestLink</a>
++                    </u>
++                    <br>
++                    <small>
++                    From test plan, test cases to test report, a whole test lifecycle management system.
++                    </small>
++                  </td>
++                </tr>
+diff --git a/html/inc/en/0040_comm.html b/html/inc/en/0040_comm.html
+new file mode 100644
+index 0000000..7cf153b
+--- /dev/null
++++ b/html/inc/en/0040_comm.html
+@@ -0,0 +1,15 @@
++                <tr>
++                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
++                  <td aligh='right' vliagn='middle'>
++                    <img src="/cosign/images/services/mailman.gif" alt="Mailman">
++                  </td>
++                  <td style="font-size: 83%;">
++                    <u>
++                    Communications: <a name="mailman" href="http://list.foo.bar/mailman/listinfo/">Mailing list</a>, IM
++                    </u>
++                    <br>
++                    <small>
++                    Mailing list: Web archive, can push to desktop...
++                    </small>
++                  </td>
++                </tr>
+diff --git a/html/inc/en/1000_account.html b/html/inc/en/1000_account.html
+new file mode 100644
+index 0000000..d10571f
+--- /dev/null
++++ b/html/inc/en/1000_account.html
+@@ -0,0 +1,16 @@
++                <tr>
++                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
++                  <td>
++                    <img src="/cosign/images/services/profile.gif" alt="Profiles">
++                  </td>
++                  <td style="font-size: 83%;">
++                    <u>
++                    Control Center: <a name="gosa" href="https://weblogin.foo.bar/members/?login">Account management</a>,
++                    <a name="sso" href="https://weblogin.foo.bar/cgi-bin/login">Single Sign-on</a>
++                    </u>
++                    <br>
++                    <small>
++                    Manage account of all systems in one place. Single Sign-on ready for all.
++                    </small>
++                  </td>
++                </tr>
+diff --git a/html/inc/en/9000.html b/html/inc/en/9000.html
+new file mode 100644
+index 0000000..a0203b7
+--- /dev/null
++++ b/html/inc/en/9000.html
+@@ -0,0 +1,2 @@
++              </tbody>
++            </table>
 diff --git a/html/inc/factor_invite.inc b/html/inc/factor_invite.inc
 new file mode 100644
 index 0000000..1ce4934
@@ -516,10 +708,10 @@ index 0000000..95c1d82
 +	</ul>
 diff --git a/html/inc/help_infobox.inc b/html/inc/help_infobox.inc
 new file mode 100644
-index 0000000..1f3164b
+index 0000000..25faf92
 --- /dev/null
 +++ b/html/inc/help_infobox.inc
-@@ -0,0 +1,51 @@
+@@ -0,0 +1,52 @@
 +				<div id="mainInfo">
 +					<p>$!_("Please enter your authentication information and click the &quot;Log&nbsp;In&quot; button"
 +					  " to continue.")</p>
@@ -528,6 +720,7 @@ index 0000000..1f3164b
 +					  " src=\"/cosign/images/circle.gif\" alt=\"yellow circle\" /> are"
 +					  " required.")</p>
 +					<p>$!_("By using this service you agree to adhere to our policies and guidelines.")</p>
++					$!include(%lang%/*.html)
 +				</div>
 +				<p class="noScript">$!_("This page displays best when JavaScript is enabled in your web"
 +				  " browser.")</p>
@@ -588,6 +781,180 @@ index 0000000..517d465
 +		cosign.setDefaultOpen('ldap');
 +		//cosign.setDisabledFactors('otp,kx509');
 +		cosign.initUI();
+diff --git a/html/inc/zh/0000.html b/html/inc/zh/0000.html
+new file mode 100644
+index 0000000..cd6c895
+--- /dev/null
++++ b/html/inc/zh/0000.html
+@@ -0,0 +1,2 @@
++            <table border="0" cellpadding="4">
++              <tbody>
+diff --git a/html/inc/zh/0010_wiki.html b/html/inc/zh/0010_wiki.html
+new file mode 100644
+index 0000000..bf9e081
+--- /dev/null
++++ b/html/inc/zh/0010_wiki.html
+@@ -0,0 +1,15 @@
++                <tr>
++                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
++                  <td aligh='right' vliagn='middle'>
++                    <img src="/cosign/images/services/moinmoin.gif" alt="Wiki">
++                  </td>
++                  <td style="font-size: 83%;">
++                    <u>
++                    <a name="wiki" href="http://wiki.foo.bar/wiki/action/login/Main?action=login&login=1">知识管理系统</a>
++                    </u>
++                    <br>
++                    <small>
++                    采用维基技术，提供了协同工作平台和强大的社区网站，知识共享现在出发..oO
++                    </small>
++                  </td>
++                </tr>
+diff --git a/html/inc/zh/0015_blog.html b/html/inc/zh/0015_blog.html
+new file mode 100644
+index 0000000..5228943
+--- /dev/null
++++ b/html/inc/zh/0015_blog.html
+@@ -0,0 +1,15 @@
++                <tr>
++                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
++                  <td aligh='right' vliagn='middle'>
++                    <img src="/cosign/images/services/blog.gif" alt="博客">
++                  </td>
++                  <td style="font-size: 83%;">
++                    <u>
++                    <a name="blog" href="http://blog.foo.bar/">博客</a>
++                    </u>
++                    <br>
++                    <small>
++                    大声的说出你的感受、观点、想法，和他人分享...
++                    </small>
++                  </td>
++                </tr>
+diff --git a/html/inc/zh/0020_scm.html b/html/inc/zh/0020_scm.html
+new file mode 100644
+index 0000000..6ebf8f7
+--- /dev/null
++++ b/html/inc/zh/0020_scm.html
+@@ -0,0 +1,21 @@
++                <tr>
++                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
++                  <td aligh='right' vliagn='top'>
++                    <img src="/cosign/images/services/subversion.gif" alt="Subversion">
++                  </td>
++                  <td style="font-size: 83%;">
++                    <u>
++                    版本控制系统： <a name="websvn" href="http://svn.foo.bar/websvn/">Subversion</a>, 
++                      <a name="git" href="http://git.foo.bar/">Git</a>,
++                      <a name="hg" href="http://hg.foo.bar/">Mercurial</a>
++                    </u>
++                    <br>
++                    <small>
++                    SVN - 商业软件开发最佳拍当，提供精细授权，有易用的客户端
++                    <br>
++                    Git - 适合于身处异地，相对分散的开发团队，最强大的版本控制工具
++                    <br>
++                    Hg - 轻量级分布式版本控制工具，既适用于个人，也适合于团队
++                    </small>
++                  </td>
++                </tr>
+diff --git a/html/inc/zh/0030_bugtrac.html b/html/inc/zh/0030_bugtrac.html
+new file mode 100644
+index 0000000..2b908d4
+--- /dev/null
++++ b/html/inc/zh/0030_bugtrac.html
+@@ -0,0 +1,19 @@
++                <tr>
++                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
++                  <td aligh='right' vliagn='middle'>
++                    <img src="/cosign/images/services/pm.gif" alt="Project Management">
++
++                  </td>
++                  <td style="font-size: 83%;">
++                    <u>
++                    项目管理系统： <a name="trac" href="http://trac.foo.bar/">Trac</a>,
++                    <a name="redmine" href="http://redmine.foo.bar/">Redmine</a>
++                    </u>
++                    <br>
++                    <small>
++                    Trac - Python 开发，用wiki将需求管理，缺陷跟踪，软件开发整合一体的项目管理工具
++                    <br>
++                    Redmine - Trac 的 ROR 克隆/再实现。支持多项目
++                    </small>
++                  </td>
++                </tr>
+diff --git a/html/inc/zh/0035_testlink.html b/html/inc/zh/0035_testlink.html
+new file mode 100644
+index 0000000..29b9c73
+--- /dev/null
++++ b/html/inc/zh/0035_testlink.html
+@@ -0,0 +1,15 @@
++                <tr>
++                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
++                  <td aligh='right' vliagn='middle'>
++                    <img src="/cosign/images/services/tl.gif" alt="Testlink">
++                  </td>
++                  <td style="font-size: 83%;">
++                    <u>
++                    测试管理平台： <a name="testlink" href="http://testlink.foo.bar/">TestLink</a>
++                    </u>
++                    <br>
++                    <small>
++                    从测试计划到测试用例到测试报告，全周期的测试流程管理平台...
++                    </small>
++                  </td>
++                </tr>
+diff --git a/html/inc/zh/0040_comm.html b/html/inc/zh/0040_comm.html
+new file mode 100644
+index 0000000..bcb8fa0
+--- /dev/null
++++ b/html/inc/zh/0040_comm.html
+@@ -0,0 +1,15 @@
++                <tr>
++                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
++                  <td aligh='right' vliagn='middle'>
++                    <img src="/cosign/images/services/mailman.gif" alt="Mailman">
++                  </td>
++                  <td style="font-size: 83%;">
++                    <u>
++                    沟通系统： <a name="mailman" href="http://list.foo.bar/mailman/listinfo/">邮件列表</a>, 即时通讯
++                    </u>
++                    <br>
++                    <small>
++                    邮件列表: 可归档，可推向桌面的无骚扰的沟通工具...
++                    </small>
++                  </td>
++                </tr>
+diff --git a/html/inc/zh/1000_account.html b/html/inc/zh/1000_account.html
+new file mode 100644
+index 0000000..ec601af
+--- /dev/null
++++ b/html/inc/zh/1000_account.html
+@@ -0,0 +1,16 @@
++                <tr>
++                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
++                  <td>
++                    <img src="/cosign/images/services/profile.gif" alt="Profiles">
++                  </td>
++                  <td style="font-size: 83%;">
++                    <u>
++                    集中管理系统： <a name="gosa" href="https://weblogin.foo.bar/members/?login">帐号管理</a>,
++                    <a name="sso" href="https://weblogin.foo.bar/cgi-bin/login">单点登录</a>
++                    </u>
++                    <br>
++                    <small>
++                    集中的用户管理平台；单点登录支持
++                    </small>
++                  </td>
++                </tr>
+diff --git a/html/inc/zh/9000.html b/html/inc/zh/9000.html
+new file mode 100644
+index 0000000..a0203b7
+--- /dev/null
++++ b/html/inc/zh/9000.html
+@@ -0,0 +1,2 @@
++              </tbody>
++            </table>
 diff --git a/html/locale/.gitignore b/html/locale/.gitignore
 new file mode 100644
 index 0000000..cd1f2c9

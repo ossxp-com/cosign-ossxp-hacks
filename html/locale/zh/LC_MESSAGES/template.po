@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-04-04 11:50+0800\n"
-"PO-Revision-Date: 2010-04-04 11:19+0800\n"
+"PO-Revision-Date: 2010-04-04 20:38+0800\n"
 "Last-Translator: Jiang Xin <worldhello.net@gmail.com>\n"
 "Language-Team: Chinese Simplified <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -44,12 +44,6 @@ msgstr "您确认要这么做么？"
 
 msgid "After logout your browser will redirect to:"
 msgstr "退出登录后浏览器将重定向到："
-
-msgid "\"Please enter your login and password.\""
-msgstr "\"请输入您的用户名和口令。\""
-
-msgid "\"Please input your email address into username field.\""
-msgstr "\"请在用户名字段输入您的邮件地址。\""
 
 msgid "Invite Code"
 msgstr "邀请码认证"
@@ -206,3 +200,19 @@ msgid ""
 msgstr ""
 "注意：口令字段和邀请码字段互斥。当选择其中之一并且输入了口令或者邀请码则另外"
 "一个字段自动禁用， 直到您将当前的口令或者邀请码录入框的内容清空。"
+
+msgid "Log In"
+msgstr "登录"
+
+msgid "Go Back"
+msgstr "返回"
+
+msgid "Link to Homepage"
+msgstr "返回主页"
+
+msgid "Please enter your login and password."
+msgstr "请输入您的用户名和口令。"
+
+msgid "Please input your email address into username field."
+msgstr "请在用户名字段输入您的邮件地址。"
+

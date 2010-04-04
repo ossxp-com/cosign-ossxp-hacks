@@ -45,12 +45,6 @@ msgstr ""
 msgid "After logout your browser will redirect to:"
 msgstr ""
 
-msgid "\"Please enter your login and password.\""
-msgstr ""
-
-msgid "\"Please input your email address into username field.\""
-msgstr ""
-
 msgid "Invite Code"
 msgstr ""
 
@@ -192,4 +186,19 @@ msgstr ""
 msgid ""
 "Note: The two fields, password and invite code input fields are exclusive. "
 "The other is disabled when one is focus and has inupt."
+msgstr ""
+
+msgid "Log In"
+msgstr ""
+
+msgid "Go Back"
+msgstr ""
+
+msgid "Link to Homepage"
+msgstr ""
+
+msgid "Please enter your login and password."
+msgstr ""
+
+msgid "Please input your email address into username field."
 msgstr ""

@@ -1,0 +1,195 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-04-04 11:50+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Please contact technical support if you have any questions."
+msgstr ""
+
+msgid "Technical Info:"
+msgstr ""
+
+msgid "ID &amp; Password"
+msgstr ""
+
+msgid "One Time Passcode"
+msgstr ""
+
+msgid "Certificate"
+msgstr ""
+
+msgid "Log Out"
+msgstr ""
+
+msgid ""
+"You are about to log out of <a href=\"/services/\">all weblogin "
+"applications</a>."
+msgstr ""
+
+msgid "Are you sure you want to do this?"
+msgstr ""
+
+msgid "After logout your browser will redirect to:"
+msgstr ""
+
+msgid "\"Please enter your login and password.\""
+msgstr ""
+
+msgid "\"Please input your email address into username field.\""
+msgstr ""
+
+msgid "Invite Code"
+msgstr ""
+
+msgid "Authentication Complete"
+msgstr ""
+
+msgid "Invite code:"
+msgstr ""
+
+msgid "Caps Lock is on"
+msgstr ""
+
+msgid "What is invite code?"
+msgstr ""
+
+msgid "You must have k.x-509 software installed and configured."
+msgstr ""
+
+msgid "Authenticate using a certificate"
+msgstr ""
+
+msgid "Download"
+msgstr ""
+
+msgid "k.x-509 software"
+msgstr ""
+
+msgid "Login"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Need an account or password help?"
+msgstr ""
+
+msgid "Switch Users"
+msgstr ""
+
+msgid "Passcode"
+msgstr ""
+
+msgid "Manage your token"
+msgstr ""
+
+msgid ""
+"&copy; 2006 - 2010 <a href=\"http://www.umich.edu/~regents/\" title="
+"\"Regents of the University of Michigan\"> Regents of the University of "
+"Michigan</a>, <a href=\"http://www.ossxp.com/\">OSSXP Powered</a>"
+msgstr ""
+
+msgid "Our Home Page"
+msgstr ""
+
+msgid "Jump to the Web Login instructions"
+msgstr ""
+
+msgid "Jump to the error message (if present)"
+msgstr ""
+
+msgid "Jump to the ID and Password section"
+msgstr ""
+
+msgid "Jump to the One Time Passcode section"
+msgstr ""
+
+msgid "Jump to the Certificate section"
+msgstr ""
+
+msgid ""
+"Please enter your authentication information and click the &quot;Log&nbsp;"
+"In&quot; button to continue."
+msgstr ""
+
+msgid ""
+"Authentication sections marked with a <img src=\"/cosign/images/circle.gif\" "
+"alt=\"yellow circle\" /> are required."
+msgstr ""
+
+msgid ""
+"By using this service you agree to adhere to our policies and guidelines."
+msgstr ""
+
+msgid "This page displays best when JavaScript is enabled in your web browser."
+msgstr ""
+
+msgid "Hide this Information"
+msgstr ""
+
+msgid "Back to Top"
+msgstr ""
+
+msgid "Need an Account?"
+msgstr ""
+
+msgid ""
+"Replace this text with information about obtaining an account. Lorem ipsum "
+"dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. "
+"Aenean vitae orci. Mauris vulputate ornare urna."
+msgstr ""
+
+msgid "Forgot Your Password?"
+msgstr ""
+
+msgid ""
+"Replace this text with information about resetting your password. Lorem "
+"ipsum dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non "
+"lacus. Aenean vitae orci. Mauris vulputate ornare urna."
+msgstr ""
+
+msgid "Get a Token"
+msgstr ""
+
+msgid ""
+"Replace this with text about using one time passcodes. Lorem ipsum dolor sit "
+"amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean "
+"vitae orci. Mauris vulputate ornare urna."
+msgstr ""
+
+msgid "Download KX.509"
+msgstr ""
+
+msgid ""
+"The KX.509 service provides a client/server application that uses Kerberos "
+"to acquire a short-term X.509 certificate. This makes it possible for web-"
+"browsers to authenticate a user to any CoSign-protected web services "
+"silently instead of prompting the user for a name and password. At U-M, this "
+"service can be used by those who know their Uniqname and Kerberos password."
+msgstr ""
+
+msgid "About invite code"
+msgstr ""
+
+msgid ""
+"Invite code is assigned by administrator. Before input your invite code, you "
+"must provide your email address as your login name."
+msgstr ""
+
+msgid ""
+"Note: The two fields, password and invite code input fields are exclusive. "
+"The other is disabled when one is focus and has inupt."
+msgstr ""

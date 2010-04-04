@@ -31,6 +31,7 @@ size_t macro_process ( char *, size_t, struct subfile_list *, char *);
 #ifdef	_DEBUG
 
 void stub_do_macro_include ( char *, struct subfile_list * );
+void stub_do_macro_gettext( char *);
 
 #endif
 
@@ -161,7 +162,11 @@ macro_process ( char *str, size_t size, struct subfile_list *sl, char *filename 
 	stub_do_macro_include(incfile, sl);
 #endif
     } else if ( strcmp(cmd, "_") == 0 ) {
-	do_macro_gettext(p);
+#ifndef _DEBUG
+	do_macro_gettext(arg);
+#else
+	stub_do_macro_gettext(arg);
+#endif
     } else {
 	p = str;
     }
@@ -427,6 +432,11 @@ stub_do_macro_include( char *str, struct subfile_list *sl )
     printf(">> include: %s\n", str);
 }
 
+    void
+stub_do_macro_gettext( char *str )
+{
+    printf(">> gettext: %s\n", str_replace(str, "\n", "."));
+}
 
     void
 test_macro_process()

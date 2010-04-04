@@ -12,6 +12,11 @@
 #include <libgen.h>
 #include <glob.h>
 
+#include <netinet/in.h>
+#include <openssl/ssl.h>
+#include <snet.h>
+#include "cosigncgi.h"
+
 #define MAX_CMD		18
 #define MAX_FN_LEN	512
 #define MAX_LINE_BUFF	4096
@@ -21,36 +26,48 @@ int _do_macro_include ( char *, struct subfile_list * );
 void do_macro_include ( char *, struct subfile_list * );
 void do_macro_gettext( char *);
 char * str_replace(char *, char *, char *);
-char * macro_process ( char *, struct subfile_list *, char *);
+size_t macro_process ( char *, size_t, struct subfile_list *, char *);
 
-/*
- * Warning: if the first two arguments are the same, and rep is longer than
- * orig, it will fail.
- */
+#ifdef	_DEBUG
+
+void stub_do_macro_include ( char *, struct subfile_list * );
+void stub_do_macro_gettext( char *);
+
+#endif
+
+
     char *
-str_replace(char *str, char *orig, char *rep)
+str_replace(char *orig, char *seek, char *rep)
 {
     static char buffer[MAX_LINE_BUFF+1];
-    char *p;
+    char *p, *phead;
+    char *str = strdup(orig);
 
-    if(!(p = strstr(str, orig)))
-	return str;
-
-    strncpy(buffer, str, p-str);
-    buffer[p-str] = '\0';
-
-    sprintf(buffer+(p-str), "%s%s", rep, p+strlen(orig));
-
+    phead = str;
+    *buffer = '\0';
+    while (strstr(str, seek))  {
+	p = strstr(str, seek);
+	int i = strlen(buffer);
+	strncpy(buffer+i, str, p-str);
+	buffer[i+p-str] = '\0';
+	strcat(buffer, rep);
+	str = p + strlen(seek);
+    }
+    strcat(buffer, str);
+    if (phead != NULL)
+	free (phead);
     return buffer;
 }
 
-    char *
-macro_process ( char *str, struct subfile_list *sl, char *filename )
+/*
+ * return chars be eatten
+ */
+   size_t
+macro_process ( char *str, size_t size, struct subfile_list *sl, char *filename )
 {
     char	cmd[MAX_CMD+1];
-    char	arg[MAX_LINE_BUFF+1];
-    char	*p, *orig, *text;
-    int		ch;
+    char	arg[MAX_LINE_BUFF+1]="";
+    char	*p, *pa, *pz;
     char	*pbuff = NULL;
     char	*pdir;
     char	incfile[MAX_FN_LEN+1];
@@ -59,70 +76,105 @@ macro_process ( char *str, struct subfile_list *sl, char *filename )
     pbuff = strdup(filename);
     pdir = dirname (pbuff);
 
-    p = orig = text = str;
-    while ( *p && *p != '(' )
+    p = pa = str;
+    while ( p - str <= size && *p != '(' )
 	p++;
 
-    if (!*p || *p != '(' || p-text >= MAX_CMD)
-	return orig;
+    if (p - str > size || *p != '(' || p-pa >= MAX_CMD)
+	return 0;
 
-    strncpy(cmd, text, p-text);
-    cmd[p-text] = '\0';
+    strncpy(cmd, pa, p-pa);
+    cmd[p-pa] = '\0';
 
-    text = ++p;
-    while ( *p && isspace(*p) ) {
-	p++;
-    }
-    text = p;
-    ch = *p;
+    p++;
 
-    if (ch == '"' || ch == '\'') {
-	do {
-	    if (*p == '\\' && *(p+1))
+    // while not ')'
+    while (p - str <= size && *p != ')') {
+	if (*p == '"' || *p == '\'') {
+	    // mark begin
+	    pa = p;
+
+	    do {
+		if (*p == '\\' && p - str <= size)
+		    p++;
 		p++;
-	    p++;
-	} while (*p && *p != ch);
+	    } while (p - str <= size && *p != *pa);
+
+	    // mark end
+	    pz = p;
+
+	    // strcat from pa to pz
+	    if ( *pa == *pz && pz > pa +1 ) {
+		pa++;
+		pz--;
+		arg[strlen(arg)+pz-pa+1] = '\0';
+		strncat(arg, pa, pz-pa+1);
+		strcpy(arg, str_replace(arg, "\\'", "'"));
+		strcpy(arg, str_replace(arg, "\\\"", "\""));
+	    }
+
+	    // *p is ' or "
+	    if (p - str <= size)
+		p++;
+	} else {
+	    // lstrip
+	    while ( p - str <= size && isspace(*p) )
+		p++;
+
+	    // mark begin
+	    pa = p;
+
+	    while ( p - str <= size && *p != '"' && *p != '\'' && *p != ')') {
+		p++;
+	    }
+
+	    // prematurate
+	    if (p - str > size)
+		break;
+
+	    // mark end
+	    pz = p-1;
+
+	    // rstrip
+	    while (isspace(*pz) && pz > pa ) {
+		pz--;
+	    }
+
+	    // strcat from pa to pz
+	    if ( pz > pa ) {
+		arg[strlen(arg)+pz-pa+1] = '\0';
+		strncat(arg, pa, pz-pa+1);
+	    }
+	}
     }
 
-    while ( *p && *p != ')' ) {
-	p++;
-    }
-
-    if (!*p || *p != ')' || p-text >= MAX_LINE_BUFF)
-	return orig;
-    else
-	orig = p+1;
-
-    do {
-	--p;
-    } while ( isspace(*p) && p!=text );
-
-    if ( (ch == '"' || ch == '\'') && *p == ch ) {
-	text++;
-	p--;
-	strncpy(arg, text, p-text+1);
-	arg[p-text+1] = '\0';
-	p = str_replace(arg, "\\'", "'");
-	p = str_replace(p, "\\\"", "\"");
+    if (*p != ')') {
+	return 0;
     } else {
-	strncpy(arg, text, p-text+1);
-	arg[p-text+1] = '\0';
-	p = arg;
+	p++;
     }
 
     if ( strcasecmp(cmd, "include") == 0 ) {
-	snprintf(incfile, MAX_FN_LEN, "%s/%s", pdir, p);
+	snprintf(incfile, MAX_FN_LEN, "%s/%s", pdir, arg);
+#ifndef _DEBUG
 	do_macro_include(incfile, sl);
+#else
+	stub_do_macro_include(incfile, sl);
+#endif
     } else if ( strcmp(cmd, "_") == 0 ) {
-	do_macro_gettext(p);
+#ifndef _DEBUG
+	do_macro_gettext(arg);
+#else
+	stub_do_macro_gettext(arg);
+#endif
     } else {
-	orig = str;
+	p = str;
     }
 
     if (pbuff != NULL)
         free(pbuff);
 
-    return orig;
+    return p-str;
 }
 
 /*
@@ -285,6 +337,7 @@ _subfile( char *filename, struct subfile_list *sl, int nocache )
     FILE	*fs;
     int 	c, i, j;
     char	nasties[] = "<>(){}[]'`\" \\";
+    size_t	size, size_p;
 
     if ( nocache > 0 ) {
 	fputs( "Expires: Mon, 16 Apr 1973 13:10:00 GMT\n"
@@ -298,14 +351,14 @@ _subfile( char *filename, struct subfile_list *sl, int nocache )
 	fputs( "Content-type: text/html\n\n", stdout );
     }
 
-    if (( fs = fopen( filename, "r" )) == NULL ) {
+    if (( fs = fopen( filename, "rb" )) == NULL ) {
 	perror( filename );
 	exit( 1 );
     }
 
-    while (( c = getc( fs )) != EOF ) {
+    while (( c = getc( fs )) != EOF && !feof(fs)) {
 	if ( c == '$' ) {
-	    if (( c = getc( fs )) == EOF ) {
+	    if (( c = getc( fs )) == EOF  && !feof(fs)) {
 		putchar( '$' );
 		break;
 	    }
@@ -317,15 +370,15 @@ _subfile( char *filename, struct subfile_list *sl, int nocache )
 	    if ( c == '!' ) {
 		// begin macro process
 		char *s = malloc(MAX_CMD+MAX_LINE_BUFF+1);
-		char *p;
-		fgets(s, MAX_CMD+MAX_LINE_BUFF, fs);
-		p = macro_process(s, sl, filename);
-		if (p==s) {
+		//fgets(s, MAX_CMD+MAX_LINE_BUFF, fs);
+		size = fread(s, 1, MAX_CMD+MAX_LINE_BUFF, fs);
+		size_p = macro_process(s, size, sl, filename);
+		if (size_p==0) {
 		    putchar( '$' );
 		    putchar( c );
-		    fseek(fs, -1*strlen(p), SEEK_CUR);
+		    fseek(fs, -1* size, SEEK_CUR);
 		} else {
-		    fseek(fs, -1*strlen(p), SEEK_CUR);
+		    fseek(fs, -1* (size - size_p), SEEK_CUR);
 		}
 		if (s != NULL)
 		    free(s);
@@ -370,5 +423,84 @@ _subfile( char *filename, struct subfile_list *sl, int nocache )
 
     return;
 }
+
+#ifdef _DEBUG
+
+    void
+stub_do_macro_include( char *str, struct subfile_list *sl )
+{
+    printf(">> include: %s\n", str);
+}
+
+    void
+stub_do_macro_gettext( char *str )
+{
+    printf(">> gettext: %s\n", str_replace(str, "\n", "."));
+}
+
+    void
+test_macro_process()
+{
+    size_t size;
+    char *buff[] = {
+	"include(file).",
+	"include(\"file\").",
+	"_(\"world\").",
+	"_(\"world.\")",
+	"_(\"hello,\" \n \" world.\") end of text.",
+	"_(\"hello\\\",\\\"\" \n \" world.\" \" baby\") end of paragraph1.",
+	"hello, world.",
+	"_(\"Please enter your authentication information and click the &quot;Log&nbsp;In&quot; button\"\n \t\t\t\t\t\" to continue.\")</p>",
+	};
+    int num, i;
+
+    num = sizeof(buff)/sizeof(*buff);
+    for (i=0; i < num; i++)
+    {
+	printf("====================\n");
+	printf("buff: %s\n", buff[i]);
+	size = macro_process ( buff[i], strlen(buff[i]), NULL, "");
+	printf("eatten: %ld\n", size);
+    }
+    return;
+}
+
+    void
+test_subfile()
+{
+    subfile("/opt/cosign/lib/templates/inc/help_infobox.inc", NULL, 0);
+}
+
+    void
+test_str_replace()
+{
+    char *str, *seek, *rep;
+
+    str = "hello, world."; seek = "e"; rep = "E";
+    printf("replace %s in %s with %s>> \"%s\"\n", seek, str, rep, str_replace(str, seek, rep));
+
+    str = "hello, world."; seek = "o"; rep = "O";
+    printf("replace %s in %s with %s>> \"%s\"\n", seek, str, rep, str_replace(str, seek, rep));
+
+    str = "hheelllloo, wwoorrlldd."; seek = "ll"; rep = "XX";
+    printf("replace %s in %s with %s>> \"%s\"\n", seek, str, rep, str_replace(str, seek, rep));
+
+    str = "hello, world."; seek = "o"; rep = "OO";
+    str = str_replace(str, seek, rep);
+    str = str_replace(str, seek, rep);
+    printf("replacement: %s\n", str);
+}
+
+    int
+main()
+{
+    //test_str_replace();
+    //test_macro_process();
+    //test_subfile();
+
+    return 0;
+}
+
+#endif
 
 /* vim: set noet ts=8 sw=4 : */

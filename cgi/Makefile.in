@@ -39,6 +39,10 @@ all: ${TARGETS}
 lang: lang.c
 	gcc -g3 -D_DEBUG -o $@ $^
 
+subfile: subfile.c
+	gcc ${CFLAGS} -g3 -D_DEBUG -o $@ $^ lang.o
+	gcc -g3 -D_DEBUG -o $@ $^
+ 
 login.o:	login.c
 	${CC} ${CFLAGS} \
 	-D_COSIGN_TICKET_CACHE=\"${COSIGNTICKETCACHE}\" \

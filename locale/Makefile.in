@@ -1,6 +1,5 @@
 prefix=@prefix@
 LOCALEDIR=@localedir@
-COSIGNTMPLDIR = @prefix@/templates
 DESTDIR=
 INSTALL=     @INSTALL@
 
@@ -21,7 +20,7 @@ po: pot
 
 mo:
 	for i in ${TARGETS}; do \
-	  (cd $$i/LC_MESSAGES; msgfmt -o cosign.mo cosign.po; msgfmt -o template.mo template.po); \
+	  (cd $$i/LC_MESSAGES; msgfmt -o cosign.mo cosign.po; \
 	done
 
 clean:
@@ -31,14 +30,10 @@ clean:
 
 install : all
 	-mkdir -p $(DESTDIR)${LOCALEDIR}
-	-mkdir -p $(DESTDIR)${COSIGNTMPLDIR}/locale
 	cp cosign.pot   $(DESTDIR)${LOCALEDIR}
-	cp template.pot $(DESTDIR)${COSIGNTMPLDIR}/locale
 	for i in ${TARGETS}; do \
 		mkdir -p $(DESTDIR)${LOCALEDIR}/$$i/LC_MESSAGES; \
 		cp $$i/LC_MESSAGES/cosign.* $(DESTDIR)${LOCALEDIR}/$$i/LC_MESSAGES/; \
-		mkdir -p $(DESTDIR)${COSIGNTMPLDIR}/locale/$$i/LC_MESSAGES; \
-		cp $$i/LC_MESSAGES/template.* $(DESTDIR)${COSIGNTMPLDIR}/locale/$$i/LC_MESSAGES/; \
 	done
 
 .PHONY: pot po mo clean all install

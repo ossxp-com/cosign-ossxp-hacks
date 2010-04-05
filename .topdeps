@@ -1,2 +1,5 @@
-t/message_localize
+master
 t/autotools_for_setup
+t/static_htmls_to_templates
+t/javascript
+t/services_template

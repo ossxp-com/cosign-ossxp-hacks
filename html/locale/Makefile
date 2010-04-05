@@ -16,7 +16,7 @@ $(DOMAIN).pot:
 	xgettext --default-domain=$(DOMAIN) -L C -k_  \
 		--no-location \
 		-o $(DOMAIN).pot \
-		../*.html ../inc/*
+		../*.html ../inc/*.inc
 
 %.mo: %.po
 	msgfmt -o $@ $<

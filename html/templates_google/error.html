@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
+<title>$t</title>
+<style type="text/css" media="screen">
+$!include(inc/css.inc)
+
+#rightUIcol .factorHead h2 {
+	background: none;
+	color: #999;
+}
+</style>
+</head>
+<body>
+<div id="page">
+  $!include(inc/%lang%/header.inc)
+	<div id="main">
+		<div id="uiRow">
+			<div id="leftUIcol">
+				<h1 class="error">$t</h1>
+				<p>
+				$m
+				<p>$!_("Please contact technical support if you have any questions.")</p>
+				<p class="techInfo"><strong>$!_("Technical Info:")</strong> $e</p>
+			</div>
+			<form action="#" method="post" name="factors" id="rightUIcol">
+				<div class="factorHead">
+					<h2>$!_("ID &amp; Password")</h2>
+				</div>
+				<div class="factorHead">
+					<h2>$!_("One Time Passcode")</h2>
+				</div>
+				<div class="factorHead">
+					<h2>$!_("Certificate")</h2>
+				</div>
+				<div id="loginButton">
+					<input type="submit" name="doLogin" value="$!_("Log In")" disabled="disabled" />
+				</div>
+			</form>
+			<div class="clear">&nbsp;</div>
+		</div>
+		<div id="uiBottom">&nbsp;</div>
+	</div>
+</div>
+$!include(inc/%lang%/footer.inc)
+</body>
+</html>

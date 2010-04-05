@@ -12,7 +12,7 @@
                     input_l.focus();
                     Event.stop(e);
                   }
-                  else if (input_p.value.length == 0 || input_l.value.length == 0)
+                  else if (input_i.value.length == 0 && (input_p.value.length == 0 || input_l.value.length == 0))
                   {
                     alert("$!_("Please enter your login and password.")");
                     input_l.focus();

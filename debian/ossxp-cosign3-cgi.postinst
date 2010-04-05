@@ -54,11 +54,6 @@ if dpkg --compare-versions "$2" lt-nl 2.1.1-0.2.77 ; then
         chown -R root.www-data /opt/ossxp/ssl/certs/cosign-cgi
 fi
 
-safe_link /opt/cosign/lib/html/images          /opt/cosign/lib/html_google/images
-safe_link /opt/cosign/lib/html/js              /opt/cosign/lib/html_google/js
-safe_link /opt/cosign/lib/html/cosign_base.css /opt/cosign/lib/html_google/cosign_base.css
-safe_link /opt/cosign/lib/html/cosign_js.css   /opt/cosign/lib/html_google/cosign_js.css
-
 chmod a+x /opt/cosign/factor/ldap
 chmod a+x /opt/cosign/factor/ldap2
 chmod a+x /opt/cosign/factor/invite

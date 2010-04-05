@@ -1,4 +1,11 @@
-ossxp-cosign3 (3.1.1-1.1+4) unstable; urgency=low
+ossxp-cosign3 (3.1.1-1.2) unstable; urgency=low
+
+  * Set right template dir for info.
+  * New google template.
+
+ -- Jiang Xin <jiangxin@ossxp.com>  Mon, 05 Apr 2010 16:41:03 +0800
+
+ossxp-cosign3 (3.1.1-1.1+5) unstable; urgency=low
 
   * Simplify templates.
   * bugfix for Lang.c realloc.
@@ -6,7 +13,7 @@ ossxp-cosign3 (3.1.1-1.1+4) unstable; urgency=low
   * Standard templates l10n.
   * Add services list for standard templates.
 
- -- Jiang Xin <jiangxin@ossxp.com>  Fri, 02 Apr 2010 10:14:25 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Mon, 05 Apr 2010 16:41:03 +0800
 
 ossxp-cosign3 (3.1.1-1.0) unstable; urgency=low
 

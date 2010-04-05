@@ -7,8 +7,9 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
  html/Makefile.in                       |   13 ++-
- html/error.html                        |   28 ++---
+ html/error.html                        |   30 ++---
  html/expired_error.html                |  167 ------------------------
+ html/inc/css.inc                       |    1 +
  html/inc/en/0000.html                  |    2 +
  html/inc/en/0010_wiki.html             |   15 +++
  html/inc/en/0015_blog.html             |   15 +++
@@ -41,14 +42,14 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  html/locale/Makefile                   |   26 ++++
  html/locale/template.pot               |  204 ++++++++++++++++++++++++++++++
  html/locale/zh/LC_MESSAGES/template.po |  218 ++++++++++++++++++++++++++++++++
- html/login.html                        |  129 ++-----------------
+ html/login.html                        |  131 +++-----------------
  html/login_error.html                  |  168 ------------------------
  html/looping.html                      |   54 --------
  html/post_error.html                   |   54 --------
- html/reauth.html                       |  145 +++------------------
+ html/reauth.html                       |  147 ++++------------------
  html/validation_error.html             |   54 --------
- html/verify-logout.html                |   28 +++--
- 42 files changed, 982 insertions(+), 769 deletions(-)
+ html/verify-logout.html                |   30 +++--
+ 43 files changed, 987 insertions(+), 773 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
 index ef80e66..a2b3507 100755
@@ -89,10 +90,10 @@ index ef80e66..a2b3507 100755
 +
 +.PHONY: clean all ${TEMPLATES}
 diff --git a/html/error.html b/html/error.html
-index 3a3a08f..9865b2c 100755
+index 3a3a08f..f4a5d3d 100755
 --- a/html/error.html
 +++ b/html/error.html
-@@ -1,7 +1,7 @@
+@@ -1,12 +1,12 @@
  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
  <html xmlns="http://www.w3.org/1999/xhtml">
  <head>
@@ -101,6 +102,12 @@ index 3a3a08f..9865b2c 100755
  <meta http-equiv="Pragma" content="no-cache" />
  <meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
  <title>$t</title>
+ <style type="text/css" media="screen">
+-/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
++$!include(inc/css.inc)
+ 
+ #rightUIcol .factorHead h2 {
+ 	background: none;
 @@ -16,31 +16,28 @@
  </head>
  <body>
@@ -325,6 +332,13 @@ index 0185219..0000000
 -
 -</body>
 -</html>
+diff --git a/html/inc/css.inc b/html/inc/css.inc
+new file mode 100644
+index 0000000..dbb0379
+--- /dev/null
++++ b/html/inc/css.inc
+@@ -0,0 +1 @@
++/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
 diff --git a/html/inc/en/0000.html b/html/inc/en/0000.html
 new file mode 100644
 index 0000000..cd6c895
@@ -964,7 +978,7 @@ index 0000000..cd1f2c9
 +*.mo
 diff --git a/html/locale/Makefile b/html/locale/Makefile
 new file mode 100644
-index 0000000..33d5e0d
+index 0000000..3af0234
 --- /dev/null
 +++ b/html/locale/Makefile
 @@ -0,0 +1,26 @@
@@ -986,7 +1000,7 @@ index 0000000..33d5e0d
 +	xgettext --default-domain=$(DOMAIN) -L C -k_  \
 +		--no-location \
 +		-o $(DOMAIN).pot \
-+		../*.html ../inc/*
++		../*.html ../inc/*.inc
 +
 +%.mo: %.po
 +	msgfmt -o $@ $<
@@ -1429,10 +1443,10 @@ index 0000000..d68f18d
 +msgstr "请在用户名字段输入您的邮件地址。"
 +
 diff --git a/html/login.html b/html/login.html
-index 98fa0e1..b0b55e9 100755
+index 98fa0e1..fea910e 100755
 --- a/html/login.html
 +++ b/html/login.html
-@@ -1,7 +1,7 @@
+@@ -1,12 +1,12 @@
  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
  <html xmlns="http://www.w3.org/1999/xhtml">
  <head>
@@ -1441,6 +1455,12 @@ index 98fa0e1..b0b55e9 100755
  <meta http-equiv="Pragma" content="no-cache" />
  <meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
  <title>$t</title>
+ <style type="text/css" media="screen">
+-/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
++$!include(inc/css.inc)
+ </style>
+ <script type="text/javascript" src="/cosign/js/prototype.js"></script>
+ <script type="text/javascript" src="/cosign/js/scriptaculous.js"></script>
 @@ -21,78 +21,21 @@
  	window.onload = function() {
  		var cosign = new Cosign('$f');
@@ -1893,10 +1913,10 @@ index a667522..0000000
 -</body>
 -</html>
 diff --git a/html/reauth.html b/html/reauth.html
-index c70b0f2..d1f0f72 100755
+index c70b0f2..209aaf8 100755
 --- a/html/reauth.html
 +++ b/html/reauth.html
-@@ -1,7 +1,7 @@
+@@ -1,12 +1,12 @@
  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
  <html xmlns="http://www.w3.org/1999/xhtml">
  <head>
@@ -1905,6 +1925,12 @@ index c70b0f2..d1f0f72 100755
  <meta http-equiv="Pragma" content="no-cache" />
  <meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
  <title>$t</title>
+ <style type="text/css" media="screen">
+-/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
++$!include(inc/css.inc)
+ </style>
+ <script type="text/javascript" src="/cosign/js/prototype.js"></script>
+ <script type="text/javascript" src="/cosign/js/scriptaculous.js"></script>
 @@ -20,141 +20,39 @@
  	document.getElementsByTagName('head')[0].appendChild(link);
  	window.onload = function() {
@@ -2137,10 +2163,10 @@ index a667522..0000000
 -</body>
 -</html>
 diff --git a/html/verify-logout.html b/html/verify-logout.html
-index ea68776..f03c141 100755
+index ea68776..c3a1739 100755
 --- a/html/verify-logout.html
 +++ b/html/verify-logout.html
-@@ -1,7 +1,7 @@
+@@ -1,16 +1,21 @@
  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
  <html xmlns="http://www.w3.org/1999/xhtml">
  <head>
@@ -2149,7 +2175,10 @@ index ea68776..f03c141 100755
  <meta http-equiv="Pragma" content="no-cache" />
  <meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
  <title>$t</title>
-@@ -11,6 +11,11 @@
+ <style type="text/css" media="screen">
+-/* <![CDATA[ */@import "/cosign/cosign_base.css"/**/;/* ]]> */
++$!include(inc/css.inc)
+ </style>
  <script type="text/javascript" src="/cosign/js/prototype.js"></script>
  <script type="text/javascript">
  	window.onload = function() {
@@ -2200,4 +2229,4 @@ index ea68776..f03c141 100755
  </body>
  </html>
 -- 
-tg: (3c46204..) t/templates_standard (depends on: master t/autotools_for_setup t/static_htmls_to_templates t/javascript t/services_template)
+tg: (b2b4e50..) t/templates_standard (depends on: master t/autotools_for_setup t/static_htmls_to_templates t/javascript t/services_template)

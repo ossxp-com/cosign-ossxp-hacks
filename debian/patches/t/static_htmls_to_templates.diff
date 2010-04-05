@@ -9,15 +9,15 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  cgi/Makefile.in            |   13 +++-
  cgi/cgi.c                  |    4 +
  cgi/cosigncgi.h            |   11 +++
- cgi/info.c                 |  175 ++++++++++++++++++++++++++++++++++++++++++++
+ cgi/info.c                 |  185 ++++++++++++++++++++++++++++++++++++++++++++
  cgi/login.c                |    6 ++
  cgi/logout.c               |    4 +
- cgi/subfile.c              |   22 ++++++
+ cgi/subfile.c              |   22 +++++
  html/Makefile.in           |    4 +-
  html/looping.html          |   14 ++--
  html/post_error.html       |   37 +++++++--
- html/validation_error.html |   54 ++++++++++++++
- 11 files changed, 326 insertions(+), 18 deletions(-)
+ html/validation_error.html |   54 +++++++++++++
+ 11 files changed, 336 insertions(+), 18 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
 index bef6995..245a649 100755
@@ -97,10 +97,10 @@ index 2264fc9..f4bae00 100755
 +#define VALIDATION_ERROR_HTML "validation_error.html"
 diff --git a/cgi/info.c b/cgi/info.c
 new file mode 100644
-index 0000000..552ddcc
+index 0000000..7c3bbcd
 --- /dev/null
 +++ b/cgi/info.c
-@@ -0,0 +1,175 @@
+@@ -0,0 +1,185 @@
 +/*
 + * Copyright (c) 2002 Regents of The University of Michigan.
 + * All Rights Reserved.  See LICENSE.
@@ -156,6 +156,15 @@ index 0000000..552ddcc
 +        { '\0', 0, NULL },
 +};
 +
++    static void
++info_configure()
++{
++    char	 *val;
++
++    if (( val = cosign_config_get( COSIGNTMPLDIRKEY )) != NULL ) {
++        tmpldir = val;
++    }
++}
 +
 +    int
 +main( int argc, char *argv[] )
@@ -179,6 +188,7 @@ index 0000000..552ddcc
 +	fprintf( stderr, "Couldn't read %s\n", cosign_conf );
 +	exit( 1 );
 +    }
++    info_configure();
 +    if ( chdir( tmpldir ) < 0 ) {
 +	perror( tmpldir );
 +	exit( 1 );

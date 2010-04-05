@@ -96,7 +96,7 @@ msgid ""
 "Michigan</a>, <a href=\"http://www.ossxp.com/\">OSSXP Powered</a>"
 msgstr ""
 
-msgid "Our Home Page"
+msgid "Single Sign-On"
 msgstr ""
 
 msgid "Jump to the Web Login instructions"
@@ -201,4 +201,10 @@ msgid "Please enter your login and password."
 msgstr ""
 
 msgid "Please input your email address into username field."
+msgstr ""
+
+msgid ""
+"Without sign in, you can not access some of the services we provided, or "
+"access rights are limited. After sign in, you can edit your profiles, and "
+"enjoy our services."
 msgstr ""

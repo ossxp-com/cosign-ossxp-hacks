@@ -20,7 +20,7 @@
               </tr>
               <tr bgcolor="#C3D9FF">
                 <td style="padding-left: 4px; padding-bottom: 9px; padding-top: 9px; font-family: arial,sans-serif;">
-                  <b>$!_("Single SignOn")</b>
+                  <b>$!_("Single Sign-On")</b>
                 </td>
               </tr>
               <tr>

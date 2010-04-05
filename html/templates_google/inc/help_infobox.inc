@@ -5,8 +5,8 @@
 					  " sections marked with a <img"
 					  " src=\"/cosign/images/circle.gif\" alt=\"yellow circle\" /> are"
 					  " required.")</p>
-					<!--p>$!_("Without sign in, you can not access some of the services we provided, or access rights are limited."
-					  " After sign in, you can edit your profiles, and enjoy our services.")</p-->
+					<p>$!_("Without sign in, you can not access some of the services we provided, or access rights are limited."
+					  " After sign in, you can edit your profiles, and enjoy our services.")</p>
 					<p>$!_("By using this service you agree to adhere to our policies and guidelines.")</p>
 					$!include(%lang%/*.html)
 				</div>

@@ -150,7 +150,7 @@ a:hover {
 	margin: 20px auto 18px auto;
 	color: #666;
 	background-color: inherit;
-	background: url(images/icon_sysmessage.gif) center left no-repeat;
+	background: url(/cosign/images/icon_sysmessage.gif) center left no-repeat;
 }
 
 #uiRow {
@@ -281,7 +281,7 @@ a:hover {
 	border: 1px dotted #cc9999;
 	margin-bottom: 10px;
 	padding: 6px 8px 6px 28px;
-	background: url(images/icon_alert.gif) left center no-repeat;
+	background: url(/cosign/images/icon_alert.gif) left center no-repeat;
 	background-color: #fcfcfc;
 	color: #cc0000;
 }

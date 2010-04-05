@@ -53,6 +53,15 @@ static struct subfile_list sl[] = {
         { '\0', 0, NULL },
 };
 
+    static void
+info_configure()
+{
+    char	 *val;
+
+    if (( val = cosign_config_get( COSIGNTMPLDIRKEY )) != NULL ) {
+        tmpldir = val;
+    }
+}
 
     int
 main( int argc, char *argv[] )
@@ -76,6 +85,7 @@ main( int argc, char *argv[] )
 	fprintf( stderr, "Couldn't read %s\n", cosign_conf );
 	exit( 1 );
     }
+    info_configure();
     if ( chdir( tmpldir ) < 0 ) {
 	perror( tmpldir );
 	exit( 1 );

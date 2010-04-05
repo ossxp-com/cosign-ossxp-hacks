@@ -515,7 +515,7 @@ index 0000000..a0203b7
 +            </table>
 diff --git a/html/inc/factor_invite.inc b/html/inc/factor_invite.inc
 new file mode 100644
-index 0000000..6bb5fb8
+index 0000000..7bc89e9
 --- /dev/null
 +++ b/html/inc/factor_invite.inc
 @@ -0,0 +1,74 @@
@@ -533,7 +533,7 @@ index 0000000..6bb5fb8
 +                    input_l.focus();
 +                    Event.stop(e);
 +                  }
-+                  else if (input_p.value.length == 0 || input_l.value.length == 0)
++                  else if (input_i.value.length == 0 && (input_p.value.length == 0 || input_l.value.length == 0))
 +                  {
 +                    alert("$!_("Please enter your login and password.")");
 +                    input_l.focus();

@@ -10,9 +10,12 @@ SERVICESDIR  = @prefix@/services
 INSTALL	=	@INSTALL@
 DESTDIR=
 
-all: ${TEMPLATES}
+all: ${TEMPLATES} templates_google/locale
 
 locale:
+	cd $@; ${MAKE} all
+
+templates_google/locale:
 	cd $@; ${MAKE} all
 
 install : all
@@ -37,4 +40,4 @@ install : all
 
 clean:
 
-.PHONY: clean all ${TEMPLATES}
+.PHONY: clean all ${TEMPLATES} templates_google/locale

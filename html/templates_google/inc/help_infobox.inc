@@ -20,10 +20,18 @@
 					<p>$!_("Replace this text with information about obtaining an account. Lorem ipsum dolor"
 					  " sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean vitae"
 					  " orci. Mauris vulputate ornare urna.")</p>
+					<!--
+					<p>$!_("Click the following link to register a new account yourself.")<br>
+					<a href="https://members.foo.bar/members/signup.php"><b>$!_("Create an account now")</b></a></p>
+					-->
 					<h3>$!_("Forgot Your Password?")</h3>
 					<p>$!_("Replace this text with information about resetting your password. Lorem ipsum"
 					  " dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean"
 					  " vitae orci. Mauris vulputate ornare urna.")</p>
+					<!--
+					<p>$!_("Click the following link to retrieve you lost password.")<br>
+					<a href="https://members.foo.bar/members/lostpwd.php"><b>$!_("Retrieve my lost password")</b></a></p>
+					-->
 				</div>
 				<div id="otpInfo" class="infoBox">
 					<h4><a href="#mainInfo" class="hideInfo" id="otpInfoHide">$!_("Hide this Information")</a> <a href="#l2header" class="toTop">$!_("Back"

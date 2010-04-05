@@ -208,3 +208,15 @@ msgid ""
 "access rights are limited. After sign in, you can edit your profiles, and "
 "enjoy our services."
 msgstr ""
+
+msgid "Click the following link to register a new account yourself."
+msgstr ""
+
+msgid "Click the following link to retrieve you lost password."
+msgstr ""
+
+msgid "Create an account now"
+msgstr ""
+
+msgid "Retrieve my lost password"
+msgstr ""

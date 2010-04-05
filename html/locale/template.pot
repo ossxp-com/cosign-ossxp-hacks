@@ -202,3 +202,15 @@ msgstr ""
 
 msgid "Please input your email address into username field."
 msgstr ""
+
+msgid "Click the following link to register a new account yourself."
+msgstr ""
+
+msgid "Click the following link to retrieve you lost password."
+msgstr ""
+
+msgid "Create an account now"
+msgstr ""
+
+msgid "Retrieve my lost password"
+msgstr ""

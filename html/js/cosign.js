@@ -127,7 +127,7 @@ Cosign.prototype = Object.extend( new Remember(), {
 
 	giveVisible: function( focusBox ) {
 		try {
-			parent = $( focusBox ).up('div')
+			var parent = $( focusBox ).up('div')
 			if (!parent.visible()) new Effect.Appear(parent,{duration:0.20});
 		} catch ( e ) {;}
 	},
@@ -199,7 +199,7 @@ Cosign.prototype = Object.extend( new Remember(), {
 		}
 
 		if ( $( 'error' ) != null ) {
-			error_div = $( 'error' )
+			var error_div = $( 'error' )
 			if ( error_div.innerHTML.strip() )  {
 				if ( ! error_div.visible() )
 					error_div.show();

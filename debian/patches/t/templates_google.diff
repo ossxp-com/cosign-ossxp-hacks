@@ -26,7 +26,7 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  html/templates_google/inc/footer.inc               |    3 +
  html/templates_google/inc/header.inc               |   34 ++
  html/templates_google/inc/help_hotkey.inc          |    7 +
- html/templates_google/inc/help_infobox.inc         |   54 +++
+ html/templates_google/inc/help_infobox.inc         |   62 ++++
  html/templates_google/inc/js.inc                   |   17 +
  html/templates_google/inc/js_config.inc            |   11 +
  html/templates_google/inc/zh/0000.html             |    2 +
@@ -40,12 +40,12 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  html/templates_google/inc/zh/9000.html             |    2 +
  html/templates_google/locale/.gitignore            |    1 +
  html/templates_google/locale/Makefile              |   26 ++
- html/templates_google/locale/template.pot          |  210 +++++++++++
- .../locale/zh/LC_MESSAGES/template.po              |  228 ++++++++++++
+ html/templates_google/locale/template.pot          |  222 ++++++++++++
+ .../locale/zh/LC_MESSAGES/template.po              |  240 +++++++++++++
  html/templates_google/login.html                   |   63 ++++
  html/templates_google/reauth.html                  |   72 ++++
  html/templates_google/verify-logout.html           |   47 +++
- 39 files changed, 1584 insertions(+), 2 deletions(-)
+ 39 files changed, 1616 insertions(+), 2 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
 index a2b3507..a3197cc 100755
@@ -688,7 +688,7 @@ index 0000000..a0203b7
 +            </table>
 diff --git a/html/templates_google/inc/factor_invite.inc b/html/templates_google/inc/factor_invite.inc
 new file mode 100644
-index 0000000..1ce4934
+index 0000000..6bb5fb8
 --- /dev/null
 +++ b/html/templates_google/inc/factor_invite.inc
 @@ -0,0 +1,74 @@
@@ -700,15 +700,15 @@ index 0000000..1ce4934
 +            var form_login = input_i.up('form');
 +
 +            Event.observe( form_login, 'submit', function(e) {
-+                  if (input_p.textLength > 0 && input_l.value.length == 0)
++                  if (input_i.value.length > 0 && !input_l.value.include("@"))
 +                  {
-+                    alert("$!_("Please enter your login and password.")");
++                    alert("$!_("Please input your email address into username field.")");
 +                    input_l.focus();
 +                    Event.stop(e);
 +                  }
-+                  if (input_i.textLength > 0 && !input_l.value.include("@"))
++                  else if (input_p.value.length == 0 || input_l.value.length == 0)
 +                  {
-+                    alert("$!_("Please input your email address into username field.")");
++                    alert("$!_("Please enter your login and password.")");
 +                    input_l.focus();
 +                    Event.stop(e);
 +                  }
@@ -717,7 +717,7 @@ index 0000000..1ce4934
 +
 +            Event.observe( $('invite'), 'focus', function() {
 +                  try {
-+                    parent = input_p.up('div')
++                    var parent = input_p.up('div')
 +                    if (!parent.visible())
 +                      new Effect.Appear(parent,{duration:0.20});
 +                  } catch ( e ) {;}
@@ -729,7 +729,7 @@ index 0000000..1ce4934
 +              });
 +
 +            Event.observe( $('invite'), 'blur', function() {
-+                if (this.textLength > 0) {
++                if (this.value.length > 0) {
 +                  input_p.disable().clear().up('tr').hide();
 +                  if (!input_l.value.include("@")) {
 +                    input_l.select();
@@ -740,7 +740,7 @@ index 0000000..1ce4934
 +              });
 +
 +            Event.observe( $('password'), 'blur', function() {
-+                if (this.textLength > 0)
++                if (this.value.length > 0)
 +                  input_i.disable().clear();
 +                else
 +                  input_i.enable();
@@ -926,10 +926,10 @@ index 0000000..95c1d82
 +	</ul>
 diff --git a/html/templates_google/inc/help_infobox.inc b/html/templates_google/inc/help_infobox.inc
 new file mode 100644
-index 0000000..814c8e1
+index 0000000..682a22a
 --- /dev/null
 +++ b/html/templates_google/inc/help_infobox.inc
-@@ -0,0 +1,54 @@
+@@ -0,0 +1,62 @@
 +				<div id="mainInfo">
 +					<p>$!_("Please enter your authentication information and click the &quot;Log&nbsp;In&quot; button"
 +					  " to continue.")</p>
@@ -952,10 +952,18 @@ index 0000000..814c8e1
 +					<p>$!_("Replace this text with information about obtaining an account. Lorem ipsum dolor"
 +					  " sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean vitae"
 +					  " orci. Mauris vulputate ornare urna.")</p>
++					<!--
++					<p>$!_("Click the following link to register a new account yourself.")<br>
++					<a href="https://members.foo.bar/members/signup.php"><b>$!_("Create an account now")</b></a></p>
++					-->
 +					<h3>$!_("Forgot Your Password?")</h3>
 +					<p>$!_("Replace this text with information about resetting your password. Lorem ipsum"
 +					  " dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean"
 +					  " vitae orci. Mauris vulputate ornare urna.")</p>
++					<!--
++					<p>$!_("Click the following link to retrieve you lost password.")<br>
++					<a href="https://members.foo.bar/members/lostpwd.php"><b>$!_("Retrieve my lost password")</b></a></p>
++					-->
 +				</div>
 +				<div id="otpInfo" class="infoBox">
 +					<h4><a href="#mainInfo" class="hideInfo" id="otpInfoHide">$!_("Hide this Information")</a> <a href="#l2header" class="toTop">$!_("Back"
@@ -1239,10 +1247,10 @@ index 0000000..3af0234
 +# vim: noet ts=4 sw=4
 diff --git a/html/templates_google/locale/template.pot b/html/templates_google/locale/template.pot
 new file mode 100644
-index 0000000..9588458
+index 0000000..e1e454d
 --- /dev/null
 +++ b/html/templates_google/locale/template.pot
-@@ -0,0 +1,210 @@
+@@ -0,0 +1,222 @@
 +# SOME DESCRIPTIVE TITLE.
 +# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 +# This file is distributed under the same license as the PACKAGE package.
@@ -1453,12 +1461,24 @@ index 0000000..9588458
 +"access rights are limited. After sign in, you can edit your profiles, and "
 +"enjoy our services."
 +msgstr ""
++
++msgid "Click the following link to register a new account yourself."
++msgstr ""
++
++msgid "Click the following link to retrieve you lost password."
++msgstr ""
++
++msgid "Create an account now"
++msgstr ""
++
++msgid "Retrieve my lost password"
++msgstr ""
 diff --git a/html/templates_google/locale/zh/LC_MESSAGES/template.po b/html/templates_google/locale/zh/LC_MESSAGES/template.po
 new file mode 100644
-index 0000000..7a9f126
+index 0000000..8912d19
 --- /dev/null
 +++ b/html/templates_google/locale/zh/LC_MESSAGES/template.po
-@@ -0,0 +1,228 @@
+@@ -0,0 +1,240 @@
 +# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 +# This file is distributed under the same license as the PACKAGE package.
 +#
@@ -1685,6 +1705,18 @@ index 0000000..7a9f126
 +"如果不登录，您可能无法访问某些系统，或者访问受限。 登录后，您可以编辑个人资"
 +"料，使用我们提供的各项服务。"
 +
++msgid "Click the following link to register a new account yourself."
++msgstr "点击下面的链接，注册一个新帐号"
++
++msgid "Click the following link to retrieve you lost password."
++msgstr "点击下面的链接，找回你忘记的口令"
++
++msgid "Create an account now"
++msgstr "创建一个新帐号"
++
++msgid "Retrieve my lost password"
++msgstr "找回忘记的口令"
++
 +#~ msgid "Our Home Page"
 +#~ msgstr "我们的主页"
 diff --git a/html/templates_google/login.html b/html/templates_google/login.html
@@ -1888,4 +1920,4 @@ index 0000000..c3a1739
 +</body>
 +</html>
 -- 
-tg: (f968133..) t/templates_google (depends on: t/templates_standard)
+tg: (accf3ef..) t/templates_google (depends on: t/templates_standard)

@@ -1,3 +1,9 @@
+ossxp-cosign3 (3.1.1-1.3) unstable; urgency=low
+
+  * Fixed JavaScript compatible issue.
+
+ -- Jiang Xin <jiangxin@ossxp.com>  Mon, 05 Apr 2010 20:39:05 +0800
+
 ossxp-cosign3 (3.1.1-1.2) unstable; urgency=low
 
   * Set right template dir for info.

@@ -13,7 +13,7 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  4 files changed, 5960 insertions(+), 1549 deletions(-)
 
 diff --git a/html/js/cosign.js b/html/js/cosign.js
-index 796aac6..46fa7b8 100755
+index 796aac6..501ddcd 100755
 --- a/html/js/cosign.js
 +++ b/html/js/cosign.js
 @@ -58,10 +58,11 @@ Cosign.prototype = Object.extend( new Remember(), {
@@ -66,7 +66,7 @@ index 796aac6..46fa7b8 100755
  
 +	giveVisible: function( focusBox ) {
 +		try {
-+			parent = $( focusBox ).up('div')
++			var parent = $( focusBox ).up('div')
 +			if (!parent.visible()) new Effect.Appear(parent,{duration:0.20});
 +		} catch ( e ) {;}
 +	},
@@ -90,7 +90,7 @@ index 796aac6..46fa7b8 100755
  
  		if ( $( 'error' ) != null ) {
 -			new Effect.Highlight( 'error' );
-+			error_div = $( 'error' )
++			var error_div = $( 'error' )
 +			if ( error_div.innerHTML.strip() )  {
 +				if ( ! error_div.visible() )
 +					error_div.show();

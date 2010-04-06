@@ -11,16 +11,16 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  2 files changed, 403 insertions(+), 5 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
-index 175a2ef..84f1037 100755
+index 175a2ef..558954b 100755
 --- a/cgi/Makefile.in
 +++ b/cgi/Makefile.in
 @@ -39,6 +39,10 @@ all: ${TARGETS}
  lang: lang.c
  	gcc -g3 -D_DEBUG -o $@ $^
  
-+subfile: subfile.c
-+	gcc ${CFLAGS} -g3 -D_DEBUG -o $@ $^ lang.o
-+	gcc -g3 -D_DEBUG -o $@ $^
++subfile: subfile.c lang.o
++	gcc ${DEFS} ${OPTOPTS} -Wall ${INCPATH} \
++		-g3 -D_DEBUG -o $@ $^
 + 
  login.o:	login.c
  	${CC} ${CFLAGS} \

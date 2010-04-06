@@ -8,7 +8,7 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
 ---
  html/Makefile.in                       |   13 ++-
  html/error.html                        |   30 ++---
- html/expired_error.html                |  167 -----------------------
+ html/expired_error.html                |  167 ----------------------
  html/inc/css.inc                       |    1 +
  html/inc/en/0000.html                  |    2 +
  html/inc/en/0010_wiki.html             |   15 ++
@@ -17,17 +17,17 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  html/inc/en/0030_bugtrac.html          |   19 +++
  html/inc/en/0035_testlink.html         |   15 ++
  html/inc/en/0040_comm.html             |   15 ++
- html/inc/en/1000_account.html          |   16 +++
+ html/inc/en/1000_account.html          |   16 ++
  html/inc/en/9000.html                  |    2 +
  html/inc/factor_invite.inc             |   74 ++++++++++
  html/inc/factor_kx509.inc              |   11 ++
- html/inc/factor_login.inc              |   24 ++++
+ html/inc/factor_login.inc              |   24 +++
  html/inc/factor_login_reauth.inc       |   21 +++
- html/inc/factor_otp.inc                |   16 +++
+ html/inc/factor_otp.inc                |   16 ++
  html/inc/footer.inc                    |    3 +
  html/inc/header.inc                    |    3 +
  html/inc/help_hotkey.inc               |    7 +
- html/inc/help_infobox.inc              |   60 +++++++++
+ html/inc/help_infobox.inc              |   60 ++++++++
  html/inc/js_config.inc                 |   11 ++
  html/inc/zh/0000.html                  |    2 +
  html/inc/zh/0010_wiki.html             |   15 ++
@@ -36,23 +36,24 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  html/inc/zh/0030_bugtrac.html          |   19 +++
  html/inc/zh/0035_testlink.html         |   15 ++
  html/inc/zh/0040_comm.html             |   15 ++
- html/inc/zh/1000_account.html          |   16 +++
+ html/inc/zh/1000_account.html          |   16 ++
  html/inc/zh/9000.html                  |    2 +
  html/locale/.gitignore                 |    1 +
  html/locale/Makefile                   |   26 ++++
- html/locale/template.pot               |  216 ++++++++++++++++++++++++++++++
- html/locale/zh/LC_MESSAGES/template.po |  229 ++++++++++++++++++++++++++++++++
- html/login.html                        |  131 ++----------------
- html/login_error.html                  |  168 -----------------------
- html/looping.html                      |   54 --------
- html/post_error.html                   |   54 --------
+ html/locale/template.pot               |  228 ++++++++++++++++++++++++++++++
+ html/locale/zh/LC_MESSAGES/template.po |  241 ++++++++++++++++++++++++++++++++
+ html/login.html                        |  131 ++---------------
+ html/login_error.html                  |  168 ----------------------
+ html/looping.html                      |   54 -------
+ html/post_error.html                   |   54 -------
  html/reauth.html                       |  147 +++-----------------
- html/validation_error.html             |   54 --------
- html/verify-logout.html                |   30 +++--
- 43 files changed, 1018 insertions(+), 773 deletions(-)
+ html/services.html                     |    4 +-
+ html/validation_error.html             |   54 -------
+ html/verify-logout.html                |   30 ++--
+ 44 files changed, 1044 insertions(+), 775 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
-index ef80e66..a2b3507 100755
+index 890c3fd..debfb64 100755
 --- a/html/Makefile.in
 +++ b/html/Makefile.in
 @@ -1,4 +1,4 @@
@@ -60,8 +61,8 @@ index ef80e66..a2b3507 100755
 +TEMPLATES = error.html expired_error.html login.html login_error.html verify-logout.html reauth.html inc locale
  ## static html also serve as template (jiangxin@ossxp.com)
  TEMPLATES += post_error.html looping.html validation_error.html
- HTML = cosign_base.css cosign_js.css
-@@ -12,15 +12,18 @@ DESTDIR=
+ TEMPLATES += services.html
+@@ -13,15 +13,18 @@ DESTDIR=
  
  all: ${TEMPLATES}
  
@@ -83,7 +84,7 @@ index ef80e66..a2b3507 100755
  	done
  	-mkdir -p $(DESTDIR)${HTMLDIR}/images
  	cp images/*.gif $(DESTDIR)${HTMLDIR}/images/
-@@ -31,3 +34,5 @@ install : all
+@@ -32,3 +35,5 @@ install : all
  	cp services/*.html services/*.php $(DESTDIR)${SERVICESDIR}/
  
  clean:
@@ -1018,10 +1019,10 @@ index 0000000..3af0234
 +# vim: noet ts=4 sw=4
 diff --git a/html/locale/template.pot b/html/locale/template.pot
 new file mode 100644
-index 0000000..6333567
+index 0000000..d87034c
 --- /dev/null
 +++ b/html/locale/template.pot
-@@ -0,0 +1,216 @@
+@@ -0,0 +1,228 @@
 +# SOME DESCRIPTIVE TITLE.
 +# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 +# This file is distributed under the same license as the PACKAGE package.
@@ -1238,12 +1239,24 @@ index 0000000..6333567
 +
 +msgid "Retrieve my lost password"
 +msgstr ""
++
++msgid "Welcome"
++msgstr ""
++
++msgid "Manage your profile or change password"
++msgstr ""
++
++msgid "Logout"
++msgstr ""
++
++msgid "Services"
++msgstr ""
 diff --git a/html/locale/zh/LC_MESSAGES/template.po b/html/locale/zh/LC_MESSAGES/template.po
 new file mode 100644
-index 0000000..1056b22
+index 0000000..275ee87
 --- /dev/null
 +++ b/html/locale/zh/LC_MESSAGES/template.po
-@@ -0,0 +1,229 @@
+@@ -0,0 +1,241 @@
 +# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 +# This file is distributed under the same license as the PACKAGE package.
 +#
@@ -1473,6 +1486,18 @@ index 0000000..1056b22
 +
 +msgid "Retrieve my lost password"
 +msgstr "找回忘记的口令"
++
++msgid "Welcome"
++msgstr "欢迎"
++
++msgid "Manage your profile or change password"
++msgstr "修改个人信息及口令"
++
++msgid "Logout"
++msgstr "退出登录"
++
++msgid "Services"
++msgstr "服务列表"
 diff --git a/html/login.html b/html/login.html
 index 98fa0e1..fea910e 100755
 --- a/html/login.html
@@ -2133,6 +2158,21 @@ index c70b0f2..209aaf8 100755
  <form name="switch" id="switchUserForm" action="/cgi-bin/logout" enctype="application/x-www-form-urlencoded" method="post">
  	<input type="hidden" name="url" value="$r" />
  	<input type="hidden" name="service" value="$c" />
+diff --git a/html/services.html b/html/services.html
+index 4d1d7cd..11ed378 100644
+--- a/html/services.html
++++ b/html/services.html
+@@ -24,8 +24,8 @@ $!include(inc/css.inc)
+             <li>$N</li>
+             <li>$I ($N)</li>
+             <li>$M</li>
+-            <li><a id="members" href="https://weblogin.foo.bar/members/">$!_("Manage your profile or change password")</a></li>
+-            <li><a id="logout" href="https://weblogin.foo.bar/logout/">$!_("Logout")</a></li>
++            <li><a id="members" href="https://members.foo.bar/members/">$!_("Manage your profile or change password")</a></li>
++            <li><a id="logout" href="https://weblogin.foo.bar/cgi-bin/logout/">$!_("Logout")</a></li>
+           </ul>
+         </td>
+         <td valign="top" width="55%">
 diff --git a/html/validation_error.html b/html/validation_error.html
 deleted file mode 100755
 index a667522..0000000
@@ -2260,4 +2300,4 @@ index ea68776..c3a1739 100755
  </body>
  </html>
 -- 
-tg: (5030ad7..) t/templates_standard (depends on: master t/autotools_for_setup t/static_htmls_to_templates t/javascript t/services_template)
+tg: (24ba76a..) t/templates_standard (depends on: master t/autotools_for_setup t/static_htmls_to_templates t/javascript t/services_template)

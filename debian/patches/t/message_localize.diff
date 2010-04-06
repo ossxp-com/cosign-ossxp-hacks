@@ -6,7 +6,7 @@ Translate CoSign error message using javascript.
 Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
- cgi/Makefile.in      |    9 ++-
+ cgi/Makefile.in      |   12 ++-
  cgi/cgi.c            |  310 ++++++++++++++++++++++++++------------------------
  cgi/lang.c           |   60 ++++++++++
  cgi/lang.h           |    1 +
@@ -14,10 +14,10 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  cgi/logout.c         |   37 ++++---
  cgi/subfile.c        |   33 ++++++
  html/js/js_locale.js |   48 ++++++++
- 8 files changed, 375 insertions(+), 210 deletions(-)
+ 8 files changed, 378 insertions(+), 210 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
-index 84f1037..44b368b 100755
+index 558954b..5a4cd08 100755
 --- a/cgi/Makefile.in
 +++ b/cgi/Makefile.in
 @@ -1,6 +1,7 @@
@@ -28,7 +28,7 @@ index 84f1037..44b368b 100755
  CGIDIR  = @prefix@/cgi-ssl
  HTMLDIR  = @prefix@/html
  COSIGNCADIR=@cosigncadir@
-@@ -36,8 +37,14 @@ TARGETS = logout cosign.cgi
+@@ -36,8 +37,17 @@ TARGETS = logout cosign.cgi
  
  all: ${TARGETS}
  
@@ -40,10 +40,13 @@ index 84f1037..44b368b 100755
 +
  lang: lang.c
 -	gcc -g3 -D_DEBUG -o $@ $^
-+	gcc -g3 -D_DEBUG -D_LOCALEDIR=\"/opt/cosign/lib/share/locale\" -o $@ $^
++	gcc -g3 -D_DEBUG \
++		-D_LOCALEDIR=\"${LOCALEDIR}\" \
++		-D_TEMPLATE_LOCALEDIR=\"${COSIGNTMPLDIR}-local/locale\" \
++		-o $@ $^
  
- subfile: subfile.c
- 	gcc ${CFLAGS} -g3 -D_DEBUG -o $@ $^ lang.o
+ subfile: subfile.c lang.o
+ 	gcc ${DEFS} ${OPTOPTS} -Wall ${INCPATH} \
 diff --git a/cgi/cgi.c b/cgi/cgi.c
 index 0038379..0270944 100755
 --- a/cgi/cgi.c
@@ -1261,4 +1264,4 @@ index 0000000..15985fc
 +
 +// vim: noet ts=4 sw=4
 -- 
-tg: (422cba2..) t/message_localize (depends on: t/factor_ldap t/factor_invite t/include_macro_for_templates t/auth_log_for_fail2ban)
+tg: (76f1920..) t/message_localize (depends on: t/factor_ldap t/factor_invite t/include_macro_for_templates t/auth_log_for_fail2ban)

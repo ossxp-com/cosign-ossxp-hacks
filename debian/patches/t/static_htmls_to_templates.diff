@@ -7,20 +7,22 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
  cgi/Makefile.in            |   13 +++-
- cgi/cgi.c                  |    4 +
+ cgi/cgi.c                  |  109 +++++++++++++++++++++++---
  cgi/cosigncgi.h            |   11 +++
  cgi/info.c                 |  185 ++++++++++++++++++++++++++++++++++++++++++++
  cgi/login.c                |    6 ++
  cgi/logout.c               |    4 +
  cgi/subfile.c              |   22 +++++
- html/Makefile.in           |    4 +-
+ common/conf.h              |    1 +
+ html/Makefile.in           |    5 +-
  html/looping.html          |   14 ++--
  html/post_error.html       |   37 +++++++--
+ html/services.html         |   45 +++++++++++
  html/validation_error.html |   54 +++++++++++++
- 11 files changed, 336 insertions(+), 18 deletions(-)
+ 13 files changed, 475 insertions(+), 31 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
-index bef6995..245a649 100755
+index 975eb2e..8f39146 100755
 --- a/cgi/Makefile.in
 +++ b/cgi/Makefile.in
 @@ -34,7 +34,7 @@ CFLAGS=      ${DEFS} ${OPTOPTS} @CFLAGS@ ${INCPATH}
@@ -32,7 +34,7 @@ index bef6995..245a649 100755
  
  all: ${TARGETS}
  
-@@ -89,6 +89,16 @@ logout.o:	logout.c
+@@ -92,6 +92,16 @@ logout.o:	logout.c
  logout: logout.o $(OBJ)
  	${CC} ${CFLAGS} -o logout logout.o $(OBJ) $(LDFLAGS)
  
@@ -49,25 +51,118 @@ index bef6995..245a649 100755
  clean:
  	/bin/rm -rf *.o ${TARGETS}
  
-@@ -97,3 +107,4 @@ install : all
+@@ -100,3 +110,4 @@ install : all
  	-mkdir -p $(DESTDIR)${CGIDIR};
  	${INSTALL} -m 0755 -c cosign.cgi $(DESTDIR)${CGIDIR}/;
  	${INSTALL} -m 0755 -c logout $(DESTDIR)${CGIDIR}/;
 +	${INSTALL} -m 0755 -c info $(DESTDIR)${CGIDIR}/;
 diff --git a/cgi/cgi.c b/cgi/cgi.c
-index 0270944..a946c46 100755
+index 0270944..678f0b0 100755
 --- a/cgi/cgi.c
 +++ b/cgi/cgi.c
-@@ -90,6 +90,8 @@ static struct subfile_list sl[] = {
+@@ -90,9 +90,101 @@ static struct subfile_list sl[] = {
          { 'f', SUBF_STR_ESC, NULL },
  #define SL_DFACTOR	6
          { 'd', SUBF_STR_ESC, NULL },
 +#define SL_DETAIL	7
 +        { 'm', SUBF_STR, NULL },
++#define SL_ID		8
++        { 'I', SUBF_STR, NULL },
++#define SL_NAME		9
++        { 'N', SUBF_STR, NULL },
++#define SL_EMAIL	10
++        { 'M', SUBF_STR, NULL },
          { '\0', 0, NULL },
  };
  
-@@ -288,6 +290,8 @@ main( int argc, char *argv[] )
++/*
++ * authentication successful, show service menu
++ */
++void auth_success_redirect( char *login, char *factors[] );
++    void
++auth_success_redirect( char *login, char *factors[] )
++{
++#define SERVICES_HTML "services.html"
++#define MAX_LINE_BUFF	4096
++
++    struct factorlist		*fl;
++    int				i;
++    FILE			*fp;
++    char			*name,*sn,*cn,*givenname,*uid,*mail;
++    char			cmd[MAX_LINE_BUFF+1]="";
++    char			line[MAX_LINE_BUFF+1]="";
++    char			*val;
++
++    name=sn=cn=givenname=uid=mail=NULL;
++
++    //If define cosignserviceurl, then redirect to it.
++    if (( val = cosign_config_get( COSIGNSERVICEURLKEY )) != NULL && strlen(val)!=0) {
++	printf( "Location: %s\n\n", val );
++	return;
++    }
++ 
++    //To get call each factors in this format:
++    //factor -q username factorname
++    for ( fl = factorlist; fl != NULL; fl = fl->fl_next ) {
++	for ( i = 0; factors[ i ] != NULL; i++ ) {
++	    snprintf(cmd, MAX_LINE_BUFF, "%s -q %s %s", fl->fl_path, login, factors[i]);
++	    if ((fp = popen(cmd, "r")) == NULL)
++		break;
++	    while (fgets(line, MAX_LINE_BUFF, fp))
++	    {
++		if (strncmp(line, "uid:", 4) == 0)
++		{
++		    uid = strdup(line+4);
++		} 
++		else if (strncmp(line, "givenname:", 10) == 0)
++		{
++		    givenname = strdup(line+10);
++		}
++		else if (strncmp(line, "cn:", 3) == 0)
++		{
++		    cn = strdup(line+3);
++		}
++		else if (strncmp(line, "sn:", 3) == 0)
++		{
++		    sn = strdup(line+3);
++		}
++		else if (strncmp(line, "name:", 5) == 0)
++		{
++		    name = strdup(line+5);
++		}
++		else if (strncmp(line, "mail:", 5) == 0)
++		{
++		    mail = strdup(line+5);
++		}
++	    }
++	    pclose(fp);
++	    if (uid!=NULL)
++		break;
++	}
++	if (uid!=NULL)
++	    break;
++    }
++
++    //Show template services.
++    sl[ SL_TITLE ].sl_data = _("Services");
++    sl[ SL_LOGIN ].sl_data = login;
++    sl[ SL_ID ].sl_data = uid ? uid : login;
++    sl[ SL_NAME ].sl_data = name? name : login;
++    sl[ SL_EMAIL ].sl_data = mail? mail : "";
++    subfile( SERVICES_HTML, sl, 0 );
++
++    if (name != NULL) free (name);
++    if (sn != NULL) free (sn);
++    if (cn != NULL) free (cn);
++    if (givenname != NULL) free (givenname);
++    if (uid != NULL) free (uid);
++    if (mail != NULL) free (mail);
++}
++
+     static void
+ loop_checker( int time, int count, char *cookie )
+ {
+@@ -288,6 +380,8 @@ main( int argc, char *argv[] )
  
      init_locale();
  
@@ -76,6 +171,35 @@ index 0270944..a946c46 100755
      if ( argc == 2 ) {
  	if ( strcmp( argv[ 1 ], "-V" ) == 0 ) {
  	    printf( "%s\n", cosign_version );
+@@ -638,13 +732,7 @@ main( int argc, char *argv[] )
+ 	    }
+ 	}
+ 
+-	/* authentication successful, show service menu */
+-	if ( server_port != 443 ) {
+-	    printf( "Location: https://%s:%d%s\n\n", server_name,
+-		    server_port, SERVICE_MENU );
+-	} else {
+-	    printf( "Location: https://%s%s\n\n", server_name, SERVICE_MENU );
+-	}
++	auth_success_redirect( ui.ui_login, ui.ui_factors );
+ 	exit( 0 );
+     }
+ 
+@@ -956,12 +1044,7 @@ loggedin:
+ 	exit( 0 );
+     }
+ 
+-    if ( server_port != 443 ) {
+-	printf( "Location: https://%s:%d%s\n\n", server_name,
+-		server_port, SERVICE_MENU );
+-    } else {
+-	printf( "Location: https://%s%s\n\n", server_name, SERVICE_MENU );
+-    }
++    auth_success_redirect( ui.ui_login, ui.ui_factors );
+     exit( 0 );
+ 
+ loginscreen:
 diff --git a/cgi/cosigncgi.h b/cgi/cosigncgi.h
 index 2264fc9..f4bae00 100755
 --- a/cgi/cosigncgi.h
@@ -372,15 +496,28 @@ index f36e72b..a35f903 100644
      _subfile( filename, sl, nocache );
  
      return;
+diff --git a/common/conf.h b/common/conf.h
+index cb1609f..77b0513 100644
+--- a/common/conf.h
++++ b/common/conf.h
+@@ -75,6 +75,7 @@ struct matchlist {
+ #define COSIGNTIMEOUTKEY	"cosignnettimeout"
+ #define COSIGNPORTKEY		"cosignport"
+ #define COSIGNLOOPURLKEY	"cosignloopurl"
++#define COSIGNSERVICEURLKEY	"cosignserviceurl"
+ #define COSIGNX509TKTSKEY       "cosignx509krbtkts"
+ #define COSIGNKRBTKTSKEY	"cosignkrbtkts"
+ #define COSIGNDBHASHLENKEY	"cosigndbhashlen"
 diff --git a/html/Makefile.in b/html/Makefile.in
-index 8785b78..c0e6514 100755
+index 8785b78..a0de08f 100755
 --- a/html/Makefile.in
 +++ b/html/Makefile.in
-@@ -1,5 +1,7 @@
+@@ -1,5 +1,8 @@
  TEMPLATES = error.html expired_error.html login.html login_error.html verify-logout.html reauth.html
 -HTML = cosign_base.css cosign_js.css post_error.html looping.html
 +## static html also serve as template (jiangxin@ossxp.com)
 +TEMPLATES += post_error.html looping.html validation_error.html
++TEMPLATES += services.html
 +HTML = cosign_base.css cosign_js.css
  prefix=@prefix@
  exec_prefix=@exec_prefix@
@@ -475,6 +612,57 @@ index 071fa03..a667522 100755
  		</div>
  		<div id="uiBottom">&nbsp;</div>
  	</div>
+diff --git a/html/services.html b/html/services.html
+new file mode 100644
+index 0000000..4d1d7cd
+--- /dev/null
++++ b/html/services.html
+@@ -0,0 +1,45 @@
++<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
++<html xmlns="http://www.w3.org/1999/xhtml">
++<head>
++<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
++<meta http-equiv="Pragma" content="no-cache" />
++<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
++<title>$!_("Welcome") $N</title>
++<style type="text/css" media="screen">
++$!include(inc/css.inc)
++</style>
++</head>
++<body>
++<div id="page">
++  $!include(inc/%lang%/header.inc)
++	<hr class="text" />
++  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
++    <tbody>
++      <tr>
++        <td style="padding-left: 10px;" align="left" valign="top">
++          <b>$!_("Welcome") $N</b>
++          <hr color="#dddddd" noshade="noshade" size="1">
++          <br>
++          <ul>
++            <li>$N</li>
++            <li>$I ($N)</li>
++            <li>$M</li>
++            <li><a id="members" href="https://weblogin.foo.bar/members/">$!_("Manage your profile or change password")</a></li>
++            <li><a id="logout" href="https://weblogin.foo.bar/logout/">$!_("Logout")</a></li>
++          </ul>
++        </td>
++        <td valign="top" width="55%">
++          <b>$!_("Services")</b>
++          <hr color="#dddddd" noshade="noshade" size="1">
++          <div style="font-size: 83%;">
++            <br><br>
++				    $!include(inc/%lang%/*.html)
++          </div>
++        </td>
++      </tr>
++    </tbody>
++  </table>
++</div>
++$!include(inc/%lang%/footer.inc)
++</body>
++</html>
 diff --git a/html/validation_error.html b/html/validation_error.html
 new file mode 100755
 index 0000000..a667522
@@ -536,4 +724,4 @@ index 0000000..a667522
 +</body>
 +</html>
 -- 
-tg: (a564edf..) t/static_htmls_to_templates (depends on: t/message_localize t/autotools_for_setup)
+tg: (879d14c..) t/static_htmls_to_templates (depends on: t/message_localize t/autotools_for_setup)

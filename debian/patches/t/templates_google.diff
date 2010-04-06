@@ -27,7 +27,6 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  html/templates_google/inc/header.inc               |   34 ++
  html/templates_google/inc/help_hotkey.inc          |    7 +
  html/templates_google/inc/help_infobox.inc         |   62 ++++
- html/templates_google/inc/js.inc                   |   17 +
  html/templates_google/inc/js_config.inc            |   11 +
  html/templates_google/inc/zh/0000.html             |    2 +
  html/templates_google/inc/zh/0010_wiki.html        |   15 +
@@ -44,14 +43,15 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  .../locale/zh/LC_MESSAGES/template.po              |  240 +++++++++++++
  html/templates_google/login.html                   |   63 ++++
  html/templates_google/reauth.html                  |   72 ++++
+ html/templates_google/services.html                |   45 +++
  html/templates_google/verify-logout.html           |   47 +++
- 39 files changed, 1616 insertions(+), 2 deletions(-)
+ 39 files changed, 1644 insertions(+), 2 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
-index a2b3507..a3197cc 100755
+index debfb64..21f6b8d 100755
 --- a/html/Makefile.in
 +++ b/html/Makefile.in
-@@ -10,11 +10,14 @@ SERVICESDIR  = @prefix@/services
+@@ -11,11 +11,14 @@ SERVICESDIR  = @prefix@/services
  INSTALL	=	@INSTALL@
  DESTDIR=
  
@@ -67,7 +67,7 @@ index a2b3507..a3197cc 100755
  install : all
  	-mkdir -p $(DESTDIR)${exec_prefix}
  	-mkdir -p $(DESTDIR)${TMPLDIR}
-@@ -22,6 +25,8 @@ install : all
+@@ -23,6 +26,8 @@ install : all
  	-for i in ${TEMPLATES}; do \
  	    [ -e $$i ] && cp -a $$i $(DESTDIR)${TMPLDIR}; \
  	done
@@ -76,7 +76,7 @@ index a2b3507..a3197cc 100755
  	for i in ${HTML}; do \
  	    cp -a $$i $(DESTDIR)${HTMLDIR}/; \
  	done
-@@ -35,4 +40,4 @@ install : all
+@@ -36,4 +41,4 @@ install : all
  
  clean:
  
@@ -992,29 +992,6 @@ index 0000000..682a22a
 +					<p>$!_("Note: The two fields, password and invite code input fields are exclusive. The other is disabled when one is focus and has inupt.")
 +					</p>
 +				</div>
-diff --git a/html/templates_google/inc/js.inc b/html/templates_google/inc/js.inc
-new file mode 100644
-index 0000000..f1d1d16
---- /dev/null
-+++ b/html/templates_google/inc/js.inc
-@@ -0,0 +1,17 @@
-+<script><!--
-+function gaia_setFocus() {
-+  var f = null;
-+  if (document.getElementById) { 
-+    f = document.getElementById("gaia_loginform");
-+  } else if (window.gaia_loginform) { 
-+    f = window.gaia_loginform;
-+  } 
-+  if (f) {
-+    if (f.login && (f.login.value == null || f.login.value == "")) {
-+      f.login.focus();
-+    } else if (f.password) {
-+      f.password.focus();
-+    } 
-+  }
-+}
-+--></script>
 diff --git a/html/templates_google/inc/js_config.inc b/html/templates_google/inc/js_config.inc
 new file mode 100644
 index 0000000..517d465
@@ -1866,6 +1843,57 @@ index 0000000..209aaf8
 +</form>
 +</body>
 +</html>
+diff --git a/html/templates_google/services.html b/html/templates_google/services.html
+new file mode 100644
+index 0000000..11ed378
+--- /dev/null
++++ b/html/templates_google/services.html
+@@ -0,0 +1,45 @@
++<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
++<html xmlns="http://www.w3.org/1999/xhtml">
++<head>
++<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
++<meta http-equiv="Pragma" content="no-cache" />
++<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
++<title>$!_("Welcome") $N</title>
++<style type="text/css" media="screen">
++$!include(inc/css.inc)
++</style>
++</head>
++<body>
++<div id="page">
++  $!include(inc/%lang%/header.inc)
++	<hr class="text" />
++  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
++    <tbody>
++      <tr>
++        <td style="padding-left: 10px;" align="left" valign="top">
++          <b>$!_("Welcome") $N</b>
++          <hr color="#dddddd" noshade="noshade" size="1">
++          <br>
++          <ul>
++            <li>$N</li>
++            <li>$I ($N)</li>
++            <li>$M</li>
++            <li><a id="members" href="https://members.foo.bar/members/">$!_("Manage your profile or change password")</a></li>
++            <li><a id="logout" href="https://weblogin.foo.bar/cgi-bin/logout/">$!_("Logout")</a></li>
++          </ul>
++        </td>
++        <td valign="top" width="55%">
++          <b>$!_("Services")</b>
++          <hr color="#dddddd" noshade="noshade" size="1">
++          <div style="font-size: 83%;">
++            <br><br>
++				    $!include(inc/%lang%/*.html)
++          </div>
++        </td>
++      </tr>
++    </tbody>
++  </table>
++</div>
++$!include(inc/%lang%/footer.inc)
++</body>
++</html>
 diff --git a/html/templates_google/verify-logout.html b/html/templates_google/verify-logout.html
 new file mode 100644
 index 0000000..c3a1739
@@ -1920,4 +1948,4 @@ index 0000000..c3a1739
 +</body>
 +</html>
 -- 
-tg: (9b02b0a..) t/templates_google (depends on: t/templates_standard)
+tg: (cbc6a57..) t/templates_google (depends on: t/templates_standard)

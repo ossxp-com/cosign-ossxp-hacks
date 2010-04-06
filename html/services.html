@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="Monday, 16-Apr-73 13:10:00 GMT" />
+<title>$!_("Welcome") $N</title>
+<style type="text/css" media="screen">
+$!include(inc/css.inc)
+</style>
+</head>
+<body>
+<div id="page">
+  $!include(inc/%lang%/header.inc)
+	<hr class="text" />
+  <table align="center" border="0" cellpadding="5" cellspacing="1" width="90%">
+    <tbody>
+      <tr>
+        <td style="padding-left: 10px;" align="left" valign="top">
+          <b>$!_("Welcome") $N</b>
+          <hr color="#dddddd" noshade="noshade" size="1">
+          <br>
+          <ul>
+            <li>$N</li>
+            <li>$I ($N)</li>
+            <li>$M</li>
+            <li><a href="https://weblogin.foo.bar/members/">$!_("Manage your profile or change password")</a></li>
+            <li><a href="https://weblogin.foo.bar/logout/">$!_("Logout")</a></li>
+          </ul>
+        </td>
+        <td valign="top" width="55%">
+          <b>$!_("Services")</b>
+          <hr color="#dddddd" noshade="noshade" size="1">
+          <div style="font-size: 83%;">
+            <br><br>
+				    $!include(inc/%lang%/*.html)
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+$!include(inc/%lang%/footer.inc)
+</body>
+</html>

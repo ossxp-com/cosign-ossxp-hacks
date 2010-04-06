@@ -265,7 +265,7 @@ a:hover {
 }
 
 #rightUIcol .factor td {
-	padding: 1px 2px 2px 0px;
+	padding: 5px 2px 2px 0px;
 }
 
 #rightUIcol .switchUser {

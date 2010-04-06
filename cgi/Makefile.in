@@ -44,7 +44,10 @@ lang.o:	lang.c
 	-c $^
 
 lang: lang.c
-	gcc -g3 -D_DEBUG -D_LOCALEDIR=\"/opt/cosign/lib/share/locale\" -o $@ $^
+	gcc -g3 -D_DEBUG \
+		-D_LOCALEDIR=\"${LOCALEDIR}\" \
+		-D_TEMPLATE_LOCALEDIR=\"${COSIGNTMPLDIR}-local/locale\" \
+		-o $@ $^
 
 subfile: subfile.c
 	gcc ${CFLAGS} -g3 -D_DEBUG -o $@ $^ lang.o

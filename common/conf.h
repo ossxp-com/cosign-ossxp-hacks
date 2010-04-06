@@ -75,6 +75,7 @@ struct matchlist {
 #define COSIGNTIMEOUTKEY	"cosignnettimeout"
 #define COSIGNPORTKEY		"cosignport"
 #define COSIGNLOOPURLKEY	"cosignloopurl"
+#define COSIGNSERVICEURLKEY	"cosignserviceurl"
 #define COSIGNX509TKTSKEY       "cosignx509krbtkts"
 #define COSIGNKRBTKTSKEY	"cosignkrbtkts"
 #define COSIGNDBHASHLENKEY	"cosigndbhashlen"

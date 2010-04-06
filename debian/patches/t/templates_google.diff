@@ -39,13 +39,13 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  html/templates_google/inc/zh/9000.html             |    2 +
  html/templates_google/locale/.gitignore            |    1 +
  html/templates_google/locale/Makefile              |   26 ++
- html/templates_google/locale/template.pot          |  222 ++++++++++++
- .../locale/zh/LC_MESSAGES/template.po              |  240 +++++++++++++
+ html/templates_google/locale/template.pot          |  234 +++++++++++++
+ .../locale/zh/LC_MESSAGES/template.po              |  249 +++++++++++++
  html/templates_google/login.html                   |   63 ++++
  html/templates_google/reauth.html                  |   72 ++++
  html/templates_google/services.html                |   45 +++
  html/templates_google/verify-logout.html           |   47 +++
- 39 files changed, 1644 insertions(+), 2 deletions(-)
+ 39 files changed, 1665 insertions(+), 2 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
 index debfb64..21f6b8d 100755
@@ -1224,10 +1224,10 @@ index 0000000..3af0234
 +# vim: noet ts=4 sw=4
 diff --git a/html/templates_google/locale/template.pot b/html/templates_google/locale/template.pot
 new file mode 100644
-index 0000000..e1e454d
+index 0000000..da35056
 --- /dev/null
 +++ b/html/templates_google/locale/template.pot
-@@ -0,0 +1,222 @@
+@@ -0,0 +1,234 @@
 +# SOME DESCRIPTIVE TITLE.
 +# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 +# This file is distributed under the same license as the PACKAGE package.
@@ -1450,12 +1450,24 @@ index 0000000..e1e454d
 +
 +msgid "Retrieve my lost password"
 +msgstr ""
++
++msgid "Welcome"
++msgstr ""
++
++msgid "Manage your profile or change password"
++msgstr ""
++
++msgid "Logout"
++msgstr ""
++
++msgid "Services"
++msgstr ""
 diff --git a/html/templates_google/locale/zh/LC_MESSAGES/template.po b/html/templates_google/locale/zh/LC_MESSAGES/template.po
 new file mode 100644
-index 0000000..8912d19
+index 0000000..4fa22f3
 --- /dev/null
 +++ b/html/templates_google/locale/zh/LC_MESSAGES/template.po
-@@ -0,0 +1,240 @@
+@@ -0,0 +1,249 @@
 +# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 +# This file is distributed under the same license as the PACKAGE package.
 +#
@@ -1694,8 +1706,17 @@ index 0000000..8912d19
 +msgid "Retrieve my lost password"
 +msgstr "找回忘记的口令"
 +
-+#~ msgid "Our Home Page"
-+#~ msgstr "我们的主页"
++msgid "Welcome"
++msgstr "欢迎"
++
++msgid "Manage your profile or change password"
++msgstr "修改个人信息及口令"
++
++msgid "Logout"
++msgstr "退出登录"
++
++msgid "Services"
++msgstr "服务列表"
 diff --git a/html/templates_google/login.html b/html/templates_google/login.html
 new file mode 100644
 index 0000000..fea910e

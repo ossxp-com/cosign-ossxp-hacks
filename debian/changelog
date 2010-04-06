@@ -1,4 +1,4 @@
-ossxp-cosign3 (3.1.1-1.5) unstable; urgency=low
+ossxp-cosign3 (3.1.1-1.5+1) unstable; urgency=low
 
   * Fixed JavaScript compatible issue.
   * Services URL serve by login

@@ -220,3 +220,15 @@ msgstr ""
 
 msgid "Retrieve my lost password"
 msgstr ""
+
+msgid "Welcome"
+msgstr ""
+
+msgid "Manage your profile or change password"
+msgstr ""
+
+msgid "Logout"
+msgstr ""
+
+msgid "Services"
+msgstr ""

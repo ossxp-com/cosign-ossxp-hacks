@@ -236,5 +236,14 @@ msgstr "创建一个新帐号"
 msgid "Retrieve my lost password"
 msgstr "找回忘记的口令"
 
-#~ msgid "Our Home Page"
-#~ msgstr "我们的主页"
+msgid "Welcome"
+msgstr "欢迎"
+
+msgid "Manage your profile or change password"
+msgstr "修改个人信息及口令"
+
+msgid "Logout"
+msgstr "退出登录"
+
+msgid "Services"
+msgstr "服务列表"

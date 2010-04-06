@@ -92,8 +92,98 @@ static struct subfile_list sl[] = {
         { 'd', SUBF_STR_ESC, NULL },
 #define SL_DETAIL	7
         { 'm', SUBF_STR, NULL },
+#define SL_ID		8
+        { 'I', SUBF_STR, NULL },
+#define SL_NAME		9
+        { 'N', SUBF_STR, NULL },
+#define SL_EMAIL	10
+        { 'M', SUBF_STR, NULL },
         { '\0', 0, NULL },
 };
+
+/*
+ * authentication successful, show service menu
+ */
+void auth_success_redirect( char *login, char *factors[] );
+    void
+auth_success_redirect( char *login, char *factors[] )
+{
+#define SERVICES_HTML "services.html"
+#define MAX_LINE_BUFF	4096
+
+    struct factorlist		*fl;
+    int				i;
+    FILE			*fp;
+    char			*name,*sn,*cn,*givenname,*uid,*mail;
+    char			cmd[MAX_LINE_BUFF+1]="";
+    char			line[MAX_LINE_BUFF+1]="";
+    char			*val;
+
+    name=sn=cn=givenname=uid=mail=NULL;
+
+    //If define cosignserviceurl, then redirect to it.
+    if (( val = cosign_config_get( COSIGNSERVICEURLKEY )) != NULL && strlen(val)!=0) {
+	printf( "Location: %s\n\n", val );
+	return;
+    }
+ 
+    //To get call each factors in this format:
+    //factor -q username factorname
+    for ( fl = factorlist; fl != NULL; fl = fl->fl_next ) {
+	for ( i = 0; factors[ i ] != NULL; i++ ) {
+	    snprintf(cmd, MAX_LINE_BUFF, "%s -q %s %s", fl->fl_path, login, factors[i]);
+	    if ((fp = popen(cmd, "r")) == NULL)
+		break;
+	    while (fgets(line, MAX_LINE_BUFF, fp))
+	    {
+		if (strncmp(line, "uid:", 4) == 0)
+		{
+		    uid = strdup(line+4);
+		} 
+		else if (strncmp(line, "givenname:", 10) == 0)
+		{
+		    givenname = strdup(line+10);
+		}
+		else if (strncmp(line, "cn:", 3) == 0)
+		{
+		    cn = strdup(line+3);
+		}
+		else if (strncmp(line, "sn:", 3) == 0)
+		{
+		    sn = strdup(line+3);
+		}
+		else if (strncmp(line, "name:", 5) == 0)
+		{
+		    name = strdup(line+5);
+		}
+		else if (strncmp(line, "mail:", 5) == 0)
+		{
+		    mail = strdup(line+5);
+		}
+	    }
+	    pclose(fp);
+	    if (uid!=NULL)
+		break;
+	}
+	if (uid!=NULL)
+	    break;
+    }
+
+    //Show template services.
+    sl[ SL_TITLE ].sl_data = _("Services");
+    sl[ SL_LOGIN ].sl_data = login;
+    sl[ SL_ID ].sl_data = uid ? uid : login;
+    sl[ SL_NAME ].sl_data = name? name : login;
+    sl[ SL_EMAIL ].sl_data = mail? mail : "";
+    subfile( SERVICES_HTML, sl, 0 );
+
+    if (name != NULL) free (name);
+    if (sn != NULL) free (sn);
+    if (cn != NULL) free (cn);
+    if (givenname != NULL) free (givenname);
+    if (uid != NULL) free (uid);
+    if (mail != NULL) free (mail);
+}
 
     static void
 loop_checker( int time, int count, char *cookie )
@@ -642,13 +732,7 @@ main( int argc, char *argv[] )
 	    }
 	}
 
-	/* authentication successful, show service menu */
-	if ( server_port != 443 ) {
-	    printf( "Location: https://%s:%d%s\n\n", server_name,
-		    server_port, SERVICE_MENU );
-	} else {
-	    printf( "Location: https://%s%s\n\n", server_name, SERVICE_MENU );
-	}
+	auth_success_redirect( ui.ui_login, ui.ui_factors );
 	exit( 0 );
     }
 
@@ -960,12 +1044,7 @@ loggedin:
 	exit( 0 );
     }
 
-    if ( server_port != 443 ) {
-	printf( "Location: https://%s:%d%s\n\n", server_name,
-		server_port, SERVICE_MENU );
-    } else {
-	printf( "Location: https://%s%s\n\n", server_name, SERVICE_MENU );
-    }
+    auth_success_redirect( ui.ui_login, ui.ui_factors );
     exit( 0 );
 
 loginscreen:

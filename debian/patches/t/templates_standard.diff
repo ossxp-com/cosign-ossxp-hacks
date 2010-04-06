@@ -7,6 +7,7 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
  html/Makefile.in                       |   13 ++-
+ html/cosign_base.css                   |    2 +-
  html/error.html                        |   30 ++---
  html/expired_error.html                |  167 ----------------------
  html/inc/css.inc                       |    1 +
@@ -50,7 +51,7 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  html/services.html                     |    4 +-
  html/validation_error.html             |   54 -------
  html/verify-logout.html                |   30 ++--
- 44 files changed, 1044 insertions(+), 775 deletions(-)
+ 45 files changed, 1045 insertions(+), 776 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
 index 890c3fd..debfb64 100755
@@ -90,6 +91,19 @@ index 890c3fd..debfb64 100755
  clean:
 +
 +.PHONY: clean all ${TEMPLATES}
+diff --git a/html/cosign_base.css b/html/cosign_base.css
+index 1541b0e..1787fc9 100755
+--- a/html/cosign_base.css
++++ b/html/cosign_base.css
+@@ -278,7 +278,7 @@ a:hover {
+ }
+ 
+ #rightUIcol .factor td {
+-	padding: 1px 2px 2px 0px;
++	padding: 5px 2px 2px 0px;
+ }
+ 
+ #rightUIcol .switchUser {
 diff --git a/html/error.html b/html/error.html
 index 3a3a08f..f4a5d3d 100755
 --- a/html/error.html
@@ -2300,4 +2314,4 @@ index ea68776..c3a1739 100755
  </body>
  </html>
 -- 
-tg: (24ba76a..) t/templates_standard (depends on: master t/autotools_for_setup t/static_htmls_to_templates t/javascript t/services_template)
+tg: (c71c58c..) t/templates_standard (depends on: master t/autotools_for_setup t/static_htmls_to_templates t/javascript t/services_template)

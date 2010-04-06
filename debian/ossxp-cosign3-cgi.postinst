@@ -43,6 +43,10 @@ fi
 #    a2enmod negotiation
 #fi
 
+if dpkg --compare-versions "$2" lt-nl "3.1.1-1.5"; then
+  [ ! -d $LIBDIR/templates-local ] && cp $LIBDIR/templates/services.html $LIBDIR/templates-local/
+fi
+
 if [ -f /opt/cosign/lib/services-local/ldap_api.php ] && \
         dpkg --compare-versions "$2" lt "2.1.1-0.2.47"; then
     # fix bug in ldap_api.php

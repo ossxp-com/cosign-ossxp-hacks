@@ -140,7 +140,7 @@ index 0000000..f4a5d3d
 +</html>
 diff --git a/html/templates_google/inc/css.inc b/html/templates_google/inc/css.inc
 new file mode 100644
-index 0000000..765d166
+index 0000000..5f136bb
 --- /dev/null
 +++ b/html/templates_google/inc/css.inc
 @@ -0,0 +1,368 @@
@@ -411,7 +411,7 @@ index 0000000..765d166
 +}
 +
 +#rightUIcol .factor td {
-+	padding: 1px 2px 2px 0px;
++	padding: 5px 2px 2px 0px;
 +}
 +
 +#rightUIcol .switchUser {
@@ -1948,4 +1948,4 @@ index 0000000..c3a1739
 +</body>
 +</html>
 -- 
-tg: (cbc6a57..) t/templates_google (depends on: t/templates_standard)
+tg: (a250467..) t/templates_google (depends on: t/templates_standard)

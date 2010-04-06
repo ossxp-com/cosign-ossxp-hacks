@@ -39,9 +39,9 @@ all: ${TARGETS}
 lang: lang.c
 	gcc -g3 -D_DEBUG -o $@ $^
 
-subfile: subfile.c
-	gcc ${CFLAGS} -g3 -D_DEBUG -o $@ $^ lang.o
-	gcc -g3 -D_DEBUG -o $@ $^
+subfile: subfile.c lang.o
+	gcc ${DEFS} ${OPTOPTS} -Wall ${INCPATH} \
+		-g3 -D_DEBUG -o $@ $^
  
 login.o:	login.c
 	${CC} ${CFLAGS} \

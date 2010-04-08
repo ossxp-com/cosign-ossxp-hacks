@@ -1,0 +1,11 @@
+
+require 'docbones'
+source_suffix = '.rst'
+::Docbones.setup source_suffix
+
+PROJ.root= "."
+PROJ.name = "admin-guide"
+PROJ.index = "admin-guide"
+PROJ.output = "output"
+
+task:default 

@@ -45,3 +45,12 @@ Conflicts: ossxp-cosign-filter
 Description: CoSign filter for apache2
  CoSign is a Single Sign-On from weblogin.org
 
+Package: ossxp-cosign3-doc
+Architecture: all
+Section: ossxp
+Priority: optional
+Depends:
+Suggests:
+Conflicts:
+Description: Documents for CoSign
+ CoSign is a Single Sign-On from weblogin.org

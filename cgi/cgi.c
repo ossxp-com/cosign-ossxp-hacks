@@ -101,25 +101,107 @@ static struct subfile_list sl[] = {
         { '\0', 0, NULL },
 };
 
+char * user_attr_list[] = {
+#define UA_LOGIN	0
+    NULL,
+#define UA_UID		1
+    NULL,
+#define UA_SURNAME	2
+    NULL,
+#define UA_GIVENNAME	3
+    NULL,
+#define UA_NICKNAME	4
+    NULL,
+#define UA_NAME		5
+    NULL,
+#define UA_MAIL		6
+    NULL,
+    NULL,
+};
+
 /*
  * authentication successful, show service menu
  */
+void get_user_attributes( char *login, char *factors[] );
 void auth_success_redirect( char *login, char *factors[] );
+
+    void
+get_user_attributes( char *login, char *factors[] )
+{
+#define MAX_LINE_BUFF	4096
+
+    struct factorlist		*fl;
+    char			cmd[MAX_LINE_BUFF+1]="";
+    char			buffer[MAX_LINE_BUFF+1]="";
+    int				i;
+    FILE			*fp;
+
+    if (user_attr_list[UA_UID] != NULL || login == NULL || *login == '\0')
+	return;
+
+    /*
+     *  To get call each factors in this format:
+     *	factor -q username factorname
+     */
+    for ( fl = factorlist; fl != NULL; fl = fl->fl_next ) {
+	for ( i = 0; factors[ i ] != NULL; i++ ) {
+	    snprintf(cmd, MAX_LINE_BUFF, "%s -q %s %s", fl->fl_path, login, factors[i]);
+	    if ((fp = popen(cmd, "r")) == NULL)
+		break;
+	    while (fgets(buffer, MAX_LINE_BUFF, fp))
+	    {
+		char *p = NULL, *q=NULL, *line=NULL;
+		int ksize=0;
+		line = buffer;
+		while(isspace(*line))
+		    line++;
+		while(isspace(line[strlen(line)-1]))
+		    line[strlen(line)-1] = '\0';
+		p = q = strchr(line, ':');
+		if (p==NULL) continue;
+		do { q--; } while(isspace(*q));
+		do { p++; } while(isspace(*p));
+		ksize = q-line+1;
+
+		if (strncasecmp(line, "uid", ksize) == 0)
+		{
+		    user_attr_list[UA_UID] = strdup(p);
+		} 
+		else if (strncasecmp(line, "givenname", ksize) == 0)
+		{
+		    user_attr_list[UA_GIVENNAME] = strdup(p);
+		}
+		else if (strncasecmp(line, "cn", ksize) == 0)
+		{
+		    user_attr_list[UA_NICKNAME] = strdup(p);
+		}
+		else if (strncasecmp(line, "sn", ksize) == 0)
+		{
+		    user_attr_list[UA_SURNAME] = strdup(p);
+		}
+		else if (strncasecmp(line, "name", ksize) == 0)
+		{
+		    user_attr_list[UA_NAME] = strdup(p);
+		}
+		else if (strncasecmp(line, "mail", ksize) == 0)
+		{
+		    user_attr_list[UA_MAIL] = strdup(p);
+		}
+	    }
+	    pclose(fp);
+	    if (user_attr_list[UA_UID] != NULL)
+		break;
+	}
+	if (user_attr_list[UA_UID] != NULL)
+	    break;
+    }
+}
+
     void
 auth_success_redirect( char *login, char *factors[] )
 {
 #define SERVICES_HTML "services.html"
-#define MAX_LINE_BUFF	4096
-
-    struct factorlist		*fl;
-    int				i;
-    FILE			*fp;
-    char			*name,*sn,*cn,*givenname,*uid,*mail;
-    char			cmd[MAX_LINE_BUFF+1]="";
-    char			line[MAX_LINE_BUFF+1]="";
     char			*val;
-
-    name=sn=cn=givenname=uid=mail=NULL;
 
     //If define cosignserviceurl, then redirect to it.
     if (( val = cosign_config_get( COSIGNSERVICEURLKEY )) != NULL && strlen(val)!=0) {
@@ -127,62 +209,15 @@ auth_success_redirect( char *login, char *factors[] )
 	return;
     }
  
-    //To get call each factors in this format:
-    //factor -q username factorname
-    for ( fl = factorlist; fl != NULL; fl = fl->fl_next ) {
-	for ( i = 0; factors[ i ] != NULL; i++ ) {
-	    snprintf(cmd, MAX_LINE_BUFF, "%s -q %s %s", fl->fl_path, login, factors[i]);
-	    if ((fp = popen(cmd, "r")) == NULL)
-		break;
-	    while (fgets(line, MAX_LINE_BUFF, fp))
-	    {
-		if (strncmp(line, "uid:", 4) == 0)
-		{
-		    uid = strdup(line+4);
-		} 
-		else if (strncmp(line, "givenname:", 10) == 0)
-		{
-		    givenname = strdup(line+10);
-		}
-		else if (strncmp(line, "cn:", 3) == 0)
-		{
-		    cn = strdup(line+3);
-		}
-		else if (strncmp(line, "sn:", 3) == 0)
-		{
-		    sn = strdup(line+3);
-		}
-		else if (strncmp(line, "name:", 5) == 0)
-		{
-		    name = strdup(line+5);
-		}
-		else if (strncmp(line, "mail:", 5) == 0)
-		{
-		    mail = strdup(line+5);
-		}
-	    }
-	    pclose(fp);
-	    if (uid!=NULL)
-		break;
-	}
-	if (uid!=NULL)
-	    break;
-    }
+    get_user_attributes( login, factors );
 
     //Show template services.
     sl[ SL_TITLE ].sl_data = _("Services");
     sl[ SL_LOGIN ].sl_data = login;
-    sl[ SL_ID ].sl_data = uid ? uid : login;
-    sl[ SL_NAME ].sl_data = name? name : login;
-    sl[ SL_EMAIL ].sl_data = mail? mail : "";
+    sl[ SL_ID ].sl_data = user_attr_list[UA_UID] ? user_attr_list[UA_UID] : login;
+    sl[ SL_NAME ].sl_data = user_attr_list[UA_NAME] ? user_attr_list[UA_NAME] : login;
+    sl[ SL_EMAIL ].sl_data = user_attr_list[UA_MAIL] ? user_attr_list[UA_MAIL] : "";
     subfile( SERVICES_HTML, sl, 0 );
-
-    if (name != NULL) free (name);
-    if (sn != NULL) free (sn);
-    if (cn != NULL) free (cn);
-    if (givenname != NULL) free (givenname);
-    if (uid != NULL) free (uid);
-    if (mail != NULL) free (mail);
 }
 
     static void

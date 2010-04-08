@@ -41,17 +41,17 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  html/inc/zh/9000.html                  |    2 +
  html/locale/.gitignore                 |    1 +
  html/locale/Makefile                   |   26 ++++
- html/locale/template.pot               |  228 ++++++++++++++++++++++++++++++
- html/locale/zh/LC_MESSAGES/template.po |  241 ++++++++++++++++++++++++++++++++
+ html/locale/template.pot               |  231 ++++++++++++++++++++++++++++++
+ html/locale/zh/LC_MESSAGES/template.po |  244 ++++++++++++++++++++++++++++++++
  html/login.html                        |  131 ++---------------
  html/login_error.html                  |  168 ----------------------
  html/looping.html                      |   54 -------
  html/post_error.html                   |   54 -------
- html/reauth.html                       |  147 +++-----------------
+ html/reauth.html                       |  147 +++----------------
  html/services.html                     |    4 +-
  html/validation_error.html             |   54 -------
  html/verify-logout.html                |   30 ++--
- 45 files changed, 1045 insertions(+), 776 deletions(-)
+ 45 files changed, 1051 insertions(+), 776 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
 index 890c3fd..debfb64 100755
@@ -627,7 +627,7 @@ index 0000000..37d48b2
 +					$!_("Download") <a href="#kx509Info" id="kx509InfoShow" tabindex="9">$!_("k.x-509 software")</a> </div>
 diff --git a/html/inc/factor_login.inc b/html/inc/factor_login.inc
 new file mode 100644
-index 0000000..7ed0a64
+index 0000000..23e5a01
 --- /dev/null
 +++ b/html/inc/factor_login.inc
 @@ -0,0 +1,24 @@
@@ -638,7 +638,7 @@ index 0000000..7ed0a64
 +				<div class="factor" id="kerberos" style="display: none;">
 +					<table>
 +						<tr>
-+							<td><label for="login">$!_("Login")</label></td>
++							<td><label for="login">$!_("Username")</label></td>
 +							<td><input
 +							id="login"
 +							name="login"
@@ -657,7 +657,7 @@ index 0000000..7ed0a64
 +					<a href="#kerbInfo" id="kerbInfoShow" tabindex="7">$!_("Need an account or password help?")</a> </div>
 diff --git a/html/inc/factor_login_reauth.inc b/html/inc/factor_login_reauth.inc
 new file mode 100644
-index 0000000..6dfe398
+index 0000000..4ca5df5
 --- /dev/null
 +++ b/html/inc/factor_login_reauth.inc
 @@ -0,0 +1,21 @@
@@ -668,7 +668,7 @@ index 0000000..6dfe398
 +				<div class="factor" id="kerberos" style="display: none;">
 +					<table>
 +						<tr>
-+							<td><label for="login">$!_("Login")</label></td>
++							<td><label for="login">$!_("Username")</label></td>
 +							<td
 +							id="login">$l (<a href="/cgi-bin/logout" class="switchUser" id="switchUserR" tabindex="1">$!_("Switch Users")</a>)</td>
 +						</tr>
@@ -1033,10 +1033,10 @@ index 0000000..3af0234
 +# vim: noet ts=4 sw=4
 diff --git a/html/locale/template.pot b/html/locale/template.pot
 new file mode 100644
-index 0000000..d87034c
+index 0000000..30db856
 --- /dev/null
 +++ b/html/locale/template.pot
-@@ -0,0 +1,228 @@
+@@ -0,0 +1,231 @@
 +# SOME DESCRIPTIVE TITLE.
 +# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 +# This file is distributed under the same license as the PACKAGE package.
@@ -1112,6 +1112,9 @@ index 0000000..d87034c
 +msgstr ""
 +
 +msgid "Login"
++msgstr ""
++
++msgid "Username"
 +msgstr ""
 +
 +msgid "Password"
@@ -1267,10 +1270,10 @@ index 0000000..d87034c
 +msgstr ""
 diff --git a/html/locale/zh/LC_MESSAGES/template.po b/html/locale/zh/LC_MESSAGES/template.po
 new file mode 100644
-index 0000000..275ee87
+index 0000000..67600a2
 --- /dev/null
 +++ b/html/locale/zh/LC_MESSAGES/template.po
-@@ -0,0 +1,241 @@
+@@ -0,0 +1,244 @@
 +# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 +# This file is distributed under the same license as the PACKAGE package.
 +#
@@ -1347,6 +1350,9 @@ index 0000000..275ee87
 +
 +msgid "Login"
 +msgstr "登录"
++
++msgid "Username"
++msgstr "用户名"
 +
 +msgid "Password"
 +msgstr "口令"

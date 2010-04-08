@@ -39,13 +39,13 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  html/templates_google/inc/zh/9000.html             |    2 +
  html/templates_google/locale/.gitignore            |    1 +
  html/templates_google/locale/Makefile              |   26 ++
- html/templates_google/locale/template.pot          |  234 +++++++++++++
- .../locale/zh/LC_MESSAGES/template.po              |  249 +++++++++++++
+ html/templates_google/locale/template.pot          |  237 +++++++++++++
+ .../locale/zh/LC_MESSAGES/template.po              |  252 +++++++++++++
  html/templates_google/login.html                   |   63 ++++
  html/templates_google/reauth.html                  |   72 ++++
  html/templates_google/services.html                |   45 +++
  html/templates_google/verify-logout.html           |   47 +++
- 39 files changed, 1665 insertions(+), 2 deletions(-)
+ 39 files changed, 1671 insertions(+), 2 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
 index debfb64..21f6b8d 100755
@@ -785,7 +785,7 @@ index 0000000..37d48b2
 +					$!_("Download") <a href="#kx509Info" id="kx509InfoShow" tabindex="9">$!_("k.x-509 software")</a> </div>
 diff --git a/html/templates_google/inc/factor_login.inc b/html/templates_google/inc/factor_login.inc
 new file mode 100644
-index 0000000..7ed0a64
+index 0000000..23e5a01
 --- /dev/null
 +++ b/html/templates_google/inc/factor_login.inc
 @@ -0,0 +1,24 @@
@@ -796,7 +796,7 @@ index 0000000..7ed0a64
 +				<div class="factor" id="kerberos" style="display: none;">
 +					<table>
 +						<tr>
-+							<td><label for="login">$!_("Login")</label></td>
++							<td><label for="login">$!_("Username")</label></td>
 +							<td><input
 +							id="login"
 +							name="login"
@@ -815,7 +815,7 @@ index 0000000..7ed0a64
 +					<a href="#kerbInfo" id="kerbInfoShow" tabindex="7">$!_("Need an account or password help?")</a> </div>
 diff --git a/html/templates_google/inc/factor_login_reauth.inc b/html/templates_google/inc/factor_login_reauth.inc
 new file mode 100644
-index 0000000..6dfe398
+index 0000000..4ca5df5
 --- /dev/null
 +++ b/html/templates_google/inc/factor_login_reauth.inc
 @@ -0,0 +1,21 @@
@@ -826,7 +826,7 @@ index 0000000..6dfe398
 +				<div class="factor" id="kerberos" style="display: none;">
 +					<table>
 +						<tr>
-+							<td><label for="login">$!_("Login")</label></td>
++							<td><label for="login">$!_("Username")</label></td>
 +							<td
 +							id="login">$l (<a href="/cgi-bin/logout" class="switchUser" id="switchUserR" tabindex="1">$!_("Switch Users")</a>)</td>
 +						</tr>
@@ -1224,10 +1224,10 @@ index 0000000..3af0234
 +# vim: noet ts=4 sw=4
 diff --git a/html/templates_google/locale/template.pot b/html/templates_google/locale/template.pot
 new file mode 100644
-index 0000000..da35056
+index 0000000..46c7550
 --- /dev/null
 +++ b/html/templates_google/locale/template.pot
-@@ -0,0 +1,234 @@
+@@ -0,0 +1,237 @@
 +# SOME DESCRIPTIVE TITLE.
 +# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 +# This file is distributed under the same license as the PACKAGE package.
@@ -1303,6 +1303,9 @@ index 0000000..da35056
 +msgstr ""
 +
 +msgid "Login"
++msgstr ""
++
++msgid "Username"
 +msgstr ""
 +
 +msgid "Password"
@@ -1464,10 +1467,10 @@ index 0000000..da35056
 +msgstr ""
 diff --git a/html/templates_google/locale/zh/LC_MESSAGES/template.po b/html/templates_google/locale/zh/LC_MESSAGES/template.po
 new file mode 100644
-index 0000000..4fa22f3
+index 0000000..31fc678
 --- /dev/null
 +++ b/html/templates_google/locale/zh/LC_MESSAGES/template.po
-@@ -0,0 +1,249 @@
+@@ -0,0 +1,252 @@
 +# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 +# This file is distributed under the same license as the PACKAGE package.
 +#
@@ -1544,6 +1547,9 @@ index 0000000..4fa22f3
 +
 +msgid "Login"
 +msgstr "登录"
++
++msgid "Username"
++msgstr "用户名"
 +
 +msgid "Password"
 +msgstr "口令"
@@ -1969,4 +1975,4 @@ index 0000000..c3a1739
 +</body>
 +</html>
 -- 
-tg: (6228f80..) t/templates_google (depends on: t/templates_standard)
+tg: (a4370aa..) t/templates_google (depends on: t/templates_standard)

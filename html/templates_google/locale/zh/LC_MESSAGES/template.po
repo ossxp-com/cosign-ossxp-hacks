@@ -75,6 +75,9 @@ msgstr "k.x-509 软件"
 msgid "Login"
 msgstr "登录"
 
+msgid "Username"
+msgstr "用户名"
+
 msgid "Password"
 msgstr "口令"
 

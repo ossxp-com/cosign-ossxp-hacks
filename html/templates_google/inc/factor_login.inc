@@ -5,7 +5,7 @@
 				<div class="factor" id="kerberos" style="display: none;">
 					<table>
 						<tr>
-							<td><label for="login">$!_("Login")</label></td>
+							<td><label for="login">$!_("Username")</label></td>
 							<td><input
 							id="login"
 							name="login"

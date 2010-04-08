@@ -5,7 +5,7 @@
 				<div class="factor" id="kerberos" style="display: none;">
 					<table>
 						<tr>
-							<td><label for="login">$!_("Login")</label></td>
+							<td><label for="login">$!_("Username")</label></td>
 							<td
 							id="login">$l (<a href="/cgi-bin/logout" class="switchUser" id="switchUserR" tabindex="1">$!_("Switch Users")</a>)</td>
 						</tr>

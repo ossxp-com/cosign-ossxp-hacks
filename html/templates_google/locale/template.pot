@@ -75,6 +75,9 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
+msgid "Username"
+msgstr ""
+
 msgid "Password"
 msgstr ""
 

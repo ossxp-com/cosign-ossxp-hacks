@@ -11,6 +11,7 @@ t/javascript.diff -p1
 t/message_localize.diff -p1
 t/static_htmls_to_templates.diff -p1
 t/message_translation.diff -p1
+t/real_remote_user.diff -p1
 t/services_template.diff -p1
 t/templates_standard.diff -p1
 t/templates_google.diff -p1

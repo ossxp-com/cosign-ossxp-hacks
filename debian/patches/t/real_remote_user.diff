@@ -1,0 +1,38 @@
+From: Jiang <jiangxin@ossxp.com>
+Subject: [PATCH] t/real_remote_user
+
+If login using email or invite factor, the remote_user is not the
+login username, but the user email address or nothing else.
+
+This patch recall factors to get the real userid, and set it as the
+remote_user.
+
+Signed-off-by: Jiang <jiangxin@ossxp.com>
+
+---
+ cgi/cgi.c |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+diff --git a/cgi/cgi.c b/cgi/cgi.c
+index bed7dae..b4b2bd9 100755
+--- a/cgi/cgi.c
++++ b/cgi/cgi.c
+@@ -961,6 +961,16 @@ loggedin:
+ 		break;
+ 	    }
+ 	}
++
++	/* OSSXP: set login to real userid. */
++	get_user_attributes(login, new_factors);
++	if (user_attr_list[UA_UID] != NULL)
++	{
++	    login = user_attr_list[UA_UID];
++	    cl[ CL_LOGIN ].cl_data = login;
++	    sl[ SL_LOGIN ].sl_data = login;	
++	}
++
+ 	if (( ui.ui_factors[ i ] == NULL ) ||
+ 		( strcmp( ui.ui_ipaddr, ip_addr ) != 0 )) {
+ 	    if ( cosign_login( head, cookie, ip_addr, login, msg, NULL ) < 0 ) {
+-- 
+tg: (51bd25b..) t/real_remote_user (depends on: t/static_htmls_to_templates)

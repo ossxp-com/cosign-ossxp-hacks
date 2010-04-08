@@ -1,6 +1,10 @@
 From: Jiang <jiangxin@ossxp.com>
-Subject: [PATCH] t/static_htmls_to_templates
+Subject: [PATCH] t/real_remote_user
 
-New cgi: info. Which use templates to show static htmls.
+If login using email or invite factor, the remote_user is not the
+login username, but the user email address or nothing else.
+
+This patch recall factors to get the real userid, and set it as the
+remote_user.
 
 Signed-off-by: Jiang <jiangxin@ossxp.com>

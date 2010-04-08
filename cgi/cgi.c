@@ -961,6 +961,16 @@ loggedin:
 		break;
 	    }
 	}
+
+	/* OSSXP: set login to real userid. */
+	get_user_attributes(login, new_factors);
+	if (user_attr_list[UA_UID] != NULL)
+	{
+	    login = user_attr_list[UA_UID];
+	    cl[ CL_LOGIN ].cl_data = login;
+	    sl[ SL_LOGIN ].sl_data = login;	
+	}
+
 	if (( ui.ui_factors[ i ] == NULL ) ||
 		( strcmp( ui.ui_ipaddr, ip_addr ) != 0 )) {
 	    if ( cosign_login( head, cookie, ip_addr, login, msg, NULL ) < 0 ) {

@@ -6,12 +6,11 @@
 用户手册
 ------------
 
-:Authors: 蒋鑫
-:Organization: 北京群英汇信息技术有限公司
-:Contact: http://www.ossxp.com/
-:Version: 3.1.1-1
-:Date: |date|
-:Copyright: Creative Commons
+:作者: 北京群英汇信息技术有限公司
+:网址: http://www.ossxp.com/
+:版本: 3.1.1-1
+:日期: |date|
+:版权信息: Creative Commons
 
 .. contents:: 目录
 .. sectnum::

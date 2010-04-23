@@ -1,3 +1,9 @@
+ossxp-cosign3 (3.1.1-1.7) unstable; urgency=low
+
+  * Bugfix: build script failed for new cdbs.
+
+ -- Jiang Xin <jiangxin@ossxp.com>  Fri, 23 Apr 2010 18:28:22 +0800
+
 ossxp-cosign3 (3.1.1-1.6+1) unstable; urgency=low
 
   * If login using email or invite factor, the remote_user is not

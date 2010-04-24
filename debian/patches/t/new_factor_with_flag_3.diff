@@ -1,0 +1,83 @@
+From: Jiang Xin <jiangxin@ossxp.com>
+Subject: [PATCH] t/new_factor_with_flag_3
+
+ossxp factor extension (flage -3):
+* if has not logged in, not check factor with flag 3,
+  but not warning like factor with flag 2.
+* if require factor(s) not given, not run factor with flag 3.
+
+Signed-off-by: Jiang Xin <jiangxin@ossxp.com>
+
+---
+ cgi/cgi.c     |   34 ++++++++++++++++++++++++++++++++++
+ common/conf.c |    2 ++
+ 2 files changed, 36 insertions(+), 0 deletions(-)
+
+diff --git a/cgi/cgi.c b/cgi/cgi.c
+index cc76769..d72b487 100755
+--- a/cgi/cgi.c
++++ b/cgi/cgi.c
+@@ -926,7 +926,20 @@ loggedin:
+ 		    " before secondary authentication.");
+ 	    goto loginscreen;
+ 	}
++	/*
++	 * ossxp factor extension:
++	 *   * if has not logged in, not check factor with flag 3,
++	 *     but not warning like factor with flag 2.
++	 *   * if require factor(s) not given, not run factor with flag 3.
++	 */
++	if (( fl->fl_flag == 3 ) && ( *ui.ui_login == '\0' || factor == NULL )) {
++	    continue;
++	}
+ 	if (( rc = execfactor( fl, cl, &msg )) != COSIGN_CGI_OK ) {
++	    /* ossxp: bypass if auth failed for fl_flag == 3, and check required factors latter. */
++	    if ( fl->fl_flag == 3 ) {
++		continue;
++	    }
+ 	    sl[ SL_ERROR ].sl_data = _(msg);
+ 	    fprintf( stderr, "CoSign: user %s authentication failure from host [%s]. (factors)\n", login !=NULL ? login : "?", ip_addr);
+ 	    if ( msg != NULL && strlen( msg ) > 0 )
+@@ -985,6 +998,27 @@ loggedin:
+ 	}
+     }
+ 
++    /* ossxp: try to catch not required factors for factor with flag 3. */
++    if ( factor != NULL ) {
++	require = strdup( factor );
++	for ( r = strtok_r( require, ",", &reqp ); r != NULL;
++		r = strtok_r( NULL, ",", &reqp )) {
++	    for ( i = 0; ui.ui_factors[ i ] != NULL; i++ ) {
++		if ( match_factor( r, ui.ui_factors[ i ], suffix )) {
++		    break;
++		}
++	    }
++	    if ( ui.ui_factors[ i ] == NULL ) {
++		break;
++	    }
++	}
++	if ( r != NULL ) {
++	    sl[ SL_ERROR ].sl_data = _("Additional authentication"
++		    " failed. Please try again later.");
++	    goto loginscreen;
++	}
++    }
++
+     if ( *ui.ui_login == '\0' ) {
+ 	sl[ SL_TITLE ].sl_data = _("Authentication Required");
+ 	sl[ SL_ERROR ].sl_data = _("Please enter your login and password.");
+diff --git a/common/conf.c b/common/conf.c
+index c3484f6..0810892 100644
+--- a/common/conf.c
++++ b/common/conf.c
+@@ -670,6 +670,8 @@ read_config( char *path )
+ 	    for ( i = 2; *av[ i ] == '-'; i++ ) {
+ 		if ( strcmp( av[ i ], "-2" ) == 0 ) {
+ 		    fl_new->fl_flag = 2;
++		} else if ( strcmp( av[ i ], "-3" ) == 0 ) {
++		    fl_new->fl_flag = 3;
+ 		} else {
+ 		    fprintf( stderr, "line %d:"
+ 			    " unknown flag %s to keyword factor\n",
+-- 
+tg: (2e4c8da..) t/new_factor_with_flag_3 (depends on: t/real_remote_user)

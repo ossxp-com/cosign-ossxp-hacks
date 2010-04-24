@@ -3,6 +3,7 @@ t/autotools_for_setup.diff -p1
 t/bugfix_cosign_httponly_quirk.diff -p1
 t/bugfix_no_retry_report.diff -p1
 t/custom_cosign_path.diff -p1
+t/factor_admin.diff -p1
 t/factor_invite.diff -p1
 t/factor_ldap.diff -p1
 t/multi_language.diff -p1
@@ -12,6 +13,7 @@ t/message_localize.diff -p1
 t/static_htmls_to_templates.diff -p1
 t/message_translation.diff -p1
 t/real_remote_user.diff -p1
+t/new_factor_with_flag_3.diff -p1
 t/services_template.diff -p1
 t/templates_standard.diff -p1
 t/templates_google.diff -p1

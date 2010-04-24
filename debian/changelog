@@ -1,3 +1,10 @@
+ossxp-cosign3 (3.1.1-1.8) unstable; urgency=low
+
+  * New factor support flag -3.
+  * New factor: admin.
+
+ -- Jiang Xin <jiangxin@ossxp.com>  Sat, 24 Apr 2010 19:36:49 +0800
+
 ossxp-cosign3 (3.1.1-1.7) unstable; urgency=low
 
   * Bugfix: build script failed for new cdbs.

@@ -968,7 +968,7 @@ loggedin:
 	{
 	    login = user_attr_list[UA_UID];
 	    cl[ CL_LOGIN ].cl_data = login;
-	    sl[ SL_LOGIN ].sl_data = login;	
+	    sl[ SL_LOGIN ].sl_data = login;
 	}
 
 	if (( ui.ui_factors[ i ] == NULL ) ||

@@ -1,10 +1,6 @@
 From: Jiang <jiangxin@ossxp.com>
-Subject: [PATCH] t/real_remote_user
+Subject: [PATCH] t/new_factor_with_flag_3
 
-If login using email or invite factor, the remote_user is not the
-login username, but the user email address or nothing else.
-
-This patch recall factors to get the real userid, and set it as the
-remote_user.
+<patch description>
 
 Signed-off-by: Jiang <jiangxin@ossxp.com>

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-02 15:16+0800\n"
+"POT-Creation-Date: 2010-04-24 19:45+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,42 +16,218 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../cgi/cgi.c:254
-#, c-format
-msgid "%s: %s=%s: too long\n"
+msgid "Services"
 msgstr ""
 
-#: ../cgi/cgi.c:612
-#, c-format
-msgid "%s: cosign_register failed\n"
+msgid "Error: Loop Breaker"
 msgstr ""
 
-#: ../cgi/cgi.c:943
-#, c-format
-msgid "%s: implicit cosign_register failed\n"
+msgid "Please try again later."
 msgstr ""
 
-#: ../cgi/cgi.c:184
 #, c-format
 msgid "%s: invalid setting for krbtkts: defaulting off.\n"
 msgstr ""
 
-#: ../cgi/cgi.c:978
-#, c-format
-msgid "%s: mkcookie: failed\n"
-msgstr ""
-
-#: ../cgi/cgi.c:601 ../cgi/cgi.c:932
-#, c-format
-msgid "%s: mkscookie failed\n"
-msgstr ""
-
-#: ../cgi/cgi.c:250
 #, c-format
 msgid "%s: mkscookie failed.\n"
 msgstr ""
 
-#: ../cgi/info.c:119
+#, c-format
+msgid "%s: %s=%s: too long\n"
+msgstr ""
+
+msgid "Error: Server Configuration"
+msgstr ""
+
+msgid "Unable to retrieve the script name"
+msgstr ""
+
+msgid "Unable to retrieve method"
+msgstr ""
+
+msgid "Unable to retrieve IP address"
+msgstr ""
+
+msgid "Unable to retrieve server name"
+msgstr ""
+
+msgid "Unable to retrieve server port"
+msgstr ""
+
+msgid "Error: X509 failed"
+msgstr ""
+
+msgid ""
+"There was an x.509 mutual authentication configuration error. Contact your "
+"administrator."
+msgstr ""
+
+msgid "Error: Negotiate login failed"
+msgstr ""
+
+msgid ""
+"There was a problem processing your authentication data. Contact your "
+"administrator"
+msgstr ""
+
+#, c-format
+msgid ""
+"Kerberos ticket transfer is on,  but no tickets were found in the "
+"environment\n"
+msgstr ""
+
+msgid "Error: Unrecognized Service"
+msgstr ""
+
+msgid "Unable to determine referring service from query string."
+msgstr ""
+
+msgid "Error: malformatted factors"
+msgstr ""
+
+msgid "Unable to determine required factors from query string."
+msgstr ""
+
+msgid "Bad service in query string."
+msgstr ""
+
+msgid "Error: malformatted referrer"
+msgstr ""
+
+msgid "Error: Cookies Required"
+msgstr ""
+
+msgid "This service requires that cookies be enabled."
+msgstr ""
+
+msgid "Error: Login Screen"
+msgstr ""
+
+msgid ""
+"We were unable to contact the authentication server.  Please try again later."
+msgstr ""
+
+msgid ""
+"Failed to initialise connections to the authentication server. Please try "
+"again later"
+msgstr ""
+
+#, c-format
+msgid "cosign_login: basic login failed\n"
+msgstr ""
+
+msgid "Error: Please try later"
+msgstr ""
+
+msgid ""
+"We were unable to contact the authentication server. Please try again later."
+msgstr ""
+
+#, c-format
+msgid "no matching service for %s\n"
+msgstr ""
+
+msgid "Error: Unknown service"
+msgstr ""
+
+msgid "We were unable to locate a service matching the one provided."
+msgstr ""
+
+#, c-format
+msgid "regex substitution failed: %s into %s\n"
+msgstr ""
+
+#, c-format
+msgid "requested v2 for v3 service %s\n"
+msgstr ""
+
+msgid "Additional authentication is required."
+msgstr ""
+
+#, c-format
+msgid "%s: mkscookie failed\n"
+msgstr ""
+
+msgid "Error: Make Service Cookie Failed"
+msgstr ""
+
+msgid "We were unable to create a service cookie. Please try again later."
+msgstr ""
+
+#, c-format
+msgid "%s: cosign_register failed\n"
+msgstr ""
+
+msgid "Error: Register Failed"
+msgstr ""
+
+msgid "Error: Server Error"
+msgstr ""
+
+msgid "cgi_init failed"
+msgstr ""
+
+msgid "Too many form fields configured."
+msgstr ""
+
+msgid "Authentication Required"
+msgstr ""
+
+msgid "Please enter your login and password."
+msgstr ""
+
+#, c-format
+msgid "Unknown authentication type '%s'"
+msgstr ""
+
+msgid "Password Expired"
+msgstr ""
+
+msgid "Password or Account Name incorrect. Is [caps lock] on?"
+msgstr ""
+
+msgid "Primary authentication is required before secondary authentication."
+msgstr ""
+
+msgid "Additional authentication failed. Please try again later."
+msgstr ""
+
+msgid "Please complete all required fields to re-authenticate."
+msgstr ""
+
+#, c-format
+msgid "%s: implicit cosign_register failed\n"
+msgstr ""
+
+msgid "Error: Implicit Register Failed"
+msgstr ""
+
+#, c-format
+msgid "%s: mkcookie: failed\n"
+msgstr ""
+
+msgid "Re-Authentication Required"
+msgstr ""
+
+msgid "Please Re-Authenticate."
+msgstr ""
+
+msgid "Re-authenticate to confirm your new Internet address."
+msgstr ""
+
+msgid "REMOTE_ADDR not set"
+msgstr ""
+
+msgid "SCRIPT_NAME not set"
+msgstr ""
+
+msgid "REQUEST_METHOD not set"
+msgstr ""
+
+msgid "Your browser is looping!"
+msgstr ""
+
 msgid ""
 "<p>The Weblogin-protected site that  you were connecting to encountered an "
 "error while processing your authentication. Please delete your cookies, "
@@ -67,23 +243,15 @@ msgid ""
 " </ul>\n"
 msgstr ""
 
-#: ../cgi/info.c:151
-msgid ""
-"<p>There is a problem with the URL to which you were redirected. Since this "
-"can potentially indicate phishing or other suspicious activity, we have "
-"stopped the redirect in order to protect your security.</p>\n"
-" <p>You may be able to access the web site or service if you try again with "
-"its official URL.</p>"
+msgid "Browser is stuck in an infinite redirect loop."
 msgstr ""
 
-#: ../cgi/cosigncgi.h:37
-msgid ""
-"<p>Web Login is unavailable due to an internal error. We apologize for any "
-"inconvenience this may cause and are working to restore service as soon as "
-"possible. Please try again later.</p>"
+msgid "Changes Not Saved"
 msgstr ""
 
-#: ../cgi/info.c:140
+msgid "You were trying to POST, BUT Changes Not Saved"
+msgstr ""
+
 msgid ""
 "<p>You attempted to submit data to a Web Login-protected web site after your "
 "session had timed out. Your changes have not been saved.</p>\n"
@@ -92,375 +260,107 @@ msgid ""
 "submitting the data. </p>\n"
 msgstr ""
 
-#: ../cgi/cgi.c:591
-msgid "Additional authentication is required."
+msgid "weblogin: URL validation failed"
 msgstr ""
 
-#: ../cgi/login.c:299 ../cgi/login.c:307
-msgid "An unknown error occurred."
-msgstr ""
-
-#: ../cgi/cgi.c:711 ../cgi/cgi.c:771 ../cgi/cgi.c:805 ../cgi/cgi.c:820
-#: ../cgi/cgi.c:860 ../cgi/cgi.c:987 ../cgi/cgi.c:1043 ../cgi/info.c:170
-msgid "Authentication Required"
-msgstr ""
-
-#: ../cgi/login.c:274 ../cgi/login.c:281
-msgid "Authentication Required ( kerberos error )"
-msgstr ""
-
-#: ../cgi/login.c:290
-msgid "Authentication Required ( krb realm error )"
-msgstr ""
-
-#: ../cgi/login.c:300 ../cgi/login.c:315
-msgid "Authentication Required (kerberos error)"
-msgstr ""
-
-#: ../cgi/login.c:308
-msgid "Authentication Required (krbpath error)"
-msgstr ""
-
-#: ../cgi/cgi.c:424
-msgid "Bad service in query string."
-msgstr ""
-
-#: ../cgi/info.c:135
-msgid "Browser is stuck in an infinite redirect loop."
-msgstr ""
-
-#: ../cgi/login.c:416
-msgid "CC Initialize Error"
-msgstr ""
-
-#: ../cgi/login.c:423
-msgid "CC Storing Error"
-msgstr ""
-
-#: ../cgi/info.c:138
-msgid "Changes Not Saved"
-msgstr ""
-
-#: ../cgi/login.c:196
-msgid "Database Connection Problem"
-msgstr ""
-
-#: ../cgi/login.c:147
-msgid "Database Problem"
-msgstr ""
-
-#: ../cgi/login.c:339
-msgid "Error"
-msgstr ""
-
-#: ../cgi/cgi.c:453
-msgid "Error: Cookies Required"
-msgstr ""
-
-#: ../cgi/cgi.c:944
-msgid "Error: Implicit Register Failed"
-msgstr ""
-
-#: ../cgi/cgi.c:472 ../cgi/cgi.c:982
-msgid "Error: Login Screen"
-msgstr ""
-
-#: ../cgi/cgi.c:105 ../cgi/cgi.c:117 ../cgi/cgi.c:132 ../cgi/cgi.c:145
-msgid "Error: Loop Breaker"
-msgstr ""
-
-#: ../cgi/cgi.c:602 ../cgi/cgi.c:933
-msgid "Error: Make Service Cookie Failed"
-msgstr ""
-
-#: ../cgi/cgi.c:368
-msgid "Error: Negotiate login failed"
-msgstr ""
-
-#: ../cgi/cgi.c:515 ../cgi/cgi.c:635 ../cgi/cgi.c:848 ../cgi/login.c:239
-#: ../cgi/login.c:440
-msgid "Error: Please try later"
-msgstr ""
-
-#: ../cgi/cgi.c:613
-msgid "Error: Register Failed"
-msgstr ""
-
-#: ../cgi/cgi.c:318 ../cgi/cgi.c:324 ../cgi/cgi.c:330 ../cgi/cgi.c:336
-#: ../cgi/cgi.c:342 ../cgi/cgi.c:491 ../cgi/cgi.c:502 ../cgi/cgi.c:679
-msgid "Error: Server Configuration"
-msgstr ""
-
-#: ../cgi/cgi.c:659 ../cgi/info.c:85 ../cgi/info.c:93 ../cgi/info.c:101
-#: ../cgi/info.c:160 ../cgi/logout.c:158 ../cgi/logout.c:166
-#: ../cgi/logout.c:174 ../cgi/logout.c:207
-msgid "Error: Server Error"
-msgstr ""
-
-#: ../cgi/cgi.c:533 ../cgi/cgi.c:544 ../cgi/cgi.c:553 ../cgi/cgi.c:877
-#: ../cgi/cgi.c:888 ../cgi/cgi.c:897
-msgid "Error: Unknown service"
-msgstr ""
-
-#: ../cgi/cgi.c:391 ../cgi/cgi.c:423
-msgid "Error: Unrecognized Service"
-msgstr ""
-
-#: ../cgi/cgi.c:354
-msgid "Error: X509 failed"
-msgstr ""
-
-#: ../cgi/cgi.c:405
-msgid "Error: malformatted factors"
-msgstr ""
-
-#: ../cgi/cgi.c:431
-msgid "Error: malformatted referrer"
-msgstr ""
-
-#: ../cgi/logout.c:279
-msgid ""
-"Failed to initialise connections to the authentication server. Please quit "
-"your browser to complete logout."
-msgstr ""
-
-#: ../cgi/cgi.c:503
-msgid ""
-"Failed to initialise connections to the authentication server. Please try "
-"again later"
-msgstr ""
-
-#: ../cgi/login.c:168 ../cgi/login.c:178
-msgid "Invalid Input"
-msgstr ""
-
-#: ../cgi/login.c:361
-msgid "KT Resolve Error"
-msgstr ""
-
-#: ../cgi/cgi.c:382
-#, c-format
-msgid ""
-"Kerberos ticket transfer is on,  but no tickets were found in the "
-"environment\n"
-msgstr ""
-
-#: ../cgi/logout.c:201
-msgid "Logout Requested"
-msgstr ""
-
-#: ../cgi/logout.c:234
-msgid "Logout Requested (again?)"
-msgstr ""
-
-#: ../cgi/cgi.c:765 ../cgi/cgi.c:816
-msgid "Password Expired"
-msgstr ""
-
-#: ../cgi/cgi.c:775
-msgid "Password or Account Name incorrect. Is [caps lock] on?"
-msgstr ""
-
-#: ../cgi/cgi.c:1027
-msgid "Please Re-Authenticate."
-msgstr ""
-
-#: ../cgi/cgi.c:917
-msgid "Please complete all required fields to re-authenticate."
-msgstr ""
-
-#: ../cgi/cgi.c:712 ../cgi/cgi.c:861
-msgid "Please enter your login and password."
-msgstr ""
-
-#: ../cgi/cgi.c:106 ../cgi/cgi.c:118 ../cgi/cgi.c:133 ../cgi/cgi.c:146
-#: ../cgi/cgi.c:473 ../cgi/cgi.c:983
-msgid "Please try again later."
-msgstr ""
-
-#: ../cgi/cgi.c:806
-msgid "Primary authentication is required before secondary authentication."
-msgstr ""
-
-#: ../cgi/login.c:195
-msgid "Problems connecting to the database."
-msgstr ""
-
-#: ../cgi/login.c:167 ../cgi/login.c:177
-msgid "Provided login appears to be invalid"
-msgstr ""
-
-#: ../cgi/info.c:86 ../cgi/logout.c:159
-msgid "REMOTE_ADDR not set"
-msgstr ""
-
-#: ../cgi/info.c:102 ../cgi/logout.c:175
-msgid "REQUEST_METHOD not set"
-msgstr ""
-
-#: ../cgi/cgi.c:1025 ../cgi/cgi.c:1033
-msgid "Re-Authentication Required"
-msgstr ""
-
-#: ../cgi/cgi.c:1035
-msgid "Re-authenticate to confirm your new Internet address."
-msgstr ""
-
-#: ../cgi/info.c:94 ../cgi/logout.c:167
-msgid "SCRIPT_NAME not set"
-msgstr ""
-
-#: ../cgi/logout.c:265 ../cgi/logout.c:278
-msgid "Server Configuration Error"
-msgstr ""
-
-#: ../cgi/login.c:374
-msgid "Server Principal Error"
-msgstr ""
-
-#: ../cgi/login.c:186
-msgid "Server Problem"
-msgstr ""
-
-#: ../cgi/cgi.c:369
-msgid ""
-"There was a problem processing your authentication data. Contact your "
-"administrator"
-msgstr ""
-
-#: ../cgi/cgi.c:355
-msgid ""
-"There was an x.509 mutual authentication configuration error. Contact your "
-"administrator."
-msgstr ""
-
-#: ../cgi/cgi.c:454
-msgid "This service requires that cookies be enabled."
-msgstr ""
-
-#: ../cgi/login.c:349
-msgid "Ticket Verification Error"
-msgstr ""
-
-#: ../cgi/login.c:389
-msgid "Ticket Verify Error"
-msgstr ""
-
-#: ../cgi/cgi.c:680
-msgid "Too many form fields configured."
-msgstr ""
-
-#: ../cgi/info.c:150
 msgid "URL validation failed"
 msgstr ""
 
-#: ../cgi/login.c:146
-msgid "Unable to connect to guest account database."
+msgid ""
+"<p>There is a problem with the URL to which you were redirected. Since this "
+"can potentially indicate phishing or other suspicious activity, we have "
+"stopped the redirect in order to protect your security.</p>\n"
+" <p>You may be able to access the web site or service if you try again with "
+"its official URL.</p>"
 msgstr ""
 
-#: ../cgi/cgi.c:392 ../cgi/cgi.c:432
-msgid "Unable to determine referring service from query string."
-msgstr ""
-
-#: ../cgi/cgi.c:406
-msgid "Unable to determine required factors from query string."
-msgstr ""
-
-#: ../cgi/info.c:161
 msgid "Unable to determine template from query string."
 msgstr ""
 
-#: ../cgi/login.c:185
+msgid "Unable to connect to guest account database."
+msgstr ""
+
+msgid "Database Problem"
+msgstr ""
+
+msgid "Provided login appears to be invalid"
+msgstr ""
+
+msgid "Invalid Input"
+msgstr ""
+
 msgid "Unable to query guest account database."
 msgstr ""
 
-#: ../cgi/cgi.c:331
-msgid "Unable to retrieve IP address"
+msgid "Server Problem"
 msgstr ""
 
-#: ../cgi/cgi.c:325
-msgid "Unable to retrieve method"
+msgid "Problems connecting to the database."
 msgstr ""
 
-#: ../cgi/cgi.c:337
-msgid "Unable to retrieve server name"
+msgid "Database Connection Problem"
 msgstr ""
 
-#: ../cgi/cgi.c:343
-msgid "Unable to retrieve server port"
+msgid "Authentication Required ( kerberos error )"
 msgstr ""
 
-#: ../cgi/cgi.c:319
-msgid "Unable to retrieve the script name"
+msgid "Authentication Required ( krb realm error )"
 msgstr ""
 
-#: ../cgi/cgi.c:760
-#, c-format
-msgid "Unknown authentication type '%s'"
+msgid "An unknown error occurred."
 msgstr ""
 
-#: ../cgi/logout.c:266
+msgid "Authentication Required (kerberos error)"
+msgstr ""
+
+msgid "Authentication Required (krbpath error)"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "server configuration error"
+msgstr ""
+
+msgid "Ticket Verification Error"
+msgstr ""
+
+msgid "KT Resolve Error"
+msgstr ""
+
+msgid "Server Principal Error"
+msgstr ""
+
+msgid "Ticket Verify Error"
+msgstr ""
+
+msgid "CC Initialize Error"
+msgstr ""
+
+msgid "CC Storing Error"
+msgstr ""
+
+msgid "Logout Requested"
+msgstr ""
+
+msgid "Logout Requested (again?)"
+msgstr ""
+
+msgid "Server Configuration Error"
+msgstr ""
+
 msgid ""
 "We were unable to contact the authentication server.  Please quit your web "
 "browser to complete logout."
 msgstr ""
 
-#: ../cgi/cgi.c:492 ../cgi/cgi.c:614 ../cgi/cgi.c:945
 msgid ""
-"We were unable to contact the authentication server.  Please try again later."
+"Failed to initialise connections to the authentication server. Please quit "
+"your browser to complete logout."
 msgstr ""
 
-#: ../cgi/cgi.c:516 ../cgi/cgi.c:636 ../cgi/cgi.c:849 ../cgi/login.c:237
-#: ../cgi/login.c:438
 msgid ""
-"We were unable to contact the authentication server. Please try again later."
-msgstr ""
-
-#: ../cgi/cgi.c:603 ../cgi/cgi.c:934
-msgid "We were unable to create a service cookie. Please try again later."
-msgstr ""
-
-#: ../cgi/cgi.c:534 ../cgi/cgi.c:545 ../cgi/cgi.c:554 ../cgi/cgi.c:878
-#: ../cgi/cgi.c:889 ../cgi/cgi.c:898
-msgid "We were unable to locate a service matching the one provided."
-msgstr ""
-
-#: ../cgi/info.c:139
-msgid "You were trying to POST, BUT Changes Not Saved"
-msgstr ""
-
-#: ../cgi/info.c:118
-msgid "Your browser is looping!"
-msgstr ""
-
-#: ../cgi/cgi.c:660 ../cgi/logout.c:208
-msgid "cgi_init failed"
-msgstr ""
-
-#: ../cgi/cgi.c:514 ../cgi/cgi.c:634
-#, c-format
-msgid "cosign_login: basic login failed\n"
-msgstr ""
-
-#: ../cgi/cgi.c:532 ../cgi/cgi.c:876
-#, c-format
-msgid "no matching service for %s\n"
-msgstr ""
-
-#: ../cgi/cgi.c:542 ../cgi/cgi.c:886
-#, c-format
-msgid "regex substitution failed: %s into %s\n"
-msgstr ""
-
-#: ../cgi/cgi.c:552 ../cgi/cgi.c:896
-#, c-format
-msgid "requested v2 for v3 service %s\n"
-msgstr ""
-
-#: ../cgi/login.c:348
-msgid "server configuration error"
-msgstr ""
-
-#: ../cgi/info.c:149
-msgid "weblogin: URL validation failed"
+"<p>Web Login is unavailable due to an internal error. We apologize for any "
+"inconvenience this may cause and are working to restore service as soon as "
+"possible. Please try again later.</p>"
 msgstr ""

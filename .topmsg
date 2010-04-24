@@ -1,6 +1,9 @@
-From: Jiang <jiangxin@ossxp.com>
+From: Jiang Xin <jiangxin@ossxp.com>
 Subject: [PATCH] t/new_factor_with_flag_3
 
-<patch description>
+ossxp factor extension (flage -3):
+* if has not logged in, not check factor with flag 3,
+  but not warning like factor with flag 2.
+* if require factor(s) not given, not run factor with flag 3.
 
-Signed-off-by: Jiang <jiangxin@ossxp.com>
+Signed-off-by: Jiang Xin <jiangxin@ossxp.com>

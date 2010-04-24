@@ -926,7 +926,20 @@ loggedin:
 		    " before secondary authentication.");
 	    goto loginscreen;
 	}
+	/*
+	 * ossxp factor extension:
+	 *   * if has not logged in, not check factor with flag 3,
+	 *     but not warning like factor with flag 2.
+	 *   * if require factor(s) not given, not run factor with flag 3.
+	 */
+	if (( fl->fl_flag == 3 ) && ( *ui.ui_login == '\0' || factor == NULL )) {
+	    continue;
+	}
 	if (( rc = execfactor( fl, cl, &msg )) != COSIGN_CGI_OK ) {
+	    /* ossxp: bypass if auth failed for fl_flag == 3, and check required factors latter. */
+	    if ( fl->fl_flag == 3 ) {
+		continue;
+	    }
 	    sl[ SL_ERROR ].sl_data = _(msg);
 	    fprintf( stderr, "CoSign: user %s authentication failure from host [%s]. (factors)\n", login !=NULL ? login : "?", ip_addr);
 	    if ( msg != NULL && strlen( msg ) > 0 )
@@ -982,6 +995,27 @@ loggedin:
 	    }
 
 	    (void)cosign_check( head, cookie, &ui );
+	}
+    }
+
+    /* ossxp: try to catch not required factors for factor with flag 3. */
+    if ( factor != NULL ) {
+	require = strdup( factor );
+	for ( r = strtok_r( require, ",", &reqp ); r != NULL;
+		r = strtok_r( NULL, ",", &reqp )) {
+	    for ( i = 0; ui.ui_factors[ i ] != NULL; i++ ) {
+		if ( match_factor( r, ui.ui_factors[ i ], suffix )) {
+		    break;
+		}
+	    }
+	    if ( ui.ui_factors[ i ] == NULL ) {
+		break;
+	    }
+	}
+	if ( r != NULL ) {
+	    sl[ SL_ERROR ].sl_data = _("Additional authentication"
+		    " failed. Please try again later.");
+	    goto loginscreen;
 	}
     }
 

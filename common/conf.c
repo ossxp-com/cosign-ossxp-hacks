@@ -670,6 +670,8 @@ read_config( char *path )
 	    for ( i = 2; *av[ i ] == '-'; i++ ) {
 		if ( strcmp( av[ i ], "-2" ) == 0 ) {
 		    fl_new->fl_flag = 2;
+		} else if ( strcmp( av[ i ], "-3" ) == 0 ) {
+		    fl_new->fl_flag = 3;
 		} else {
 		    fprintf( stderr, "line %d:"
 			    " unknown flag %s to keyword factor\n",

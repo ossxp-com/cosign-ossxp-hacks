@@ -1,0 +1,7 @@
+From: Jiang <jiangxin@ossxp.com>
+Subject: [PATCH] t/factor_admin
+
+Check for admin permission based on user LDAP authServices entry.
+This factor is used as factor with new "-3" flag (ossxp extension).
+
+Signed-off-by: Jiang <jiangxin@ossxp.com>

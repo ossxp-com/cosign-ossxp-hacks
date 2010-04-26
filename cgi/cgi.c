@@ -954,14 +954,18 @@ loggedin:
 	    goto loginscreen;
 	}
 
-	for ( i = 0; i < COSIGN_MAXFACTORS - 1; i++ ) {
-	    if ( new_factors[ i ] == NULL ) {
-		new_factors[ i ] = strdup( msg );
-		new_factors[ i + 1 ] = NULL;
-		break;
-	    }
-	    if ( strcmp( new_factors[ i ], msg ) == 0 ) {
-		break;
+	/* ossxp: factor return a comma seperated authorized factors. */
+	for ( r = strtok_r( msg, ",", &reqp ); r != NULL;
+		r = strtok_r( NULL, ",", &reqp )) {
+	    for ( i = 0; i < COSIGN_MAXFACTORS - 1; i++ ) {
+		if ( new_factors[ i ] == NULL ) {
+		    new_factors[ i ] = strdup( r );
+		    new_factors[ i + 1 ] = NULL;
+		    break;
+		}
+		if ( strcmp( new_factors[ i ], r ) == 0 ) {
+		    break;
+		}
 	    }
 	}
 

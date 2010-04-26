@@ -12,8 +12,9 @@ class LdapConfig:
     ldap_email_attribute = 'mail'
     ldap_login_attribute = 'uid'
 
-    # Used for admin factor and services like opensesame.
+    # Used for admin_* factors and used for services like opensesame and others.
     admin_auth_service = "ssh"
+    admin_auth_service_ssh = "ssh"
 
     # Debug and logging
     log_level = 'critical'

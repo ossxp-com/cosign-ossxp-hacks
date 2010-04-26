@@ -9,12 +9,12 @@ ossxp factor extension (flage -3):
 Signed-off-by: Jiang Xin <jiangxin@ossxp.com>
 
 ---
- cgi/cgi.c     |   34 ++++++++++++++++++++++++++++++++++
+ cgi/cgi.c     |   54 ++++++++++++++++++++++++++++++++++++++++++++++--------
  common/conf.c |    2 ++
- 2 files changed, 36 insertions(+), 0 deletions(-)
+ 2 files changed, 48 insertions(+), 8 deletions(-)
 
 diff --git a/cgi/cgi.c b/cgi/cgi.c
-index cc76769..d72b487 100755
+index cc76769..bd67f2d 100755
 --- a/cgi/cgi.c
 +++ b/cgi/cgi.c
 @@ -926,7 +926,20 @@ loggedin:
@@ -38,7 +38,34 @@ index cc76769..d72b487 100755
  	    sl[ SL_ERROR ].sl_data = _(msg);
  	    fprintf( stderr, "CoSign: user %s authentication failure from host [%s]. (factors)\n", login !=NULL ? login : "?", ip_addr);
  	    if ( msg != NULL && strlen( msg ) > 0 )
-@@ -985,6 +998,27 @@ loggedin:
+@@ -941,14 +954,18 @@ loggedin:
+ 	    goto loginscreen;
+ 	}
+ 
+-	for ( i = 0; i < COSIGN_MAXFACTORS - 1; i++ ) {
+-	    if ( new_factors[ i ] == NULL ) {
+-		new_factors[ i ] = strdup( msg );
+-		new_factors[ i + 1 ] = NULL;
+-		break;
+-	    }
+-	    if ( strcmp( new_factors[ i ], msg ) == 0 ) {
+-		break;
++	/* ossxp: factor return a comma seperated authorized factors. */
++	for ( r = strtok_r( msg, ",", &reqp ); r != NULL;
++		r = strtok_r( NULL, ",", &reqp )) {
++	    for ( i = 0; i < COSIGN_MAXFACTORS - 1; i++ ) {
++		if ( new_factors[ i ] == NULL ) {
++		    new_factors[ i ] = strdup( r );
++		    new_factors[ i + 1 ] = NULL;
++		    break;
++		}
++		if ( strcmp( new_factors[ i ], r ) == 0 ) {
++		    break;
++		}
+ 	    }
+ 	}
+ 
+@@ -985,6 +1002,27 @@ loggedin:
  	}
      }
  

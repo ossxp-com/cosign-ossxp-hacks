@@ -397,6 +397,7 @@ main( int argc, char *argv[] )
     char			*cookie = NULL, *method, *qs;
     char			*misc = NULL, *factor = NULL, *p, *r;
     char			*require, *reqp;
+    char			*authed_factor, *authp;
     char			*ref = NULL, *service = NULL, *login = NULL;
     char			*remote_user = NULL;
     char			*subject_dn = NULL, *issuer_dn = NULL;
@@ -935,6 +936,7 @@ loggedin:
 	if (( fl->fl_flag == 3 ) && ( *ui.ui_login == '\0' || factor == NULL )) {
 	    continue;
 	}
+
 	if (( rc = execfactor( fl, cl, &msg )) != COSIGN_CGI_OK ) {
 	    /* ossxp: bypass if auth failed for fl_flag == 3, and check required factors latter. */
 	    if ( fl->fl_flag == 3 ) {
@@ -955,8 +957,9 @@ loggedin:
 	}
 
 	/* ossxp: factor return a comma seperated authorized factors. */
-	for ( r = strtok_r( msg, ",", &reqp ); r != NULL;
-		r = strtok_r( NULL, ",", &reqp )) {
+	authed_factor = strdup( msg );
+	for ( r = strtok_r( authed_factor, ",", &authp ); r != NULL;
+		r = strtok_r( NULL, ",", &authp )) {
 	    for ( i = 0; i < COSIGN_MAXFACTORS - 1; i++ ) {
 		if ( new_factors[ i ] == NULL ) {
 		    new_factors[ i ] = strdup( r );
@@ -969,16 +972,6 @@ loggedin:
 	    }
 	}
 
-	/*
-	 * Don't call cosign_login() if the factor in question is
-	 * already satisfied.
-	 */
-	for ( i = 0; ui.ui_factors[ i ] != NULL; i++ ) {
-	    if ( strcmp( msg, ui.ui_factors[ i ] ) == 0 ) {
-		break;
-	    }
-	}
-
 	/* OSSXP: set login to real userid. */
 	get_user_attributes(login, new_factors);
 	if (user_attr_list[UA_UID] != NULL)
@@ -988,17 +981,31 @@ loggedin:
 	    sl[ SL_LOGIN ].sl_data = login;
 	}
 
-	if (( ui.ui_factors[ i ] == NULL ) ||
-		( strcmp( ui.ui_ipaddr, ip_addr ) != 0 )) {
-	    if ( cosign_login( head, cookie, ip_addr, login, msg, NULL ) < 0 ) {
-		sl[ SL_TITLE ].sl_data = _("Error: Please try later");
-		sl[ SL_ERROR ].sl_data = _("We were unable to contact the "
-			"authentication server. Please try again later.");
-		subfile( ERROR_HTML, sl, 0 );
-		exit( 0 );
-	    }
 
-	    (void)cosign_check( head, cookie, &ui );
+	/* ossxp: register each factor from the comma seperated authorized factors. */
+	authed_factor = strdup( msg );
+	for ( r = strtok_r( authed_factor, ",", &authp ); r != NULL;
+		r = strtok_r( NULL, ",", &authp )) {
+	    /*
+	     * Don't call cosign_login() if the factor in question is
+	     * already satisfied.
+	     */
+	    for ( i = 0; ui.ui_factors[ i ] != NULL; i++ ) {
+		if ( strcmp( r, ui.ui_factors[ i ] ) == 0 ) {
+		    break;
+		}
+	    }
+	    if (( ui.ui_factors[ i ] == NULL ) ||
+		    ( strcmp( ui.ui_ipaddr, ip_addr ) != 0 )) {
+		if ( cosign_login( head, cookie, ip_addr, login, r, NULL ) < 0 ) {
+		    sl[ SL_TITLE ].sl_data = _("Error: Please try later");
+		    sl[ SL_ERROR ].sl_data = _("We were unable to contact the "
+			    "authentication server. Please try again later.");
+		    subfile( ERROR_HTML, sl, 0 );
+		    exit( 0 );
+		}
+		(void)cosign_check( head, cookie, &ui );
+	    }
 	}
     }
 
@@ -1017,6 +1024,7 @@ loggedin:
 	    }
 	}
 	if ( r != NULL ) {
+	    fprintf( stderr, "CoSign: user %s authentication failure from host [%s]. (factor: %s)\n", login !=NULL ? login : "?", ip_addr, r);
 	    sl[ SL_ERROR ].sl_data = _("Additional authentication"
 		    " failed. Please try again later.");
 	    goto loginscreen;

@@ -3,9 +3,9 @@
 
 """
 Check for admin permission based on user LDAP authServices entry.
-This factor is used as factor with new "-3" flag (ossxp extension).
+This factor is used as factor with new "-2" or "-3" flag (ossxp extension).
 
-Usage: %(program)s [options] username
+Usage: %(program)s [options] username required_factors
 
 Options:
 
@@ -33,6 +33,7 @@ class DefaultConfig:
     ldap_email_attribute = 'mail'
     ldap_login_attribute = 'uid'
     admin_auth_service = "ssh"
+    admin_auth_service_ssh = "ssh"
 
     # Debug and logging
     log_level = False
@@ -192,9 +193,9 @@ def main(argv=None):
         argv = sys.argv[1:]
 
     # CoSign pass parameters through stdin
-    # Get parameters: username password
+    # Get parameters: username required_factors
     if not argv:
-        argv = [raw_input()]
+        argv = [raw_input(), raw_input()]
 
     try:
         opts, args = getopt.getopt( 
@@ -242,13 +243,23 @@ def main(argv=None):
         else:
             print "Cannot open logfile: %s" % os.path.abspath(opt_logfile)
 
-    if len(args) != 1:
+    if len(args) != 2:
         return usage(1, "Wrong arguments.")
 
-    auth_services = query_user_auth_services( args[0], cfg )
-    admin_auth_service = getattr(cfg, "admin_auth_service", "ssh");
-    if admin_auth_service in auth_services:
-        print "admin"
+    username = args[0]
+    auth_services = query_user_auth_services( username, cfg )
+
+    factors = []
+    for f in args[1].split(','):
+        f = f.strip()
+        if f == "admin":
+            admin_auth_service = getattr(cfg, "admin_auth_service", "ssh");
+        else:
+            admin_auth_service = getattr(cfg, "admin_auth_service_%s" % f[6:], f);
+        if admin_auth_service in auth_services:
+            factors.append(f)
+    if factors:
+        print ",".join(factors)
         return 0
     else:
         print "Login failed: user not belong to admin group."

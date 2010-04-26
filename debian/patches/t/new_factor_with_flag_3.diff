@@ -9,15 +9,23 @@ ossxp factor extension (flage -3):
 Signed-off-by: Jiang Xin <jiangxin@ossxp.com>
 
 ---
- cgi/cgi.c     |   54 ++++++++++++++++++++++++++++++++++++++++++++++--------
- common/conf.c |    2 ++
- 2 files changed, 48 insertions(+), 8 deletions(-)
+ cgi/cgi.c     |  100 +++++++++++++++++++++++++++++++++++++++++---------------
+ common/conf.c |    2 +
+ 2 files changed, 75 insertions(+), 27 deletions(-)
 
 diff --git a/cgi/cgi.c b/cgi/cgi.c
-index cc76769..bd67f2d 100755
+index cc76769..2417fef 100755
 --- a/cgi/cgi.c
 +++ b/cgi/cgi.c
-@@ -926,7 +926,20 @@ loggedin:
+@@ -397,6 +397,7 @@ main( int argc, char *argv[] )
+     char			*cookie = NULL, *method, *qs;
+     char			*misc = NULL, *factor = NULL, *p, *r;
+     char			*require, *reqp;
++    char			*authed_factor, *authp;
+     char			*ref = NULL, *service = NULL, *login = NULL;
+     char			*remote_user = NULL;
+     char			*subject_dn = NULL, *issuer_dn = NULL;
+@@ -926,7 +927,21 @@ loggedin:
  		    " before secondary authentication.");
  	    goto loginscreen;
  	}
@@ -30,6 +38,7 @@ index cc76769..bd67f2d 100755
 +	if (( fl->fl_flag == 3 ) && ( *ui.ui_login == '\0' || factor == NULL )) {
 +	    continue;
 +	}
++
  	if (( rc = execfactor( fl, cl, &msg )) != COSIGN_CGI_OK ) {
 +	    /* ossxp: bypass if auth failed for fl_flag == 3, and check required factors latter. */
 +	    if ( fl->fl_flag == 3 ) {
@@ -38,7 +47,7 @@ index cc76769..bd67f2d 100755
  	    sl[ SL_ERROR ].sl_data = _(msg);
  	    fprintf( stderr, "CoSign: user %s authentication failure from host [%s]. (factors)\n", login !=NULL ? login : "?", ip_addr);
  	    if ( msg != NULL && strlen( msg ) > 0 )
-@@ -941,14 +954,18 @@ loggedin:
+@@ -941,24 +956,19 @@ loggedin:
  	    goto loginscreen;
  	}
  
@@ -50,9 +59,20 @@ index cc76769..bd67f2d 100755
 -	    }
 -	    if ( strcmp( new_factors[ i ], msg ) == 0 ) {
 -		break;
+-	    }
+-	}
+-
+-	/*
+-	 * Don't call cosign_login() if the factor in question is
+-	 * already satisfied.
+-	 */
+-	for ( i = 0; ui.ui_factors[ i ] != NULL; i++ ) {
+-	    if ( strcmp( msg, ui.ui_factors[ i ] ) == 0 ) {
+-		break;
 +	/* ossxp: factor return a comma seperated authorized factors. */
-+	for ( r = strtok_r( msg, ",", &reqp ); r != NULL;
-+		r = strtok_r( NULL, ",", &reqp )) {
++	authed_factor = strdup( msg );
++	for ( r = strtok_r( authed_factor, ",", &authp ); r != NULL;
++		r = strtok_r( NULL, ",", &authp )) {
 +	    for ( i = 0; i < COSIGN_MAXFACTORS - 1; i++ ) {
 +		if ( new_factors[ i ] == NULL ) {
 +		    new_factors[ i ] = strdup( r );
@@ -65,10 +85,47 @@ index cc76769..bd67f2d 100755
  	    }
  	}
  
-@@ -985,6 +1002,27 @@ loggedin:
+@@ -971,17 +981,53 @@ loggedin:
+ 	    sl[ SL_LOGIN ].sl_data = login;
  	}
-     }
  
+-	if (( ui.ui_factors[ i ] == NULL ) ||
+-		( strcmp( ui.ui_ipaddr, ip_addr ) != 0 )) {
+-	    if ( cosign_login( head, cookie, ip_addr, login, msg, NULL ) < 0 ) {
+-		sl[ SL_TITLE ].sl_data = _("Error: Please try later");
+-		sl[ SL_ERROR ].sl_data = _("We were unable to contact the "
+-			"authentication server. Please try again later.");
+-		subfile( ERROR_HTML, sl, 0 );
+-		exit( 0 );
++
++	/* ossxp: register each factor from the comma seperated authorized factors. */
++	authed_factor = strdup( msg );
++	for ( r = strtok_r( authed_factor, ",", &authp ); r != NULL;
++		r = strtok_r( NULL, ",", &authp )) {
++	    /*
++	     * Don't call cosign_login() if the factor in question is
++	     * already satisfied.
++	     */
++	    for ( i = 0; ui.ui_factors[ i ] != NULL; i++ ) {
++		if ( strcmp( r, ui.ui_factors[ i ] ) == 0 ) {
++		    break;
++		}
++	    }
++	    if (( ui.ui_factors[ i ] == NULL ) ||
++		    ( strcmp( ui.ui_ipaddr, ip_addr ) != 0 )) {
++		if ( cosign_login( head, cookie, ip_addr, login, r, NULL ) < 0 ) {
++		    sl[ SL_TITLE ].sl_data = _("Error: Please try later");
++		    sl[ SL_ERROR ].sl_data = _("We were unable to contact the "
++			    "authentication server. Please try again later.");
++		    subfile( ERROR_HTML, sl, 0 );
++		    exit( 0 );
++		}
++		(void)cosign_check( head, cookie, &ui );
+ 	    }
++	}
++    }
+ 
+-	    (void)cosign_check( head, cookie, &ui );
 +    /* ossxp: try to catch not required factors for factor with flag 3. */
 +    if ( factor != NULL ) {
 +	require = strdup( factor );
@@ -84,15 +141,13 @@ index cc76769..bd67f2d 100755
 +	    }
 +	}
 +	if ( r != NULL ) {
++	    fprintf( stderr, "CoSign: user %s authentication failure from host [%s]. (factor: %s)\n", login !=NULL ? login : "?", ip_addr, r);
 +	    sl[ SL_ERROR ].sl_data = _("Additional authentication"
 +		    " failed. Please try again later.");
 +	    goto loginscreen;
-+	}
-+    }
-+
-     if ( *ui.ui_login == '\0' ) {
- 	sl[ SL_TITLE ].sl_data = _("Authentication Required");
- 	sl[ SL_ERROR ].sl_data = _("Please enter your login and password.");
+ 	}
+     }
+ 
 diff --git a/common/conf.c b/common/conf.c
 index c3484f6..0810892 100644
 --- a/common/conf.c

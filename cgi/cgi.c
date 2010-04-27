@@ -396,7 +396,7 @@ main( int argc, char *argv[] )
     char			*data, *ip_addr, *tmpl = NULL, *server_name;
     char			*cookie = NULL, *method, *qs;
     char			*misc = NULL, *factor = NULL, *p, *r, *r2;
-    char			*require, *reqp;
+    char			*require, *reqp, *reqp2;
     char			*authed_factor, *authp;
     char			*ref = NULL, *service = NULL, *login = NULL;
     char			*remote_user = NULL;

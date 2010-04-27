@@ -395,7 +395,7 @@ main( int argc, char *argv[] )
     char			new_scookie[ 255 ];
     char			*data, *ip_addr, *tmpl = NULL, *server_name;
     char			*cookie = NULL, *method, *qs;
-    char			*misc = NULL, *factor = NULL, *p, *r;
+    char			*misc = NULL, *factor = NULL, *p, *r, *r2;
     char			*require, *reqp;
     char			*authed_factor, *authp;
     char			*ref = NULL, *service = NULL, *login = NULL;
@@ -704,8 +704,15 @@ main( int argc, char *argv[] )
 	    require = strdup( factor );
 	    for ( r = strtok_r( require, ",", &reqp ); r != NULL;
 		    r = strtok_r( NULL, ",", &reqp )) {
-		for ( i = 0; ui.ui_factors[ i ] != NULL; i++ ) {
-		    if ( match_factor( r, ui.ui_factors[ i ], suffix )) {
+		require = strdup( r );
+		for ( r2 = strtok_r( require, "|", &reqp2 ); r2 != NULL;
+			r2 = strtok_r( NULL, ",", &reqp2 )) {
+		    for ( i = 0; ui.ui_factors[ i ] != NULL; i++ ) {
+			if ( match_factor( r2, ui.ui_factors[ i ], suffix )) {
+			    break;
+			}
+		    }
+		    if ( ui.ui_factors[ i ] != NULL ) {
 			break;
 		    }
 		}
@@ -1014,8 +1021,15 @@ loggedin:
 	require = strdup( factor );
 	for ( r = strtok_r( require, ",", &reqp ); r != NULL;
 		r = strtok_r( NULL, ",", &reqp )) {
-	    for ( i = 0; ui.ui_factors[ i ] != NULL; i++ ) {
-		if ( match_factor( r, ui.ui_factors[ i ], suffix )) {
+	    require = strdup( r );
+	    for ( r2 = strtok_r( require, "|", &reqp2 ); r2 != NULL;
+		    r2 = strtok_r( NULL, ",", &reqp2 )) {
+		for ( i = 0; ui.ui_factors[ i ] != NULL; i++ ) {
+		    if ( match_factor( r2, ui.ui_factors[ i ], suffix )) {
+			break;
+		    }
+		}
+		if ( ui.ui_factors[ i ] != NULL ) {
 		    break;
 		}
 	    }

@@ -9,23 +9,45 @@ ossxp factor extension (flage -3):
 Signed-off-by: Jiang Xin <jiangxin@ossxp.com>
 
 ---
- cgi/cgi.c     |  100 +++++++++++++++++++++++++++++++++++++++++---------------
+ cgi/cgi.c     |  122 ++++++++++++++++++++++++++++++++++++++++++--------------
  common/conf.c |    2 +
- 2 files changed, 75 insertions(+), 27 deletions(-)
+ 2 files changed, 93 insertions(+), 31 deletions(-)
 
 diff --git a/cgi/cgi.c b/cgi/cgi.c
-index cc76769..2417fef 100755
+index cc76769..3fd94f6 100755
 --- a/cgi/cgi.c
 +++ b/cgi/cgi.c
-@@ -397,6 +397,7 @@ main( int argc, char *argv[] )
+@@ -395,8 +395,9 @@ main( int argc, char *argv[] )
+     char			new_scookie[ 255 ];
+     char			*data, *ip_addr, *tmpl = NULL, *server_name;
      char			*cookie = NULL, *method, *qs;
-     char			*misc = NULL, *factor = NULL, *p, *r;
-     char			*require, *reqp;
+-    char			*misc = NULL, *factor = NULL, *p, *r;
+-    char			*require, *reqp;
++    char			*misc = NULL, *factor = NULL, *p, *r, *r2;
++    char			*require, *reqp, *reqp2;
 +    char			*authed_factor, *authp;
      char			*ref = NULL, *service = NULL, *login = NULL;
      char			*remote_user = NULL;
      char			*subject_dn = NULL, *issuer_dn = NULL;
-@@ -926,7 +927,21 @@ loggedin:
+@@ -703,8 +704,15 @@ main( int argc, char *argv[] )
+ 	    require = strdup( factor );
+ 	    for ( r = strtok_r( require, ",", &reqp ); r != NULL;
+ 		    r = strtok_r( NULL, ",", &reqp )) {
+-		for ( i = 0; ui.ui_factors[ i ] != NULL; i++ ) {
+-		    if ( match_factor( r, ui.ui_factors[ i ], suffix )) {
++		require = strdup( r );
++		for ( r2 = strtok_r( require, "|", &reqp2 ); r2 != NULL;
++			r2 = strtok_r( NULL, ",", &reqp2 )) {
++		    for ( i = 0; ui.ui_factors[ i ] != NULL; i++ ) {
++			if ( match_factor( r2, ui.ui_factors[ i ], suffix )) {
++			    break;
++			}
++		    }
++		    if ( ui.ui_factors[ i ] != NULL ) {
+ 			break;
+ 		    }
+ 		}
+@@ -926,7 +934,21 @@ loggedin:
  		    " before secondary authentication.");
  	    goto loginscreen;
  	}
@@ -47,7 +69,7 @@ index cc76769..2417fef 100755
  	    sl[ SL_ERROR ].sl_data = _(msg);
  	    fprintf( stderr, "CoSign: user %s authentication failure from host [%s]. (factors)\n", login !=NULL ? login : "?", ip_addr);
  	    if ( msg != NULL && strlen( msg ) > 0 )
-@@ -941,24 +956,19 @@ loggedin:
+@@ -941,24 +963,19 @@ loggedin:
  	    goto loginscreen;
  	}
  
@@ -85,7 +107,7 @@ index cc76769..2417fef 100755
  	    }
  	}
  
-@@ -971,17 +981,53 @@ loggedin:
+@@ -971,17 +988,60 @@ loggedin:
  	    sl[ SL_LOGIN ].sl_data = login;
  	}
  
@@ -131,8 +153,15 @@ index cc76769..2417fef 100755
 +	require = strdup( factor );
 +	for ( r = strtok_r( require, ",", &reqp ); r != NULL;
 +		r = strtok_r( NULL, ",", &reqp )) {
-+	    for ( i = 0; ui.ui_factors[ i ] != NULL; i++ ) {
-+		if ( match_factor( r, ui.ui_factors[ i ], suffix )) {
++	    require = strdup( r );
++	    for ( r2 = strtok_r( require, "|", &reqp2 ); r2 != NULL;
++		    r2 = strtok_r( NULL, ",", &reqp2 )) {
++		for ( i = 0; ui.ui_factors[ i ] != NULL; i++ ) {
++		    if ( match_factor( r2, ui.ui_factors[ i ], suffix )) {
++			break;
++		    }
++		}
++		if ( ui.ui_factors[ i ] != NULL ) {
 +		    break;
 +		}
 +	    }

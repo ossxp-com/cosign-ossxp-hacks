@@ -1,3 +1,10 @@
+ossxp-cosign3 (3.1.1-1.11) unstable; urgency=low
+
+  * Support OR operation for required factors, such as:
+    factor1|factor2,factor3
+
+ -- Jiang Xin <jiangxin@ossxp.com>  Tue, 27 Apr 2010 10:23:52 +0800
+
 ossxp-cosign3 (3.1.1-1.10) unstable; urgency=low
 
   * Fixed: register multi-returned-factors.

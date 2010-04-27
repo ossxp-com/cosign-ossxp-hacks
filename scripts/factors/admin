@@ -41,6 +41,7 @@ class DefaultConfig:
 
 import sys
 import os
+import re
 
 config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'conf')
 if config_path not in sys.path:
@@ -250,7 +251,8 @@ def main(argv=None):
     auth_services = query_user_auth_services( username, cfg )
 
     factors = []
-    for f in args[1].split(','):
+    spliter = re.compile(r'[,|]')
+    for f in spliter.split( args[1] ):
         f = f.strip()
         if f == "admin":
             admin_auth_service = getattr(cfg, "admin_auth_service", "ssh");

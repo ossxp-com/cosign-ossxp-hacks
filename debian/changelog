@@ -1,3 +1,9 @@
+ossxp-cosign3 (3.1.1-1.12) unstable; urgency=low
+
+  * Admin factor check fact name more strickly.
+
+ -- Jiang Xin <jiangxin@ossxp.com>  Thu, 29 Apr 2010 22:30:42 +0800
+
 ossxp-cosign3 (3.1.1-1.11) unstable; urgency=low
 
   * Support OR operation for required factors, such as:

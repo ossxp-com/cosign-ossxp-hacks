@@ -254,11 +254,12 @@ def main(argv=None):
     spliter = re.compile(r'[,|]')
     for f in spliter.split( args[1] ):
         f = f.strip()
+        admin_auth_service = None
         if f == "admin":
             admin_auth_service = getattr(cfg, "admin_auth_service", "ssh");
-        else:
+        elif f.startswith("admin") and len(f) > 6:
             admin_auth_service = getattr(cfg, "admin_auth_service_%s" % f[6:], f);
-        if admin_auth_service in auth_services:
+        if admin_auth_service and admin_auth_service in auth_services:
             factors.append(f)
     if factors:
         print ",".join(factors)

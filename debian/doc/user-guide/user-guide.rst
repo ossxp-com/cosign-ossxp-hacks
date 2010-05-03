@@ -266,7 +266,7 @@ Admin 双因子认证和上面提到的双因子认证又有所区别。
 在单点登录的用户名、口令输入对话框下面有一个“需要创建帐号或者找回口令？”的文字链接。
 点击该链接，便在页面左侧弹出自建帐号以及获取忘记口令的帮助信息。
 
-   .. figure:: images/change_password.png
+   .. figure:: images/lost_passwd.png
       :scale: 50
 
       自建帐号和获取忘记口令的帮助

@@ -40,6 +40,10 @@ binary-fixup/ossxp-cosign3-cgi::
 	mv debian/ossxp-cosign3-cgi/opt/cosign/lib/cgi-ssl/* debian/ossxp-cosign3-cgi/opt/cosign/cgi-bin/
 	rmdir debian/ossxp-cosign3-cgi/opt/cosign/lib/cgi-ssl
 
+build/ossxp-cosign3-doc::
+	make -C debian/doc build || true
+
+
 debian/patches/: debian/patches
 debian/patches:
 	rm -rf debian/patches

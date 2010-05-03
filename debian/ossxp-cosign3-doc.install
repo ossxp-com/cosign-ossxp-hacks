@@ -1,1 +1,1 @@
-debian/doc/*    /opt/ossxp/doc/cosign/
+debian/doc/output/*    /opt/ossxp/doc/cosign/

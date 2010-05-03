@@ -6,6 +6,6 @@ source_suffix = '.rst'
 PROJ.root= "."
 PROJ.name = "user-guide"
 PROJ.index = "user-guide"
-PROJ.output = "output"
+PROJ.output = "../output/user-guide"
 
 task:default 

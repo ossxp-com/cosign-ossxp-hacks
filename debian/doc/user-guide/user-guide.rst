@@ -45,7 +45,7 @@
 
 * 访问单点登录系统，输入正确的用户名和口令
    .. figure:: images/weblogin.png
-      :scale: 60
+      :scale: 50
 
       单点登录对话框
 
@@ -54,7 +54,7 @@
 
 * 登录成功，显示服务列表
    .. figure:: images/loggedin.png
-      :scale: 60
+      :scale: 50
 
       登录成功显示个人信息和服务列表
 
@@ -111,23 +111,23 @@
 * IE7, IE8 访问单点登录，显示的证书警告
 
    .. figure:: images/ie7_cert_error.png
-      :scale: 80
+      :scale: 60
 
 * 对于我们信任的网站，选择“忽略证书错误，继续访问”，而不要点击带有对号图标的选择，因为那样直接关闭浏览器。
   这样我们就可以浏览单点登录网站了。注意在标题栏有关于证书错误的提示。
 
    .. figure:: images/ie7_cert_ignore.png
-      :scale: 100
+      :scale: 60
 
 * IE6 访问单点登录，显示的证书警告的对话框，选择“是”，就可以继续浏览。
 
    .. figure:: images/ie6_cert_error.png
-      :scale: 100
+      :scale: 70
 
 * Firefox 访问单点登录，显示的证书警告。如果要浏览该网站，要点击“我已充分了解可能的风险”，按照提示操作即可访问。
 
    .. figure:: images/ff_cert_error.png
-      :scale: 80
+      :scale: 60
 
 如何添加信任，避免浏览器证书警告
 --------------------------------
@@ -139,18 +139,18 @@
   点击文件 ossxp-ca.crt 。
 
    .. figure:: images/ie7_cert_install1.png
-      :scale: 100
+      :scale: 60
 
 
 * 打开 ossxp-ca.crt，显示该证书文件的详细信息。点击 “安装证书” 按钮。按照提示完成证书导入。
 
    .. figure:: images/ie7_cert_install2.png
-      :scale: 100
+      :scale: 70
 
 * 将群英汇根证书正确导入后，再打开单点登录网站，不再出现证书警告信息，直接打开 HTTPS 网站。
 
    .. figure:: images/ie7_cert_ok.png
-      :scale: 100
+      :scale: 60
 
       浏览器的地址栏显示证书状态正常
 
@@ -180,28 +180,28 @@ Admin 双因子认证和上面提到的双因子认证又有所区别。
 * 邮件列表一览页面（处于 **未** 登录状态）
 
    .. figure:: images/01_not_login.png
-      :scale: 80
+      :scale: 50
 
       尚未登录
 
 * 点击登录，第一次进入单点登录界面
 
    .. figure:: images/02_first_login.png
-      :scale: 80
+      :scale: 50
 
       输入用户名口令完成 "what you konw" 的认证
 
 * 处于登录状态的邮件列表一览页面
 
    .. figure:: images/03_logged_in.png
-      :scale: 80
+      :scale: 50
 
       登录成功。注意页面中有指向 **“列表管理界面”** 的链接
 
 * 访问列表管理概览界面，再次跳转到单点登录，要求附加认证，即 admin 因子认证
 
    .. figure:: images/04_admin_factor_login.png
-      :scale: 80
+      :scale: 50
 
       注意浏览器地址栏的factors 参数以及页面中红色警告
 
@@ -209,7 +209,7 @@ Admin 双因子认证和上面提到的双因子认证又有所区别。
 * 如果再次认证过程中，输入错误的用户名口令，显示出错信息
 
    .. figure:: images/05_admin_factor_login_wrong_passwd.png
-      :scale: 80
+      :scale: 50
 
       输入错误的用户名或口令
 
@@ -217,14 +217,14 @@ Admin 双因子认证和上面提到的双因子认证又有所区别。
 * 如果用户不具有请求的管理员权限，显示出错信息
 
    .. figure:: images/06_admin_factor_login_failed.png
-      :scale: 80
+      :scale: 50
 
       因用户若不具有相应权限，admin 认证因子失败
 
 * 如果通过 admin 认证因子，显示列表管理员概览页
 
    .. figure:: images/07_mailman_admin_pannel.png
-      :scale: 80
+      :scale: 50
 
       管理员概览页
 
@@ -244,14 +244,14 @@ Admin 双因子认证和上面提到的双因子认证又有所区别。
 * 邀请码登录，需要输入正确的邀请码，用户名处的邮件地址不作为验证依据
 
    .. figure:: images/invite_login.png
-      :scale: 80
+      :scale: 50
 
       邀请码登录
 
 * 邀请码输入正确后，以该邀请码对应的用户帐号登录，本例为 demo 用户  
 
    .. figure:: images/invite_login_success.png
-      :scale: 80
+      :scale: 50
 
       邀请码登录成功
 
@@ -267,7 +267,7 @@ Admin 双因子认证和上面提到的双因子认证又有所区别。
 点击该链接，便在页面左侧弹出自建帐号以及获取忘记口令的帮助信息。
 
    .. figure:: images/change_password.png
-      :scale: 80
+      :scale: 50
 
       自建帐号和获取忘记口令的帮助
 
@@ -315,7 +315,7 @@ Admin 双因子认证和上面提到的双因子认证又有所区别。
 
 
 .. figure:: images/looping.png
-   :scale: 80
+   :scale: 50
 
    循环重定向错误
 
@@ -342,7 +342,7 @@ Valid 地址无效
 在之前的循环重定向错误中，我们提到由于访问非正规 URL，造成循环重定向。实际上管理员可以配置 Web 服务器，当用户访问非正规 URL 时，显示地址无效错误，而不是陷入地址重定向而显示一个让人手足无措的循环重定向错误。
 
 .. figure:: images/validation_error.png
-   :scale: 80
+   :scale: 50
 
    地址校验错误
 

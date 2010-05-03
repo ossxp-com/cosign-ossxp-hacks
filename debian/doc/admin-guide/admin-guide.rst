@@ -36,7 +36,7 @@ CoSign 2.x 协议原理
 在 CoSign wiki 网站上，有两个协议实现的示例图，我们截取其中一个，用以说明。
 
    .. figure:: images/cosign-2-protocol.png
-      :scale: 80
+      :scale: 60
    
       CoSign 2.x 协议原理图
 
@@ -77,7 +77,7 @@ CoSign 3.x 版本，在协议上进行了彻底的改造，解决了上面提到
 一个图片胜过千言万语。先来看看在官网上的示例图来学习 CoSign 3.x 协议原理：
 
    .. figure:: images/cosign-3-protocol.png
-      :scale: 80
+      :scale: 60
    
       CoSign 3.x 协议原理图
 
@@ -200,12 +200,12 @@ CoSign 的可定制性，源自于页面模板。CoSign 的页面模板文件位
 * CoSign 标准模板： 位于目录 /opt/cosign/lib/templates 中
 
    .. figure:: images/cosign-theme1.png
-      :scale: 60
+      :scale: 50
    
 * Google 风格的模板： 位于目录 /opt/cosign/lib/templates_google 中
 
    .. figure:: images/cosign-theme2.png
-      :scale: 60
+      :scale: 50
 
 关闭暂不使用的认证模式
 ----------------------

@@ -41,8 +41,6 @@ struct cgi_list cl[] = {
         { "verify", CGI_TYPE_STRING, NULL },
 #define CL_URL 		1
         { "url", CGI_TYPE_STRING, NULL },
-#define SL_DETAIL	2
-        { 'm', SUBF_STR, NULL },
         { NULL, CGI_TYPE_UNDEF, NULL },
 };
 
@@ -53,6 +51,8 @@ static struct subfile_list sl[] = {
         { 't', SUBF_STR, NULL },
 #define SL_ERROR		2
         { 'r', SUBF_STR_ESC, NULL },
+#define SL_DETAIL	3
+        { 'm', SUBF_STR, NULL },
         { '\0', 0, NULL },
 };
     static void

@@ -477,18 +477,18 @@ index 05bc875..204c852 100644
  	sl[ SL_ERROR ].sl_data = _( (char *)error_message( kerror ) );
  	sl[ SL_TITLE ].sl_data = _("Authentication Required ( kerberos error )");
 diff --git a/cgi/logout.c b/cgi/logout.c
-index a050442..de5e87f 100755
+index a050442..7313765 100755
 --- a/cgi/logout.c
 +++ b/cgi/logout.c
-@@ -41,6 +41,8 @@ struct cgi_list cl[] = {
-         { "verify", CGI_TYPE_STRING, NULL },
- #define CL_URL 		1
-         { "url", CGI_TYPE_STRING, NULL },
-+#define SL_DETAIL	2
+@@ -51,6 +51,8 @@ static struct subfile_list sl[] = {
+         { 't', SUBF_STR, NULL },
+ #define SL_ERROR		2
+         { 'r', SUBF_STR_ESC, NULL },
++#define SL_DETAIL	3
 +        { 'm', SUBF_STR, NULL },
-         { NULL, CGI_TYPE_UNDEF, NULL },
+         { '\0', 0, NULL },
  };
- 
+     static void
 @@ -135,6 +137,8 @@ main( int argc, char *argv[] )
  
      init_locale();

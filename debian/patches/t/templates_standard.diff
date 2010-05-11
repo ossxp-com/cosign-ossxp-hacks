@@ -2320,4 +2320,4 @@ index ea68776..c3a1739 100755
  </body>
  </html>
 -- 
-tg: (fec2aa6..) t/templates_standard (depends on: master t/autotools_for_setup t/static_htmls_to_templates t/javascript t/services_template)
+tg: (2589ed8..) t/templates_standard (depends on: master t/autotools_for_setup t/static_htmls_to_templates t/javascript t/services_template)

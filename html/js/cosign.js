@@ -80,9 +80,10 @@ Cosign.prototype = Object.extend( new Remember(), {
 	},
 
 	addFactor: function ( factorName, title, factorDivID ) {
-		var focusBox = $( factorDivID ).getElementsByTagName( 'input' )[0];
-		if ( focusBox.value != '' && focusBox.type != 'checkbox' ) {
-			focusBox = $( factorDivID ).getElementsByTagName( 'input' )[1];
+		var focusBoxs = $( factorDivID ).getElementsByTagName( 'input' );
+		var focusBox = focusBoxs[0];
+		if ( focusBox.value != '' && focusBox.type != 'checkbox' && focusBoxs.length > 1 ) {
+			focusBox = focusBoxs[1];
 		}
 
 		if ( this.factors.select( function(f) {return f.title == title;}).length == 0 )
@@ -100,10 +101,13 @@ Cosign.prototype = Object.extend( new Remember(), {
 	
 	setSubmitLink: function ( elName, formName ) {
 		var submitLink = $( elName );
-		Event.observe( submitLink, 'click', function() {$( formName ).submit()}, false );
+		if (submitLink)
+		{
+			Event.observe( submitLink, 'click', function() {$( formName ).submit()}, false );
 
-		// This is old school, but Event.stop will not work in Safari as of 2.0.3...
-		submitLink.onclick = function() {return false};
+			// This is old school, but Event.stop will not work in Safari as of 2.0.3...
+			submitLink.onclick = function() {return false};
+		}
 	},
 
 	hide: function( factor ) {
@@ -249,7 +253,7 @@ Cosign.prototype = Object.extend( new Remember(), {
 				} else {
 					this.giveVisible( factor.focusBox );
 				}
-			} else if ( this.factorCookieSet && this.cookieFactors.inArray( factor.factorName )) {
+			} else if ( this.factorCookieSet && this.cookieFactors.inArray( factor.factorName ) && ! oThis.disabledFactors.inArray( factor.factorName ) ) {
 				Event.observe(factor.title, 'click', function(){oThis.toggle(factor)});
 				if ( ! focusSet ) {
 					focusSet = this.giveFocus( factor.focusBox );

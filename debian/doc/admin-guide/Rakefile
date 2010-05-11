@@ -7,5 +7,7 @@ PROJ.root= "."
 PROJ.name = "admin-guide"
 PROJ.index = "admin-guide"
 PROJ.output = "../output/admin-guide"
+PROJ.css_path = "/stylesheet/lightbox/nf.lightbox.css,/stylesheet/ossxp/doc.css"
+PROJ.js_path = "/javascript/jquery/1.4.2.js,/javascript/lightbox/nf.lightbox.js,/javascript/lightbox/load-nf.lightbox.js"
 
 task:default 

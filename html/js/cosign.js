@@ -249,7 +249,7 @@ Cosign.prototype = Object.extend( new Remember(), {
 				} else {
 					this.giveVisible( factor.focusBox );
 				}
-			} else if ( this.factorCookieSet && this.cookieFactors.inArray( factor.factorName )) {
+			} else if ( this.factorCookieSet && this.cookieFactors.inArray( factor.factorName ) && ! oThis.disabledFactors.inArray( factor.factorName ) ) {
 				Event.observe(factor.title, 'click', function(){oThis.toggle(factor)});
 				if ( ! focusSet ) {
 					focusSet = this.giveFocus( factor.focusBox );

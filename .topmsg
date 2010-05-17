@@ -1,6 +1,6 @@
 From: Jiang <jiangxin@ossxp.com>
-Subject: [PATCH] t/message_localize
+Subject: [PATCH] t/unittest
 
-Translate CoSign error message using javascript.
+CUnit test framework.
 
 Signed-off-by: Jiang <jiangxin@ossxp.com>

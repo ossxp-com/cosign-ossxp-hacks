@@ -18,14 +18,14 @@ cgi:	libcgi
 ${ALL}:	version.o
 
 ${ALL} filters/apache filters/apache2 filters/lighttpd:	FRC
-	cd $@; ${MAKE} ${MFLAGS} all
+	${MAKE} -C $@ ${MFLAGS} all
 
 FRC:
 
 clean:
 	rm -f version.o
 	for i in ${ALL} ${FILTERS} ; \
-	    do (cd $$i; ${MAKE} ${MFLAGS} clean); \
+	    do (${MAKE} -C $$i ${MFLAGS} clean); \
 	done
 
 VERSION=3.1.1

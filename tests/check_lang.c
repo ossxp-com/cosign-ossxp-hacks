@@ -256,7 +256,7 @@ END_TEST
 Suite *
 ossxp_suite (void)
 {
-  Suite *s = suite_create ("OSSXP");
+  Suite *s = suite_create ("Language");
 
   /* Lang test case */
   TCase *tc_lang = tcase_create ("Lang");

@@ -27,6 +27,7 @@ void do_macro_include ( char *, struct subfile_list * );
 void do_macro_gettext( char *);
 char * str_replace(char *, char *, char *);
 size_t macro_process ( char *, size_t, struct subfile_list *, char *);
+size_t _macro_process ( char *, size_t, struct subfile_list *, char *, int debug);
 
 #ifdef	_DEBUG
 
@@ -64,6 +65,11 @@ str_replace(char *orig, char *seek, char *rep)
  */
    size_t
 macro_process ( char *str, size_t size, struct subfile_list *sl, char *filename )
+{
+    return _macro_process ( str, size, sl, filename, 0 );
+}
+   size_t
+_macro_process ( char *str, size_t size, struct subfile_list *sl, char *filename, int debug )
 {
     char	cmd[MAX_CMD+1];
     char	arg[MAX_LINE_BUFF+1]="";
@@ -157,13 +163,17 @@ macro_process ( char *str, size_t size, struct subfile_list *sl, char *filename 
     if ( strcasecmp(cmd, "include") == 0 ) {
 	snprintf(incfile, MAX_FN_LEN, "%s/%s", pdir, arg);
 #ifndef _DEBUG
-	do_macro_include(incfile, sl);
+	if (!debug) {
+	    do_macro_include(incfile, sl);
+	}
 #else
 	stub_do_macro_include(incfile, sl);
 #endif
     } else if ( strcmp(cmd, "_") == 0 ) {
 #ifndef _DEBUG
-	do_macro_gettext(arg);
+	if (!debug) {
+	    do_macro_gettext(arg);
+	}
 #else
 	stub_do_macro_gettext(arg);
 #endif

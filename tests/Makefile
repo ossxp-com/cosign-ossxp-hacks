@@ -1,11 +1,14 @@
-TESTS = check_lang
+TESTS = check_lang check_subfile
 am__tty_colors = \
 red=; grn=; lgn=; blu=; std=
 srcdir = .
 
-all: check_lang
+all: check_lang check_subfile
 
 check_lang: check_lang.o ../cgi/lang.o
+	gcc -o $@ $^ -lcheck
+
+check_subfile: check_subfile.o ../cgi/subfile.o ../cgi/lang.o
 	gcc -o $@ $^ -lcheck
 
 check: test

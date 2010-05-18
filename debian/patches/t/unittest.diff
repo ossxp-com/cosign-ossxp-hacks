@@ -1,0 +1,731 @@
+From: Jiang <jiangxin@ossxp.com>
+Subject: [PATCH] t/unittest
+
+CUnit test framework.
+
+Signed-off-by: Jiang <jiangxin@ossxp.com>
+
+---
+ Makefile.in           |    6 +-
+ cgi/lang.c            |   31 ++++-
+ cgi/lang.h            |    2 +
+ cgi/subfile.c         |   14 ++-
+ tests/Makefile        |  112 +++++++++++++++++++
+ tests/check_lang.c    |  296 +++++++++++++++++++++++++++++++++++++++++++++++++
+ tests/check_subfile.c |  128 +++++++++++++++++++++
+ 7 files changed, 578 insertions(+), 11 deletions(-)
+
+diff --git a/Makefile.in b/Makefile.in
+index 54d2d22..8983623 100755
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -1,7 +1,7 @@
+ srcdir=		@srcdir@
+ 
+ CC=	@CC@
+-ALL=	common libsnet libcgi cgi html daemon 
++ALL=	common libsnet libcgi cgi html daemon tests
+ FILTERS= @FILTERS@ 
+ TARGETS= cgi html daemon ${FILTERS}
+ OPTOPTS= @OPTOPTS@ @UNIVERSAL_OPTOPTS@
+@@ -18,14 +18,14 @@ cgi:	libcgi
+ ${ALL}:	version.o
+ 
+ ${ALL} filters/apache filters/apache2 filters/lighttpd:	FRC
+-	cd $@; ${MAKE} ${MFLAGS} all
++	${MAKE} -C $@ ${MFLAGS} all
+ 
+ FRC:
+ 
+ clean:
+ 	rm -f version.o
+ 	for i in ${ALL} ${FILTERS} ; \
+-	    do (cd $$i; ${MAKE} ${MFLAGS} clean); \
++	    do (${MAKE} -C $$i ${MFLAGS} clean); \
+ 	done
+ 
+ VERSION=3.1.1
+diff --git a/cgi/lang.c b/cgi/lang.c
+index 1d646a5..b1b56b4 100644
+--- a/cgi/lang.c
++++ b/cgi/lang.c
+@@ -20,20 +20,30 @@ get_accept_language()
+     #define _ACCEPT_LANGS_ARRAY 8
+     static char **accept_languages = NULL;
+ #endif
++
++    if (accept_languages != NULL)
++	return accept_languages;
++
++    return accept_languages = _get_accept_language(NULL);
++}
++
++    char **
++_get_accept_language( char *env )
++{
+     char *p, *pnext, *buff;
+     char **lang;
+     int found = 0;
+     int i,j,k,m;
+     int array_size = _ACCEPT_LANGS_ARRAY;
+ 
+-    if (accept_languages != NULL)
+-	return accept_languages;
+-
+     lang = calloc(sizeof(char*),array_size+1);
+     for (i=0; i<array_size; i++)
+ 	lang[i]=NULL;
+ 
+-    p = getenv( "HTTP_ACCEPT_LANGUAGE" );
++    if (env == NULL)
++	p = getenv( "HTTP_ACCEPT_LANGUAGE" );
++    else
++	p = env;
+ 
+     if (p != NULL)
+     {
+@@ -120,12 +130,18 @@ get_accept_language()
+ 	}
+     }
+ 
+-    return accept_languages = lang;
++    return lang;
+ }
+ 
+     void
+ init_locale()
+ {
++    return _init_locale(NULL);
++}
++
++    void
++_init_locale( char *env )
++{
+ #define MAX_LANG_CODE	20
+     char	**lang;
+     char	*p;
+@@ -135,7 +151,10 @@ init_locale()
+     bindtextdomain("cosign", _LOCALEDIR);
+     bindtextdomain("template",  _TEMPLATE_LOCALEDIR);
+     textdomain("cosign");
+-    lang = get_accept_language();
++    if (env == NULL)
++	lang = get_accept_language();
++    else
++	lang = _get_accept_language(env);
+     while(*lang !=NULL)
+     {
+ 	p = strchr(*lang, '.');
+diff --git a/cgi/lang.h b/cgi/lang.h
+index 7726787..e93fe1d 100644
+--- a/cgi/lang.h
++++ b/cgi/lang.h
+@@ -13,6 +13,8 @@
+ #define N_(String) gettext_noop (String)
+ 
+ char ** get_accept_language();
++char ** _get_accept_language( char * );
+ void init_locale();
++void _init_locale( char * );
+ 
+ #endif
+diff --git a/cgi/subfile.c b/cgi/subfile.c
+index f36e72b..0fcfb0c 100644
+--- a/cgi/subfile.c
++++ b/cgi/subfile.c
+@@ -27,6 +27,7 @@ void do_macro_include ( char *, struct subfile_list * );
+ void do_macro_gettext( char *);
+ char * str_replace(char *, char *, char *);
+ size_t macro_process ( char *, size_t, struct subfile_list *, char *);
++size_t _macro_process ( char *, size_t, struct subfile_list *, char *, int debug);
+ 
+ #ifdef	_DEBUG
+ 
+@@ -65,6 +66,11 @@ str_replace(char *orig, char *seek, char *rep)
+    size_t
+ macro_process ( char *str, size_t size, struct subfile_list *sl, char *filename )
+ {
++    return _macro_process ( str, size, sl, filename, 0 );
++}
++   size_t
++_macro_process ( char *str, size_t size, struct subfile_list *sl, char *filename, int debug )
++{
+     char	cmd[MAX_CMD+1];
+     char	arg[MAX_LINE_BUFF+1]="";
+     char	*p, *pa, *pz;
+@@ -157,13 +163,17 @@ macro_process ( char *str, size_t size, struct subfile_list *sl, char *filename
+     if ( strcasecmp(cmd, "include") == 0 ) {
+ 	snprintf(incfile, MAX_FN_LEN, "%s/%s", pdir, arg);
+ #ifndef _DEBUG
+-	do_macro_include(incfile, sl);
++	if (!debug) {
++	    do_macro_include(incfile, sl);
++	}
+ #else
+ 	stub_do_macro_include(incfile, sl);
+ #endif
+     } else if ( strcmp(cmd, "_") == 0 ) {
+ #ifndef _DEBUG
+-	do_macro_gettext(arg);
++	if (!debug) {
++	    do_macro_gettext(arg);
++	}
+ #else
+ 	stub_do_macro_gettext(arg);
+ #endif
+diff --git a/tests/Makefile b/tests/Makefile
+new file mode 100644
+index 0000000..2d2aa11
+--- /dev/null
++++ b/tests/Makefile
+@@ -0,0 +1,112 @@
++TESTS = check_lang check_subfile
++am__tty_colors = \
++red=; grn=; lgn=; blu=; std=
++srcdir = .
++
++all: check_lang check_subfile
++
++check_lang: check_lang.o ../cgi/lang.o
++	gcc -o $@ $^ -lcheck
++
++check_subfile: check_subfile.o ../cgi/subfile.o ../cgi/lang.o
++	gcc -o $@ $^ -lcheck
++
++check: test
++test:
++	@failed=0; all=0; xfail=0; xpass=0; skip=0; \
++	srcdir=$(srcdir); export srcdir; \
++	list=' $(TESTS) '; \
++	$(am__tty_colors); \
++	if test -n "$$list"; then \
++	  for tst in $$list; do \
++	    if test -f ./$$tst; then dir=./; \
++	    elif test -f $$tst; then dir=; \
++	    else dir="$(srcdir)/"; fi; \
++	    if $(TESTS_ENVIRONMENT) $${dir}$$tst; then \
++	      all=`expr $$all + 1`; \
++	      case " $(XFAIL_TESTS) " in \
++	      *[\ \	]$$tst[\ \	]*) \
++		xpass=`expr $$xpass + 1`; \
++		failed=`expr $$failed + 1`; \
++		col=$$red; res=XPASS; \
++	      ;; \
++	      *) \
++		col=$$grn; res=PASS; \
++	      ;; \
++	      esac; \
++	    elif test $$? -ne 77; then \
++	      all=`expr $$all + 1`; \
++	      case " $(XFAIL_TESTS) " in \
++	      *[\ \	]$$tst[\ \	]*) \
++		xfail=`expr $$xfail + 1`; \
++		col=$$lgn; res=XFAIL; \
++	      ;; \
++	      *) \
++		failed=`expr $$failed + 1`; \
++		col=$$red; res=FAIL; \
++	      ;; \
++	      esac; \
++	    else \
++	      skip=`expr $$skip + 1`; \
++	      col=$$blu; res=SKIP; \
++	    fi; \
++	    echo "$${col}$$res$${std}: $$tst"; \
++	  done; \
++	  if test "$$all" -eq 1; then \
++	    tests="test"; \
++	    All=""; \
++	  else \
++	    tests="tests"; \
++	    All="All "; \
++	  fi; \
++	  if test "$$failed" -eq 0; then \
++	    if test "$$xfail" -eq 0; then \
++	      banner="$$All$$all $$tests passed"; \
++	    else \
++	      if test "$$xfail" -eq 1; then failures=failure; else failures=failures; fi; \
++	      banner="$$All$$all $$tests behaved as expected ($$xfail expected $$failures)"; \
++	    fi; \
++	  else \
++	    if test "$$xpass" -eq 0; then \
++	      banner="$$failed of $$all $$tests failed"; \
++	    else \
++	      if test "$$xpass" -eq 1; then passes=pass; else passes=passes; fi; \
++	      banner="$$failed of $$all $$tests did not behave as expected ($$xpass unexpected $$passes)"; \
++	    fi; \
++	  fi; \
++	  dashes="$$banner"; \
++	  skipped=""; \
++	  if test "$$skip" -ne 0; then \
++	    if test "$$skip" -eq 1; then \
++	      skipped="($$skip test was not run)"; \
++	    else \
++	      skipped="($$skip tests were not run)"; \
++	    fi; \
++	    test `echo "$$skipped" | wc -c` -le `echo "$$banner" | wc -c` || \
++	      dashes="$$skipped"; \
++	  fi; \
++	  report=""; \
++	  if test "$$failed" -ne 0 && test -n "$(PACKAGE_BUGREPORT)"; then \
++	    report="Please report to $(PACKAGE_BUGREPORT)"; \
++	    test `echo "$$report" | wc -c` -le `echo "$$banner" | wc -c` || \
++	      dashes="$$report"; \
++	  fi; \
++	  dashes=`echo "$$dashes" | sed s/./=/g`; \
++	  if test "$$failed" -eq 0; then \
++	    echo "$$grn$$dashes"; \
++	  else \
++	    echo "$$red$$dashes"; \
++	  fi; \
++	  echo "$$banner"; \
++	  test -z "$$skipped" || echo "$$skipped"; \
++	  test -z "$$report" || echo "$$report"; \
++	  echo "$$dashes$$std"; \
++	  test "$$failed" -eq 0; \
++	else :; fi
++
++clean:
++	rm -f check_lang *.o
++
++.PHONY: all test check clean
++
++# vim: noet ts=4 sw=4
+diff --git a/tests/check_lang.c b/tests/check_lang.c
+new file mode 100644
+index 0000000..1ff21dc
+--- /dev/null
++++ b/tests/check_lang.c
+@@ -0,0 +1,296 @@
++#include <stdlib.h>
++#include <stdio.h>
++#include <check.h>
++#include "../cgi/lang.h"
++
++int
++get_lang_size(char **lang)
++{
++  int i = 0;
++  char **p = lang;
++
++	while (*(p++) != NULL) i++;
++  return i;
++}
++
++void
++print_lang(char **lang)
++{
++  char **p = lang;
++  int i = get_lang_size(lang);
++
++	printf ( "Count: %3d.", i );
++
++  if (i > 0)
++      printf(" Lang: ");
++
++	while (*p != NULL) {
++	    printf("%s,", *p);
++	    p++;
++	}
++	printf("\n");
++}
++
++START_TEST (test_lang_one)
++{
++  char **lang;
++
++  lang = _get_accept_language( "zh-hk" );
++  fail_if ( strcmp(lang[0], "zh_TW") != 0, "%s != zh_TW", lang[0]);
++  fail_if ( lang[1] != NULL, "not NULL");
++
++  lang = _get_accept_language( "zh_tW" );
++  fail_if ( strcmp(lang[0], "zh_TW") != 0, "%s != zh_TW", lang[0]);
++  fail_if ( lang[1] != NULL, "not NULL");
++
++  lang = _get_accept_language( "zh-cn" );
++  fail_if ( strcmp(lang[0], "zh_CN") != 0, "%s != zh_CN", lang[0]);
++  fail_if ( lang[1] != NULL, "not NULL");
++
++  lang = _get_accept_language( "zh-sg" );
++  fail_if ( strcmp(lang[0], "zh_CN") != 0, "%s != zh_CN", lang[0]);
++  fail_if ( lang[1] != NULL, "not NULL");
++
++  lang = _get_accept_language( "zh" );
++  fail_if ( strcmp(lang[0], "zh") != 0, "%s != zh", lang[0]);
++  fail_if ( lang[1] != NULL, "not NULL");
++
++  lang = _get_accept_language( "en" );
++  fail_if ( strcmp(lang[0], "en") != 0, "%s != en", lang[0]);
++  fail_if ( lang[1] != NULL, "not NULL");
++
++  lang = _get_accept_language( "en-us" );
++  fail_if ( strcmp(lang[0], "en_US") != 0, "%s != en_US", lang[0]);
++  fail_if ( lang[1] != NULL, "not NULL");
++
++  lang = _get_accept_language( "xxx" );
++  fail_if ( strcmp(lang[0], "xxx") != 0, "%s != xxx", lang[0]);
++  fail_if ( lang[1] != NULL, "not NULL");
++}
++END_TEST
++
++START_TEST (test_lang_two)
++{
++  char **lang;
++
++  lang = _get_accept_language( "zh-hk,zh" );
++  fail_if ( strcmp(lang[0], "zh_TW") != 0, "%s != zh_TW", lang[0]);
++  fail_if ( strcmp(lang[1], "zh") != 0, "%s != zh", lang[1]);
++  fail_if ( lang[2] != NULL, "not NULL");
++
++  lang = _get_accept_language( "en;q=0.1,zh_tW;q=2" );
++  fail_if ( strcmp(lang[0], "en") != 0, "%s != en", lang[0]);
++  fail_if ( strcmp(lang[1], "zh_TW") != 0, "%s != zh_TW", lang[1]);
++  fail_if ( lang[2] != NULL, "not NULL");
++
++  lang = _get_accept_language( "en;,zh_tW;q=2" );
++  fail_if ( strcmp(lang[0], "en") != 0, "%s != en", lang[0]);
++  fail_if ( strcmp(lang[1], "zh_TW") != 0, "%s != zh_TW", lang[1]);
++  fail_if ( lang[2] != NULL, "not NULL");
++
++  lang = _get_accept_language( "en;,zh_tW;q" );
++  fail_if ( strcmp(lang[0], "en") != 0, "%s != en", lang[0]);
++  fail_if ( strcmp(lang[1], "zh_TW") != 0, "%s != zh_TW", lang[1]);
++  fail_if ( lang[2] != NULL, "not NULL");
++
++  lang = _get_accept_language( "zh-cn,zh-sg" );
++  fail_if ( strcmp(lang[0], "zh_CN") != 0, "%s != zh_CN", lang[0]);
++  fail_if ( lang[1] != NULL, "not NULL");
++
++  lang = _get_accept_language( "zh-hk;q=0.8,zh-tw;q=0.5" );
++  fail_if ( strcmp(lang[0], "zh_TW") != 0, "%s != zh_TW", lang[0]);
++  fail_if ( lang[1] != NULL, "not NULL");
++
++  lang = _get_accept_language( "zh-sg,zh-hk;q=0.5" );
++  fail_if ( strcmp(lang[0], "zh_CN") != 0, "%s != zh_CN", lang[0]);
++  fail_if ( strcmp(lang[1], "zh_TW") != 0, "%s != zh_TW", lang[1]);
++  fail_if ( lang[2] != NULL, "not NULL");
++
++  lang = _get_accept_language( "zh-sg,zh-hk;q=0.5," );
++  fail_if ( strcmp(lang[0], "zh_CN") != 0, "%s != zh_CN", lang[0]);
++  fail_if ( strcmp(lang[1], "zh_TW") != 0, "%s != zh_TW", lang[1]);
++  fail_if ( lang[2] != NULL, "not NULL");
++
++  lang = _get_accept_language( "zh-sg,zh-hk;q=0.5,," );
++  fail_if ( strcmp(lang[0], "zh_CN") != 0, "%s != zh_CN", lang[0]);
++  fail_if ( strcmp(lang[1], "zh_TW") != 0, "%s != zh_TW", lang[1]);
++  fail_if ( lang[2] != NULL, "not NULL");
++
++  lang = _get_accept_language( "zh-sg , zh-hk ;q=0.5 , , " );
++  fail_if ( strcmp(lang[0], "zh_CN") != 0, "%s != zh_CN", lang[0]);
++  fail_if ( strcmp(lang[1], "zh_TW") != 0, "%s != zh_TW", lang[1]);
++  fail_if ( get_lang_size(lang) != 2, "wrong size");
++}
++END_TEST
++
++START_TEST (test_lang_many)
++{
++  char **lang;
++  char *env;
++  int i = 0;
++
++  lang = _get_accept_language( "zz,zz ;q=3,zz  ;q=2, zz    ;q=1," );
++  fail_if ( get_lang_size(lang) != 1, "wrong size: %d", get_lang_size(lang));
++
++  lang = _get_accept_language( "l1;q=1,l2;q=2,l2,l3" );
++  fail_if ( get_lang_size(lang) != 3, "wrong size: %d", get_lang_size(lang));
++
++  lang = _get_accept_language( "l1;q=1,l2;q=2,l2,l3,l4" );
++  fail_if ( get_lang_size(lang) != 4, "wrong size: %d", get_lang_size(lang));
++
++  env = malloc(200*4+50);
++  strcpy(env, "l0");
++  for (i=1; i< 200; i++)
++  {
++    sprintf(env, "%s,l%d", env, i);
++    lang = _get_accept_language( env );
++    fail_if ( get_lang_size(lang) != i+1, "Lang %s.\nWrong size: %d != %d", env, get_lang_size(lang), i);
++  }
++}
++END_TEST
++
++
++START_TEST (test_locale_one)
++{
++  char **lang;
++  char *locale;
++
++  _init_locale( "zh-hk" );
++	locale = setlocale( LC_ALL, NULL );
++  fail_if ( strcmp(locale, "zh_TW.UTF-8") != 0, "locale is %s, no equal.", locale);
++
++  _init_locale( "zh_tW" );
++	locale = setlocale( LC_ALL, NULL );
++  fail_if ( strcmp(locale, "zh_TW.UTF-8") != 0, "locale is %s, no equal.", locale);
++
++  _init_locale( "zh-cn" );
++	locale = setlocale( LC_ALL, NULL );
++  fail_if ( strcmp(locale, "zh_CN.UTF-8") != 0, "locale is %s, no equal.", locale);
++
++  _init_locale( "zh-sg" );
++	locale = setlocale( LC_ALL, NULL );
++  fail_if ( strcmp(locale, "zh_CN.UTF-8") != 0, "locale is %s, no equal.", locale);
++
++  _init_locale( "zh" );
++	locale = setlocale( LC_ALL, NULL );
++  fail_if ( strcmp(locale, "zh_CN.UTF-8") != 0, "locale is %s, no equal.", locale);
++
++  _init_locale( "en" );
++	locale = setlocale( LC_ALL, NULL );
++  fail_if ( strcmp(locale, "C") != 0, "locale is %s, no equal.", locale);
++
++  _init_locale( "en-us" );
++	locale = setlocale( LC_ALL, NULL );
++  fail_if ( strcmp(locale, "en_US.UTF-8") != 0, "locale is %s, no equal.", locale);
++
++  _init_locale( "xxx" );
++	locale = setlocale( LC_ALL, NULL );
++  fail_if ( strcmp(locale, "C") != 0, "locale is %s, no equal.", locale);
++}
++END_TEST
++
++START_TEST (test_locale_many)
++{
++  char **lang;
++  char *locale;
++
++  _init_locale( "zh-hk,zh,en,en_US" );
++	locale = setlocale( LC_ALL, NULL );
++  fail_if ( strcmp(locale, "zh_TW.UTF-8") != 0, "locale is %s, no equal.", locale);
++
++  _init_locale( "zh-hk;q=0.8,zh,en;q=1,en_US" );
++	locale = setlocale( LC_ALL, NULL );
++  fail_if ( strcmp(locale, "zh_TW.UTF-8") != 0, "locale is %s, no equal.", locale);
++
++  _init_locale( "zh,zh-hk;zh_tw" );
++	locale = setlocale( LC_ALL, NULL );
++  fail_if ( strcmp(locale, "zh_CN.UTF-8") != 0, "locale is %s, no equal.", locale);
++
++  _init_locale( "xx,zh-hk,en" );
++	locale = setlocale( LC_ALL, NULL );
++  fail_if ( strcmp(locale, "zh_TW.UTF-8") != 0, "locale is %s, no equal.", locale);
++
++  _init_locale( "xx,yy,zh" );
++	locale = setlocale( LC_ALL, NULL );
++  fail_if ( strcmp(locale, "zh_CN.UTF-8") != 0, "locale is %s, no equal.", locale);
++
++  _init_locale( "en;q=0.1,zh_tW;q=2" );
++	locale = setlocale( LC_ALL, NULL );
++  fail_if ( strcmp(locale, "C") != 0, "locale is %s, no equal.", locale);
++
++  _init_locale( "en;,zh_tW;q=2" );
++	locale = setlocale( LC_ALL, NULL );
++  fail_if ( strcmp(locale, "C") != 0, "locale is %s, no equal.", locale);
++
++  _init_locale( "en;,zh_tW;q" );
++	locale = setlocale( LC_ALL, NULL );
++  fail_if ( strcmp(locale, "C") != 0, "locale is %s, no equal.", locale);
++
++  _init_locale( "zh-cn,zh-sg" );
++	locale = setlocale( LC_ALL, NULL );
++  fail_if ( strcmp(locale, "zh_CN.UTF-8") != 0, "locale is %s, no equal.", locale);
++
++  _init_locale( "zh-hk;q=0.8,zh-tw;q=0.5" );
++	locale = setlocale( LC_ALL, NULL );
++  fail_if ( strcmp(locale, "zh_TW.UTF-8") != 0, "locale is %s, no equal.", locale);
++
++  _init_locale( "zh-sg,zh-hk;q=0.5" );
++	locale = setlocale( LC_ALL, NULL );
++  fail_if ( strcmp(locale, "zh_CN.UTF-8") != 0, "locale is %s, no equal.", locale);
++
++  _init_locale( "zh-sg,zh-hk;q=0.5," );
++	locale = setlocale( LC_ALL, NULL );
++  fail_if ( strcmp(locale, "zh_CN.UTF-8") != 0, "locale is %s, no equal.", locale);
++
++  _init_locale( "zh-sg,zh-hk;q=0.5,," );
++	locale = setlocale( LC_ALL, NULL );
++  fail_if ( strcmp(locale, "zh_CN.UTF-8") != 0, "locale is %s, no equal.", locale);
++
++  _init_locale( "zh-sg , zh-hk ;q=0.5 , , " );
++	locale = setlocale( LC_ALL, NULL );
++  fail_if ( strcmp(locale, "zh_CN.UTF-8") != 0, "locale is %s, no equal.", locale);
++}
++END_TEST
++
++
++Suite *
++ossxp_suite (void)
++{
++  Suite *s = suite_create ("Language");
++
++  /* Lang test case */
++  TCase *tc_lang = tcase_create ("Lang");
++  /* tcase_add_checked_fixture (tc_lang, setup, teardown); */
++  tcase_add_test (tc_lang, test_lang_one);
++  tcase_add_test (tc_lang, test_lang_two);
++  tcase_add_test (tc_lang, test_lang_many);
++  suite_add_tcase (s, tc_lang);
++
++  /* Locale test case */
++  TCase *tc_locale = tcase_create ("Locale");
++  tcase_add_test (tc_locale, test_locale_one);
++  tcase_add_test (tc_locale, test_locale_many);
++  suite_add_tcase (s, tc_locale);
++
++  /* Limits test case */
++  /*
++  TCase *tc_limits = tcase_create ("Limits");
++  tcase_add_test (tc_limits, test_money_create_neg);
++  tcase_add_test (tc_limits, test_money_create_zero);
++  suite_add_tcase (s, tc_limits);
++  */
++
++  return s;
++}
++
++int
++main (void)
++{
++  int number_failed;
++  Suite *s = ossxp_suite ();
++  SRunner *sr = srunner_create (s);
++  srunner_run_all (sr, CK_NORMAL);
++  number_failed = srunner_ntests_failed (sr);
++  srunner_free (sr);
++  return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
++}
+diff --git a/tests/check_subfile.c b/tests/check_subfile.c
+new file mode 100644
+index 0000000..dad3393
+--- /dev/null
++++ b/tests/check_subfile.c
+@@ -0,0 +1,128 @@
++#include <stdlib.h>
++#include <stdio.h>
++#include <check.h>
++#include "../cgi/lang.h"
++#include "../cgi/subfile.h"
++
++char * str_replace(char *orig, char *seek, char *rep);
++
++void
++stub_do_macro_include( char *str, struct subfile_list *sl )
++{
++    printf(">> include: %s\n", str);
++}
++
++void
++stub_do_macro_gettext( char *str )
++{
++    printf(">> gettext: %s\n", str_replace(str, "\n", "."));
++}
++
++
++START_TEST (test_str_replace)
++{
++  char *s;
++
++  s = str_replace("Hello$tWorld","$t", ",");
++  fail_if ( strcmp(s, "Hello,World") != 0, "result: %s", s);
++
++  s = str_replace("Hello$tWorld","$t", ", I come from the real ");
++  fail_if ( strcmp(s, "Hello, I come from the real World") != 0, "result: %s", s);
++
++  s = str_replace("Hello World","Hello", "Software");
++  fail_if ( strcmp(s, "Software World") != 0, "result: %s", s);
++
++  s = str_replace("Hello World","o", "OO");
++  fail_if ( strcmp(s, "HellOO WOOrld") != 0, "result: %s", s);
++
++  s = str_replace("Hello World","l", "L");
++  fail_if ( strcmp(s, "HeLLo WorLd") != 0, "result: %s", s);
++
++  s = str_replace("Hello World","ld", "LD");
++  fail_if ( strcmp(s, "Hello WorLD") != 0, "result: %s", s);
++}
++END_TEST
++
++
++START_TEST (test_macro_process)
++{
++  char *s;
++  int i;
++
++  s = "include(file)";
++  i = _macro_process ( s, strlen(s), NULL, "", 1);
++  fail_if ( i != 13, "eaten: %d", i);
++
++  s = "include(file).";
++  i = _macro_process ( s, strlen(s), NULL, "", 1);
++  fail_if ( i != 13, "eaten: %d", i);
++
++  s = "include(file)xyz";
++  i = _macro_process ( s, strlen(s), NULL, "", 1);
++  fail_if ( i != 13, "eaten: %d", i);
++
++  s = "include(\"file name\")xyz......";
++  i = _macro_process ( s, strlen(s), NULL, "", 1);
++  fail_if ( i != 20, "eaten: %d", i);
++
++  s = "_(\"world\").";
++  i = _macro_process ( s, strlen(s), NULL, "", 1);
++  fail_if ( i != 10, "eaten: %d", i);
++  fail_if ( strcmp(s+i,".") != 0, "left: %s", s+i);
++
++  s = "_(\"world\")......";
++  i = _macro_process ( s, strlen(s), NULL, "", 1);
++  fail_if ( i != 10, "eaten: %d", i);
++  fail_if ( strcmp(s+i,"......") != 0, "left: %s", s+i);
++
++	s = "_(\"world.\")";
++  i = _macro_process ( s, strlen(s), NULL, "", 1);
++  fail_if ( i != 11, "eaten: %d", i);
++  fail_if ( strcmp(s+i,"") != 0, "left: %s", s+i);
++
++	s="_(\"hello,\" \n \" world.\") end of text.";
++  i = _macro_process ( s, strlen(s), NULL, "", 1);
++  fail_if ( i != 23, "eaten: %d", i);
++  fail_if ( strcmp(s+i," end of text.") != 0, "left: %s", s+i);
++
++  s = "_(\"hello\\\",\\\"\" \n \" world.\" \" baby\") end of paragraph1.";
++  i = _macro_process ( s, strlen(s), NULL, "", 1);
++  fail_if ( i != 35, "eaten: %d", i);
++  fail_if ( strcmp(s+i," end of paragraph1.") != 0, "left: %s", s+i);
++
++	s = "_(\"Please enter your authentication information and click the &quot;Log&nbsp;In&quot; button\"\n \t\t\t\t\t\" to continue.\")</p>";
++  i = _macro_process ( s, strlen(s), NULL, "", 1);
++  fail_if ( i != 116, "eaten: %d,\n s = %s", i, s+i);
++  fail_if ( strcmp(s+i,"</p>") != 0, "left: %s", s+i);
++}
++END_TEST
++
++Suite *
++ossxp_suite (void)
++{
++  Suite *s = suite_create ("Subfile");
++
++  /* str_replace test case */
++  TCase *tc_str = tcase_create ("str");
++  tcase_add_test (tc_str, test_str_replace);
++  suite_add_tcase (s, tc_str);
++
++  /* macro_process test case */
++  TCase *tc_macro = tcase_create ("macro");
++  tcase_add_test (tc_macro, test_macro_process);
++  suite_add_tcase (s, tc_macro);
++
++  return s;
++}
++
++int
++main (void)
++{
++  int number_failed;
++  Suite *s = ossxp_suite ();
++  SRunner *sr = srunner_create (s);
++  srunner_run_all (sr, CK_NORMAL);
++  number_failed = srunner_ntests_failed (sr);
++  srunner_free (sr);
++  return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
++}
+-- 
+tg: (7f3f761..) t/unittest (depends on: t/message_localize)

@@ -43,6 +43,12 @@ binary-fixup/ossxp-cosign3-cgi::
 build/ossxp-cosign3-doc::
 	make -C debian/doc build || true
 
+common-install-impl::
+	@echo "*********************************************************"
+	@echo "                     Begin Unit Test                     "
+	@echo "*********************************************************"
+	make -C tests check
+	@echo "*********************************************************"
 
 debian/patches/: debian/patches
 debian/patches:

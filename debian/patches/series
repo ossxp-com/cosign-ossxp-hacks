@@ -17,3 +17,4 @@ t/new_factor_with_flag_3.diff -p1
 t/services_template.diff -p1
 t/templates_standard.diff -p1
 t/templates_google.diff -p1
+t/unittest.diff -p1

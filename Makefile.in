@@ -1,7 +1,7 @@
 srcdir=		@srcdir@
 
 CC=	@CC@
-ALL=	common libsnet libcgi cgi html daemon 
+ALL=	common libsnet libcgi cgi html daemon tests
 FILTERS= @FILTERS@ 
 TARGETS= cgi html daemon ${FILTERS}
 OPTOPTS= @OPTOPTS@ @UNIVERSAL_OPTOPTS@

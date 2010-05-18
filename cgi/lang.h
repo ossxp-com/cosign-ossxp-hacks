@@ -13,6 +13,8 @@
 #define N_(String) gettext_noop (String)
 
 char ** get_accept_language();
+char ** _get_accept_language( char * );
 void init_locale();
+void _init_locale( char * );
 
 #endif

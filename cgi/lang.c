@@ -20,20 +20,30 @@ get_accept_language()
     #define _ACCEPT_LANGS_ARRAY 8
     static char **accept_languages = NULL;
 #endif
+
+    if (accept_languages != NULL)
+	return accept_languages;
+
+    return accept_languages = _get_accept_language(NULL);
+}
+
+    char **
+_get_accept_language( char *env )
+{
     char *p, *pnext, *buff;
     char **lang;
     int found = 0;
     int i,j,k,m;
     int array_size = _ACCEPT_LANGS_ARRAY;
 
-    if (accept_languages != NULL)
-	return accept_languages;
-
     lang = calloc(sizeof(char*),array_size+1);
     for (i=0; i<array_size; i++)
 	lang[i]=NULL;
 
-    p = getenv( "HTTP_ACCEPT_LANGUAGE" );
+    if (env == NULL)
+	p = getenv( "HTTP_ACCEPT_LANGUAGE" );
+    else
+	p = env;
 
     if (p != NULL)
     {
@@ -120,11 +130,17 @@ get_accept_language()
 	}
     }
 
-    return accept_languages = lang;
+    return lang;
 }
 
     void
 init_locale()
+{
+    return _init_locale(NULL);
+}
+
+    void
+_init_locale( char *env )
 {
 #define MAX_LANG_CODE	20
     char	**lang;
@@ -135,7 +151,10 @@ init_locale()
     bindtextdomain("cosign", _LOCALEDIR);
     bindtextdomain("template",  _TEMPLATE_LOCALEDIR);
     textdomain("cosign");
-    lang = get_accept_language();
+    if (env == NULL)
+	lang = get_accept_language();
+    else
+	lang = _get_accept_language(env);
     while(*lang !=NULL)
     {
 	p = strchr(*lang, '.');

@@ -138,7 +138,7 @@ START_TEST (test_lang_many)
   lang = _get_accept_language( "l1;q=1,l2;q=2,l2,l3,l4" );
   fail_if ( get_lang_size(lang) != 4, "wrong size: %d", get_lang_size(lang));
 
-  env = malloc(200*4+50);
+  env = malloc(200*5+50);
   strcpy(env, "l0");
   for (i=1; i< 200; i++)
   {

@@ -293,7 +293,7 @@ index 0000000..2d2aa11
 +# vim: noet ts=4 sw=4
 diff --git a/tests/check_lang.c b/tests/check_lang.c
 new file mode 100644
-index 0000000..1ff21dc
+index 0000000..cf9b042
 --- /dev/null
 +++ b/tests/check_lang.c
 @@ -0,0 +1,296 @@
@@ -437,7 +437,7 @@ index 0000000..1ff21dc
 +  lang = _get_accept_language( "l1;q=1,l2;q=2,l2,l3,l4" );
 +  fail_if ( get_lang_size(lang) != 4, "wrong size: %d", get_lang_size(lang));
 +
-+  env = malloc(200*4+50);
++  env = malloc(200*5+50);
 +  strcpy(env, "l0");
 +  for (i=1; i< 200; i++)
 +  {

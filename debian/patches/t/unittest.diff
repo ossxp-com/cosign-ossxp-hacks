@@ -46,7 +46,7 @@ index 54d2d22..8983623 100755
  
  VERSION=3.1.1
 diff --git a/cgi/lang.c b/cgi/lang.c
-index 1d646a5..b1b56b4 100644
+index 9a81b39..d1b4a40 100644
 --- a/cgi/lang.c
 +++ b/cgi/lang.c
 @@ -20,20 +20,30 @@ get_accept_language()
@@ -728,4 +728,4 @@ index 0000000..dad3393
 +  return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 +}
 -- 
-tg: (7f3f761..) t/unittest (depends on: t/message_localize)
+tg: (1c068ab..) t/unittest (depends on: t/message_localize)

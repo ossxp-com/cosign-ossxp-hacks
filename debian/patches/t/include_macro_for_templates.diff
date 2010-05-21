@@ -475,4 +475,4 @@ index 760d2c6..2b46bef 100644
 +
 +/* vim: set noet ts=8 sw=4 : */
 -- 
-tg: (83fee9f..) t/include_macro_for_templates (depends on: t/multi_language)
+tg: (af29cb2..) t/include_macro_for_templates (depends on: t/multi_language)

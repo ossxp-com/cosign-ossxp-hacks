@@ -759,4 +759,4 @@ index 0000000..a667522
 +</body>
 +</html>
 -- 
-tg: (6c24c22..) t/static_htmls_to_templates (depends on: t/message_localize t/autotools_for_setup)
+tg: (af2e498..) t/static_htmls_to_templates (depends on: t/message_localize t/autotools_for_setup)

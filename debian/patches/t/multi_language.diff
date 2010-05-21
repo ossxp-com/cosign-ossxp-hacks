@@ -7,9 +7,9 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 
 ---
  cgi/Makefile.in |    5 +-
- cgi/lang.c      |  205 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ cgi/lang.c      |  197 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
  cgi/lang.h      |   17 +++++
- 3 files changed, 226 insertions(+), 1 deletions(-)
+ 3 files changed, 218 insertions(+), 1 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
 index e867410..175a2ef 100755
@@ -35,10 +35,10 @@ index e867410..175a2ef 100755
  	-D_COSIGN_TICKET_CACHE=\"${COSIGNTICKETCACHE}\" \
 diff --git a/cgi/lang.c b/cgi/lang.c
 new file mode 100644
-index 0000000..12970bc
+index 0000000..85f4d3e
 --- /dev/null
 +++ b/cgi/lang.c
-@@ -0,0 +1,205 @@
+@@ -0,0 +1,197 @@
 +#include <stdio.h>
 +#include <string.h>
 +#include <stdlib.h>
@@ -55,7 +55,7 @@ index 0000000..12970bc
 +get_accept_language()
 +{
 +#ifdef _DEBUG
-+    #define _ACCEPT_LANGS_ARRAY 8
++    #define _ACCEPT_LANGS_ARRAY 2
 +    char **accept_languages = NULL;
 +#else
 +    #define _ACCEPT_LANGS_ARRAY 8
@@ -168,7 +168,6 @@ index 0000000..12970bc
 +#define getenv mygetenv
 +
 +char *my_lang_buff[] = {
-+    "",
 +    "zz",
 +    "zh",
 +    "zh-tw",
@@ -209,35 +208,28 @@ index 0000000..12970bc
 +    char *mygetenv( char *ignore)
 +{
 +    static int		loop = -1;
-+    int num;
-+
-+    loop++;
-+    num = sizeof(my_lang_buff)/sizeof(*my_lang_buff);
-+
-+    return my_lang_buff[loop%num];
++    int 		num = sizeof(my_lang_buff)/sizeof(*my_lang_buff);
++    return ++loop < num ? my_lang_buff[loop] : NULL;
 +}
 +
 +    int
 +main()
 +{
 +    char	**lang, **orig;
-+    int		i,j;
-+    int num = sizeof(my_lang_buff)/sizeof(*my_lang_buff);
 +
-+    for (i=0; i< num; i++)
++    while (lang = get_accept_language())
 +    {
-+	lang = get_accept_language();
++	if (*lang == NULL)
++	    break;
 +	orig = lang;
-+	j=0;
-+	while (*(lang++) != NULL) j++;
-+	printf ("num: %d. ", j);
++	while (*(lang++) != NULL);
++	printf ("num: %d. ", lang - orig -1);
 +	lang = orig;
 +	while (*lang != NULL) {
 +	    printf("%s,", *lang);
 +	    lang++;
 +	}
 +	printf("\n");
-+
 +    }
 +}
 +

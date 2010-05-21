@@ -180,7 +180,6 @@ init_locale()
 #define getenv mygetenv
 
 char *my_lang_buff[] = {
-    "",
     "zz",
     "zh",
     "zh-tw",
@@ -221,35 +220,28 @@ char *my_lang_buff[] = {
     char *mygetenv( char *ignore)
 {
     static int		loop = -1;
-    int num;
-
-    loop++;
-    num = sizeof(my_lang_buff)/sizeof(*my_lang_buff);
-
-    return my_lang_buff[loop%num];
+    int 		num = sizeof(my_lang_buff)/sizeof(*my_lang_buff);
+    return ++loop < num ? my_lang_buff[loop] : NULL;
 }
 
     int
 main()
 {
     char	**lang, **orig;
-    int		i,j;
-    int num = sizeof(my_lang_buff)/sizeof(*my_lang_buff);
 
-    for (i=0; i< num; i++)
+    while (lang = get_accept_language())
     {
-	lang = get_accept_language();
+	if (*lang == NULL)
+	    break;
 	orig = lang;
-	j=0;
-	while (*(lang++) != NULL) j++;
-	printf ("num: %d. ", j);
+	while (*(lang++) != NULL);
+	printf ("num: %d. ", lang - orig -1);
 	lang = orig;
 	while (*lang != NULL) {
 	    printf("%s,", *lang);
 	    lang++;
 	}
 	printf("\n");
-
     }
     for (i=0; i< num; i++)
     {

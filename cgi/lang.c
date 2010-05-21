@@ -234,19 +234,21 @@ char *my_lang_buff[] = {
     "it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh,zh-tw,ar,it,zr1,zr2,zr3,zr4,zr5, zr6;q=1,zr7",
     "it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh,zh-tw,ar,it,zr1,zr2,zr3,zr4,zr5, zr6;q=1,zr7,zr8",
     "it,en_us,en,zh-sg,zh,zh-sg,zh-cn,zh,zh-tw,ar,it,zr1,zr2,zr3,zr4,zr5, zr6;q=1,zr7,zr8,zr9",
+    NULL /* Keep this line: end of loop */
     };
 
     char *mygetenv( char *ignore)
 {
     static int		loop = -1;
     int 		num = sizeof(my_lang_buff)/sizeof(*my_lang_buff);
-    return ++loop < num ? my_lang_buff[loop] : NULL;
+    return my_lang_buff[ ++loop % num ];
 }
 
     int
 main()
 {
     char	**lang, **orig;
+    int		i;
 
     while (lang = get_accept_language())
     {
@@ -262,12 +264,13 @@ main()
 	}
 	printf("\n");
     }
-    for (i=0; i< num; i++)
+    for (i=0; i< sizeof(my_lang_buff) / sizeof(*my_lang_buff); i++)
     {
 	char *p;
 	init_locale();
 	p = setlocale( LC_ALL, NULL );
-	printf ("locale: %s.\n", p == NULL? "" : p);
+	printf ("Environment : %s.\n", my_lang_buff[i]);
+	printf ("     locale : %s.\n", p == NULL? "" : p);
     }	
 }
 

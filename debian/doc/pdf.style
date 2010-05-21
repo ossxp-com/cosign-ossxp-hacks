@@ -48,6 +48,7 @@
                 }],
         ["footer",   {"parent": normal, "backColor":#EFEFEF', "alignment": TA_CENTER }],
         ["header",   {"parent": normal, "backColor":#EFEFEF', "alignment": TA_CENTER }],
+        ["code", {"wordWrap":null }],
         ["lineblock",{"parent":bodytext, "spaceBefore":6 }] 
     ],
     "linkColor": "navy"

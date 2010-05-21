@@ -1,0 +1,54 @@
+{
+    "embeddedFonts" : ["/etc/fop/simsun.ttc","/etc/fop/simhei.ttf"],
+    "fontsAlias" : {
+        "stdFont": "simsun",
+        "stdBold": "simsun",
+        "stdItalic": "simsun",
+        "stdBoldItalic": "simsun",
+        "stdSans": "simsun",
+        "stdSansBold": "simsun",
+        "stdSansItalic": "simsun",
+        "stdSansBoldItalic": "simsun",
+        "stdMono": "simsun",
+        "stdMonoItalic": "simsun",
+        "stdMonoBold": "simsun",
+        "stdMonoBoldItalic": "simhei",
+        "stdSerif": "simsun"
+    },
+    "pageSetup" : {
+        "size" : "A4",
+        "firstTemplate": "coverPage",
+        "width": null,
+        "height": null,
+        "margin-top": "2cm",
+        "margin-bottom": "2cm",
+        "margin-left": "2cm",
+        "margin-right": "2cm",
+        "margin-gutter": "0cm",
+        "spacing-header": "5mm",
+        "spacing-footer": "5mm"
+    }, 
+
+    "pageTemplates" : {
+        "coverPage":{
+              "showHeader" : true,
+              "showFooter" : true
+        }
+    },
+    "styles" : [
+        ["palatino" , { "parent": "bodytext","fontName": "stdFont"} ],
+        ["redpalatino" , {"parent": "normal","fontName": "stdFont", "textColor": "red"} ],
+        ["base",{"fontSize":12,
+                 "leading":15,
+                 "bulletFontSize": 10,
+                 "textColor": black,
+                 "backColor": null,
+                 "borderColor": null,
+                 "wordWrap": "CJK"
+                }],
+        ["footer",   {"parent": normal, "backColor":#EFEFEF', "alignment": TA_CENTER }],
+        ["header",   {"parent": normal, "backColor":#EFEFEF', "alignment": TA_CENTER }],
+        ["lineblock",{"parent":bodytext, "spaceBefore":6 }] 
+    ],
+    "linkColor": "navy"
+}

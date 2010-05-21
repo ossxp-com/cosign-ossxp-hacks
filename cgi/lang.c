@@ -14,7 +14,7 @@
 get_accept_language()
 {
 #ifdef _DEBUG
-    #define _ACCEPT_LANGS_ARRAY 8
+    #define _ACCEPT_LANGS_ARRAY 2
     char **accept_languages = NULL;
 #else
     #define _ACCEPT_LANGS_ARRAY 8

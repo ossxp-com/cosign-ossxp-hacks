@@ -82,7 +82,7 @@ logout: logout.o $(OBJ)
 	${CC} ${CFLAGS} -o logout logout.o $(OBJ) $(LDFLAGS)
 
 clean:
-	/bin/rm -rf *.o ${TARGETS}
+	/bin/rm -rf *.o ${TARGETS} lang
 
 install : all
 	-mkdir -p ${exec_prefix}

@@ -103,7 +103,7 @@ info: info.o $(OBJ)
 	${CC} ${CFLAGS} -o info info.o $(filter-out network.o,$(OBJ)) $(LDFLAGS)
 
 clean:
-	/bin/rm -rf *.o ${TARGETS}
+	/bin/rm -rf *.o ${TARGETS} lang subfile
 
 install : all
 	-mkdir -p $(DESTDIR)${exec_prefix}

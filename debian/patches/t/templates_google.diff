@@ -8,7 +8,7 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
 ---
  html/Makefile.in                                   |    9 +-
  html/templates_google/error.html                   |   50 +++
- html/templates_google/inc/css.inc                  |  368 ++++++++++++++++++++
+ html/templates_google/inc/css.inc                  |  373 ++++++++++++++++++++
  html/templates_google/inc/en/0000.html             |    2 +
  html/templates_google/inc/en/0010_wiki.html        |   15 +
  html/templates_google/inc/en/0015_blog.html        |   15 +
@@ -45,7 +45,7 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  html/templates_google/reauth.html                  |   72 ++++
  html/templates_google/services.html                |   45 +++
  html/templates_google/verify-logout.html           |   47 +++
- 39 files changed, 1671 insertions(+), 2 deletions(-)
+ 39 files changed, 1676 insertions(+), 2 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
 index debfb64..21f6b8d 100755
@@ -140,10 +140,10 @@ index 0000000..f4a5d3d
 +</html>
 diff --git a/html/templates_google/inc/css.inc b/html/templates_google/inc/css.inc
 new file mode 100644
-index 0000000..5f136bb
+index 0000000..84eef41
 --- /dev/null
 +++ b/html/templates_google/inc/css.inc
-@@ -0,0 +1,368 @@
+@@ -0,0 +1,373 @@
 +/* General Tags */
 +body {
 +  font-family: arial,sans-serif;
@@ -155,7 +155,7 @@ index 0000000..5f136bb
 +	padding: 0;
 +	background-color: #fff;
 +	color: inherit;
-+	font: 10px/1.3em Verdana, Arial, Helvetica, sans-serif;
++	font: 12px/1.3em Verdana, Arial, Helvetica, sans-serif;
 +}
 +
 +#header {
@@ -394,6 +394,7 @@ index 0000000..5f136bb
 +	border-bottom: 1px solid #ccc;
 +	border-left: 1px solid #ccc;
 +	padding: 8px;
++	font: 10px/1.3em Verdana, Arial, Helvetica, sans-serif;
 +}
 +
 +#rightUIcol .factor p {
@@ -512,6 +513,10 @@ index 0000000..5f136bb
 +}
 +
 +.form-noindent { background-color: #fff; border: 1px solid #c3d9ff; }
++
++.servicelist {
++	font-size: 100%;
++}
 diff --git a/html/templates_google/inc/en/0000.html b/html/templates_google/inc/en/0000.html
 new file mode 100644
 index 0000000..cd6c895

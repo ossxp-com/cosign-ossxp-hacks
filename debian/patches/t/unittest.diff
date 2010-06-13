@@ -130,7 +130,7 @@ index 7726787..e93fe1d 100644
  
  #endif
 diff --git a/cgi/subfile.c b/cgi/subfile.c
-index f36e72b..0fcfb0c 100644
+index 89b0568..d0beb90 100644
 --- a/cgi/subfile.c
 +++ b/cgi/subfile.c
 @@ -27,6 +27,7 @@ void do_macro_include ( char *, struct subfile_list * );
@@ -728,4 +728,4 @@ index 0000000..dad3393
 +  return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 +}
 -- 
-tg: (3aff622..) t/unittest (depends on: t/message_localize)
+tg: (aac775f..) t/unittest (depends on: t/message_localize)

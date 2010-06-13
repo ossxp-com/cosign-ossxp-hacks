@@ -499,10 +499,10 @@ index a050442..7313765 100755
  	printf( "%s\n", cosign_version );
  	exit( 0 );
 diff --git a/cgi/subfile.c b/cgi/subfile.c
-index f36e72b..a35f903 100644
+index 89b0568..69d89cb 100644
 --- a/cgi/subfile.c
 +++ b/cgi/subfile.c
-@@ -322,6 +322,28 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
+@@ -326,6 +326,28 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
          }
      }
  
@@ -759,4 +759,4 @@ index 0000000..a667522
 +</body>
 +</html>
 -- 
-tg: (772cea5..) t/static_htmls_to_templates (depends on: t/message_localize t/autotools_for_setup)
+tg: (e641f01..) t/static_htmls_to_templates (depends on: t/message_localize t/autotools_for_setup)

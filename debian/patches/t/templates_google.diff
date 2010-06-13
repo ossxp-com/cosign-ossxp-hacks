@@ -688,7 +688,7 @@ index 0000000..a0203b7
 +            </table>
 diff --git a/html/templates_google/inc/factor_invite.inc b/html/templates_google/inc/factor_invite.inc
 new file mode 100644
-index 0000000..7bc89e9
+index 0000000..9e13130
 --- /dev/null
 +++ b/html/templates_google/inc/factor_invite.inc
 @@ -0,0 +1,74 @@
@@ -756,7 +756,7 @@ index 0000000..7bc89e9
 +				<div class="factor" id="invitelogin" style="display: none;">
 +					<table>
 +						<tr>
-+							<td><label for="invite">$!_("Invite code:")</label></td>
++							<td><label for="invite">$!_("The&nbsp;code")</label></td>
 +							<td><input id="invite" name="invite" type="password" value="" size="18" tabindex="5" /></td>
 +						</tr>
 +						<tr class="capsLock" style="display: none;">
@@ -1224,7 +1224,7 @@ index 0000000..3af0234
 +# vim: noet ts=4 sw=4
 diff --git a/html/templates_google/locale/template.pot b/html/templates_google/locale/template.pot
 new file mode 100644
-index 0000000..46c7550
+index 0000000..1127760
 --- /dev/null
 +++ b/html/templates_google/locale/template.pot
 @@ -0,0 +1,237 @@
@@ -1281,7 +1281,7 @@ index 0000000..46c7550
 +msgid "Authentication Complete"
 +msgstr ""
 +
-+msgid "Invite code:"
++msgid "The&nbsp;code"
 +msgstr ""
 +
 +msgid "Caps Lock is on"
@@ -1467,7 +1467,7 @@ index 0000000..46c7550
 +msgstr ""
 diff --git a/html/templates_google/locale/zh/LC_MESSAGES/template.po b/html/templates_google/locale/zh/LC_MESSAGES/template.po
 new file mode 100644
-index 0000000..31fc678
+index 0000000..32e5401
 --- /dev/null
 +++ b/html/templates_google/locale/zh/LC_MESSAGES/template.po
 @@ -0,0 +1,252 @@
@@ -1524,8 +1524,8 @@ index 0000000..31fc678
 +msgid "Authentication Complete"
 +msgstr "认证成功"
 +
-+msgid "Invite code:"
-+msgstr "邀请码："
++msgid "The&nbsp;code"
++msgstr "邀请码"
 +
 +msgid "Caps Lock is on"
 +msgstr "大小写锁定键开启"
@@ -1975,4 +1975,4 @@ index 0000000..c3a1739
 +</body>
 +</html>
 -- 
-tg: (36789f0..) t/templates_google (depends on: t/templates_standard)
+tg: (f841588..) t/templates_google (depends on: t/templates_standard)

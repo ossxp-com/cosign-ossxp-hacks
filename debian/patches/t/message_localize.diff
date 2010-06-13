@@ -12,9 +12,9 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  cgi/lang.h           |    1 +
  cgi/login.c          |   87 +++++++-------
  cgi/logout.c         |   37 ++++---
- cgi/subfile.c        |   33 ++++++
+ cgi/subfile.c        |   37 ++++++
  html/js/js_locale.js |   48 ++++++++
- 8 files changed, 382 insertions(+), 211 deletions(-)
+ 8 files changed, 386 insertions(+), 211 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
 index 3539bb1..64d928c 100755
@@ -1163,7 +1163,7 @@ index 5a0ea54..a050442 100755
 +
 +// vim: noet ts=8 sw=4
 diff --git a/cgi/subfile.c b/cgi/subfile.c
-index 2b46bef..f36e72b 100644
+index 2b46bef..89b0568 100644
 --- a/cgi/subfile.c
 +++ b/cgi/subfile.c
 @@ -24,12 +24,14 @@
@@ -1194,7 +1194,7 @@ index 2b46bef..f36e72b 100644
      } else {
  	p = str;
      }
-@@ -250,6 +258,26 @@ _do_macro_include ( char *incfile, struct subfile_list *sl )
+@@ -250,6 +258,30 @@ _do_macro_include ( char *incfile, struct subfile_list *sl )
      return ret;
  }
  
@@ -1203,6 +1203,7 @@ index 2b46bef..f36e72b 100644
 +{
 +    int		len;
 +    char 	*from, *p;
++    char	*to;
 +
 +    from = strdup(text);
 +    p = from;
@@ -1214,14 +1215,17 @@ index 2b46bef..f36e72b 100644
 +	from = str_replace(from, "\\'", "'");
 +	from = str_replace(from, "\\\"", "\"");
 +    }
-+    printf ("%s", dgettext("template", from));
++    to = dgettext("template", from);
++    if (strcmp(from, to) == 0)
++	to = _(from);
++    printf ("%s", to);
 +    if (p)
 +	free(p);
 +}
  
  /*
   * Substitute template file with multiple language support.
-@@ -404,6 +432,11 @@ stub_do_macro_include( char *str, struct subfile_list *sl )
+@@ -404,6 +436,11 @@ stub_do_macro_include( char *str, struct subfile_list *sl )
      printf(">> include: %s\n", str);
  }
  

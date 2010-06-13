@@ -7,7 +7,7 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
  html/Makefile.in                       |   13 ++-
- html/cosign_base.css                   |    8 +-
+ html/cosign_base.css                   |    9 +-
  html/error.html                        |   30 ++---
  html/expired_error.html                |  167 ----------------------
  html/inc/css.inc                       |    1 +
@@ -52,7 +52,7 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  html/services/index.php                |    2 +-
  html/validation_error.html             |   54 -------
  html/verify-logout.html                |   30 ++--
- 46 files changed, 1058 insertions(+), 779 deletions(-)
+ 46 files changed, 1059 insertions(+), 779 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
 index 890c3fd..debfb64 100755
@@ -93,7 +93,7 @@ index 890c3fd..debfb64 100755
 +
 +.PHONY: clean all ${TEMPLATES}
 diff --git a/html/cosign_base.css b/html/cosign_base.css
-index 1541b0e..2dfe2b7 100755
+index 1541b0e..fc8caeb 100755
 --- a/html/cosign_base.css
 +++ b/html/cosign_base.css
 @@ -5,7 +5,7 @@ body {
@@ -105,7 +105,15 @@ index 1541b0e..2dfe2b7 100755
  }
  
  p, dt, dd, form, input, table {
-@@ -278,7 +278,7 @@ a:hover {
+@@ -261,6 +261,7 @@ a:hover {
+ 	border-bottom: 1px solid #ccc;
+ 	border-left: 1px solid #ccc;
+ 	padding: 8px;
++	font: 10px/1.3em Verdana, Arial, Helvetica, sans-serif;
+ }
+ 
+ #rightUIcol .factor p {
+@@ -278,7 +279,7 @@ a:hover {
  }
  
  #rightUIcol .factor td {
@@ -114,7 +122,7 @@ index 1541b0e..2dfe2b7 100755
  }
  
  #rightUIcol .switchUser {
-@@ -379,3 +379,7 @@ hr.text {
+@@ -379,3 +380,7 @@ hr.text {
  	font-style: italic;
  	font-size: 90%;
  }
@@ -548,7 +556,7 @@ index 0000000..a0203b7
 +            </table>
 diff --git a/html/inc/factor_invite.inc b/html/inc/factor_invite.inc
 new file mode 100644
-index 0000000..7bc89e9
+index 0000000..9e13130
 --- /dev/null
 +++ b/html/inc/factor_invite.inc
 @@ -0,0 +1,74 @@
@@ -616,7 +624,7 @@ index 0000000..7bc89e9
 +				<div class="factor" id="invitelogin" style="display: none;">
 +					<table>
 +						<tr>
-+							<td><label for="invite">$!_("Invite code:")</label></td>
++							<td><label for="invite">$!_("The&nbsp;code")</label></td>
 +							<td><input id="invite" name="invite" type="password" value="" size="18" tabindex="5" /></td>
 +						</tr>
 +						<tr class="capsLock" style="display: none;">
@@ -1051,7 +1059,7 @@ index 0000000..3af0234
 +# vim: noet ts=4 sw=4
 diff --git a/html/locale/template.pot b/html/locale/template.pot
 new file mode 100644
-index 0000000..30db856
+index 0000000..f39c769
 --- /dev/null
 +++ b/html/locale/template.pot
 @@ -0,0 +1,231 @@
@@ -1108,7 +1116,7 @@ index 0000000..30db856
 +msgid "Authentication Complete"
 +msgstr ""
 +
-+msgid "Invite code:"
++msgid "The&nbsp;code"
 +msgstr ""
 +
 +msgid "Caps Lock is on"
@@ -1288,7 +1296,7 @@ index 0000000..30db856
 +msgstr ""
 diff --git a/html/locale/zh/LC_MESSAGES/template.po b/html/locale/zh/LC_MESSAGES/template.po
 new file mode 100644
-index 0000000..67600a2
+index 0000000..cc1092b
 --- /dev/null
 +++ b/html/locale/zh/LC_MESSAGES/template.po
 @@ -0,0 +1,244 @@
@@ -1345,8 +1353,8 @@ index 0000000..67600a2
 +msgid "Authentication Complete"
 +msgstr "认证成功"
 +
-+msgid "Invite code:"
-+msgstr "邀请码："
++msgid "The&nbsp;code"
++msgstr "邀请码"
 +
 +msgid "Caps Lock is on"
 +msgstr "大小写锁定键开启"
@@ -2358,4 +2366,4 @@ index ea68776..c3a1739 100755
  </body>
  </html>
 -- 
-tg: (7e220b6..) t/templates_standard (depends on: master t/autotools_for_setup t/static_htmls_to_templates t/javascript t/services_template)
+tg: (929d97a..) t/templates_standard (depends on: master t/autotools_for_setup t/static_htmls_to_templates t/javascript t/services_template)

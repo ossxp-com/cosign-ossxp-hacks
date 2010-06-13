@@ -22,7 +22,7 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  13 files changed, 510 insertions(+), 31 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
-index 975eb2e..8f39146 100755
+index a21c499..3a0b3b2 100755
 --- a/cgi/Makefile.in
 +++ b/cgi/Makefile.in
 @@ -34,7 +34,7 @@ CFLAGS=      ${DEFS} ${OPTOPTS} @CFLAGS@ ${INCPATH}
@@ -49,7 +49,7 @@ index 975eb2e..8f39146 100755
 +	${CC} ${CFLAGS} -o info info.o $(filter-out network.o,$(OBJ)) $(LDFLAGS)
 +
  clean:
- 	/bin/rm -rf *.o ${TARGETS}
+ 	/bin/rm -rf *.o ${TARGETS} lang subfile
  
 @@ -100,3 +110,4 @@ install : all
  	-mkdir -p $(DESTDIR)${CGIDIR};
@@ -759,4 +759,4 @@ index 0000000..a667522
 +</body>
 +</html>
 -- 
-tg: (af2e498..) t/static_htmls_to_templates (depends on: t/message_localize t/autotools_for_setup)
+tg: (772cea5..) t/static_htmls_to_templates (depends on: t/message_localize t/autotools_for_setup)

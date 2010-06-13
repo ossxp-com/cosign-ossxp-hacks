@@ -522,7 +522,7 @@ index 0000000..cd6c895
 +              <tbody>
 diff --git a/html/templates_google/inc/en/0010_wiki.html b/html/templates_google/inc/en/0010_wiki.html
 new file mode 100644
-index 0000000..846469b
+index 0000000..a45a857
 --- /dev/null
 +++ b/html/templates_google/inc/en/0010_wiki.html
 @@ -0,0 +1,15 @@
@@ -531,7 +531,7 @@ index 0000000..846469b
 +                  <td aligh='right' vliagn='middle'>
 +                    <img src="/cosign/images/services/moinmoin.gif" alt="Wiki">
 +                  </td>
-+                  <td style="font-size: 83%;">
++                  <td class="servicelist">
 +                    <u>
 +                    <a name="wiki" href="http://wiki.foo.bar/wiki/action/login/Main?action=login&login=1">Knowledge Management</a>
 +                    </u>
@@ -543,7 +543,7 @@ index 0000000..846469b
 +                </tr>
 diff --git a/html/templates_google/inc/en/0015_blog.html b/html/templates_google/inc/en/0015_blog.html
 new file mode 100644
-index 0000000..2805ea1
+index 0000000..95dc7b4
 --- /dev/null
 +++ b/html/templates_google/inc/en/0015_blog.html
 @@ -0,0 +1,15 @@
@@ -552,7 +552,7 @@ index 0000000..2805ea1
 +                  <td aligh='right' vliagn='middle'>
 +                    <img src="/cosign/images/services/blog.gif" alt="Blog">
 +                  </td>
-+                  <td style="font-size: 83%;">
++                  <td class="servicelist">
 +                    <u>
 +                    <a name="blog" href="http://blog.foo.bar/">Web log</a>
 +                    </u>
@@ -564,7 +564,7 @@ index 0000000..2805ea1
 +                </tr>
 diff --git a/html/templates_google/inc/en/0020_scm.html b/html/templates_google/inc/en/0020_scm.html
 new file mode 100644
-index 0000000..6648764
+index 0000000..1351b2c
 --- /dev/null
 +++ b/html/templates_google/inc/en/0020_scm.html
 @@ -0,0 +1,21 @@
@@ -573,7 +573,7 @@ index 0000000..6648764
 +                  <td aligh='right' vliagn='middle'>
 +                    <img src="/cosign/images/services/subversion.gif" alt="Subversion">
 +                  </td>
-+                  <td style="font-size: 83%;">
++                  <td class="servicelist">
 +                    <u>
 +                    Version Control: <a name="websvn" href="http://svn.foo.bar/websvn/">Subversion</a>, 
 +                      <a name="git" href="http://git.foo.bar/">Git</a>,
@@ -591,7 +591,7 @@ index 0000000..6648764
 +                </tr>
 diff --git a/html/templates_google/inc/en/0030_bugtrac.html b/html/templates_google/inc/en/0030_bugtrac.html
 new file mode 100644
-index 0000000..371b8c2
+index 0000000..5b40355
 --- /dev/null
 +++ b/html/templates_google/inc/en/0030_bugtrac.html
 @@ -0,0 +1,19 @@
@@ -601,7 +601,7 @@ index 0000000..371b8c2
 +                    <img src="/cosign/images/services/pm.gif" alt="Project Management">
 +
 +                  </td>
-+                  <td style="font-size: 83%;">
++                  <td class="servicelist">
 +                    <u>
 +                    Project Management: <a name="trac" href="http://trac.foo.bar/">Trac</a>,
 +                    <a name="redmine" href="http://redmine.foo.bar/">Redmine</a>
@@ -616,7 +616,7 @@ index 0000000..371b8c2
 +                </tr>
 diff --git a/html/templates_google/inc/en/0035_testlink.html b/html/templates_google/inc/en/0035_testlink.html
 new file mode 100644
-index 0000000..22b623b
+index 0000000..7e8d69a
 --- /dev/null
 +++ b/html/templates_google/inc/en/0035_testlink.html
 @@ -0,0 +1,15 @@
@@ -625,7 +625,7 @@ index 0000000..22b623b
 +                  <td aligh='right' vliagn='middle'>
 +                    <img src="/cosign/images/services/tl.gif" alt="Testlink">
 +                  </td>
-+                  <td style="font-size: 83%;">
++                  <td class="servicelist">
 +                    <u>
 +                    Test Lifecyle Management: <a name="testlink" href="http://testlink.foo.bar/">TestLink</a>
 +                    </u>
@@ -637,7 +637,7 @@ index 0000000..22b623b
 +                </tr>
 diff --git a/html/templates_google/inc/en/0040_comm.html b/html/templates_google/inc/en/0040_comm.html
 new file mode 100644
-index 0000000..7cf153b
+index 0000000..2e64f03
 --- /dev/null
 +++ b/html/templates_google/inc/en/0040_comm.html
 @@ -0,0 +1,15 @@
@@ -646,7 +646,7 @@ index 0000000..7cf153b
 +                  <td aligh='right' vliagn='middle'>
 +                    <img src="/cosign/images/services/mailman.gif" alt="Mailman">
 +                  </td>
-+                  <td style="font-size: 83%;">
++                  <td class="servicelist">
 +                    <u>
 +                    Communications: <a name="mailman" href="http://list.foo.bar/mailman/listinfo/">Mailing list</a>, IM
 +                    </u>
@@ -658,7 +658,7 @@ index 0000000..7cf153b
 +                </tr>
 diff --git a/html/templates_google/inc/en/1000_account.html b/html/templates_google/inc/en/1000_account.html
 new file mode 100644
-index 0000000..d10571f
+index 0000000..2902fcc
 --- /dev/null
 +++ b/html/templates_google/inc/en/1000_account.html
 @@ -0,0 +1,16 @@
@@ -667,7 +667,7 @@ index 0000000..d10571f
 +                  <td>
 +                    <img src="/cosign/images/services/profile.gif" alt="Profiles">
 +                  </td>
-+                  <td style="font-size: 83%;">
++                  <td class="servicelist">
 +                    <u>
 +                    Control Center: <a name="gosa" href="https://weblogin.foo.bar/members/?login">Account management</a>,
 +                    <a name="sso" href="https://weblogin.foo.bar/cgi-bin/login">Single Sign-on</a>
@@ -1019,7 +1019,7 @@ index 0000000..cd6c895
 +              <tbody>
 diff --git a/html/templates_google/inc/zh/0010_wiki.html b/html/templates_google/inc/zh/0010_wiki.html
 new file mode 100644
-index 0000000..bf9e081
+index 0000000..a29e9ad
 --- /dev/null
 +++ b/html/templates_google/inc/zh/0010_wiki.html
 @@ -0,0 +1,15 @@
@@ -1028,7 +1028,7 @@ index 0000000..bf9e081
 +                  <td aligh='right' vliagn='middle'>
 +                    <img src="/cosign/images/services/moinmoin.gif" alt="Wiki">
 +                  </td>
-+                  <td style="font-size: 83%;">
++                  <td class="servicelist">
 +                    <u>
 +                    <a name="wiki" href="http://wiki.foo.bar/wiki/action/login/Main?action=login&login=1">知识管理系统</a>
 +                    </u>
@@ -1040,7 +1040,7 @@ index 0000000..bf9e081
 +                </tr>
 diff --git a/html/templates_google/inc/zh/0015_blog.html b/html/templates_google/inc/zh/0015_blog.html
 new file mode 100644
-index 0000000..5228943
+index 0000000..e4f3a2c
 --- /dev/null
 +++ b/html/templates_google/inc/zh/0015_blog.html
 @@ -0,0 +1,15 @@
@@ -1049,7 +1049,7 @@ index 0000000..5228943
 +                  <td aligh='right' vliagn='middle'>
 +                    <img src="/cosign/images/services/blog.gif" alt="博客">
 +                  </td>
-+                  <td style="font-size: 83%;">
++                  <td class="servicelist">
 +                    <u>
 +                    <a name="blog" href="http://blog.foo.bar/">博客</a>
 +                    </u>
@@ -1061,7 +1061,7 @@ index 0000000..5228943
 +                </tr>
 diff --git a/html/templates_google/inc/zh/0020_scm.html b/html/templates_google/inc/zh/0020_scm.html
 new file mode 100644
-index 0000000..6ebf8f7
+index 0000000..9653b34
 --- /dev/null
 +++ b/html/templates_google/inc/zh/0020_scm.html
 @@ -0,0 +1,21 @@
@@ -1070,7 +1070,7 @@ index 0000000..6ebf8f7
 +                  <td aligh='right' vliagn='top'>
 +                    <img src="/cosign/images/services/subversion.gif" alt="Subversion">
 +                  </td>
-+                  <td style="font-size: 83%;">
++                  <td class="servicelist">
 +                    <u>
 +                    版本控制系统： <a name="websvn" href="http://svn.foo.bar/websvn/">Subversion</a>, 
 +                      <a name="git" href="http://git.foo.bar/">Git</a>,
@@ -1088,7 +1088,7 @@ index 0000000..6ebf8f7
 +                </tr>
 diff --git a/html/templates_google/inc/zh/0030_bugtrac.html b/html/templates_google/inc/zh/0030_bugtrac.html
 new file mode 100644
-index 0000000..2b908d4
+index 0000000..b6a94d2
 --- /dev/null
 +++ b/html/templates_google/inc/zh/0030_bugtrac.html
 @@ -0,0 +1,19 @@
@@ -1098,7 +1098,7 @@ index 0000000..2b908d4
 +                    <img src="/cosign/images/services/pm.gif" alt="Project Management">
 +
 +                  </td>
-+                  <td style="font-size: 83%;">
++                  <td class="servicelist">
 +                    <u>
 +                    项目管理系统： <a name="trac" href="http://trac.foo.bar/">Trac</a>,
 +                    <a name="redmine" href="http://redmine.foo.bar/">Redmine</a>
@@ -1113,7 +1113,7 @@ index 0000000..2b908d4
 +                </tr>
 diff --git a/html/templates_google/inc/zh/0035_testlink.html b/html/templates_google/inc/zh/0035_testlink.html
 new file mode 100644
-index 0000000..29b9c73
+index 0000000..8b1be8a
 --- /dev/null
 +++ b/html/templates_google/inc/zh/0035_testlink.html
 @@ -0,0 +1,15 @@
@@ -1122,7 +1122,7 @@ index 0000000..29b9c73
 +                  <td aligh='right' vliagn='middle'>
 +                    <img src="/cosign/images/services/tl.gif" alt="Testlink">
 +                  </td>
-+                  <td style="font-size: 83%;">
++                  <td class="servicelist">
 +                    <u>
 +                    测试管理平台： <a name="testlink" href="http://testlink.foo.bar/">TestLink</a>
 +                    </u>
@@ -1134,7 +1134,7 @@ index 0000000..29b9c73
 +                </tr>
 diff --git a/html/templates_google/inc/zh/0040_comm.html b/html/templates_google/inc/zh/0040_comm.html
 new file mode 100644
-index 0000000..bcb8fa0
+index 0000000..68ebcb5
 --- /dev/null
 +++ b/html/templates_google/inc/zh/0040_comm.html
 @@ -0,0 +1,15 @@
@@ -1143,7 +1143,7 @@ index 0000000..bcb8fa0
 +                  <td aligh='right' vliagn='middle'>
 +                    <img src="/cosign/images/services/mailman.gif" alt="Mailman">
 +                  </td>
-+                  <td style="font-size: 83%;">
++                  <td class="servicelist">
 +                    <u>
 +                    沟通系统： <a name="mailman" href="http://list.foo.bar/mailman/listinfo/">邮件列表</a>, 即时通讯
 +                    </u>
@@ -1155,7 +1155,7 @@ index 0000000..bcb8fa0
 +                </tr>
 diff --git a/html/templates_google/inc/zh/1000_account.html b/html/templates_google/inc/zh/1000_account.html
 new file mode 100644
-index 0000000..ec601af
+index 0000000..312e5b4
 --- /dev/null
 +++ b/html/templates_google/inc/zh/1000_account.html
 @@ -0,0 +1,16 @@
@@ -1164,7 +1164,7 @@ index 0000000..ec601af
 +                  <td>
 +                    <img src="/cosign/images/services/profile.gif" alt="Profiles">
 +                  </td>
-+                  <td style="font-size: 83%;">
++                  <td class="servicelist">
 +                    <u>
 +                    集中管理系统： <a name="gosa" href="https://weblogin.foo.bar/members/?login">帐号管理</a>,
 +                    <a name="sso" href="https://weblogin.foo.bar/cgi-bin/login">单点登录</a>
@@ -1872,7 +1872,7 @@ index 0000000..209aaf8
 +</html>
 diff --git a/html/templates_google/services.html b/html/templates_google/services.html
 new file mode 100644
-index 0000000..11ed378
+index 0000000..4ccb1cc
 --- /dev/null
 +++ b/html/templates_google/services.html
 @@ -0,0 +1,45 @@
@@ -1909,7 +1909,7 @@ index 0000000..11ed378
 +        <td valign="top" width="55%">
 +          <b>$!_("Services")</b>
 +          <hr color="#dddddd" noshade="noshade" size="1">
-+          <div style="font-size: 83%;">
++          <div class="servicelist">
 +            <br><br>
 +				    $!include(inc/%lang%/*.html)
 +          </div>
@@ -1975,4 +1975,4 @@ index 0000000..c3a1739
 +</body>
 +</html>
 -- 
-tg: (d10eeed..) t/templates_google (depends on: t/templates_standard)
+tg: (36789f0..) t/templates_google (depends on: t/templates_standard)

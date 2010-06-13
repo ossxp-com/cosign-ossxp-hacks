@@ -728,4 +728,4 @@ index 0000000..dad3393
 +  return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 +}
 -- 
-tg: (1c068ab..) t/unittest (depends on: t/message_localize)
+tg: (3aff622..) t/unittest (depends on: t/message_localize)

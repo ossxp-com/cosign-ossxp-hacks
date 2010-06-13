@@ -6,13 +6,13 @@ Subject: [PATCH] t/multi_language
 Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 
 ---
- cgi/Makefile.in |    5 +-
+ cgi/Makefile.in |    7 ++-
  cgi/lang.c      |  197 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
  cgi/lang.h      |   17 +++++
- 3 files changed, 218 insertions(+), 1 deletions(-)
+ 3 files changed, 219 insertions(+), 2 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
-index e867410..175a2ef 100755
+index e867410..8c762a8 100755
 --- a/cgi/Makefile.in
 +++ b/cgi/Makefile.in
 @@ -29,13 +29,16 @@ INSTALL=     @INSTALL@
@@ -33,6 +33,15 @@ index e867410..175a2ef 100755
  login.o:	login.c
  	${CC} ${CFLAGS} \
  	-D_COSIGN_TICKET_CACHE=\"${COSIGNTICKETCACHE}\" \
+@@ -75,7 +78,7 @@ logout: logout.o $(OBJ)
+ 	${CC} ${CFLAGS} -o logout logout.o $(OBJ) $(LDFLAGS)
+ 
+ clean:
+-	/bin/rm -rf *.o ${TARGETS}
++	/bin/rm -rf *.o ${TARGETS} lang
+ 
+ install : all
+ 	-mkdir -p ${exec_prefix}
 diff --git a/cgi/lang.c b/cgi/lang.c
 new file mode 100644
 index 0000000..85f4d3e

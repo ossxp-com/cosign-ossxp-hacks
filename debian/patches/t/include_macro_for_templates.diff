@@ -6,12 +6,12 @@ Templates can include other files using macro: $!include(...)
 Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
- cgi/Makefile.in |    4 +
+ cgi/Makefile.in |    6 +-
  cgi/subfile.c   |  404 ++++++++++++++++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 403 insertions(+), 5 deletions(-)
+ 2 files changed, 404 insertions(+), 6 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
-index 175a2ef..558954b 100755
+index 8c762a8..3539bb1 100755
 --- a/cgi/Makefile.in
 +++ b/cgi/Makefile.in
 @@ -39,6 +39,10 @@ all: ${TARGETS}
@@ -25,6 +25,15 @@ index 175a2ef..558954b 100755
  login.o:	login.c
  	${CC} ${CFLAGS} \
  	-D_COSIGN_TICKET_CACHE=\"${COSIGNTICKETCACHE}\" \
+@@ -78,7 +82,7 @@ logout: logout.o $(OBJ)
+ 	${CC} ${CFLAGS} -o logout logout.o $(OBJ) $(LDFLAGS)
+ 
+ clean:
+-	/bin/rm -rf *.o ${TARGETS} lang
++	/bin/rm -rf *.o ${TARGETS} lang subfile
+ 
+ install : all
+ 	-mkdir -p ${exec_prefix}
 diff --git a/cgi/subfile.c b/cgi/subfile.c
 index 760d2c6..2b46bef 100644
 --- a/cgi/subfile.c
@@ -475,4 +484,4 @@ index 760d2c6..2b46bef 100644
 +
 +/* vim: set noet ts=8 sw=4 : */
 -- 
-tg: (af29cb2..) t/include_macro_for_templates (depends on: t/multi_language)
+tg: (0244b21..) t/include_macro_for_templates (depends on: t/multi_language)

@@ -17,7 +17,7 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  8 files changed, 382 insertions(+), 211 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
-index 558954b..5a4cd08 100755
+index 3539bb1..64d928c 100755
 --- a/cgi/Makefile.in
 +++ b/cgi/Makefile.in
 @@ -1,6 +1,7 @@
@@ -1288,4 +1288,4 @@ index 0000000..15985fc
 +
 +// vim: noet ts=4 sw=4
 -- 
-tg: (35fe080..) t/message_localize (depends on: t/factor_ldap t/factor_invite t/include_macro_for_templates t/auth_log_for_fail2ban)
+tg: (71200e8..) t/message_localize (depends on: t/factor_ldap t/factor_invite t/include_macro_for_templates t/auth_log_for_fail2ban)

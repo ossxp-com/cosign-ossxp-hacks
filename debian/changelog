@@ -1,4 +1,4 @@
-ossxp-cosign3 (3.1.1-1.16) unstable; urgency=low
+ossxp-cosign3 (3.1.1-1.17) unstable; urgency=low
 
   * Enlarge font size in services list.
   * Change invite code fileld name to 8 characters.

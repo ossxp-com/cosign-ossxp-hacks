@@ -9,12 +9,12 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  Makefile.in                     |    4 +-
  configure                       | 4527 +++++++++++++++++++--------------------
  configure.ac                    |    1 +
- locale/Makefile.in              |   41 +
- locale/addition-template.pot    |  237 ++
+ locale/Makefile.in              |   42 +
+ locale/addition-template.pot    |  243 +++
  locale/addition.pot             |   32 +
  locale/cosign.pot               |  366 ++++
- locale/zh/LC_MESSAGES/cosign.po |  627 ++++++
- 8 files changed, 3458 insertions(+), 2377 deletions(-)
+ locale/zh/LC_MESSAGES/cosign.po |  636 ++++++
+ 8 files changed, 3474 insertions(+), 2377 deletions(-)
 
 diff --git a/Makefile.in b/Makefile.in
 index 26f46dc..1c713cc 100755
@@ -6693,10 +6693,10 @@ index 8f11d2c..e8ad02d 100755
  
 diff --git a/locale/Makefile.in b/locale/Makefile.in
 new file mode 100644
-index 0000000..54b7be5
+index 0000000..47c3e07
 --- /dev/null
 +++ b/locale/Makefile.in
-@@ -0,0 +1,41 @@
+@@ -0,0 +1,42 @@
 +prefix=@prefix@
 +LOCALEDIR=@localedir@
 +DESTDIR=
@@ -6719,11 +6719,12 @@ index 0000000..54b7be5
 +		-o $(DOMAIN).pot \
 +		$^
 +
-+$(POFILES): $(DOMAIN).pot addition.pot
++$(POFILES): $(DOMAIN).pot addition.pot addition-template.pot
 +	msgmerge $@ $< -o $@.main
 +	msgmerge $@ addition.pot -o $@.sub
-+	msgcat -s -o $@ $@.main $@.sub
-+	-@rm -f $@.main $@.sub
++	msgmerge $@ addition-template.pot -o $@.template
++	msgcat -s -o $@ $@.main $@.sub $@.template
++	-@rm -f $@.main $@.sub $@.template
 +
 +%.mo: %.po
 +	msgfmt -o $@ $<
@@ -6740,10 +6741,10 @@ index 0000000..54b7be5
 +# vim: noet ts=4 sw=4
 diff --git a/locale/addition-template.pot b/locale/addition-template.pot
 new file mode 100644
-index 0000000..1127760
+index 0000000..bfed932
 --- /dev/null
 +++ b/locale/addition-template.pot
-@@ -0,0 +1,237 @@
+@@ -0,0 +1,243 @@
 +# SOME DESCRIPTIVE TITLE.
 +# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 +# This file is distributed under the same license as the PACKAGE package.
@@ -6980,6 +6981,12 @@ index 0000000..1127760
 +msgstr ""
 +
 +msgid "Services"
++msgstr ""
++
++msgid "Additional authentication failed. Please try again later."
++msgstr ""
++
++msgid "Our Home Page"
 +msgstr ""
 diff --git a/locale/addition.pot b/locale/addition.pot
 new file mode 100644
@@ -7393,10 +7400,10 @@ index 0000000..828cf4c
 +msgstr ""
 diff --git a/locale/zh/LC_MESSAGES/cosign.po b/locale/zh/LC_MESSAGES/cosign.po
 new file mode 100644
-index 0000000..556c7d3
+index 0000000..db933e2
 --- /dev/null
 +++ b/locale/zh/LC_MESSAGES/cosign.po
-@@ -0,0 +1,627 @@
+@@ -0,0 +1,636 @@
 +# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 +# This file is distributed under the same license as the PACKAGE package.
 +#
@@ -7406,7 +7413,7 @@ index 0000000..556c7d3
 +"Project-Id-Version: \n"
 +"Report-Msgid-Bugs-To: \n"
 +"POT-Creation-Date: 2010-04-24 19:45+0800\n"
-+"PO-Revision-Date: 2010-06-13 16:17+0800\n"
++"PO-Revision-Date: 2010-06-13 16:52+0800\n"
 +"Last-Translator: Jiang Xin <worldhello.net@gmail.com>\n"
 +"Language-Team: Chinese Simplified <kde-i18n-doc@kde.org>\n"
 +"MIME-Version: 1.0\n"
@@ -7442,6 +7449,14 @@ index 0000000..556c7d3
 +#, c-format
 +msgid "%s: mkscookie failed.\n"
 +msgstr "%s: 创建服务 cookie 失败。\n"
++
++msgid ""
++"&copy; 2006 - 2010 <a href=\"http://www.umich.edu/~regents/\" title="
++"\"Regents of the University of Michigan\"> Regents of the University of "
++"Michigan</a>, <a href=\"http://www.ossxp.com/\">OSSXP Powered</a>"
++msgstr ""
++"&copy; 2006 - 2010 <a href=\"http://www.umich.edu/~regents/\" title=\"密歇根"
++"大学\">密歇根大学</a>, <a href=\"http://www.ossxp.com/\">群英汇技术支持</a>"
 +
 +msgid ""
 +"<p>The Weblogin-protected site that  you were connecting to encountered an "
@@ -7498,14 +7513,29 @@ index 0000000..556c7d3
 +"受保护站点提交的数据没有被保存。</p>\n"
 +"<p>这可能是因为超时导致会话退出，或者您在另外的窗口已经退出登录。</p>\n"
 +
++msgid "About invite code"
++msgstr "关于邀请码"
++
 +msgid "Additional authentication failed. Please try again later."
 +msgstr "附加认证失败，请稍后重试。"
 +
 +msgid "Additional authentication is required."
 +msgstr "需要附加的认证。"
 +
++msgid "After logout your browser will redirect to:"
++msgstr "退出登录后浏览器将重定向到："
++
 +msgid "An unknown error occurred."
 +msgstr "遇到一个未知错误。"
++
++msgid "Are you sure you want to do this?"
++msgstr "您确认要这么做么？"
++
++msgid "Authenticate using a certificate"
++msgstr "使用证书认证"
++
++msgid "Authentication Complete"
++msgstr "认证成功"
 +
 +msgid "Authentication Required"
 +msgstr "登录"
@@ -7522,11 +7552,25 @@ index 0000000..556c7d3
 +msgid "Authentication Required (krbpath error)"
 +msgstr "需要登录 ( kerberos 错误 )"
 +
++msgid ""
++"Authentication sections marked with a <img src=\"/cosign/images/circle.gif\" "
++"alt=\"yellow circle\" /> are required."
++msgstr ""
++"标记为 <img src=\"/cosign/images/circle.gif\" alt=\"黄色圆圈\" /> 的认证方式"
++"是必须的。"
++
++msgid "Back to Top"
++msgstr "返回顶部"
++
 +msgid "Bad service in query string."
 +msgstr "query sting 中包含错误的服务名。"
 +
 +msgid "Browser is stuck in an infinite redirect loop."
 +msgstr "浏览器因发生了循环重定向而被终止。"
++
++msgid ""
++"By using this service you agree to adhere to our policies and guidelines."
++msgstr "使用本服务，意味着您已经接受我们的相关政策条款。"
 +
 +msgid "CC Initialize Error"
 +msgstr "密钥缓存初始化错误"
@@ -7537,14 +7581,35 @@ index 0000000..556c7d3
 +msgid "Cannot connect to LDAP server.\n"
 +msgstr "无法连接到 LDAP 服务器。\n"
 +
++msgid "Caps Lock is on"
++msgstr "大小写锁定键开启"
++
++msgid "Certificate"
++msgstr "证书"
++
 +msgid "Changes Not Saved"
 +msgstr "修改没有保存"
++
++msgid "Click the following link to register a new account yourself."
++msgstr "点击下面的链接，注册一个新帐号"
++
++msgid "Click the following link to retrieve you lost password."
++msgstr "点击下面的链接，找回你忘记的口令"
++
++msgid "Create an account now"
++msgstr "创建一个新帐号"
 +
 +msgid "Database Connection Problem"
 +msgstr "数据库连接错误"
 +
 +msgid "Database Problem"
 +msgstr "数据库错误"
++
++msgid "Download"
++msgstr "下载"
++
++msgid "Download KX.509"
++msgstr "下载 KX.509"
 +
 +msgid "Error"
 +msgstr "错误"
@@ -7604,8 +7669,48 @@ index 0000000..556c7d3
 +"again later"
 +msgstr "无法连接到认证服务器。请稍后重试"
 +
++msgid "Forgot Your Password?"
++msgstr "忘记口令？"
++
++msgid "Get a Token"
++msgstr "获取一个令牌"
++
++msgid "Go Back"
++msgstr "返回"
++
++msgid "Hide this Information"
++msgstr "隐藏本信息"
++
++msgid "ID &amp; Password"
++msgstr "用户名和口令"
++
 +msgid "Invalid Input"
 +msgstr "无效输入"
++
++msgid "Invite Code"
++msgstr "邀请码认证"
++
++msgid ""
++"Invite code is assigned by administrator. Before input your invite code, you "
++"must provide your email address as your login name."
++msgstr ""
++"邀请码由管理员进行设置，为特殊用户提供无须用户注册即可访问某些服务。 注意在输"
++"入邀请码的同时，您需要在登录名字段输入您的邮件地址。"
++
++msgid "Jump to the Certificate section"
++msgstr "跳转到证书登录"
++
++msgid "Jump to the ID and Password section"
++msgstr "跳转到用户名和口令登录"
++
++msgid "Jump to the One Time Passcode section"
++msgstr "跳转到一次性口令登录"
++
++msgid "Jump to the Web Login instructions"
++msgstr "跳转到 Web 登录说明"
++
++msgid "Jump to the error message (if present)"
++msgstr "跳转到错误信息（如果有的话）"
 +
 +msgid "KT Resolve Error"
 +msgstr "密钥表解析失败"
@@ -7615,6 +7720,18 @@ index 0000000..556c7d3
 +"Kerberos ticket transfer is on,  but no tickets were found in the "
 +"environment\n"
 +msgstr "Kerberos ticket 传输打开，但是环境中无法找到 tickets\n"
++
++msgid "Link to Homepage"
++msgstr "返回主页"
++
++msgid "Log In"
++msgstr "登录"
++
++msgid "Log Out"
++msgstr "退出"
++
++msgid "Login"
++msgstr "登录"
 +
 +msgid "Login failed: email or invite_code not provided."
 +msgstr "登录失败: 请输入您的邮件地址和邀请码。"
@@ -7634,11 +7751,45 @@ index 0000000..556c7d3
 +msgid "Login failed: wrong invite code."
 +msgstr "登录失败: 错误的邀请码。"
 +
++msgid "Logout"
++msgstr "退出登录"
++
 +msgid "Logout Requested"
 +msgstr "退出登录"
 +
 +msgid "Logout Requested (again?)"
 +msgstr "退出登录（重复?）"
++
++msgid "Manage your profile or change password"
++msgstr "修改个人信息及口令"
++
++msgid "Manage your token"
++msgstr "管理你的密钥"
++
++msgid "Need an Account?"
++msgstr "需要创建帐号？"
++
++msgid "Need an account or password help?"
++msgstr "需要创建帐号或者找回口令？"
++
++msgid ""
++"Note: The two fields, password and invite code input fields are exclusive. "
++"The other is disabled when one is focus and has inupt."
++msgstr ""
++"注意：口令字段和邀请码字段互斥。当选择其中之一并且输入了口令或者邀请码则另外"
++"一个字段自动禁用， 直到您将当前的口令或者邀请码录入框的内容清空。"
++
++msgid "One Time Passcode"
++msgstr "一次性口令登录"
++
++msgid "Our Home Page"
++msgstr "我们的主页"
++
++msgid "Passcode"
++msgstr "口令"
++
++msgid "Password"
++msgstr "口令"
 +
 +msgid "Password Expired"
 +msgstr "口令过期"
@@ -7652,8 +7803,21 @@ index 0000000..556c7d3
 +msgid "Please complete all required fields to re-authenticate."
 +msgstr "请填写所有要求的字段以便重新认证。"
 +
++msgid "Please contact technical support if you have any questions."
++msgstr "如果您有问题，请联系管理员。"
++
++msgid ""
++"Please enter your authentication information and click the &quot;Log&nbsp;"
++"In&quot; button to continue."
++msgstr ""
++"在右侧选择任一种登录方式，输入登录信息，之后按 &quot;登录按钮&quot; 完成登"
++"录。"
++
 +msgid "Please enter your login and password."
 +msgstr "请输入您的用户名和口令。"
++
++msgid "Please input your email address into username field."
++msgstr "请在用户名字段输入您的邮件地址。"
 +
 +msgid "Please try again later."
 +msgstr "请稍后重试。"
@@ -7679,6 +7843,27 @@ index 0000000..556c7d3
 +msgid "Re-authenticate to confirm your new Internet address."
 +msgstr "因为您IP地址改变，请重新认证。"
 +
++msgid ""
++"Replace this text with information about obtaining an account. Lorem ipsum "
++"dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. "
++"Aenean vitae orci. Mauris vulputate ornare urna."
++msgstr "替换本段内容为创建帐号的相关指示..."
++
++msgid ""
++"Replace this text with information about resetting your password. Lorem "
++"ipsum dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non "
++"lacus. Aenean vitae orci. Mauris vulputate ornare urna."
++msgstr "替换本段内容为重置密码的相关指示..."
++
++msgid ""
++"Replace this with text about using one time passcodes. Lorem ipsum dolor sit "
++"amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean "
++"vitae orci. Mauris vulputate ornare urna."
++msgstr "替换本段内容为一次性口令的相关指示..."
++
++msgid "Retrieve my lost password"
++msgstr "找回忘记的口令"
++
 +msgid "SCRIPT_NAME not set"
 +msgstr "SCRIPT_NAME 未设置"
 +
@@ -7694,6 +7879,29 @@ index 0000000..556c7d3
 +msgid "Services"
 +msgstr "服务列表"
 +
++msgid "Single Sign-On"
++msgstr "单点登录"
++
++msgid "Switch Users"
++msgstr "切换用户"
++
++msgid "Technical Info:"
++msgstr "技术信息："
++
++msgid ""
++"The KX.509 service provides a client/server application that uses Kerberos "
++"to acquire a short-term X.509 certificate. This makes it possible for web-"
++"browsers to authenticate a user to any CoSign-protected web services "
++"silently instead of prompting the user for a name and password. At U-M, this "
++"service can be used by those who know their Uniqname and Kerberos password."
++msgstr ""
++"服务 KX.509 提供了一个 客户端/服务器 应用，使用 Kerberos 来获取一个短期的 "
++"X.509 证书。使得浏览器连接任何 CoSign 保护的网站不再需要输入用户名和口令，而"
++"自动登录。 在密歇根大学，这项服务由知道唯一名称和 Kerberos 口令的用户使用。"
++
++msgid "The&nbsp;code"
++msgstr "邀请码"
++
 +msgid ""
 +"There was a problem processing your authentication data. Contact your "
 +"administrator"
@@ -7703,6 +7911,9 @@ index 0000000..556c7d3
 +"There was an x.509 mutual authentication configuration error. Contact your "
 +"administrator."
 +msgstr "发现 x.509 认证配置错误。请联系管理员"
++
++msgid "This page displays best when JavaScript is enabled in your web browser."
++msgstr "这个页面在 JavaScript 启用下有更好的表现。"
 +
 +msgid "This service requires that cookies be enabled."
 +msgstr "这个服务需要启用 cookies。"
@@ -7753,6 +7964,9 @@ index 0000000..556c7d3
 +msgid "Unknown authentication type '%s'"
 +msgstr "未知的认证类型 '%s'"
 +
++msgid "Username"
++msgstr "用户名"
++
 +msgid ""
 +"We were unable to contact the authentication server.  Please quit your web "
 +"browser to complete logout."
@@ -7772,6 +7986,26 @@ index 0000000..556c7d3
 +msgid "We were unable to locate a service matching the one provided."
 +msgstr "无法找到匹配的服务。"
 +
++msgid "Welcome"
++msgstr "欢迎"
++
++msgid "What is invite code?"
++msgstr "什么是邀请码？"
++
++msgid ""
++"Without sign in, you can not access some of the services we provided, or "
++"access rights are limited. After sign in, you can edit your profiles, and "
++"enjoy our services."
++msgstr "如果不登录，您可能无法访问某些系统，或者访问受限。登录后，您可以编辑个人资料，使用我们提供的各项服务。"
++
++msgid ""
++"You are about to log out of <a href=\"/services/\">all weblogin "
++"applications</a>."
++msgstr "您将要退出 <a href=\"/services/\">所有服务</a>。"
++
++msgid "You must have k.x-509 software installed and configured."
++msgstr "您必须安装并配置 k.x-509 软件。"
++
 +msgid "You were trying to POST, BUT Changes Not Saved"
 +msgstr "您正通过 POST 提交，但是提交未被保存"
 +
@@ -7784,6 +8018,9 @@ index 0000000..556c7d3
 +#, c-format
 +msgid "cosign_login: basic login failed\n"
 +msgstr "cosign_login: 基本认证失败\n"
++
++msgid "k.x-509 software"
++msgstr "k.x-509 软件"
 +
 +#, c-format
 +msgid "no matching service for %s\n"
@@ -7802,227 +8039,6 @@ index 0000000..556c7d3
 +
 +msgid "weblogin: URL validation failed"
 +msgstr "单点登录：URL 校验失败"
-+
-+msgid "Please contact technical support if you have any questions."
-+msgstr "如果您有问题，请联系管理员。"
-+
-+msgid "Technical Info:"
-+msgstr "技术信息："
-+
-+msgid "ID &amp; Password"
-+msgstr "用户名和口令"
-+
-+msgid "One Time Passcode"
-+msgstr "一次性口令登录"
-+
-+msgid "Certificate"
-+msgstr "证书"
-+
-+msgid "Log Out"
-+msgstr "退出"
-+
-+msgid ""
-+"You are about to log out of <a href=\"/services/\">all weblogin "
-+"applications</a>."
-+msgstr "您将要退出 <a href=\"/services/\">所有服务</a>。"
-+
-+msgid "Are you sure you want to do this?"
-+msgstr "您确认要这么做么？"
-+
-+msgid "After logout your browser will redirect to:"
-+msgstr "退出登录后浏览器将重定向到："
-+
-+msgid "Invite Code"
-+msgstr "邀请码认证"
-+
-+msgid "Authentication Complete"
-+msgstr "认证成功"
-+
-+msgid "The&nbsp;code"
-+msgstr "邀请码"
-+
-+msgid "Caps Lock is on"
-+msgstr "大小写锁定键开启"
-+
-+msgid "What is invite code?"
-+msgstr "什么是邀请码？"
-+
-+msgid "You must have k.x-509 software installed and configured."
-+msgstr "您必须安装并配置 k.x-509 软件。"
-+
-+msgid "Authenticate using a certificate"
-+msgstr "使用证书认证"
-+
-+msgid "Download"
-+msgstr "下载"
-+
-+msgid "k.x-509 software"
-+msgstr "k.x-509 软件"
-+
-+msgid "Login"
-+msgstr "登录"
-+
-+msgid "Username"
-+msgstr "用户名"
-+
-+msgid "Password"
-+msgstr "口令"
-+
-+msgid "Need an account or password help?"
-+msgstr "需要创建帐号或者找回口令？"
-+
-+msgid "Switch Users"
-+msgstr "切换用户"
-+
-+msgid "Passcode"
-+msgstr "口令"
-+
-+msgid "Manage your token"
-+msgstr "管理你的密钥"
-+
-+msgid ""
-+"&copy; 2006 - 2010 <a href=\"http://www.umich.edu/~regents/\" title="
-+"\"Regents of the University of Michigan\"> Regents of the University of "
-+"Michigan</a>, <a href=\"http://www.ossxp.com/\">OSSXP Powered</a>"
-+msgstr ""
-+"&copy; 2006 - 2010 <a href=\"http://www.umich.edu/~regents/\" title=\"密歇根"
-+"大学\">密歇根大学</a>, <a href=\"http://www.ossxp.com/\">群英汇技术支持</a>"
-+
-+msgid "Our Home Page"
-+msgstr "我们的主页"
-+
-+msgid "Jump to the Web Login instructions"
-+msgstr "跳转到 Web 登录说明"
-+
-+msgid "Jump to the error message (if present)"
-+msgstr "跳转到错误信息（如果有的话）"
-+
-+msgid "Jump to the ID and Password section"
-+msgstr "跳转到用户名和口令登录"
-+
-+msgid "Jump to the One Time Passcode section"
-+msgstr "跳转到一次性口令登录"
-+
-+msgid "Jump to the Certificate section"
-+msgstr "跳转到证书登录"
-+
-+msgid ""
-+"Please enter your authentication information and click the &quot;Log&nbsp;"
-+"In&quot; button to continue."
-+msgstr ""
-+"在右侧选择任一种登录方式，输入登录信息，之后按 &quot;登录按钮&quot; 完成登"
-+"录。"
-+
-+msgid ""
-+"Authentication sections marked with a <img src=\"/cosign/images/circle.gif\" "
-+"alt=\"yellow circle\" /> are required."
-+msgstr ""
-+"标记为 <img src=\"/cosign/images/circle.gif\" alt=\"黄色圆圈\" /> 的认证方式"
-+"是必须的。"
-+
-+msgid ""
-+"By using this service you agree to adhere to our policies and guidelines."
-+msgstr "使用本服务，意味着您已经接受我们的相关政策条款。"
-+
-+msgid "This page displays best when JavaScript is enabled in your web browser."
-+msgstr "这个页面在 JavaScript 启用下有更好的表现。"
-+
-+msgid "Hide this Information"
-+msgstr "隐藏本信息"
-+
-+msgid "Back to Top"
-+msgstr "返回顶部"
-+
-+msgid "Need an Account?"
-+msgstr "需要创建帐号？"
-+
-+msgid ""
-+"Replace this text with information about obtaining an account. Lorem ipsum "
-+"dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. "
-+"Aenean vitae orci. Mauris vulputate ornare urna."
-+msgstr "替换本段内容为创建帐号的相关指示..."
-+
-+msgid "Forgot Your Password?"
-+msgstr "忘记口令？"
-+
-+msgid ""
-+"Replace this text with information about resetting your password. Lorem "
-+"ipsum dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non "
-+"lacus. Aenean vitae orci. Mauris vulputate ornare urna."
-+msgstr "替换本段内容为重置密码的相关指示..."
-+
-+msgid "Get a Token"
-+msgstr "获取一个令牌"
-+
-+msgid ""
-+"Replace this with text about using one time passcodes. Lorem ipsum dolor sit "
-+"amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean "
-+"vitae orci. Mauris vulputate ornare urna."
-+msgstr "替换本段内容为一次性口令的相关指示..."
-+
-+msgid "Download KX.509"
-+msgstr "下载 KX.509"
-+
-+msgid ""
-+"The KX.509 service provides a client/server application that uses Kerberos "
-+"to acquire a short-term X.509 certificate. This makes it possible for web-"
-+"browsers to authenticate a user to any CoSign-protected web services "
-+"silently instead of prompting the user for a name and password. At U-M, this "
-+"service can be used by those who know their Uniqname and Kerberos password."
-+msgstr ""
-+"服务 KX.509 提供了一个 客户端/服务器 应用，使用 Kerberos 来获取一个短期的 "
-+"X.509 证书。使得浏览器连接任何 CoSign 保护的网站不再需要输入用户名和口令，而"
-+"自动登录。 在密歇根大学，这项服务由知道唯一名称和 Kerberos 口令的用户使用。"
-+
-+msgid "About invite code"
-+msgstr "关于邀请码"
-+
-+msgid ""
-+"Invite code is assigned by administrator. Before input your invite code, you "
-+"must provide your email address as your login name."
-+msgstr ""
-+"邀请码由管理员进行设置，为特殊用户提供无须用户注册即可访问某些服务。 注意在输"
-+"入邀请码的同时，您需要在登录名字段输入您的邮件地址。"
-+
-+msgid ""
-+"Note: The two fields, password and invite code input fields are exclusive. "
-+"The other is disabled when one is focus and has inupt."
-+msgstr ""
-+"注意：口令字段和邀请码字段互斥。当选择其中之一并且输入了口令或者邀请码则另外"
-+"一个字段自动禁用， 直到您将当前的口令或者邀请码录入框的内容清空。"
-+
-+msgid "Log In"
-+msgstr "登录"
-+
-+msgid "Go Back"
-+msgstr "返回"
-+
-+msgid "Link to Homepage"
-+msgstr "返回主页"
-+
-+msgid "Please input your email address into username field."
-+msgstr "请在用户名字段输入您的邮件地址。"
-+
-+msgid "Click the following link to register a new account yourself."
-+msgstr "点击下面的链接，注册一个新帐号"
-+
-+msgid "Click the following link to retrieve you lost password."
-+msgstr "点击下面的链接，找回你忘记的口令"
-+
-+msgid "Create an account now"
-+msgstr "创建一个新帐号"
-+
-+msgid "Retrieve my lost password"
-+msgstr "找回忘记的口令"
-+
-+msgid "Welcome"
-+msgstr "欢迎"
-+
-+msgid "Manage your profile or change password"
-+msgstr "修改个人信息及口令"
-+
-+msgid "Logout"
-+msgstr "退出登录"
 +
 -- 
 tg: (f4988d1..) t/message_translation (depends on: t/message_localize t/static_htmls_to_templates)

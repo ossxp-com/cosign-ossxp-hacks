@@ -10,7 +10,7 @@ Architecture: all
 Section: ossxp
 Priority: optional
 Depends: openssl
-Suggests:
+Recommends: ossxp-cosign3-doc
 Conflicts: ossxp-cosign-common
 Description: Common files for CoSign cgi and daemon.
  CoSign is a Single Sign-On from weblogin.org
@@ -49,8 +49,28 @@ Package: ossxp-cosign3-doc
 Architecture: all
 Section: ossxp
 Priority: optional
+Depends: ossxp-cosign3-doc-user, ossxp-cosign3-doc-admin
+Suggests:
+Conflicts:
+Description: Meta pacakge for user-guide and admin-guide
+ CoSign is a Single Sign-On from weblogin.org
+
+Package: ossxp-cosign3-doc-user
+Architecture: all
+Section: ossxp
+Priority: optional
 Depends:
 Suggests:
 Conflicts:
-Description: Documents for CoSign
+Description: User guide for CoSign
+ CoSign is a Single Sign-On from weblogin.org
+
+Package: ossxp-cosign3-doc-admin
+Architecture: all
+Section: ossxp
+Priority: optional
+Depends:
+Suggests:
+Conflicts:
+Description: Admin guide for CoSign
  CoSign is a Single Sign-On from weblogin.org

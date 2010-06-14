@@ -140,10 +140,49 @@
       :scale: 60
 
 
-* 打开 ossxp-ca.crt，显示该证书文件的详细信息。点击 “安装证书” 按钮。按照提示完成证书导入。
+* 打开 ossxp-ca.crt，显示该证书文件的详细信息。点击 “安装证书” 按钮。
 
    .. figure:: images/ie7_cert_install2.png
       :scale: 70
+
+* 在 Windows XP 导入此证书文件，直接选择默认选项，点击下一步，即可完成安装。
+
+  安装完毕后，可以通过 IE 菜单中的“工具” --> “Internet 选项” 的内容标签页，查看证书安装位置：
+
+    .. figure:: images/ie6_internet_options.png
+       :scale: 60
+
+       IE6 的 Internet 选项设置页面
+
+    .. figure:: images/ie6_cert_location.png
+       :scale: 60
+
+       证书被安装到了“受信任的根证书颁发机构”。
+
+* 在 Windows 7 中导入证书，如果选择默认的安装选项，证书被安装到了错误的位置，需要在安装过程中人工介入：
+
+  * 在证书存储选择界面，不要自动选择证书存储区域，如下：
+
+    .. figure:: images/import_cert_manual.png
+       :scale: 60
+
+  * 点击浏览按钮，打开“选择证书存储”对话框。在该对话框中，选择“受信任的根证书颁发机构”。
+
+    .. figure:: images/import_cert_storage.png
+       :scale: 60
+
+  * 点击完成开始导入证书
+
+    .. figure:: images/import_cert_summary.png
+       :scale: 60
+
+  * 导入过程会显示一个警告页面，选择“是”，安装证书
+
+    .. figure:: images/import_cert_alert.png
+       :scale: 60
+
+  * 证书导入完毕
+
 
 * 将群英汇根证书正确导入后，再打开单点登录网站，不再出现证书警告信息，直接打开 HTTPS 网站。
 

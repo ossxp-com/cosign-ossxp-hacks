@@ -50,8 +50,6 @@ Architecture: all
 Section: ossxp
 Priority: optional
 Depends: ossxp-cosign3-doc-user, ossxp-cosign3-doc-admin
-Suggests:
-Conflicts:
 Description: Meta pacakge for user-guide and admin-guide
  CoSign is a Single Sign-On from weblogin.org
 
@@ -59,9 +57,8 @@ Package: ossxp-cosign3-doc-user
 Architecture: all
 Section: ossxp
 Priority: optional
-Depends:
-Suggests:
-Conflicts:
+Depends: ossxp-stylesheet-lightbox, ossxp-javascript-lightbox
+Conflicts: ossxp-cosign3-doc (< 1:1)
 Description: User guide for CoSign
  CoSign is a Single Sign-On from weblogin.org
 
@@ -69,8 +66,7 @@ Package: ossxp-cosign3-doc-admin
 Architecture: all
 Section: ossxp
 Priority: optional
-Depends:
-Suggests:
-Conflicts:
+Depends: ossxp-stylesheet-lightbox, ossxp-javascript-lightbox
+Conflicts: ossxp-cosign3-doc (< 1:1)
 Description: Admin guide for CoSign
  CoSign is a Single Sign-On from weblogin.org

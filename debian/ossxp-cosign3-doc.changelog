@@ -1,4 +1,4 @@
-ossxp-cosign3 (1:1) unstable; urgency=low
+ossxp-cosign3 (1:1.1) unstable; urgency=low
 
   * Meta package.
   * See ossxp-cosign3-doc-user.changelog,

@@ -16,6 +16,7 @@
 
 /* Apache 2.x */
 #define APACHE2 1
+#define HAVE_MOD_AUTHZ_HOST 1
 #define HAVE_AP_REGEX_H 1
 
 /* lighttpd */

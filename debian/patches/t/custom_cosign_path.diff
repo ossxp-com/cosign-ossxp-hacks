@@ -120,4 +120,4 @@ index 001e127..ea68776 100755
  			<p>You are about to log out of <a href="/services/">all weblogin applications</a>.
  				Are you sure you want to do this?</p>
 -- 
-tg: (e8af26f..) t/custom_cosign_path (depends on: master t/autotools_for_setup)
+tg: (ababf03..) t/custom_cosign_path (depends on: master t/autotools_for_setup)

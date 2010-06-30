@@ -60,7 +60,7 @@ index 5ff2f06..6995f01 100755
  
      if ( cfg->reqfc > 0 ) {
 diff --git a/filters/apache2/mod_cosign.c b/filters/apache2/mod_cosign.c
-index d90beeb..295dbe1 100755
+index 3e0807b..150fa05 100755
 --- a/filters/apache2/mod_cosign.c
 +++ b/filters/apache2/mod_cosign.c
 @@ -131,27 +131,22 @@ cosign_redirect( request_rec *r, cosign_host_config *cfg )
@@ -132,4 +132,4 @@ index a435d99..7b80e62 100644
  		    && !p->conf.noappendport ) {
  		snprintf( pbuf, sizeof( pbuf ) - 1, ":%d", port );
 -- 
-tg: (d1adc40..) t/bugfix_cosign_httponly_quirk (depends on: master)
+tg: (2becb62..) t/bugfix_cosign_httponly_quirk (depends on: master)

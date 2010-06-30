@@ -8787,4 +8787,4 @@ index d5e1d43..2a967fe 100755
 \ No newline at end of file
 +Scriptaculous.load();
 -- 
-tg: (d1adc40..) t/javascript (depends on: master)
+tg: (2becb62..) t/javascript (depends on: master)

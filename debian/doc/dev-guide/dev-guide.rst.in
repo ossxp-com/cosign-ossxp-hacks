@@ -1,0 +1,589 @@
+==================
+单点登录开发者手册
+==================
+
+:作者: 北京群英汇信息技术有限公司
+:网址: http://www.ossxp.com/
+:版本: |doc_rev|
+:日期: |doc_date|
+:版权信息: Creative Commons
+
+.. contents:: 目录
+.. sectnum::
+.. header:: 单点登录开发者手册
+.. footer:: 北京群英汇信息技术有限公司
+.. |date| date:: %Y-%m-%d %H:%M
+.. |doc_rev| replace:: ENV(DOC_REV)
+.. |doc_date| replace:: ENV(DOC_DATE)
+
+
+CoSign 资源链接
+================
+* SourceForge 上的开发者首页
+
+  http://sourceforge.net/projects/cosign/develop
+
+* 项目首页
+
+  - http://cosign.sourceforge.net/
+  - http://webapps.itcs.umich.edu/cosign/index.php/Main_Page
+
+
+* 代码库（官方）
+
+  - CVS
+
+    ::
+
+       cvs -d:pserver:anonymous@cosign.cvs.sourceforge.net:/cvsroot/cosign login
+       cvs -z3 -d:pserver:anonymous@cosign.cvs.sourceforge.net:/cvsroot/cosign co -P modulename
+
+  - Git
+
+    ::
+
+       git clone git://cosign.git.sourceforge.net/gitroot/cosign/cosign 
+
+* 代码库（群英汇）
+
+  ::
+
+    $ git clone git@bj.ossxp.com:ossxp/cosign/cosign-ossxp.git
+    $ tg remote --populate origin
+    $ git co -b debian origin/debian
+    $ git config branch.debian.remote origin
+    $ git config branch.debian.merge  debian
+  
+代码综述
+=========
+代码格式特点：
+
+* 缩进采用空格和TAB的组合形式
+
+  相当于 vim 的 "noet ts=8 sw=4" 模式下的缩进样式。即每次缩进4个空格，但只有8个空格才合并为一个 TAB。
+
+  如果不正确设置 vim，缩进会显得非常混乱或者编辑时破坏代码缩进的规则。
+
+* 函数体声明
+
+  函数的返回值缩进一级（四个空格），函数名称和参数另起一行。
+
+  这样做的好处是，用正则表达式 "^<function-name>" 可以很快定位到函数声明。函数返回值缩进，可能是为了查找全局变量时，不会受到干扰。
+
+  例如:
+
+   ::
+
+     65     static void
+     66 daemon_configure()
+     67 {
+     68     char         *val;
+     69 
+     70     if (( val = cosign_config_get( COSIGNDBKEY )) != NULL ) {
+     71         cosign_dir = val;
+     72     }
+
+
+代码分析：daemon
+=================
+Daemon
+  Daemon 是 CoSign 的登录Cookie发放以及状态验证的服务器
+
+Daemon 的代码在子目录 daemon 下。
+
+daemon/daemon.c
+----------------
+
+main 函数
++++++++++
+
+* 两次调用 getopt，第一次调用通过 -c 参数传递 cosign 服务器配置文件给 cosign_conf。
+
+  cosign_conf 是全局变量，缺省已经赋值。
+
+  之所以两次调用 getopt，是为了先从配置文件中加载配置，然后，再通过命令行读取。命令行设置的参数会覆盖配置文件中对应的设置。
+
+* 调用 cosign_config( cosign_conf )
+
+
+* 调用 daemon_configure()
+
+  从 cosign_conf 中读取相应配置，设置 daemon.c 中的全局变量。即配置文件中的设置优先于编译时的设置。
+
+  后面进行的 getopt 二次调用，又会用命令行提供的参数覆盖配置文件中设置的参数。
+
+* 第二次调用 getopt，解析全部参数 "b:c:dD:F:fg:h:i:L:np:VXx:y:z:" （忽略 -c 参数，因为已经读取过）
+
+  窍门：重置 optind=1，以便二次调用 getopt
+
+  命令行提供的参数设置优先级最高
+
+* SSL 初始化
+
+  ::
+    
+    263     SSL_load_error_strings();
+    264     SSL_library_init();
+    265 
+    266     if ( cosign_ssl( cryptofile, certfile, cadir, &ctx ) != 0 ) {
+    267         fprintf( stderr, "cosignd: ssl setup error.\n" );
+    268         exit( 1 );
+    269     }
+
+* 端口缺省 6663。先通过 getservbyname( "cosign", "tcp" ) 查找，失败则设为 6663。
+
+* TCP 绑定
+
+  ::
+
+    288     if (( s = socket( PF_INET, SOCK_STREAM, 0 )) < 0 ) {
+    289         perror( "socket" );
+    290         exit( 1 );
+    291     }
+    292     if ( reuseaddr ) {
+    293         if ( setsockopt( s, SOL_SOCKET, SO_REUSEADDR, (void*)&reuseaddr,
+    294                 sizeof( int )) < 0 ) {
+    295             perror("setsockopt");
+    296         }
+    297     }
+    298 
+    299     memset( &sin, 0, sizeof( struct sockaddr_in ));
+    300     sin.sin_family = AF_INET;
+    301     sin.sin_addr.s_addr = INADDR_ANY;
+    302     sin.sin_port = cosign_port;
+    303     if ( bind( s, (struct sockaddr *)&sin, sizeof( struct sockaddr_in )) < 0 ) {
+    304         perror( "bind" );
+    305         exit( 1 );
+    306     }
+    307     if ( listen( s, backlog ) < 0 ) {
+    308         perror( "listen" );
+    309         exit( 1 );
+    310     }
+
+* 改变工作路径为 cosign_dir
+
+  cosign_dir 的确定：
+
+    - 命令行 -D 参数设定
+    - 配置文件中由 cosigndb 设定
+    - 编译时设定 _COSIGN_DIR
+
+* replhost
+
+  如果通过命令行 -h 参数设置了同步主机，则调用 pusherhosts()
+
+* 作为 daemon 的那些事儿
+
+  - fork() 创建子进程后父进程退出
+  - setsid() 以脱离控制台
+  - 关闭全部文件句柄，并重新设置 0, 1, 2 文件句柄
+
+    + 不理解为什么打开 / 设备，并在后面复制给 0, 1, 2。而不是像其它 daemon 打开 /dev/null 空设备作为句柄复制给 0, 1, 2？
+    
+      ::
+      
+        336             if (( fd = open( "/", O_RDONLY, 0 )) < 0 ) {
+        337                 perror( "open" );
+        338                 exit( 1 );
+        339             }
+
+        347             (void)dup2( fd, 0 );
+        348             (void)dup2( fd, 1 );
+        349             (void)dup2( fd, 2 );
+         
+
+    + 关闭全部句柄，不要关闭 fd 和之前初始化的 socket 句柄。句柄的最大值用库函数 getdtablesize() 获取。
+
+* 打开日志
+
+  缺省的 facility 是 daemon，因此可以在 /var/log/daemon.log 看到 cosignd 的日志。
+
+  ::
+
+    365     openlog( prog, LOG_NDELAY|LOG_NOWAIT|LOG_PID, facility );
+    366     setlogmask( LOG_UPTO( level ));
+    367 
+    368     syslog( LOG_INFO, "restart %s", cosign_version );
+
+* 如果设置了 replhost，建立管道进行 pusher 操作
+
+  - 建立管道 fds
+  - 调用 fork，子进程执行 pusherparent( fds[0] )，进入 pusherparent 处理循环。参见 pusher.c
+  - 父进程针对 fds[1]，调用 snet_attach
+
+    ::
+
+      394         if (( pushersn = snet_attach( fds[ 1 ], 1024 * 1024 ) ) == NULL ) {
+      395             syslog( LOG_ERR, "pusherfork: snet_attach failed\n" );        
+      396             exit( 1 );                                                    
+      397         }                                                                 
+
+  - 执行 pusherparent 的子进程的 pid 记录在 pusherpid 中
+
+  - 父继承继续后续 Daemon 工作。子进程则停留在 pusherparent 循环中。参见 pusher.c
+
+* 信号处理
+
+  - SIGHUP
+
+    设置信号处理程序为 hup
+
+    函数 hup 只是简单的将全局变量 reconfig 自增。在后面的处理循环中，重新加载配置文件。
+
+  - SIGCHLD
+
+    设置信号处理程序为 chld
+
+    函数 hup 只是简单的将全局变量 child_signal 自增。在后面的处理循环中，执行同步？
+
+* 处理循环
+
+  - 如果 reconfig 大于0, 重新加载 cosign 配置。不过有一个明显的 Bug，就是没有从命令行加载配置，这会导致向 daemon 发送 HUP 信号，命令行提供的参数被配置文件覆盖
+
+    + 代码中怪不得有：
+
+      ::
+
+        433             /* XXX need to reprocess command line args here */
+
+    + 重新加载 SSL
+
+      ::
+
+        436             if ( cosign_ssl( cryptofile, certfile, cadir, &ctx ) != 0 ) {
+        437                 syslog( LOG_ERR, "%s: ssl re-config failed, continuing with"
+        438                         " old ssl config", cosign_conf );
+        439             }
+
+    + 如果存在执行 pusherparent 的子进程（pusherpid），则向该子进程发送 HUP 信号
+
+  - 如果有子进程状态改变信号 SIG_CHLD，即 child_signal 大于0
+
+    + 调用 wait
+    + 如果是后面的客户请求进程退出（非pusherpid进程），丢弃
+    + 如果退出的子进程是 pusherpid 的进程，则报错退出！（整个 cosign_daemon 退出）
+
+      * ? 需要具体查看 pusher.c，查看何时何原因会导致 pusherparent 函数退出 ?
+
+  - 处理客户端请求
+
+    + 接收数据 accept
+
+      ::
+
+        477         sinlen = sizeof( struct sockaddr_in );
+        478         if (( fd = accept( s, (struct sockaddr *)&cosign_sin, &sinlen )) < 0 ) {
+        479             if ( errno != EINTR ) {
+        480                 syslog( LOG_ERR, "accept: %m" );
+        481             }
+        482             continue;
+        483         }
+
+    + fork 进程
+
+
+    + 子进程重置信号，执行命令
+
+      ::
+
+        485         /* start child */
+        486         switch ( c = fork()) {
+        487         case 0 :
+        488             syslog( LOG_INFO, "connect: %s", inet_ntoa( cosign_sin.sin_addr ));
+        489 
+        490             (void)close( s );
+        491 
+        492             /* reset CHLD and HUP */
+        493             if ( sigaction( SIGCHLD, &osachld, 0 ) < 0 ) {
+        494                 syslog( LOG_ERR, "sigaction: %m" );
+        495                 exit( 1 );
+        496             }
+        497             if ( sigaction( SIGHUP, &osahup, 0 ) < 0 ) {
+        498                 syslog( LOG_ERR, "sigaction: %m" );
+        499                 exit( 1 );
+        500             }
+        501 
+        502             exit( command( fd, pushersn ));
+ 
+    + 父进程继续处理循环
+
+daemon/command.c
+-----------------
+指令Map
+++++++++
+unauth_commands 是未授权状态下，指令对应的函数列表。部分指令对应于 f_notauth。
+
+auth_commands 是授权状态下，指令对应的函数列表。每个指令都有一个处理函数。
+
+::
+
+  struct command {
+      char	*c_name;
+      int		(*c_func)( SNET *, int, char *[], SNET * );
+  };
+
+  struct command	unauth_commands[] = {
+      { "NOOP",		f_noop },
+      { "QUIT",		f_quit },
+      { "HELP",		f_help },
+      { "STARTTLS",	f_starttls },
+      { "LOGIN",		f_notauth },
+      { "LOGOUT",		f_notauth },
+      { "REGISTER",	f_notauth },
+      { "CHECK",		f_notauth },
+      { "REKEY",		f_notauth },
+      { "RETR",		f_notauth },
+      { "TIME",		f_notauth },
+      { "DAEMON",		f_notauth },
+  };
+
+  struct command	auth_commands[] = {
+      { "NOOP",		f_noop },
+      { "QUIT",		f_quit },
+      { "HELP",		f_help },
+      { "STARTTLS",	f_starttls },
+      { "LOGIN",		f_login },
+      { "LOGOUT",		f_logout },
+      { "REGISTER",	f_register },
+      { "CHECK",		f_check },
+      { "REKEY",		f_check },
+      { "RETR",		f_retr },
+      { "TIME",		f_time },
+      { "DAEMON",		f_daemon },
+  };
+
+int command( int fd, SNET \*pushersn )
+++++++++++++++++++++++++++++++++++++++++
+从 Socket 读取命令，路由到对应的处理函数
+
+int f_notauth( SNET \*sn, int ac, char \*av[], SNET \*pushersn )
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+..
+
+  snet_writef( sn, "%d You must call STARTTLS first!\r\n", 550 );
+
+int f_quit( SNET \*sn, int ac, char \*av[], SNET \*pushersn )
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+..
+
+  exit( 0 );
+
+int f_help( SNET \*sn, int ac, char \*av[], SNET \*pushersn )
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+..
+
+    snet_writef( sn, "%d Slainte Mhath! http://weblogin.org\r\n", 203 );
+
+int f_starttls( SNET \*sn, int ac, char \*av[], SNET \*pushersn )
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+SSL 会话，检查证书，成功设置 commands 为 auth_commands
+
+int f_login( SNET \*sn, int ac, char \*av[], SNET \*pushersn )
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+..
+
+   * C: LOGIN login_cookie ip principal factor [factor2]
+   * S: 200 LOGIN successful: Cookie Stored.
+
+int f_daemon( SNET \*sn, int ac, char \*av[], SNET \*pushersn )
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+int f_time( SNET \*sn, int ac, char \*av[], SNET \*pushersn )
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+更新 cookie 时间
+
+int f_logout( SNET \*sn, int ac, char \*av[], SNET \*pushersn )
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+退出，释放 cookie
+
+int f_register( SNET \*sn, int ac, char \*av[], SNET \*pushersn )
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+注册，将 service cookie 和 login cookie 绑定
+
+int f_check( SNET \*sn, int ac, char \*av[], SNET \*pushersn )
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+..
+
+    C: CHECK servicecookie
+    S: 231 ip principal realm
+    
+    C: CHECK logincookie
+    S: 232 ip principal realm
+    
+    C: REKEY servicecookie
+    S: 233 ip principal realm rekeyed+cookie
+    
+
+
+int f_retr( SNET \*sn, int ac, char \*av[], SNET \*pushersn )
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+daemon/pusher.c
+----------------
+int pusherhosts( void )
+++++++++++++++++++++++++
+该函数用于当受到 HUP 信号后，重新读取 replhost 字符串并解析为 IP 地址。
+
+虽然 replhost 是一个主机名，但是由于 /etc/hosts 中可以有多个记录，或者DNS中包含多条记录，使得 gethostbyname 会得到多个 IP 地址。
+
+replhost 解析出来的一个或者多个IP地址加到新的 connlist 地址链中。
+
+static void pusherhup( int sig )
+++++++++++++++++++++++++++++++++
+reconfig++;
+
+static void pusherchld( int sig )
++++++++++++++++++++++++++++++++++
+childsig++;
+
+int pusherparent( int ppipe )
+++++++++++++++++++++++++++++++
+
+
+void mkpushers( int ppipe )
++++++++++++++++++++++++++++
+创建两个进程，用管道进行通讯
+
+* 子进程调用 pusher 写(信号重置)。结束则退出(exit)。
+
+  ::
+
+    183             close( ppipe );
+    184             for ( yacur = replhead; yacur != NULL;
+    185                     yacur = yacur->cl_next ) {
+    186                 if ( yacur != cur ) {
+    187                     if ( yacur->cl_psn != NULL ) {
+    188                         snet_close( yacur->cl_psn );
+    189                         yacur->cl_psn = NULL;
+    190                     }
+    191                 }
+    192             }
+    193             cur->cl_pushpass.r_count = 0;
+    194             cur->cl_pushfail.r_count = 0;
+    195             pusher( fds[ 0 ], cur );
+    196             exit( 2 );
+
+* 父进程将管道填充至结构体 SNET 的 sn_fd 中，并赋值给 connlist 列表的通知主机的 connlist 结构体的 cl_psn 变量中，返回。
+
+  ::
+
+    208         if (( cur->cl_psn = snet_attach( fds[ 1 ], 1024 * 1024 )) == NULL ) {
+    209             syslog( LOG_ERR, "mkpushers fork: snet_attach: %m" );
+    210             exit( 1 );
+    211         }
+
+    214     return;
+
+
+int pusher( int cpipe, struct connlist \*cur )
++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+void pusherdaemon( struct connlist \*cur )
++++++++++++++++++++++++++++++++++++++++++++
+
+
+daemon/cparse.c
+=================
+cookie 处理函数
+
+daemon/logname.c
+==================
+syslog 相关函数
+
+
+daemon/mnet.c
+==================
+connect_sn, close_sn 函数
+
+
+int connect_sn( struct connlist \*cl, SSL_CTX \*ctx, char \*host, int delay )
+-------------------------------------------------------------------------------
+
+int close_sn( struct connlist \*cl )
+---------------------------------------------------------------------------
+
+libsnet
+========
+U. Michigan 开发的函数库。主要封装了 open, read, write, select, connect 等操作.
+
+libsnet is a simple, secure, TCP communications library with support for line & block IO, SSL, SASL, ZLIB
+
+SNET 结构
+----------
+
+  ::
+
+    typedef struct {
+        int			sn_fd;      /* 文件句柄 */
+        char		*sn_rbuf;   /* 字符串 buffer ，内容会被更改，例如 snet_getline 会将 \n 替换为 \0  */
+        int			sn_rbuflen; /* 字符串 buffer 长度 */
+        char		*sn_rend;   /* 读取 buffer 时标记读取结尾的指针，初始时指向 sn_rbuf */
+        char		*sn_rcur;   /* 当前字符指针，初始时指向 sn_rbuf */
+        int			sn_maxlen;
+        int			sn_rstate;
+        char		*sn_wbuf;
+        int			sn_wbuflen;
+        int			sn_flag;
+        struct timeval	sn_read_timeout;
+        struct timeval	sn_write_timeout;
+    #ifdef HAVE_LIBSSL
+        void		*sn_ssl;
+    #endif /* HAVE_LIBSSL */
+
+    #ifdef HAVE_LIBSASL
+        sasl_conn_t		*sn_conn;
+        int			sn_saslssf;
+        unsigned int	sn_saslmaxout;
+    #endif /* HAVE_LIBSASL */
+    } SNET;
+
+SNET \* snet_attach( fd, max )
+--------------------------------
+分配并初始化一个 SNET 结构，将该结构 sn 的 sn_fd 设置为 fd。
+
+返回该初始化的结构体 sn。
+
+
+SNET \* snet_open( path, flags, mode, max )
+----------------------------------------------
+用 open 函数打开 path，并对 open 返回的 fd 句柄调用 snet_attach，返回 snet_attach 的返回值。
+
+int snet_close( SNET \*sn )
+----------------------------
+关闭 sn 中的句柄，并释放内存。
+
+char \* snet_getline( sn, tv )
+-------------------------------
+从 SNET 中的字符串 buffer 中读取一行，如果 buffer 已满，循环使用或者扩展buffer，并调用 snet_readread 继续从文件句柄中读取数据。
+
+
+void snet_timeout( SNET \*sn, int flag, struct timeval \*tv )
+---------------------------------------------------------------
+根据 flag 设置 sn 中的 sn_read_timeout 或/和 sn_write_timeout。
+
+
+ssize_t snet_writeftv( SNET \*sn, struct timeval \*tv, char \*format, ... )
+-----------------------------------------------------------------------------
+Just like fprintf, only use the SNET header to get the fd, and use snet_write() to move the data.
+
+
+static int snet_select( int nfds, fd_set \*rfds, fd_set \*wfds, fd_set \*efds, struct timeval \*tv )
+------------------------------------------------------------------------------------------------------
+select that updates the timeout structure.
+
+
+ssize_t snet_write( sn, buf, len, tv )
+--------------------------------------
+
+static ssize_t snet_readread( sn, buf, len, tv )
+------------------------------------------------
+
+int snet_hasdata( sn )
+----------------------
+
+ssize_t snet_read( sn, buf, len, tv )
+-------------------------------------
+
+

@@ -259,7 +259,7 @@ CoSign 的可定制性，源自于页面模板。CoSign 的页面模板文件位
 * 打开单点登录服务器中的配置文件 /opt/cosign/conf/cosign.conf
 * 找到 "set cosignserviceurl ..." 的那一行，去掉注释，并写入适当的服务重定向 URL：
 
-  ..
+  ::
 
     ## If define, redirect to this url after sucessfully logged in.
     set cosignserviceurl http://www.moon.ossxp.com/wiki/action/login/Services?action=login&login=1

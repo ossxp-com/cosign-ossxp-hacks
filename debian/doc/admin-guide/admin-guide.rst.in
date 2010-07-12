@@ -196,7 +196,11 @@ CoSign 的用户界面是可以定制的，用户可以在单点登录界面中�
 
 CoSign 的页面模板
 -----------------
-CoSign 的可定制性，源自于页面模板。CoSign 的页面模板文件位于目录 /opt/cosign/lib/templates-local 中。群英汇缺省提供两套界面模板，用户可以选择拷贝自己喜欢的模板到目录 /opt/cosign/lib/templates-local 中。
+CoSign 的可定制性，源自于页面模板。CoSign 的页面模板文件位于目录 /opt/cosign/lib/templates-local 中，该目录中的模板文件，不会因为软件包升级而被改变。当然该目录下的模板文件也不会随着软件包升级而更新。
+
+在 /opt/cosign/lib 目录下，存在另外两个内置模板目录。这两个自带模板目录中的文件会随着软件包的更新而改变。用户可以选择任意一个模板，复制到 /opt/cosign/lib/templates-local/ 目录中，进行相应的定制。
+
+两个内置模板分别是：
 
 * CoSign 标准模板： 位于目录 /opt/cosign/lib/templates 中
 
@@ -245,6 +249,21 @@ CoSign 的可定制性，源自于页面模板。CoSign 的页面模板文件位
 管理员在该目录中添加或者删除文件，就实现了对服务的定制。
 
 注：英文服务包含文件在 /opt/cosign/lib/templates-local/inc/en/ 目录下。
+
+使用其它页面显示服务列表
+--------------------------
+登录成功后，缺省显示内置的服务列表。即从 /opt/cosign/lib/templates-local/services.html 模板文件中生成服务列表。
+
+有的用户可能希望登录成功后，重定向到一个用户可编辑的服务列表文件（如维基页面）。可以如下定制：
+
+* 打开单点登录服务器中的配置文件 /opt/cosign/conf/cosign.conf
+* 找到 "set cosignserviceurl ..." 的那一行，去掉注释，并写入适当的服务重定向 URL：
+
+  ..
+
+    ## If define, redirect to this url after sucessfully logged in.
+    set cosignserviceurl http://www.moon.ossxp.com/wiki/action/login/Services?action=login&login=1
+
 
 如何配置邀请码认证
 ==================

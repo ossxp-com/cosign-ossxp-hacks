@@ -1,8 +1,9 @@
 ossxp-cosign3 (3.1.1-6) unstable; urgency=low
 
   * Add CC icon.
+  * Add howto setting redirect url after loggedin.
 
- -- Jiang Xin <jiangxin@ossxp.com>  Wed, 26 May 2010 09:24:44 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Mon, 12 Jul 2010 11:39:19 +0800
 
 ossxp-cosign3 (3.1.1-5+) unstable; urgency=low
 

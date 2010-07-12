@@ -1,3 +1,9 @@
+ossxp-cosign3 (3.1.1-8) unstable; urgency=low
+
+  * Add CC icon.
+
+ -- Jiang Xin <jiangxin@ossxp.com>  Mon, 14 Jun 2010 20:23:48 +0800
+
 ossxp-cosign3 (3.1.1-7+) unstable; urgency=low
 
   * Conflict with ossxp-cosign3-doc < 1:1

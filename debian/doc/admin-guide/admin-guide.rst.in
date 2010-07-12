@@ -6,7 +6,7 @@
 :网址: http://www.ossxp.com/
 :版本: |doc_rev|
 :日期: |doc_date|
-:版权信息: Creative Commons
+:版权信息: |Creative Commons|_
 
 .. contents:: 目录
 .. sectnum::
@@ -15,6 +15,9 @@
 .. |date| date:: %Y-%m-%d %H:%M
 .. |doc_rev| replace:: ENV(DOC_REV)
 .. |doc_date| replace:: ENV(DOC_DATE)
+.. |Creative Commons| image:: images/cc-icon.png
+                              :scale: 100
+.. _Creative Commons: http://creativecommons.org/licenses/by-sa/3.0/
 
 群英汇单点登录系统是基于密歇根大学的开源项目 CoSign。群英汇为 CoSign 增加了本地化，使得 CoSign 能够同时支持两种甚至多种语言。群英汇还改造了 CoSign 的认证因子执行过程，增加了邮件地址登录，邀请码认证，admin 双因子认证，等等。
 

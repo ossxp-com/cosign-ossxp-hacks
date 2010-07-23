@@ -2,7 +2,7 @@
 单点登录管理员手册
 ==================
 
-:作者: 北京群英汇信息技术有限公司
+:作者: `北京群英汇信息技术有限公司 <http://www.ossxp.com/>`_
 :网址: http://www.ossxp.com/
 :版本: |doc_rev|
 :日期: |doc_date|
@@ -10,13 +10,12 @@
 
 .. contents:: 目录
 .. sectnum::
-.. header:: 单点登录管理员手册
-.. footer:: 北京群英汇信息技术有限公司
+.. header:: `单点登录管理员手册 <http://www.ossxp.com/doc/cosign/admin-guide/admin-guide.html>`_
+.. footer:: 北京群英汇信息技术有限公司_ - http://www.ossxp.com/
 .. |date| date:: %Y-%m-%d %H:%M
 .. |doc_rev| replace:: ENV(DOC_REV)
 .. |doc_date| replace:: ENV(DOC_DATE)
 .. |Creative Commons| image:: images/cc-icon.png
-                              :scale: 100
 .. _Creative Commons: http://creativecommons.org/licenses/by-sa/3.0/
 
 群英汇单点登录系统是基于密歇根大学的开源项目 CoSign。群英汇为 CoSign 增加了本地化，使得 CoSign 能够同时支持两种甚至多种语言。群英汇还改造了 CoSign 的认证因子执行过程，增加了邮件地址登录，邀请码认证，admin 双因子认证，等等。
@@ -37,7 +36,7 @@ CoSign 2.x 协议原理
 在 CoSign wiki 网站上，有两个协议实现的示例图，我们截取其中一个，用以说明。
 
    .. figure:: images/cosign-2-protocol.png
-      :scale: 60
+      :scale: 90
    
       CoSign 2.x 协议原理图
 
@@ -78,7 +77,7 @@ CoSign 3.x 版本，在协议上进行了彻底的改造，解决了上面提到
 一个图片胜过千言万语。先来看看在官网上的示例图来学习 CoSign 3.x 协议原理：
 
    .. figure:: images/cosign-3-protocol.png
-      :scale: 60
+      :scale: 85
    
       CoSign 3.x 协议原理图
 
@@ -204,13 +203,13 @@ CoSign 的可定制性，源自于页面模板。CoSign 的页面模板文件位
 
 * CoSign 标准模板： 位于目录 /opt/cosign/lib/templates 中
 
-   .. figure:: images/cosign-theme1.png
-      :scale: 50
+  .. figure:: images/cosign-theme1.png
+     :scale: 65
    
 * Google 风格的模板： 位于目录 /opt/cosign/lib/templates_google 中
 
-   .. figure:: images/cosign-theme2.png
-      :scale: 50
+  .. figure:: images/cosign-theme2.png
+     :scale: 65
 
 关闭暂不使用的认证模式
 ----------------------
@@ -325,7 +324,8 @@ CoSign 的可定制性，源自于页面模板。CoSign 的页面模板文件位
     <title>302 Found</title>
     </head><body>
     <h1>Found</h1>
-    <p>The document has moved <a href="https://weblogin.moon.ossxp.com/cgi-bin/login?factors=admin_ssh&amp;cosign-services&amp;https://weblogin.moon.ossxp.com/opensesame">here</a>.</p>
+    <p>The document has moved <a href="https://weblogin.moon.ossxp.com/cgi-bin/login?factors=admin_ssh
+    &amp;cosign-services&amp;https://weblogin.moon.ossxp.com/opensesame">here</a>.</p>
     </body></html>
 
 * 浏览器跳转到单点登录。注意: URL 中包含 factors=admin_ssh， 即要求认证必须通过 admin_ssh 的认证因子请求

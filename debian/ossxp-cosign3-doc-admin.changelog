@@ -1,3 +1,9 @@
+ossxp-cosign3 (3.1.1-7) unstable; urgency=low
+
+  * Resize image, and generate pdf using hacked rst2pdf.
+
+ -- Jiang Xin <jiangxin@ossxp.com>  Fri, 23 Jul 2010 14:26:30 +0800
+
 ossxp-cosign3 (3.1.1-6+) unstable; urgency=low
 
   * Add CC icon.

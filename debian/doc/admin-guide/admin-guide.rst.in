@@ -1,22 +1,35 @@
 ==================
-单点登录管理员手册
+|ArticleTitle|
 ==================
 
-:作者: `北京群英汇信息技术有限公司 <http://www.ossxp.com/>`_
+:作者: |AuthorOSSXP|_
 :网址: http://www.ossxp.com/
 :版本: |doc_rev|
 :日期: |doc_date|
 :版权信息: |Creative Commons|_
 
+.. |date| date::        %Y-%m-%d %H:%M
+.. |doc_rev| replace::  @ENV(DOC_REV)@
+.. |doc_date| replace:: @ENV(DOC_DATE)@
+.. |Creative Commons|   image:: images/cc-icon.png
+.. _Creative Commons:   http://creativecommons.org/licenses/by-sa/3.0/
+.. |AuthorOSSXP|        replace:: 北京群英汇信息技术有限公司
+.. _AuthorOSSXP:        http://www.ossxp.coom/
+.. |ArticleTitle|       replace:: 单点登录管理员手册
+.. _ArticleTitle:       http://www.ossxp.com/doc/cosign/admin-guide/admin-guide.html
+
 .. contents:: 目录
 .. sectnum::
-.. header:: `单点登录管理员手册 <http://www.ossxp.com/doc/cosign/admin-guide/admin-guide.html>`_
-.. footer:: 北京群英汇信息技术有限公司_ - http://www.ossxp.com/
-.. |date| date:: %Y-%m-%d %H:%M
-.. |doc_rev| replace:: ENV(DOC_REV)
-.. |doc_date| replace:: ENV(DOC_DATE)
-.. |Creative Commons| image:: images/cc-icon.png
-.. _Creative Commons: http://creativecommons.org/licenses/by-sa/3.0/
+
+.. include:: DEFINES.txt
+   :start-after: START_@ENV(DOC_BACKEND)@_HEADER_FOOTER
+   :end-before: END_@ENV(DOC_BACKEND)@_HEADER_FOOTER
+
+.. raw:: pdf
+
+   Transition Dissolve 1
+   PageBreak contentsPage
+
 
 群英汇单点登录系统是基于密歇根大学的开源项目 CoSign。群英汇为 CoSign 增加了本地化，使得 CoSign 能够同时支持两种甚至多种语言。群英汇还改造了 CoSign 的认证因子执行过程，增加了邮件地址登录，邀请码认证，admin 双因子认证，等等。
 

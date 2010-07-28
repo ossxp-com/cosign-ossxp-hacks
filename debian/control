@@ -58,7 +58,7 @@ Architecture: all
 Section: ossxp
 Priority: optional
 Depends: ossxp-stylesheet-lightbox, ossxp-javascript-lightbox
-Conflicts: ossxp-cosign3-doc (< 1:1)
+Conflicts: ossxp-cosign3-doc (<= 1:1)
 Description: User guide for CoSign
  CoSign is a Single Sign-On from weblogin.org
 
@@ -67,6 +67,6 @@ Architecture: all
 Section: ossxp
 Priority: optional
 Depends: ossxp-stylesheet-lightbox, ossxp-javascript-lightbox
-Conflicts: ossxp-cosign3-doc (< 1:1)
+Conflicts: ossxp-cosign3-doc (<= 1:1)
 Description: Admin guide for CoSign
  CoSign is a Single Sign-On from weblogin.org

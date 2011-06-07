@@ -1,3 +1,9 @@
+ossxp-cosign3 (3.1.2-1.19) unstable; urgency=low
+
+  * CoSign standalone apache2 https config file.
+
+ -- Jiang Xin <jiangxin@ossxp.com>  Tue, 07 Jun 2011 20:35:26 +0800
+
 ossxp-cosign3 (3.1.2-1.18) unstable; urgency=low
 
   * Upstream upgrade to 3.1.2

@@ -166,6 +166,7 @@
 	BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
 
 	Include /etc/apache2/include/cosign/cosign-cgi.inf
+	Include /etc/apache2/include/https/sso/*.conf
 
 </VirtualHost>
 </IfModule>

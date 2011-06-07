@@ -3,7 +3,6 @@ debian/tmp/opt/cosign/lib/*                    opt/cosign/lib
 scripts/factors/*                              opt/cosign/factor
 debian/certs/cgi/*                             opt/ossxp/ssl/certs/cosign-cgi
 debian/images/*                                opt/cosign/lib/html/images/
-debian/conf/apache2/include/https/*            etc/apache2/include/https/
 debian/conf/apache2/include/http/*             etc/apache2/include/http/
 debian/conf/apache2/sites-available/cosign-cgi etc/apache2/sites-available/
 debian/package_info/ossxp-cosign3-cgi.conf     opt/ossxp/lib/packages/

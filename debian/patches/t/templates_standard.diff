@@ -7,7 +7,7 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
  html/Makefile.in                       |   13 ++-
- html/cosign_base.css                   |    9 +-
+ html/cosign_base.css                   |   13 ++-
  html/error.html                        |   30 ++---
  html/expired_error.html                |  167 ----------------------
  html/inc/css.inc                       |    1 +
@@ -52,7 +52,7 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  html/services/index.php                |    2 +-
  html/validation_error.html             |   54 -------
  html/verify-logout.html                |   30 ++--
- 46 files changed, 1059 insertions(+), 779 deletions(-)
+ 46 files changed, 1063 insertions(+), 779 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
 index 890c3fd..debfb64 100755
@@ -93,7 +93,7 @@ index 890c3fd..debfb64 100755
 +
 +.PHONY: clean all ${TEMPLATES}
 diff --git a/html/cosign_base.css b/html/cosign_base.css
-index 1541b0e..fc8caeb 100755
+index 1541b0e..49edaa7 100755
 --- a/html/cosign_base.css
 +++ b/html/cosign_base.css
 @@ -5,7 +5,7 @@ body {
@@ -122,13 +122,17 @@ index 1541b0e..fc8caeb 100755
  }
  
  #rightUIcol .switchUser {
-@@ -379,3 +380,7 @@ hr.text {
+@@ -379,3 +380,11 @@ hr.text {
  	font-style: italic;
  	font-size: 90%;
  }
 +
 +.servicelist {
 +	font-size: 100%;
++}
++
++.tooltip {
++	font-size: 9pt;
 +}
 diff --git a/html/error.html b/html/error.html
 index 3a3a08f..f4a5d3d 100755
@@ -390,7 +394,7 @@ index 0000000..cd6c895
 +              <tbody>
 diff --git a/html/inc/en/0010_wiki.html b/html/inc/en/0010_wiki.html
 new file mode 100644
-index 0000000..a45a857
+index 0000000..26d5e99
 --- /dev/null
 +++ b/html/inc/en/0010_wiki.html
 @@ -0,0 +1,15 @@
@@ -404,14 +408,14 @@ index 0000000..a45a857
 +                    <a name="wiki" href="http://wiki.foo.bar/wiki/action/login/Main?action=login&login=1">Knowledge Management</a>
 +                    </u>
 +                    <br>
-+                    <small>
++                    <div class="tooltip">
 +                    Collaborative and powerful community websites. Start to contribute..oO
-+                    </small>
++                    </div>
 +                  </td>
 +                </tr>
 diff --git a/html/inc/en/0015_blog.html b/html/inc/en/0015_blog.html
 new file mode 100644
-index 0000000..95dc7b4
+index 0000000..c958079
 --- /dev/null
 +++ b/html/inc/en/0015_blog.html
 @@ -0,0 +1,15 @@
@@ -425,14 +429,14 @@ index 0000000..95dc7b4
 +                    <a name="blog" href="http://blog.foo.bar/">Web log</a>
 +                    </u>
 +                    <br>
-+                    <small>
++                    <div class="tooltip">
 +                    Speak loud, and share your feelings, opinions, ideas, with others...
-+                    </small>
++                    </div>
 +                  </td>
 +                </tr>
 diff --git a/html/inc/en/0020_scm.html b/html/inc/en/0020_scm.html
 new file mode 100644
-index 0000000..1351b2c
+index 0000000..ca98031
 --- /dev/null
 +++ b/html/inc/en/0020_scm.html
 @@ -0,0 +1,21 @@
@@ -448,18 +452,18 @@ index 0000000..1351b2c
 +                      <a name="hg" href="http://hg.foo.bar/">Mercurial</a>
 +                    </u>
 +                    <br>
-+                    <small>
++                    <div class="tooltip">
 +                    SVN - Best for commercial software development and a centralized develop team.
 +                    <br>
 +                    Git - For team members all around the world. The power you may have never seen.
 +                    <br>
 +                    Hg - Lightweight DVCS. Single user and team can all benefit from it.
-+                    </small>
++                    </div>
 +                  </td>
 +                </tr>
 diff --git a/html/inc/en/0030_bugtrac.html b/html/inc/en/0030_bugtrac.html
 new file mode 100644
-index 0000000..5b40355
+index 0000000..851f334
 --- /dev/null
 +++ b/html/inc/en/0030_bugtrac.html
 @@ -0,0 +1,19 @@
@@ -475,16 +479,16 @@ index 0000000..5b40355
 +                    <a name="redmine" href="http://redmine.foo.bar/">Redmine</a>
 +                    </u>
 +                    <br>
-+                    <small>
++                    <div class="tooltip">
 +                    Trac - Trac, a bug tracking system with deep SCM integration.
 +                    <br>
 +                    Redmine - A trac clone using ROR. Support multiple project.
-+                    </small>
++                    </div>
 +                  </td>
 +                </tr>
 diff --git a/html/inc/en/0035_testlink.html b/html/inc/en/0035_testlink.html
 new file mode 100644
-index 0000000..7e8d69a
+index 0000000..766339d
 --- /dev/null
 +++ b/html/inc/en/0035_testlink.html
 @@ -0,0 +1,15 @@
@@ -498,14 +502,14 @@ index 0000000..7e8d69a
 +                    Test Lifecyle Management: <a name="testlink" href="http://testlink.foo.bar/">TestLink</a>
 +                    </u>
 +                    <br>
-+                    <small>
++                    <div class="tooltip">
 +                    From test plan, test cases to test report, a whole test lifecycle management system.
-+                    </small>
++                    </div>
 +                  </td>
 +                </tr>
 diff --git a/html/inc/en/0040_comm.html b/html/inc/en/0040_comm.html
 new file mode 100644
-index 0000000..2e64f03
+index 0000000..7951cb3
 --- /dev/null
 +++ b/html/inc/en/0040_comm.html
 @@ -0,0 +1,15 @@
@@ -519,14 +523,14 @@ index 0000000..2e64f03
 +                    Communications: <a name="mailman" href="http://list.foo.bar/mailman/listinfo/">Mailing list</a>, IM
 +                    </u>
 +                    <br>
-+                    <small>
++                    <div class="tooltip">
 +                    Mailing list: Web archive, can push to desktop...
-+                    </small>
++                    </div>
 +                  </td>
 +                </tr>
 diff --git a/html/inc/en/1000_account.html b/html/inc/en/1000_account.html
 new file mode 100644
-index 0000000..2902fcc
+index 0000000..b9addf9
 --- /dev/null
 +++ b/html/inc/en/1000_account.html
 @@ -0,0 +1,16 @@
@@ -541,9 +545,9 @@ index 0000000..2902fcc
 +                    <a name="sso" href="https://weblogin.foo.bar/cgi-bin/login">Single Sign-on</a>
 +                    </u>
 +                    <br>
-+                    <small>
++                    <div class="tooltip">
 +                    Manage account of all systems in one place. Single Sign-on ready for all.
-+                    </small>
++                    </div>
 +                  </td>
 +                </tr>
 diff --git a/html/inc/en/9000.html b/html/inc/en/9000.html
@@ -556,7 +560,7 @@ index 0000000..a0203b7
 +            </table>
 diff --git a/html/inc/factor_invite.inc b/html/inc/factor_invite.inc
 new file mode 100644
-index 0000000..9e13130
+index 0000000..ec2aa86
 --- /dev/null
 +++ b/html/inc/factor_invite.inc
 @@ -0,0 +1,74 @@
@@ -632,11 +636,11 @@ index 0000000..9e13130
 +							<td>$!_("Caps Lock is on")</td>
 +						</tr>
 +					</table>
-+					<a href="#inviteinfo" id="inviteInfoShow" tabindex="10">$!_("What is invite code?")</a> </div>
++					<span class="tooltip"><a href="#inviteinfo" id="inviteInfoShow" tabindex="10">$!_("What is invite code?")</a></span></div>
 +
 diff --git a/html/inc/factor_kx509.inc b/html/inc/factor_kx509.inc
 new file mode 100644
-index 0000000..37d48b2
+index 0000000..56755f7
 --- /dev/null
 +++ b/html/inc/factor_kx509.inc
 @@ -0,0 +1,11 @@
@@ -650,10 +654,10 @@ index 0000000..37d48b2
 +						<input name="useKX509" id="useKX509" type="checkbox" value="1" tabindex="4" />
 +						<label for="useKX509">$!_("Authenticate using a certificate")</label>
 +					</p>
-+					$!_("Download") <a href="#kx509Info" id="kx509InfoShow" tabindex="9">$!_("k.x-509 software")</a> </div>
++					<span class="tooltip">$!_("Download") <a href="#kx509Info" id="kx509InfoShow" tabindex="9">$!_("k.x-509 software")</a></span></div>
 diff --git a/html/inc/factor_login.inc b/html/inc/factor_login.inc
 new file mode 100644
-index 0000000..23e5a01
+index 0000000..1c9d11b
 --- /dev/null
 +++ b/html/inc/factor_login.inc
 @@ -0,0 +1,24 @@
@@ -680,10 +684,10 @@ index 0000000..23e5a01
 +							<td>$!_("Caps Lock is on")</td>
 +						</tr>
 +					</table>
-+					<a href="#kerbInfo" id="kerbInfoShow" tabindex="7">$!_("Need an account or password help?")</a> </div>
++					<span class="tooltip"><a href="#kerbInfo" id="kerbInfoShow" tabindex="7">$!_("Need an account or password help?")</a></span></div>
 diff --git a/html/inc/factor_login_reauth.inc b/html/inc/factor_login_reauth.inc
 new file mode 100644
-index 0000000..4ca5df5
+index 0000000..8c7e39c
 --- /dev/null
 +++ b/html/inc/factor_login_reauth.inc
 @@ -0,0 +1,21 @@
@@ -707,10 +711,10 @@ index 0000000..4ca5df5
 +							<td>$!_("Caps Lock is on")</td>
 +						</tr>
 +					</table>
-+					<a href="#kerbInfo" id="kerbInfoShow" tabindex="7">$!_("Need an account or password help?")</a> </div>
++					<span class="tooltip"><a href="#kerbInfo" id="kerbInfoShow" tabindex="7">$!_("Need an account or password help?")</a></span></div>
 diff --git a/html/inc/factor_otp.inc b/html/inc/factor_otp.inc
 new file mode 100644
-index 0000000..765331f
+index 0000000..9d27d65
 --- /dev/null
 +++ b/html/inc/factor_otp.inc
 @@ -0,0 +1,16 @@
@@ -729,7 +733,7 @@ index 0000000..765331f
 +							<td>$!_("Caps Lock is on")</td>
 +						</tr>
 +					</table>
-+					<a href="#otpInfo" id="otpInfoShow" tabindex="8">$!_("Manage your token")</a> </div>
++					<span class="tooltip"><a href="#otpInfo" id="otpInfoShow" tabindex="8">$!_("Manage your token")</a><span></div>
 diff --git a/html/inc/footer.inc b/html/inc/footer.inc
 new file mode 100644
 index 0000000..0b3e229
@@ -854,7 +858,7 @@ index 0000000..cd6c895
 +              <tbody>
 diff --git a/html/inc/zh/0010_wiki.html b/html/inc/zh/0010_wiki.html
 new file mode 100644
-index 0000000..a29e9ad
+index 0000000..d898006
 --- /dev/null
 +++ b/html/inc/zh/0010_wiki.html
 @@ -0,0 +1,15 @@
@@ -868,14 +872,14 @@ index 0000000..a29e9ad
 +                    <a name="wiki" href="http://wiki.foo.bar/wiki/action/login/Main?action=login&login=1">知识管理系统</a>
 +                    </u>
 +                    <br>
-+                    <small>
++                    <div class="tooltip">
 +                    采用维基技术，提供了协同工作平台和强大的社区网站，知识共享现在出发..oO
-+                    </small>
++                    </div>
 +                  </td>
 +                </tr>
 diff --git a/html/inc/zh/0015_blog.html b/html/inc/zh/0015_blog.html
 new file mode 100644
-index 0000000..e4f3a2c
+index 0000000..39fe5d3
 --- /dev/null
 +++ b/html/inc/zh/0015_blog.html
 @@ -0,0 +1,15 @@
@@ -889,14 +893,14 @@ index 0000000..e4f3a2c
 +                    <a name="blog" href="http://blog.foo.bar/">博客</a>
 +                    </u>
 +                    <br>
-+                    <small>
++                    <div class="tooltip">
 +                    大声的说出你的感受、观点、想法，和他人分享...
-+                    </small>
++                    </div>
 +                  </td>
 +                </tr>
 diff --git a/html/inc/zh/0020_scm.html b/html/inc/zh/0020_scm.html
 new file mode 100644
-index 0000000..9653b34
+index 0000000..6ae825d
 --- /dev/null
 +++ b/html/inc/zh/0020_scm.html
 @@ -0,0 +1,21 @@
@@ -912,18 +916,18 @@ index 0000000..9653b34
 +                      <a name="hg" href="http://hg.foo.bar/">Mercurial</a>
 +                    </u>
 +                    <br>
-+                    <small>
++                    <div class="tooltip">
 +                    SVN - 商业软件开发最佳拍当，提供精细授权，有易用的客户端
 +                    <br>
 +                    Git - 适合于身处异地，相对分散的开发团队，最强大的版本控制工具
 +                    <br>
 +                    Hg - 轻量级分布式版本控制工具，既适用于个人，也适合于团队
-+                    </small>
++                    </div>
 +                  </td>
 +                </tr>
 diff --git a/html/inc/zh/0030_bugtrac.html b/html/inc/zh/0030_bugtrac.html
 new file mode 100644
-index 0000000..b6a94d2
+index 0000000..da72ff4
 --- /dev/null
 +++ b/html/inc/zh/0030_bugtrac.html
 @@ -0,0 +1,19 @@
@@ -939,16 +943,16 @@ index 0000000..b6a94d2
 +                    <a name="redmine" href="http://redmine.foo.bar/">Redmine</a>
 +                    </u>
 +                    <br>
-+                    <small>
++                    <div class="tooltip">
 +                    Trac - Python 开发，用wiki将需求管理，缺陷跟踪，软件开发整合一体的项目管理工具
 +                    <br>
 +                    Redmine - Trac 的 ROR 克隆/再实现。支持多项目
-+                    </small>
++                    </div>
 +                  </td>
 +                </tr>
 diff --git a/html/inc/zh/0035_testlink.html b/html/inc/zh/0035_testlink.html
 new file mode 100644
-index 0000000..8b1be8a
+index 0000000..fb3fbaa
 --- /dev/null
 +++ b/html/inc/zh/0035_testlink.html
 @@ -0,0 +1,15 @@
@@ -962,14 +966,14 @@ index 0000000..8b1be8a
 +                    测试管理平台： <a name="testlink" href="http://testlink.foo.bar/">TestLink</a>
 +                    </u>
 +                    <br>
-+                    <small>
++                    <div class="tooltip">
 +                    从测试计划到测试用例到测试报告，全周期的测试流程管理平台...
-+                    </small>
++                    </div>
 +                  </td>
 +                </tr>
 diff --git a/html/inc/zh/0040_comm.html b/html/inc/zh/0040_comm.html
 new file mode 100644
-index 0000000..68ebcb5
+index 0000000..1acf1d3
 --- /dev/null
 +++ b/html/inc/zh/0040_comm.html
 @@ -0,0 +1,15 @@
@@ -983,14 +987,14 @@ index 0000000..68ebcb5
 +                    沟通系统： <a name="mailman" href="http://list.foo.bar/mailman/listinfo/">邮件列表</a>, 即时通讯
 +                    </u>
 +                    <br>
-+                    <small>
++                    <div class="tooltip">
 +                    邮件列表: 可归档，可推向桌面的无骚扰的沟通工具...
-+                    </small>
++                    </div>
 +                  </td>
 +                </tr>
 diff --git a/html/inc/zh/1000_account.html b/html/inc/zh/1000_account.html
 new file mode 100644
-index 0000000..312e5b4
+index 0000000..086dbf6
 --- /dev/null
 +++ b/html/inc/zh/1000_account.html
 @@ -0,0 +1,16 @@
@@ -1005,9 +1009,9 @@ index 0000000..312e5b4
 +                    <a name="sso" href="https://weblogin.foo.bar/cgi-bin/login">单点登录</a>
 +                    </u>
 +                    <br>
-+                    <small>
++                    <div class="tooltip">
 +                    集中的用户管理平台；单点登录支持
-+                    </small>
++                    </div>
 +                  </td>
 +                </tr>
 diff --git a/html/inc/zh/9000.html b/html/inc/zh/9000.html

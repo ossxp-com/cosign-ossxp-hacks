@@ -1,5 +1,6 @@
 #!/usr/bin/make -f
 
+DEB_AUTO_UPDATE_AUTOCONF = yes
 ##DEB_BUILDDIR = $(CURDIR)/build
 DEB_DESTDIR = $(CURDIR)/debian/tmp
 

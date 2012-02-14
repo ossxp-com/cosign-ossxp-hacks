@@ -39,13 +39,13 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  html/templates_google/inc/zh/9000.html             |    2 +
  html/templates_google/locale/.gitignore            |    1 +
  html/templates_google/locale/Makefile              |   26 ++
- html/templates_google/locale/template.pot          |  237 ++++++++++++
- .../locale/zh/LC_MESSAGES/template.po              |  252 +++++++++++++
+ html/templates_google/locale/template.pot          |  190 ++++++++++
+ .../locale/zh/LC_MESSAGES/template.po              |  298 ++++++++++++++++
  html/templates_google/login.html                   |   63 ++++
  html/templates_google/reauth.html                  |   72 ++++
  html/templates_google/services.html                |   45 +++
  html/templates_google/verify-logout.html           |   47 +++
- 39 files changed, 1680 insertions(+), 2 deletions(-)
+ 39 files changed, 1679 insertions(+), 2 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
 index debfb64..21f6b8d 100755
@@ -1233,10 +1233,10 @@ index 0000000..3af0234
 +# vim: noet ts=4 sw=4
 diff --git a/html/templates_google/locale/template.pot b/html/templates_google/locale/template.pot
 new file mode 100644
-index 0000000..1127760
+index 0000000..d6620ec
 --- /dev/null
 +++ b/html/templates_google/locale/template.pot
-@@ -0,0 +1,237 @@
+@@ -0,0 +1,190 @@
 +# SOME DESCRIPTIVE TITLE.
 +# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 +# This file is distributed under the same license as the PACKAGE package.
@@ -1247,239 +1247,192 @@ index 0000000..1127760
 +msgstr ""
 +"Project-Id-Version: PACKAGE VERSION\n"
 +"Report-Msgid-Bugs-To: \n"
-+"POT-Creation-Date: 2010-04-04 11:50+0800\n"
++"POT-Creation-Date: 2012-02-15 04:45+0800\n"
 +"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 +"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 +"Language-Team: LANGUAGE <LL@li.org>\n"
++"Language: \n"
 +"MIME-Version: 1.0\n"
 +"Content-Type: text/plain; charset=CHARSET\n"
 +"Content-Transfer-Encoding: 8bit\n"
 +
++#: ../error.html:26
 +msgid "Please contact technical support if you have any questions."
 +msgstr ""
 +
++#: ../error.html:27
 +msgid "Technical Info:"
 +msgstr ""
 +
++#: ../error.html:31 ../inc/factor_login.inc:2 ../inc/factor_login_reauth.inc:2
 +msgid "ID &amp; Password"
 +msgstr ""
 +
++#: ../error.html:34 ../inc/factor_otp.inc:2
 +msgid "One Time Passcode"
 +msgstr ""
 +
++#: ../error.html:37 ../inc/factor_kx509.inc:2
 +msgid "Certificate"
 +msgstr ""
 +
++#: ../services.html:7 ../services.html:20
++msgid "Welcome"
++msgstr ""
++
++#: ../services.html:27
++msgid "Manage your profile or change password"
++msgstr ""
++
++#: ../services.html:28
++msgid "Logout"
++msgstr ""
++
++#: ../services.html:32
++msgid "Services"
++msgstr ""
++
++#: ../verify-logout.html:30
 +msgid "Log Out"
 +msgstr ""
 +
++#: ../verify-logout.html:31
 +msgid ""
 +"You are about to log out of <a href=\"/services/\">all weblogin "
 +"applications</a>."
 +msgstr ""
 +
++#: ../verify-logout.html:32
 +msgid "Are you sure you want to do this?"
 +msgstr ""
 +
++#: ../verify-logout.html:37
 +msgid "After logout your browser will redirect to:"
 +msgstr ""
 +
++#: ../inc/factor_invite.inc:59
 +msgid "Invite Code"
 +msgstr ""
 +
++#: ../inc/factor_invite.inc:60 ../inc/factor_kx509.inc:3
++#: ../inc/factor_login.inc:3 ../inc/factor_login_reauth.inc:3
++#: ../inc/factor_otp.inc:3
 +msgid "Authentication Complete"
 +msgstr ""
 +
++#: ../inc/factor_invite.inc:65
 +msgid "The&nbsp;code"
 +msgstr ""
 +
++#: ../inc/factor_invite.inc:70 ../inc/factor_login.inc:21
++#: ../inc/factor_login_reauth.inc:18 ../inc/factor_otp.inc:13
 +msgid "Caps Lock is on"
 +msgstr ""
 +
++#: ../inc/factor_invite.inc:73
 +msgid "What is invite code?"
 +msgstr ""
 +
++#: ../inc/factor_kx509.inc:6
 +msgid "You must have k.x-509 software installed and configured."
 +msgstr ""
 +
++#: ../inc/factor_kx509.inc:9
 +msgid "Authenticate using a certificate"
 +msgstr ""
 +
++#: ../inc/factor_kx509.inc:11
 +msgid "Download"
 +msgstr ""
 +
++#: ../inc/factor_kx509.inc:11
 +msgid "k.x-509 software"
 +msgstr ""
 +
-+msgid "Login"
-+msgstr ""
-+
++#: ../inc/factor_login.inc:8 ../inc/factor_login_reauth.inc:8
 +msgid "Username"
 +msgstr ""
 +
++#: ../inc/factor_login.inc:16 ../inc/factor_login_reauth.inc:13
 +msgid "Password"
 +msgstr ""
 +
++#: ../inc/factor_login.inc:24 ../inc/factor_login_reauth.inc:21
 +msgid "Need an account or password help?"
 +msgstr ""
 +
++#: ../inc/factor_login_reauth.inc:10
 +msgid "Switch Users"
 +msgstr ""
 +
++#: ../inc/factor_otp.inc:8
 +msgid "Passcode"
 +msgstr ""
 +
++#: ../inc/factor_otp.inc:16
 +msgid "Manage your token"
 +msgstr ""
 +
++#: ../inc/footer.inc:1
 +msgid ""
-+"&copy; 2006 - 2010 <a href=\"http://www.umich.edu/~regents/\" title="
++"&copy; 2006 - 2012 <a href=\"http://www.umich.edu/~regents/\" title="
 +"\"Regents of the University of Michigan\"> Regents of the University of "
 +"Michigan</a>, <a href=\"http://www.ossxp.com/\">OSSXP Powered</a>"
 +msgstr ""
 +
++#: ../inc/header.inc:23
 +msgid "Single Sign-On"
 +msgstr ""
 +
++#: ../inc/help_hotkey.inc:2
 +msgid "Jump to the Web Login instructions"
 +msgstr ""
 +
++#: ../inc/help_hotkey.inc:3
 +msgid "Jump to the error message (if present)"
 +msgstr ""
 +
++#: ../inc/help_hotkey.inc:4
 +msgid "Jump to the ID and Password section"
 +msgstr ""
 +
++#: ../inc/help_hotkey.inc:5
 +msgid "Jump to the One Time Passcode section"
 +msgstr ""
 +
++#: ../inc/help_hotkey.inc:6
 +msgid "Jump to the Certificate section"
 +msgstr ""
 +
++#: ../inc/help_infobox.inc:2
 +msgid ""
 +"Please enter your authentication information and click the &quot;Log&nbsp;"
 +"In&quot; button to continue."
 +msgstr ""
 +
++#: ../inc/help_infobox.inc:4
 +msgid ""
 +"Authentication sections marked with a <img src=\"/cosign/images/circle.gif\" "
 +"alt=\"yellow circle\" /> are required."
 +msgstr ""
 +
-+msgid ""
-+"By using this service you agree to adhere to our policies and guidelines."
-+msgstr ""
-+
-+msgid "This page displays best when JavaScript is enabled in your web browser."
-+msgstr ""
-+
-+msgid "Hide this Information"
-+msgstr ""
-+
-+msgid "Back to Top"
-+msgstr ""
-+
-+msgid "Need an Account?"
-+msgstr ""
-+
-+msgid ""
-+"Replace this text with information about obtaining an account. Lorem ipsum "
-+"dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. "
-+"Aenean vitae orci. Mauris vulputate ornare urna."
-+msgstr ""
-+
-+msgid "Forgot Your Password?"
-+msgstr ""
-+
-+msgid ""
-+"Replace this text with information about resetting your password. Lorem "
-+"ipsum dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non "
-+"lacus. Aenean vitae orci. Mauris vulputate ornare urna."
-+msgstr ""
-+
-+msgid "Get a Token"
-+msgstr ""
-+
-+msgid ""
-+"Replace this with text about using one time passcodes. Lorem ipsum dolor sit "
-+"amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean "
-+"vitae orci. Mauris vulputate ornare urna."
-+msgstr ""
-+
-+msgid "Download KX.509"
-+msgstr ""
-+
-+msgid ""
-+"The KX.509 service provides a client/server application that uses Kerberos "
-+"to acquire a short-term X.509 certificate. This makes it possible for web-"
-+"browsers to authenticate a user to any CoSign-protected web services "
-+"silently instead of prompting the user for a name and password. At U-M, this "
-+"service can be used by those who know their Uniqname and Kerberos password."
-+msgstr ""
-+
-+msgid "About invite code"
-+msgstr ""
-+
-+msgid ""
-+"Invite code is assigned by administrator. Before input your invite code, you "
-+"must provide your email address as your login name."
-+msgstr ""
-+
-+msgid ""
-+"Note: The two fields, password and invite code input fields are exclusive. "
-+"The other is disabled when one is focus and has inupt."
-+msgstr ""
-+
-+msgid "Log In"
-+msgstr ""
-+
-+msgid "Go Back"
-+msgstr ""
-+
-+msgid "Link to Homepage"
-+msgstr ""
-+
-+msgid "Please enter your login and password."
-+msgstr ""
-+
-+msgid "Please input your email address into username field."
-+msgstr ""
-+
++#: ../inc/help_infobox.inc:8
 +msgid ""
 +"Without sign in, you can not access some of the services we provided, or "
 +"access rights are limited. After sign in, you can edit your profiles, and "
 +"enjoy our services."
 +msgstr ""
 +
-+msgid "Click the following link to register a new account yourself."
-+msgstr ""
-+
-+msgid "Click the following link to retrieve you lost password."
-+msgstr ""
-+
-+msgid "Create an account now"
-+msgstr ""
-+
-+msgid "Retrieve my lost password"
-+msgstr ""
-+
-+msgid "Welcome"
-+msgstr ""
-+
-+msgid "Manage your profile or change password"
-+msgstr ""
-+
-+msgid "Logout"
-+msgstr ""
-+
-+msgid "Services"
++#: ../inc/help_infobox.inc:10
++msgid ""
++"By using this service you agree to adhere to our policies and guidelines."
 +msgstr ""
 diff --git a/html/templates_google/locale/zh/LC_MESSAGES/template.po b/html/templates_google/locale/zh/LC_MESSAGES/template.po
 new file mode 100644
-index 0000000..32e5401
+index 0000000..ea92519
 --- /dev/null
 +++ b/html/templates_google/locale/zh/LC_MESSAGES/template.po
-@@ -0,0 +1,252 @@
+@@ -0,0 +1,298 @@
 +# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 +# This file is distributed under the same license as the PACKAGE package.
 +#
@@ -1488,119 +1441,168 @@ index 0000000..32e5401
 +msgstr ""
 +"Project-Id-Version: \n"
 +"Report-Msgid-Bugs-To: \n"
-+"POT-Creation-Date: 2010-04-04 11:50+0800\n"
++"POT-Creation-Date: 2012-02-15 04:45+0800\n"
 +"PO-Revision-Date: 2010-04-05 16:58+0800\n"
 +"Last-Translator: Jiang Xin <worldhello.net@gmail.com>\n"
 +"Language-Team: Chinese Simplified <kde-i18n-doc@kde.org>\n"
++"Language: \n"
 +"MIME-Version: 1.0\n"
 +"Content-Type: text/plain; charset=UTF-8\n"
 +"Content-Transfer-Encoding: 8bit\n"
 +"X-Generator: Lokalize 1.0\n"
 +"Plural-Forms: nplurals=2; plural=n != 1;\n"
 +
++#: ../error.html:26
 +msgid "Please contact technical support if you have any questions."
 +msgstr "如果您有问题，请联系管理员。"
 +
++#: ../error.html:27
 +msgid "Technical Info:"
 +msgstr "技术信息："
 +
++#: ../error.html:31 ../inc/factor_login.inc:2 ../inc/factor_login_reauth.inc:2
 +msgid "ID &amp; Password"
 +msgstr "用户名和口令"
 +
++#: ../error.html:34 ../inc/factor_otp.inc:2
 +msgid "One Time Passcode"
 +msgstr "一次性口令登录"
 +
++#: ../error.html:37 ../inc/factor_kx509.inc:2
 +msgid "Certificate"
 +msgstr "证书"
 +
++#: ../services.html:7 ../services.html:20
++msgid "Welcome"
++msgstr "欢迎"
++
++#: ../services.html:27
++msgid "Manage your profile or change password"
++msgstr "修改个人信息及口令"
++
++#: ../services.html:28
++msgid "Logout"
++msgstr "退出登录"
++
++#: ../services.html:32
++msgid "Services"
++msgstr "服务列表"
++
++#: ../verify-logout.html:30
 +msgid "Log Out"
 +msgstr "退出"
 +
++#: ../verify-logout.html:31
 +msgid ""
 +"You are about to log out of <a href=\"/services/\">all weblogin "
 +"applications</a>."
 +msgstr "您将要退出 <a href=\"/services/\">所有服务</a>。"
 +
++#: ../verify-logout.html:32
 +msgid "Are you sure you want to do this?"
 +msgstr "您确认要这么做么？"
 +
++#: ../verify-logout.html:37
 +msgid "After logout your browser will redirect to:"
 +msgstr "退出登录后浏览器将重定向到："
 +
++#: ../inc/factor_invite.inc:59
 +msgid "Invite Code"
 +msgstr "邀请码认证"
 +
++#: ../inc/factor_invite.inc:60 ../inc/factor_kx509.inc:3
++#: ../inc/factor_login.inc:3 ../inc/factor_login_reauth.inc:3
++#: ../inc/factor_otp.inc:3
 +msgid "Authentication Complete"
 +msgstr "认证成功"
 +
++#: ../inc/factor_invite.inc:65
 +msgid "The&nbsp;code"
 +msgstr "邀请码"
 +
++#: ../inc/factor_invite.inc:70 ../inc/factor_login.inc:21
++#: ../inc/factor_login_reauth.inc:18 ../inc/factor_otp.inc:13
 +msgid "Caps Lock is on"
 +msgstr "大小写锁定键开启"
 +
++#: ../inc/factor_invite.inc:73
 +msgid "What is invite code?"
 +msgstr "什么是邀请码？"
 +
++#: ../inc/factor_kx509.inc:6
 +msgid "You must have k.x-509 software installed and configured."
 +msgstr "您必须安装并配置 k.x-509 软件。"
 +
++#: ../inc/factor_kx509.inc:9
 +msgid "Authenticate using a certificate"
 +msgstr "使用证书认证"
 +
++#: ../inc/factor_kx509.inc:11
 +msgid "Download"
 +msgstr "下载"
 +
++#: ../inc/factor_kx509.inc:11
 +msgid "k.x-509 software"
 +msgstr "k.x-509 软件"
 +
-+msgid "Login"
-+msgstr "登录"
-+
++#: ../inc/factor_login.inc:8 ../inc/factor_login_reauth.inc:8
 +msgid "Username"
 +msgstr "用户名"
 +
++#: ../inc/factor_login.inc:16 ../inc/factor_login_reauth.inc:13
 +msgid "Password"
 +msgstr "口令"
 +
++#: ../inc/factor_login.inc:24 ../inc/factor_login_reauth.inc:21
 +msgid "Need an account or password help?"
 +msgstr "需要创建帐号或者找回口令？"
 +
++#: ../inc/factor_login_reauth.inc:10
 +msgid "Switch Users"
 +msgstr "切换用户"
 +
++#: ../inc/factor_otp.inc:8
 +msgid "Passcode"
 +msgstr "口令"
 +
++#: ../inc/factor_otp.inc:16
 +msgid "Manage your token"
 +msgstr "管理你的密钥"
 +
++#: ../inc/footer.inc:1
 +msgid ""
-+"&copy; 2006 - 2010 <a href=\"http://www.umich.edu/~regents/\" title="
++"&copy; 2006 - 2012 <a href=\"http://www.umich.edu/~regents/\" title="
 +"\"Regents of the University of Michigan\"> Regents of the University of "
 +"Michigan</a>, <a href=\"http://www.ossxp.com/\">OSSXP Powered</a>"
 +msgstr ""
-+"&copy; 2006 - 2010 <a href=\"http://www.umich.edu/~regents/\" title=\"密歇根"
++"&copy; 2006 - 2012 <a href=\"http://www.umich.edu/~regents/\" title=\"密歇根"
 +"大学\">密歇根大学</a>, <a href=\"http://www.ossxp.com/\">群英汇技术支持</a>"
 +
++#: ../inc/header.inc:23
 +msgid "Single Sign-On"
 +msgstr "单点登录"
 +
++#: ../inc/help_hotkey.inc:2
 +msgid "Jump to the Web Login instructions"
 +msgstr "跳转到 Web 登录说明"
 +
++#: ../inc/help_hotkey.inc:3
 +msgid "Jump to the error message (if present)"
 +msgstr "跳转到错误信息（如果有的话）"
 +
++#: ../inc/help_hotkey.inc:4
 +msgid "Jump to the ID and Password section"
 +msgstr "跳转到用户名和口令登录"
 +
++#: ../inc/help_hotkey.inc:5
 +msgid "Jump to the One Time Passcode section"
 +msgstr "跳转到一次性口令登录"
 +
++#: ../inc/help_hotkey.inc:6
 +msgid "Jump to the Certificate section"
 +msgstr "跳转到证书登录"
 +
++#: ../inc/help_infobox.inc:2
 +msgid ""
 +"Please enter your authentication information and click the &quot;Log&nbsp;"
 +"In&quot; button to continue."
@@ -1608,6 +1610,7 @@ index 0000000..32e5401
 +"在右侧选择任一种登录方式，输入登录信息，之后按 &quot;登录按钮&quot; 完成登"
 +"录。"
 +
++#: ../inc/help_infobox.inc:4
 +msgid ""
 +"Authentication sections marked with a <img src=\"/cosign/images/circle.gif\" "
 +"alt=\"yellow circle\" /> are required."
@@ -1615,92 +1618,7 @@ index 0000000..32e5401
 +"标记为 <img src=\"/cosign/images/circle.gif\" alt=\"黄色圆圈\" /> 的认证方式"
 +"是必须的。"
 +
-+msgid ""
-+"By using this service you agree to adhere to our policies and guidelines."
-+msgstr "使用本服务，意味着您已经接受我们的相关政策条款。"
-+
-+msgid "This page displays best when JavaScript is enabled in your web browser."
-+msgstr "这个页面在 JavaScript 启用下有更好的表现。"
-+
-+msgid "Hide this Information"
-+msgstr "隐藏本信息"
-+
-+msgid "Back to Top"
-+msgstr "返回顶部"
-+
-+msgid "Need an Account?"
-+msgstr "需要创建帐号？"
-+
-+msgid ""
-+"Replace this text with information about obtaining an account. Lorem ipsum "
-+"dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. "
-+"Aenean vitae orci. Mauris vulputate ornare urna."
-+msgstr "替换本段内容为创建帐号的相关指示..."
-+
-+msgid "Forgot Your Password?"
-+msgstr "忘记口令？"
-+
-+msgid ""
-+"Replace this text with information about resetting your password. Lorem "
-+"ipsum dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor non "
-+"lacus. Aenean vitae orci. Mauris vulputate ornare urna."
-+msgstr "替换本段内容为重置密码的相关指示..."
-+
-+msgid "Get a Token"
-+msgstr "获取一个令牌"
-+
-+msgid ""
-+"Replace this with text about using one time passcodes. Lorem ipsum dolor sit "
-+"amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. Aenean "
-+"vitae orci. Mauris vulputate ornare urna."
-+msgstr "替换本段内容为一次性口令的相关指示..."
-+
-+msgid "Download KX.509"
-+msgstr "下载 KX.509"
-+
-+msgid ""
-+"The KX.509 service provides a client/server application that uses Kerberos "
-+"to acquire a short-term X.509 certificate. This makes it possible for web-"
-+"browsers to authenticate a user to any CoSign-protected web services "
-+"silently instead of prompting the user for a name and password. At U-M, this "
-+"service can be used by those who know their Uniqname and Kerberos password."
-+msgstr ""
-+"服务 KX.509 提供了一个 客户端/服务器 应用，使用 Kerberos 来获取一个短期的 "
-+"X.509 证书。使得浏览器连接任何 CoSign 保护的网站不再需要输入用户名和口令，而"
-+"自动登录。 在密歇根大学，这项服务由知道唯一名称和 Kerberos 口令的用户使用。"
-+
-+msgid "About invite code"
-+msgstr "关于邀请码"
-+
-+msgid ""
-+"Invite code is assigned by administrator. Before input your invite code, you "
-+"must provide your email address as your login name."
-+msgstr ""
-+"邀请码由管理员进行设置，为特殊用户提供无须用户注册即可访问某些服务。 注意在输"
-+"入邀请码的同时，您需要在登录名字段输入您的邮件地址。"
-+
-+msgid ""
-+"Note: The two fields, password and invite code input fields are exclusive. "
-+"The other is disabled when one is focus and has inupt."
-+msgstr ""
-+"注意：口令字段和邀请码字段互斥。当选择其中之一并且输入了口令或者邀请码则另外"
-+"一个字段自动禁用， 直到您将当前的口令或者邀请码录入框的内容清空。"
-+
-+msgid "Log In"
-+msgstr "登录"
-+
-+msgid "Go Back"
-+msgstr "返回"
-+
-+msgid "Link to Homepage"
-+msgstr "返回主页"
-+
-+msgid "Please enter your login and password."
-+msgstr "请输入您的用户名和口令。"
-+
-+msgid "Please input your email address into username field."
-+msgstr "请在用户名字段输入您的邮件地址。"
-+
++#: ../inc/help_infobox.inc:8
 +msgid ""
 +"Without sign in, you can not access some of the services we provided, or "
 +"access rights are limited. After sign in, you can edit your profiles, and "
@@ -1709,29 +1627,110 @@ index 0000000..32e5401
 +"如果不登录，您可能无法访问某些系统，或者访问受限。 登录后，您可以编辑个人资"
 +"料，使用我们提供的各项服务。"
 +
-+msgid "Click the following link to register a new account yourself."
-+msgstr "点击下面的链接，注册一个新帐号"
++#: ../inc/help_infobox.inc:10
++msgid ""
++"By using this service you agree to adhere to our policies and guidelines."
++msgstr "使用本服务，意味着您已经接受我们的相关政策条款。"
 +
-+msgid "Click the following link to retrieve you lost password."
-+msgstr "点击下面的链接，找回你忘记的口令"
++#~ msgid "Login"
++#~ msgstr "登录"
 +
-+msgid "Create an account now"
-+msgstr "创建一个新帐号"
++#~ msgid ""
++#~ "This page displays best when JavaScript is enabled in your web browser."
++#~ msgstr "这个页面在 JavaScript 启用下有更好的表现。"
 +
-+msgid "Retrieve my lost password"
-+msgstr "找回忘记的口令"
++#~ msgid "Hide this Information"
++#~ msgstr "隐藏本信息"
 +
-+msgid "Welcome"
-+msgstr "欢迎"
++#~ msgid "Back to Top"
++#~ msgstr "返回顶部"
 +
-+msgid "Manage your profile or change password"
-+msgstr "修改个人信息及口令"
++#~ msgid "Need an Account?"
++#~ msgstr "需要创建帐号？"
 +
-+msgid "Logout"
-+msgstr "退出登录"
++#~ msgid ""
++#~ "Replace this text with information about obtaining an account. Lorem "
++#~ "ipsum dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor "
++#~ "non lacus. Aenean vitae orci. Mauris vulputate ornare urna."
++#~ msgstr "替换本段内容为创建帐号的相关指示..."
 +
-+msgid "Services"
-+msgstr "服务列表"
++#~ msgid "Forgot Your Password?"
++#~ msgstr "忘记口令？"
++
++#~ msgid ""
++#~ "Replace this text with information about resetting your password. Lorem "
++#~ "ipsum dolor sit amet, consectetuer adipiscing elit. Nullam cursus dolor "
++#~ "non lacus. Aenean vitae orci. Mauris vulputate ornare urna."
++#~ msgstr "替换本段内容为重置密码的相关指示..."
++
++#~ msgid "Get a Token"
++#~ msgstr "获取一个令牌"
++
++#~ msgid ""
++#~ "Replace this with text about using one time passcodes. Lorem ipsum dolor "
++#~ "sit amet, consectetuer adipiscing elit. Nullam cursus dolor non lacus. "
++#~ "Aenean vitae orci. Mauris vulputate ornare urna."
++#~ msgstr "替换本段内容为一次性口令的相关指示..."
++
++#~ msgid "Download KX.509"
++#~ msgstr "下载 KX.509"
++
++#~ msgid ""
++#~ "The KX.509 service provides a client/server application that uses "
++#~ "Kerberos to acquire a short-term X.509 certificate. This makes it "
++#~ "possible for web-browsers to authenticate a user to any CoSign-protected "
++#~ "web services silently instead of prompting the user for a name and "
++#~ "password. At U-M, this service can be used by those who know their "
++#~ "Uniqname and Kerberos password."
++#~ msgstr ""
++#~ "服务 KX.509 提供了一个 客户端/服务器 应用，使用 Kerberos 来获取一个短期的 "
++#~ "X.509 证书。使得浏览器连接任何 CoSign 保护的网站不再需要输入用户名和口令，"
++#~ "而自动登录。 在密歇根大学，这项服务由知道唯一名称和 Kerberos 口令的用户使"
++#~ "用。"
++
++#~ msgid "About invite code"
++#~ msgstr "关于邀请码"
++
++#~ msgid ""
++#~ "Invite code is assigned by administrator. Before input your invite code, "
++#~ "you must provide your email address as your login name."
++#~ msgstr ""
++#~ "邀请码由管理员进行设置，为特殊用户提供无须用户注册即可访问某些服务。 注意"
++#~ "在输入邀请码的同时，您需要在登录名字段输入您的邮件地址。"
++
++#~ msgid ""
++#~ "Note: The two fields, password and invite code input fields are "
++#~ "exclusive. The other is disabled when one is focus and has inupt."
++#~ msgstr ""
++#~ "注意：口令字段和邀请码字段互斥。当选择其中之一并且输入了口令或者邀请码则另"
++#~ "外一个字段自动禁用， 直到您将当前的口令或者邀请码录入框的内容清空。"
++
++#~ msgid "Log In"
++#~ msgstr "登录"
++
++#~ msgid "Go Back"
++#~ msgstr "返回"
++
++#~ msgid "Link to Homepage"
++#~ msgstr "返回主页"
++
++#~ msgid "Please enter your login and password."
++#~ msgstr "请输入您的用户名和口令。"
++
++#~ msgid "Please input your email address into username field."
++#~ msgstr "请在用户名字段输入您的邮件地址。"
++
++#~ msgid "Click the following link to register a new account yourself."
++#~ msgstr "点击下面的链接，注册一个新帐号"
++
++#~ msgid "Click the following link to retrieve you lost password."
++#~ msgstr "点击下面的链接，找回你忘记的口令"
++
++#~ msgid "Create an account now"
++#~ msgstr "创建一个新帐号"
++
++#~ msgid "Retrieve my lost password"
++#~ msgstr "找回忘记的口令"
 diff --git a/html/templates_google/login.html b/html/templates_google/login.html
 new file mode 100644
 index 0000000..fea910e
@@ -1984,4 +1983,4 @@ index 0000000..c3a1739
 +</body>
 +</html>
 -- 
-tg: (1e09458..) t/templates_google (depends on: t/templates_standard)
+tg: (5e3472a..) t/templates_google (depends on: t/templates_standard)

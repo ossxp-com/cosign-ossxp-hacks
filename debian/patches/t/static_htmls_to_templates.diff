@@ -532,7 +532,7 @@ index 89b0568..69d89cb 100644
  
      return;
 diff --git a/common/conf.h b/common/conf.h
-index cb1609f..77b0513 100644
+index 7299e15..a9b41d2 100644
 --- a/common/conf.h
 +++ b/common/conf.h
 @@ -75,6 +75,7 @@ struct matchlist {
@@ -759,4 +759,4 @@ index 0000000..a667522
 +</body>
 +</html>
 -- 
-tg: (9d71006..) t/static_htmls_to_templates (depends on: t/message_localize t/autotools_for_setup)
+tg: (bf95bca..) t/static_htmls_to_templates (depends on: t/message_localize t/autotools_for_setup)

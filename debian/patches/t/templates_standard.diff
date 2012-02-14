@@ -736,11 +736,11 @@ index 0000000..9d27d65
 +					<span class="tooltip"><a href="#otpInfo" id="otpInfoShow" tabindex="8">$!_("Manage your token")</a><span></div>
 diff --git a/html/inc/footer.inc b/html/inc/footer.inc
 new file mode 100644
-index 0000000..0b3e229
+index 0000000..0780417
 --- /dev/null
 +++ b/html/inc/footer.inc
 @@ -0,0 +1,3 @@
-+<div id="foot">$!_("&copy; 2006 - 2010 <a href=\"http://www.umich.edu/~regents/\""
++<div id="foot">$!_("&copy; 2006 - 2012 <a href=\"http://www.umich.edu/~regents/\""
 +	" title=\"Regents of the University of Michigan\"> Regents of the University of"
 +	" Michigan</a>, <a href=\"http://www.ossxp.com/\">OSSXP Powered</a>")</div>
 diff --git a/html/inc/header.inc b/html/inc/header.inc
@@ -2370,4 +2370,4 @@ index ea68776..c3a1739 100755
  </body>
  </html>
 -- 
-tg: (ae5b0c5..) t/templates_standard (depends on: master t/autotools_for_setup t/static_htmls_to_templates t/javascript t/services_template)
+tg: (682cc3c..) t/templates_standard (depends on: master t/autotools_for_setup t/static_htmls_to_templates t/javascript t/services_template)

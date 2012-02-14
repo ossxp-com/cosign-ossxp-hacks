@@ -16,7 +16,7 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
  7 files changed, 49 insertions(+), 41 deletions(-)
 
 diff --git a/Makefile.in b/Makefile.in
-index 9f264d8..520b6e7 100755
+index 2612e12..67df891 100755
 --- a/Makefile.in
 +++ b/Makefile.in
 @@ -48,12 +48,10 @@ distclean: clean
@@ -228,4 +228,4 @@ index 43205f8..8914dd9 100755
  clean:
  	rm -f *.o *.lo *.slo libsnet.la
 -- 
-tg: (2becb62..) t/autotools_for_setup (depends on: master)
+tg: (63e4b67..) t/autotools_for_setup (depends on: master)

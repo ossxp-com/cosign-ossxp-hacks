@@ -35,4 +35,4 @@ index bed7dae..cc76769 100755
  		( strcmp( ui.ui_ipaddr, ip_addr ) != 0 )) {
  	    if ( cosign_login( head, cookie, ip_addr, login, msg, NULL ) < 0 ) {
 -- 
-tg: (7e30537..) t/real_remote_user (depends on: t/static_htmls_to_templates)
+tg: (42d4d21..) t/real_remote_user (depends on: t/static_htmls_to_templates)

@@ -9195,4 +9195,4 @@ index d5e1d43..2a967fe 100755
 \ No newline at end of file
 +Scriptaculous.load();
 -- 
-tg: (2becb62..) t/javascript (depends on: master)
+tg: (63e4b67..) t/javascript (depends on: master)

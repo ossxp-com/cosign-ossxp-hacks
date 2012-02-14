@@ -7,17 +7,16 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
  Makefile.in                     |    4 +-
- configure                       |    3 +-
  configure.ac                    |    1 +
  locale/Makefile.in              |   42 +++
  locale/addition-template.pot    |  243 +++++++++++++++
  locale/addition.pot             |   32 ++
  locale/cosign.pot               |  366 ++++++++++++++++++++++
  locale/zh/LC_MESSAGES/cosign.po |  636 +++++++++++++++++++++++++++++++++++++++
- 8 files changed, 1324 insertions(+), 3 deletions(-)
+ 7 files changed, 1322 insertions(+), 2 deletions(-)
 
 diff --git a/Makefile.in b/Makefile.in
-index 520b6e7..8999a34 100755
+index 67df891..51e3f7e 100755
 --- a/Makefile.in
 +++ b/Makefile.in
 @@ -3,7 +3,7 @@ srcdir=		@srcdir@
@@ -38,29 +37,8 @@ index 520b6e7..8999a34 100755
  	  filters/apache/Makefile filters/apache2/Makefile \
  	  common/Makefile version.c filters/common/cosignpaths.h
  	rm -rf autom4te.cache
-diff --git a/configure b/configure
-index 511343a..f8cbb96 100755
---- a/configure
-+++ b/configure
-@@ -4476,7 +4476,7 @@ subdirs="$subdirs libsnet"
- subdirs="$subdirs libcgi"
- 
- 
--ac_config_files="$ac_config_files Makefile version.c cgi/Makefile common/Makefile html/Makefile daemon/Makefile filters/common/cosignpaths.h $FILTER_CONFIG_FILES"
-+ac_config_files="$ac_config_files Makefile version.c cgi/Makefile common/Makefile html/Makefile daemon/Makefile locale/Makefile filters/common/cosignpaths.h $FILTER_CONFIG_FILES"
- 
- 
- cat >confcache <<\_ACEOF
-@@ -5039,6 +5039,7 @@ do
-     "common/Makefile") CONFIG_FILES="$CONFIG_FILES common/Makefile" ;;
-     "html/Makefile") CONFIG_FILES="$CONFIG_FILES html/Makefile" ;;
-     "daemon/Makefile") CONFIG_FILES="$CONFIG_FILES daemon/Makefile" ;;
-+    "locale/Makefile") CONFIG_FILES="$CONFIG_FILES locale/Makefile" ;;
-     "filters/common/cosignpaths.h") CONFIG_FILES="$CONFIG_FILES filters/common/cosignpaths.h" ;;
-     "$FILTER_CONFIG_FILES") CONFIG_FILES="$CONFIG_FILES $FILTER_CONFIG_FILES" ;;
- 
 diff --git a/configure.ac b/configure.ac
-index 308ec11..a6c26fd 100755
+index 12d07e7..54b10cf 100755
 --- a/configure.ac
 +++ b/configure.ac
 @@ -131,6 +131,7 @@ AC_CONFIG_FILES([Makefile
@@ -1421,4 +1399,4 @@ index 0000000..db933e2
 +msgstr "单点登录：URL 校验失败"
 +
 -- 
-tg: (76a5ab1..) t/message_translation (depends on: t/message_localize t/static_htmls_to_templates)
+tg: (b8f2ad0..) t/message_translation (depends on: t/message_localize t/static_htmls_to_templates)

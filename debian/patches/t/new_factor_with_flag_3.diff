@@ -178,10 +178,10 @@ index cc76769..3fd94f6 100755
      }
  
 diff --git a/common/conf.c b/common/conf.c
-index c3484f6..0810892 100644
+index a8617bf..4f43887 100644
 --- a/common/conf.c
 +++ b/common/conf.c
-@@ -670,6 +670,8 @@ read_config( char *path )
+@@ -672,6 +672,8 @@ read_config( char *path )
  	    for ( i = 2; *av[ i ] == '-'; i++ ) {
  		if ( strcmp( av[ i ], "-2" ) == 0 ) {
  		    fl_new->fl_flag = 2;
@@ -191,4 +191,4 @@ index c3484f6..0810892 100644
  		    fprintf( stderr, "line %d:"
  			    " unknown flag %s to keyword factor\n",
 -- 
-tg: (c5ac4fd..) t/new_factor_with_flag_3 (depends on: t/real_remote_user)
+tg: (61a1c42..) t/new_factor_with_flag_3 (depends on: t/real_remote_user)

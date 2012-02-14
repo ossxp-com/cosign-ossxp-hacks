@@ -12,7 +12,7 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
  3 files changed, 36 insertions(+), 44 deletions(-)
 
 diff --git a/filters/apache/mod_cosign.c b/filters/apache/mod_cosign.c
-index 5ff2f06..6995f01 100755
+index 9605889..b44f209 100755
 --- a/filters/apache/mod_cosign.c
 +++ b/filters/apache/mod_cosign.c
 @@ -126,27 +126,22 @@ cosign_redirect( request_rec *r, cosign_host_config *cfg )
@@ -60,7 +60,7 @@ index 5ff2f06..6995f01 100755
  
      if ( cfg->reqfc > 0 ) {
 diff --git a/filters/apache2/mod_cosign.c b/filters/apache2/mod_cosign.c
-index 3e0807b..150fa05 100755
+index 48c1988..fe279ed 100755
 --- a/filters/apache2/mod_cosign.c
 +++ b/filters/apache2/mod_cosign.c
 @@ -131,27 +131,22 @@ cosign_redirect( request_rec *r, cosign_host_config *cfg )
@@ -108,7 +108,7 @@ index 3e0807b..150fa05 100755
  
      if ( cfg->reqfc > 0 ) {
 diff --git a/filters/lighttpd/mod_cosign.c b/filters/lighttpd/mod_cosign.c
-index a435d99..7b80e62 100644
+index b955be5..377fdcc 100644
 --- a/filters/lighttpd/mod_cosign.c
 +++ b/filters/lighttpd/mod_cosign.c
 @@ -762,7 +762,8 @@ cosign_redirect( server *srv, connection *con, plugin_data *p_d )
@@ -132,4 +132,4 @@ index a435d99..7b80e62 100644
  		    && !p->conf.noappendport ) {
  		snprintf( pbuf, sizeof( pbuf ) - 1, ":%d", port );
 -- 
-tg: (2becb62..) t/bugfix_cosign_httponly_quirk (depends on: master)
+tg: (63e4b67..) t/bugfix_cosign_httponly_quirk (depends on: master)

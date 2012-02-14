@@ -1,3 +1,9 @@
+ossxp-cosign3 (3.1.4-22) unstable; urgency=low
+
+  * Upstream upgrade to 3.1.4.
+
+ -- Jiang Xin <jiangxin@ossxp.com>  Tue, 28 Jun 2011 13:11:23 +0800
+
 ossxp-cosign3 (3.1.2-1.21) unstable; urgency=low
 
   * Change small font to 9pt, which looks better in IE.

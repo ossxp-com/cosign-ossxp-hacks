@@ -201,7 +201,7 @@ f_starttls( SNET *sn, int ac, char *av[], SNET *pushersn )
     X509_NAME_get_text_by_NID( X509_get_subject_name( peer ),
 		NID_commonName, buf, sizeof( buf ));
     X509_free( peer );
-    if (( al = authlist_find( buf, NULL, 0 )) == NULL ) {
+    if (( al = authlist_find( buf )) == NULL ) {
 	syslog( LOG_ERR, "f_starttls: No access for %s", buf );
 	snet_writef( sn, "%d No access for %s\r\n", 401, buf );
 	exit( 1 );
@@ -938,6 +938,15 @@ service_valid( char *service )
 	goto service_valid_done;
     }
 
+    /* only match whole CNs */
+    if ( svm[ 0 ].rm_so != 0 || svm[ 0 ].rm_eo != strlen( remote_cn )) {
+	syslog( LOG_ERR, "service_valid: CN %s not allowed "
+			 "access to cookie %s (partial match)",
+			 remote_cn, service );
+	sl = NULL;
+	goto service_valid_done;
+    }
+
     /*
      * if there's a custom cookie substitution pattern, use it.
      * otherwise, the service_find call + the regexec above
@@ -1401,7 +1410,7 @@ command( int fd, SNET *pushersn )
     if ( tlsopt ) {
 	commands = auth_commands;
 	ncommands = sizeof( auth_commands ) / sizeof( auth_commands[ 0 ] );
-	if (( al = authlist_find( "NOTLS", NULL, 0 )) == NULL ) {
+	if (( al = authlist_find( "NOTLS" )) == NULL ) {
 	    syslog( LOG_ERR, "No debugging access" );
 	    snet_writef( snet, "%d No NOTLS access\r\n", 508 );
 	    exit( 1 );

@@ -28,7 +28,7 @@ clean:
 	    do (cd $$i; ${MAKE} ${MFLAGS} clean); \
 	done
 
-VERSION=3.1.2
+VERSION=`date +%Y%m%d`
 DISTDIR=../cosign-${VERSION}
 
 dist   : distclean

@@ -6,15 +6,16 @@ Translate CoSign error message using javascript.
 Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
- cgi/Makefile.in      |   12 ++-
- cgi/cgi.c            |  310 ++++++++++++++++++++++++++------------------------
- cgi/lang.c           |   65 ++++++++++-
- cgi/lang.h           |    1 +
- cgi/login.c          |   87 +++++++-------
- cgi/logout.c         |   37 ++++---
- cgi/subfile.c        |   37 ++++++
- html/js/js_locale.js |   48 ++++++++
- 8 files changed, 386 insertions(+), 211 deletions(-)
+ cgi/Makefile.in           |   12 ++-
+ cgi/cgi.c                 |  310 +++++++++++++++++++++++----------------------
+ cgi/lang.c                |   65 +++++++++-
+ cgi/lang.h                |    1 +
+ cgi/login.c               |   87 +++++++------
+ cgi/logout.c              |   37 +++---
+ cgi/subfile.c             |   37 ++++++
+ html/js/js_locale.js      |   48 +++++++
+ locale/xgettext_format.rb |  133 +++++++++++++++++++
+ 9 files changed, 519 insertions(+), 211 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
 index 3539bb1..64d928c 100755
@@ -1291,5 +1292,144 @@ index 0000000..15985fc
 +})();
 +
 +// vim: noet ts=4 sw=4
+diff --git a/locale/xgettext_format.rb b/locale/xgettext_format.rb
+new file mode 100755
+index 0000000..72b8ff3
+--- /dev/null
++++ b/locale/xgettext_format.rb
+@@ -0,0 +1,133 @@
++#!/usr/bin/env ruby
++# Extract l10n messages from arbitrary file and convert to C format.
++require 'optparse'
++require 'fileutils'
++
++MARK_START = "$!_("
++MARK_END = ")"
++GETTEXT_START = "_("
++GETTEXT_END = ")"
++
++options = {}
++OptionParser.new do |opts|
++  opts.banner = "Usage: xgettext_format.rb [options] file"
++
++  options[:verbose] = false
++  opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
++    options[:verbose] = v
++  end
++
++  opts.on( '-h', '--help', 'Display this screen' ) do
++    puts opts
++    exit
++  end
++
++  options[:force] = false
++  opts.on( '-f', '--force', 'Overwrite if output file already exists.' ) do
++    options[:force] = true
++  end
++
++  options[:mstart] = MARK_START
++  options[:mend] = MARK_END
++  opts.on( '-m', '--markstart WORD', 'Mark for l10n start' ) do |word|
++    options[:mstart] = word
++  end
++  opts.on( '-M', '--markend WORD', 'Mark for l10n end' ) do |word|
++    options[:mend] = word
++  end
++
++  options[:out] = nil
++  opts.on("-o", "--out File", "Output to file") do |file|
++    options[:out] = file
++  end
++end.parse!
++
++case ARGV.length
++when 2
++  options[:in] = ARGV[0]
++  options[:out] = ARGV[1]
++when 1
++  options[:in] = ARGV[0]
++else
++  puts opts
++  exit
++end
++
++def strip_l10n_msg(line, flags)
++  msg = ""
++  while true
++    if ! flags[:open]
++      start = line.index(flags[:mstart])
++      if start
++        start += flags[:mstart].length
++        msg += GETTEXT_START
++        line = line[start..-1]
++        flags[:open] = true
++      else
++        return msg
++      end
++    end
++    # flags[:open] == true
++    i = 0
++    in_str = false
++    escape = false
++    line.each_byte do |ch|
++      if not in_str
++        if ch.chr == '"'
++          in_str = true
++        elsif ch.chr !~ /\s/
++          if line[i...i+flags[:mend].length] == flags[:mend]
++            flags[:open] = false
++            msg += "#{GETTEXT_END}; "
++            i += flags[:mend].length
++            break
++          else
++            raise Exception, "String starts with unkonwn CHAR:#{ch.chr}/#{i}, LINE:#{line[i..-1]}, MSG:#{msg}"
++          end
++        end
++      else
++        if escape
++          escape = false
++        elsif ch.chr == "\\"
++          escape = true
++        elsif ch.chr == '"'
++          in_str = false
++        end
++      end
++      msg += ch.chr
++      i += 1
++    end
++    line = line[i..-1]
++    break if line.length == 0
++  end
++  return msg
++end
++
++if options[:out]
++  if not options[:force] and File.exists?(options[:out])
++      $stderr.puts "Error: File #{options[:out]} already exists!"
++      exit
++  end
++  FileUtils.makedirs File.dirname(options[:out])
++  fout = File.open(options[:out], "w")
++else
++  fout = $stdout
++end
++
++$stderr.puts "Extract l10n messages from #{options[:in]} to #{options[:out]}." if options[:verbose]
++
++File.open(options[:in]) do |file|
++  flags = {}
++  flags[:mstart] = options[:mstart]
++  flags[:mend] = options[:mend]
++  flags[:open] = false
++
++  file.each_line do |line|
++    newline = strip_l10n_msg(line, flags)
++    fout.puts newline
++  end
++end
++
++fout.close if fout != $stdout
++
++# vim: et ts=2 sw=2 paste
 -- 
 tg: (b1bdef1..) t/message_localize (depends on: t/factor_ldap t/factor_invite t/include_macro_for_templates t/auth_log_for_fail2ban)

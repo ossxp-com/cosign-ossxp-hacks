@@ -1,8 +1,8 @@
-ossxp-cosign3 (3.1.4-22) unstable; urgency=low
+ossxp-cosign3 (3.1.4-22.1) unstable; urgency=low
 
   * Upstream upgrade to 3.1.4.
 
- -- Jiang Xin <jiangxin@ossxp.com>  Tue, 28 Jun 2011 13:11:23 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Wed, 15 Feb 2012 15:50:34 +0800
 
 ossxp-cosign3 (3.1.2-1.21) unstable; urgency=low
 

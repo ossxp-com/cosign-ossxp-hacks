@@ -23,7 +23,7 @@ CosignCheckIP never
 
 ## Valid service URLs must match with this regex.
 ## Eg: CosignValidReference  ^https?:\/\/.*\.umich\.edu(/.*)?
-CosignValidReference  .
+CosignValidReference  ^https?:\/\/.*(/.*)?
 CosignValidationErrorRedirect  https://weblogin.foo.bar/cgi-bin/info/validation_error
 
 <Location /cosign/valid>

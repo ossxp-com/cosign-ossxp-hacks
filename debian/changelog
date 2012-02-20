@@ -1,3 +1,10 @@
+ossxp-cosign3 (3.1.4-23) unstable; urgency=low
+
+  * CosignValidReference should match full services url, for
+    in cosign 3.1.4, partial match not passthrough.
+
+ -- Jiang Xin <jiangxin@ossxp.com>  Mon, 20 Feb 2012 19:47:28 +0800
+
 ossxp-cosign3 (3.1.4-22.1) unstable; urgency=low
 
   * Upstream upgrade to 3.1.4.

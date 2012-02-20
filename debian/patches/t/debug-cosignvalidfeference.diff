@@ -1,0 +1,27 @@
+From: Jiang Xin <worldhello.net@gmail.com>
+Subject: [PATCH] t/debug-cosignvalidfeference
+
+<patch description>
+
+Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
+
+---
+ filters/apache2/mod_cosign.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/filters/apache2/mod_cosign.c b/filters/apache2/mod_cosign.c
+index 48c1988..1030a30 100755
+--- a/filters/apache2/mod_cosign.c
++++ b/filters/apache2/mod_cosign.c
+@@ -250,7 +250,8 @@ cosign_handler( request_rec *r )
+     }
+     if ( matches[ 0 ].rm_so != 0 || matches[ 0 ].rm_eo != strlen( dest )) {
+ 	cosign_log( APLOG_NOTICE, r->server, "mod_cosign: "
+-		    "invalid destination: %s (partial match)", dest );
++		    "invalid destination: %s (partial match against %s, len %d)", dest,
++		    cfg->validref, matches[ 0 ].rm_eo );
+ 	goto validation_failed;
+     }
+ 
+-- 
+tg: (63e4b67..) t/debug-cosignvalidfeference (depends on: master)

@@ -12,7 +12,7 @@
 	<IfModule mod_cosign.c>
 		Include /etc/apache2/include/cosign/virtualhost.inf
 		# Warning: no CosignValidReference configuration, may cause uncatched looping error.
-		CosignValidReference  ^https:\/\/weblogin.foo.bar(/.*)?
+		CosignValidReference  ^https?:\/\/.*(/.*)?
 	</IfModule>
 
 	DocumentRoot /var/www/default

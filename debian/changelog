@@ -1,3 +1,9 @@
+ossxp-cosign3 (3.1.4-24) unstable; urgency=low
+
+  * set cosignstrictcheck off, to get a little performance gain.
+
+ -- Jiang Xin <jiangxin@ossxp.com>  Tue, 21 Feb 2012 17:40:56 +0800
+
 ossxp-cosign3 (3.1.4-23) unstable; urgency=low
 
   * CosignValidReference should match full services url, for

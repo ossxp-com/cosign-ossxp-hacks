@@ -1,0 +1,5 @@
+ossxp-cosign3 (1.0) unstable; urgency=low
+
+  * virtual package to install all cosign3 packages.
+
+ -- Jiang Xin <jiangxin@ossxp.com>  Sat, 03 Mar 2012 00:35:41 +0800

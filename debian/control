@@ -5,6 +5,15 @@ Maintainer: Jiang Xin <worldhello.net@gmail.com>
 Build-Depends: cdbs, debhelper (>= 5.0), build-essential, apache2-threaded-dev | apache2-prefork-dev, libssl-dev, check
 Standards-Version: 1.0.0
 
+Package: ossxp-cosign3-all
+Architecture: all
+Section: ossxp
+Priority: optional
+Depends: ossxp-cosign3-daemon, ossxp-cosign3-cgi, ossxp-cosign3-filter
+Recommends: ossxp-cosign3-doc
+Description: virtual package install all cosign3 services
+ CoSign is a Single Sign-On from weblogin.org
+
 Package: ossxp-cosign3-common
 Architecture: all
 Section: ossxp

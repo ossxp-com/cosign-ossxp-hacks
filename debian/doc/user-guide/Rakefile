@@ -7,6 +7,7 @@
 #ENV["DOC_REV"]=ENV["DOC_REV"]? ENV["DOC_REV"] : doc_rev.strip
 #ENV["DOC_DATE"]=ENV["DOC_DATE"]? ENV["DOC_DATE"] : doc_date.strip
 
+require 'rubygems'
 require 'docbones'
 source_suffix = '.rst'
 ::Docbones.setup source_suffix

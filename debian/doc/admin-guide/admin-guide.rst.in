@@ -44,6 +44,8 @@
 ======================
 CoSign 3.x 相比 CoSign 2.x 增加了两次跳转，导致概念上更加复杂。我们可以从 CoSign 2.x 入手了解单点登录认证过程。
 
+.. _cosign2:
+
 CoSign 2.x 协议原理
 -------------------
 在 CoSign wiki 网站上，有两个协议实现的示例图，我们截取其中一个，用以说明。
@@ -66,6 +68,8 @@ CoSign 2.x 协议原理
 * 如果经 CoSign Daemon 确认 服务 cookie 有效，则 Web 应用完成后续的登录注册工作;
 * 如果 CoSign Daemon 返回了服务 cookie 无效的信息，则视同浏览器未登录，重新跳转到单点登录站点，开始新一轮的循环。
 
+.. _cosign2-vulner:
+
 CoSign 2.x 的安全漏洞
 ---------------------
 CoSign 2.x 版本存在一个安全风险，虽然不会影响服务器本身安全性，但存在被人利用，通过钓鱼手段获取权限的风险。CoSign 3.x 版本解决了这个问题。
@@ -76,6 +80,8 @@ CoSign 2.x 的这个安全风险源自于：
 * 单点登录服务器建立登录 cookie 和服务 cookie 的关联非常随意，会被利用
 * 黑客访问某个应用网帐，当重定向到单点登录服务器后，黑客的机器已经存在了相应的 服务 cookie，并且浏览器的地址栏会显示单点登录服务器跳转的 URL，并带有黑客自己的 cookie 值。
 * 黑客只需要欺骗一个已经登录的用户点击这个URL，黑客就能够获取登录用户的权限，这是因为受害者已经通过点击伪装的 URL 对自己的 登录 cookie 和黑客的 服务 cookie 做了关联。
+
+.. _cosign3:
 
 CoSign 3.x 认证原理
 -------------------
@@ -102,6 +108,7 @@ CoSign 3.x 流程和 CoSign 2.x 有很大的不同：
 * 服务 cookie的签发是由 …./cosign/valid  的 URL 地址在验证完毕 cookie 值有效性后，再进行签发。之后在跳转到应用URL
 * 注意：如果由于配置错误，/cosign/valid 所在的域名和应用 URL 不一致，将导致循环重定向错误
 
+.. _cosign-arch:
 
 单点登录系统的部署
 ==================
@@ -143,9 +150,13 @@ CoSign 的各个模板之间的通讯是使用 SSL 加密的，而且要通过�
   * 配置文件 /etc/default/cosign 中关于 Daemon 证书位置
   * 配置文件 /etc/apache2/include/cosign/cosign-common.conf 中关于 Filter 证书位置，CoSign Daemon 主机名等
  
+.. _cosign-daemon:
+
 CoSign Daemon/CGI 的配置
 -------------------------
 参见 cosign.conf 手册。
+
+.. _cosign-filter:
 
 CoSign Filter 的配置
 ------------------------
@@ -202,6 +213,8 @@ CoSign Filter 的配置
         module asks for proxy cookies from cosignd
 
 
+.. _templates:
+
 如何定制单点登录界面模板
 ========================
 CoSign 的用户界面是可以定制的，用户可以在单点登录界面中添加企业的 LOGO，可以在服务列表中添加其他整合到单点登录中的服务，可以添加其他语言的支持等等。
@@ -224,6 +237,8 @@ CoSign 的可定制性，源自于页面模板。CoSign 的页面模板文件位
   .. figure:: images/cosign-theme2.png
      :scale: 65
 
+.. _js-config:
+
 关闭暂不使用的认证模式
 ----------------------
 缺省提供了四种认证方式：1. 用户名口令认证，2. 一次性口令认证，3. 证书认证, 4. 邀请码认证。
@@ -245,6 +260,8 @@ CoSign 的可定制性，源自于页面模板。CoSign 的页面模板文件位
   
       cosign.setDisabledFactors('otp,kx509,invite');
       cosign.initUI();
+
+.. _custom-services:
 
 增加和删除单点登录关联服务
 --------------------------
@@ -277,6 +294,8 @@ CoSign 的可定制性，源自于页面模板。CoSign 的页面模板文件位
     set cosignserviceurl http://www.moon.ossxp.com/wiki/action/login/Services?action=login&login=1
 
 
+.. _invite-code:
+
 如何配置邀请码认证
 ==================
 邀请码认证是口令认证之外的另外一种认证方式。邀请码由管理员进行设置，为特殊用户提供无须用户注册即可访问某些服务。
@@ -299,6 +318,8 @@ CoSign 的可定制性，源自于页面模板。CoSign 的页面模板文件位
 
 * 可以为一个帐号设置多个邀请码
 * 可以设置多个邀请码帐号，不同的邀请码对应不同的用户帐号
+
+.. _2factors:
 
 认证因子和 Admin 双因子认证
 ===========================
@@ -403,6 +424,8 @@ CoSign 的可定制性，源自于页面模板。CoSign 的页面模板文件位
 * 认证因子的字符串输出为 admin_list,admin_ssh，含义为: 只对 admin_list 和 admin_ssh 服务拥有授权
 
 同样，管理员也可以手动执行 ldap2 和 invite 认证因子，诊断认证配置的正确性。
+
+.. _examples:
 
 如何为新的服务配置单点登录认证
 ==============================

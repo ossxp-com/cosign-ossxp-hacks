@@ -1,3 +1,9 @@
+ossxp-cosign3 (3.1.1-12) unstable; urgency=low
+
+  * Add permlink.
+
+ -- Jiang Xin <jiangxin@ossxp.com>  Tue, 10 Apr 2012 01:42:07 +0800
+
 ossxp-cosign3 (3.1.1-10) unstable; urgency=low
 
   * New PDF header and footer.

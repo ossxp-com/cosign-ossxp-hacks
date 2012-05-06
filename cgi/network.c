@@ -168,7 +168,7 @@ cosign_login( struct connlist *conn, char *cookie, char *ip, char *user,
 {
     struct login_param lp;
 
-    if ( !validchars( cookie ) || !validchars( user )) {
+    if ( !validchars( cookie ) || !validuser( user )) {
 	return( -1 );
     }
 
@@ -542,7 +542,7 @@ connect_sn( struct connlist *conn )
     struct timeval      tv;
     struct protoent	*proto;
 
-    if (( s = socket( PF_INET, SOCK_STREAM, (int)NULL )) < 0 ) {
+    if (( s = socket( PF_INET, SOCK_STREAM, 0 )) < 0 ) {
 	perror( "socket" );
 	return( -1 );
     }

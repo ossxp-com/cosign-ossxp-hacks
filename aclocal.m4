@@ -112,9 +112,9 @@ AC_DEFUN([CHECK_APACHE2],
     if test -f "$APXS2_INCLUDEDIR/ap_regex.h"; then
 	AC_DEFINE(HAVE_AP_REGEX_H)
     fi
-    APACHE2_MINOR_VERSION="`${APXS2_SBINDIR}/${APXS2_TARGET} -v |	\
-		sed -e '/^Server version:/!d'				\
-		    -e 's/.*Apache\/2\.\(@<:@0-9@:>@\)\..*/\1/g'`"
+    APACHE2_MINOR_VERSION="`${APXS2_SBINDIR}/${APXS2_TARGET} -v | \
+	    sed -e '/^Server version:/!d' \
+	        -e 's/.*Apache\/2\.\(@<:@0-9@:>@\)\..*/\1/g'`"
     if test -n "${APACHE2_MINOR_VERSION}"; then
 	if test "${APACHE2_MINOR_VERSION}" -gt 0; then
 	    AC_DEFINE(HAVE_MOD_AUTHZ_HOST)

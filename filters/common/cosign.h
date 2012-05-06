@@ -19,6 +19,7 @@ typedef struct {
     char                *redirect;
     char                *posterror;
     char		*validref;
+    int			validredir;
     char		*referr;
 #ifndef LIGHTTPD
     ap_regex_t		*validpreg;
@@ -40,6 +41,7 @@ typedef struct {
     int                 noappendport;
     int			proxy;
     int			expiretime;
+    int			httponly_cookies;
 #ifdef KRB
 #ifdef GSS
     int			gss;

@@ -286,10 +286,10 @@ netretr_proxy( char *scookie, struct sinfo *si, SNET *sn, char *proxydb,
     }
 
     if (( tmpfile = fdopen( fd, "w" )) == NULL ) {
+        perror( tmppath );
         if ( unlink( tmppath ) != 0 ) {
             perror( tmppath );
         }
-        perror( tmppath );
         return( COSIGN_ERROR );
     }
 
@@ -346,18 +346,18 @@ netretr_proxy( char *scookie, struct sinfo *si, SNET *sn, char *proxydb,
     } while ( line[ 3 ] == '-' );
 
     if ( fclose ( tmpfile ) != 0 ) {
+        perror( tmppath );
         if ( unlink( tmppath ) != 0 ) {
             perror( tmppath );
         }
-        perror( tmppath );
         return( COSIGN_ERROR );
     }
 
     if ( link( tmppath, path ) != 0 ) {
+        perror( tmppath );
         if ( unlink( tmppath ) != 0 ) {
             perror( tmppath );
         }
-        perror( tmppath );
         return( COSIGN_ERROR );
     }
 
@@ -735,7 +735,7 @@ capa_parse( int capac, char **capav, struct connlist *cl, void *s )
     static int
 connect_sn( struct connlist *cl, cosign_host_config *cfg, void *s )
 {
-    int			sock, zero = 0, ac = 0, state, i;
+    int			sock, zero = 0, ac = 0, state;
     char		*line, buf[ 1024 ], **av;
     X509		*peer;
     struct timeval      tv;

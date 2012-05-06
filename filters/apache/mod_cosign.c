@@ -57,6 +57,7 @@ cosign_create_config( pool *p )
     cfg->posterror = NULL;
     cfg->validref = NULL;
     cfg->validpreg = NULL;
+    cfg->validredir = -1;
     cfg->referr = NULL;
     cfg->port = 0;
     cfg->protect = -1;
@@ -75,6 +76,7 @@ cosign_create_config( pool *p )
     cfg->noappendport = -1;
     cfg->proxy = -1;
     cfg->expiretime = 86400; /* 24 hours */
+    cfg->httponly_cookies = 0;
 #ifdef KRB
     cfg->krbtkt = -1;
 #ifdef GSS
@@ -93,7 +95,14 @@ cosign_create_dir_config( pool *p, char *path )
     static void *
 cosign_create_server_config( pool *p, server_rec *s )
 {
-    return( cosign_create_config( p ));
+    cosign_host_config	*cfg;
+
+    cfg = cosign_create_config( p );
+
+    /* assign a reasonable default CosignService */
+    cfg->service = ap_psprintf( p, "cosign-%s", s->server_hostname );
+
+    return( cfg );
 }
 
     static void
@@ -109,12 +118,10 @@ cosign_init( server_rec *s, pool *p )
     int
 cosign_redirect( request_rec *r, cosign_host_config *cfg )
 {
-    char		*dest, *my_cookie;
-    char		*full_cookie, *ref, *reqfact;
-    char		cookiebuf[ 128 ];
+    char		*dest;
+    char		*ref, *reqfact;
     int			i;
     unsigned int	port;
-    struct timeval	now;
 
     /* if they've posted, let them know they are out of luck */
     if ( r->method_number == M_POST ) {
@@ -122,6 +129,18 @@ cosign_redirect( request_rec *r, cosign_host_config *cfg )
 	ap_table_set( r->headers_out, "Location", dest );
 	return( 0 );
     }
+
+    /*
+     * clear out Cache-Control and Expires headers, and preemptively set
+     * Cache-Control header to keep aggressive caching configurations from
+     * breaking cosign auth. if the browser caches the 302 redirect, the
+     * redirect from the validation handler to the protected site will
+     * result in the browser revisiting the weblogin server instead.
+     */
+    ap_table_unset( r->headers_out, "Cache-Control" );
+    ap_table_unset( r->headers_out, "Expires" );
+
+    ap_table_set( r->headers_out, "Cache-Control", "no-cache" );
 
     if ( cfg->siteentry != NULL && strcasecmp( cfg->siteentry, "none" ) != 0 ) {
 	ref = cfg->siteentry;
@@ -170,10 +189,14 @@ cosign_handler( request_rec *r )
 {
     cosign_host_config	*cfg;
     ap_regmatch_t	matches[ 1 ];
+    uri_components	uri;
+    unsigned short	port;
+    int			status;
     char		error[ 1024 ];
     const char		*qstr = NULL;
-    const char		*pair, *key;
+    const char		*pair;
     const char		*dest = NULL;
+    const char		*hostname, *scheme;
     char		*cookie, *full_cookie;
     char		*rekey = NULL;
     int			rc, cv;
@@ -260,6 +283,57 @@ cosign_handler( request_rec *r )
 	goto validation_failed;
     }
 
+    /*
+     * if the current URL hostname doesn't match the hostname of the
+     * service URL, we'll end up setting the cookie for the wrong domain.
+     * we catch that here and consider it an error unless the admin has
+     * CosignAllowValidationRedirect set to On, in which case we extract
+     * the hostname from the service URL and use it to build a validation
+     * URL for the correct host.
+     */
+    if (( status = ap_parse_uri_components( r->pool, dest, &uri )) != HTTP_OK) {
+	cosign_log( APLOG_ERR, r->server,
+		    "mod_cosign: ap_parse_components %s failed", dest );
+	return( HTTP_INTERNAL_SERVER_ERROR );
+    }
+    if ( uri.scheme == NULL || uri.hostname == NULL ) {
+	cosign_log( APLOG_ERR, r->server,
+		    "mod_cosign: bad destination URL: %s", dest );
+	return( HTTP_BAD_REQUEST );
+    }
+    if ( uri.port == 0 ) {
+	uri.port = ap_default_port_for_scheme( uri.scheme );
+    }
+    hostname = ap_get_server_name( r );
+    port = ap_get_server_port( r );
+    if ( strcasecmp( hostname, uri.hostname ) != 0 || 
+		( port != uri.port && cfg->noappendport != 1 )) {
+	if ( cfg->validredir == 1 ) {
+	    if ( cfg->http == 1 ) {
+		scheme == "http";
+	    } else {
+		scheme = "https";
+	    }
+	    if ( port != uri.port ) {
+		dest = ap_psprintf( r->pool, "%s://%s:%d%s",
+			    scheme, uri.hostname, uri.port, r->unparsed_uri );
+	    } else {
+		dest = ap_psprintf( r->pool, "%s://%s%s",
+			    scheme, uri.hostname, r->unparsed_uri );
+	    }
+	    ap_table_set( r->headers_out, "Location", dest );
+
+	    return( HTTP_MOVED_PERMANENTLY );
+	} else {
+	    cosign_log( APLOG_ERR, r->server,
+			"mod_cosign: current hostname \"%s\" does not match "
+			"service URL hostname \"%s\", cannot set cookie for "
+			"correct host.", hostname, uri.hostname );
+
+	    return( HTTP_SERVICE_UNAVAILABLE );
+	}
+    }
+
     cv = cosign_cookie_valid( cfg, cookie, &rekey, &si,
 		r->connection->remote_ip, r->server );
     if ( rekey != NULL ) {
@@ -294,6 +368,9 @@ cosign_handler( request_rec *r )
     } else {
 	full_cookie = ap_psprintf( r->pool, "%s/%lu; path=/; secure",
 				    cookie, now.tv_sec );
+    }
+    if ( cfg->httponly_cookies == 1 ) {
+	full_cookie = ap_pstrcat( r->pool, full_cookie, "; httponly", NULL );
     }
 
     /* we get here, everything's OK. set cookie and redirect to dest. */
@@ -634,6 +711,19 @@ set_cosign_valid_reference( cmd_parms *params, void *mconfig, const char *arg )
     }
 
     cfg->configured = 1;
+
+    return( NULL );
+}
+
+    static const char *
+set_cosign_allow_validation_redirect( cmd_parms *params,
+					void *mconfig, int flag )
+{
+    cosign_host_config		*cfg;
+
+    cfg = cosign_merge_cfg( params, mconfig );
+
+    cfg->validredir = flag;
 
     return( NULL );
 }
@@ -1086,6 +1176,17 @@ set_cosign_expiretime( cmd_parms *params, void *mconfig, char *arg )
     return( NULL );
 }
 
+    static const char *
+set_cosign_httponly_cookies( cmd_parms *params, void *mconfig, int flag )
+{
+    cosign_host_config		*cfg;
+
+    cfg = cosign_merge_cfg( params, mconfig );
+    cfg->httponly_cookies = flag; 
+
+    return( NULL );
+}
+
     static void
 cosign_child_cleanup( server_rec *s, pool *p )
 {
@@ -1120,6 +1221,13 @@ static command_rec cosign_cmds[ ] =
         { "CosignValidReference", set_cosign_valid_reference,
         NULL, RSRC_CONF | ACCESS_CONF, TAKE1,
         "the regular expression matching valid redirect service URLs" },
+
+	{ "CosignAllowValidationRedirect",
+	set_cosign_allow_validation_redirect, NULL,
+	RSRC_CONF | ACCESS_CONF, FLAG,
+	"allow redirection to different validdation URL if "
+	"current vhost does not match service URL hostname AND "
+	"service URL matches CosignValidReferences pattern" },
 
         { "CosignValidationErrorRedirect",
 	set_cosign_validation_error_redirect,
@@ -1171,7 +1279,7 @@ static command_rec cosign_cmds[ ] =
 	"on or off, on allows you to accept faux factors, off denies access" },
 
 	{ "CosignAllowPublicAccess", set_cosign_public,
-	NULL, RSRC_CONF | ACCESS_CONF, FLAG,
+	NULL, RSRC_CONF | OR_AUTHCFG, FLAG,
 	"make authentication optional for protected sites" },
 
         { "CosignHttpOnly", set_cosign_http,
@@ -1193,6 +1301,10 @@ static command_rec cosign_cmds[ ] =
 	{ "CosignCookieExpireTime", set_cosign_expiretime,
 	NULL, RSRC_CONF, TAKE1,
 	"time (in seconds) after which we will issue a new service cookie" },
+
+	{ "CosignHttpOnlyCookies", set_cosign_httponly_cookies,
+	NULL, RSRC_CONF | OR_AUTHCFG, FLAG,
+	"enable or disable \"httponly\" flag for Set-Cookie header" },
 
 #ifdef KRB
         { "CosignGetKerberosTickets", set_cosign_tickets,

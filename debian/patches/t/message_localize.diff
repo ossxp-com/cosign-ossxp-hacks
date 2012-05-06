@@ -7,18 +7,18 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
  cgi/Makefile.in           |   12 ++-
- cgi/cgi.c                 |  310 +++++++++++++++++++++++----------------------
- cgi/lang.c                |   65 +++++++++-
+ cgi/cgi.c                 |  257 +++++++++++++++++++++++----------------------
+ cgi/lang.c                |   65 +++++++++++-
  cgi/lang.h                |    1 +
- cgi/login.c               |   87 +++++++------
- cgi/logout.c              |   37 +++---
- cgi/subfile.c             |   37 ++++++
- html/js/js_locale.js      |   48 +++++++
- locale/xgettext_format.rb |  133 +++++++++++++++++++
- 9 files changed, 519 insertions(+), 211 deletions(-)
+ cgi/login.c               |   87 +++++++--------
+ cgi/logout.c              |   37 ++++---
+ cgi/subfile.c             |   37 +++++++
+ html/js/js_locale.js      |   48 +++++++++
+ locale/xgettext_format.rb |  133 +++++++++++++++++++++++
+ 9 files changed, 493 insertions(+), 184 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
-index 3539bb1..64d928c 100755
+index ca27f0a..547129a 100755
 --- a/cgi/Makefile.in
 +++ b/cgi/Makefile.in
 @@ -1,6 +1,7 @@
@@ -49,10 +49,10 @@ index 3539bb1..64d928c 100755
  subfile: subfile.c lang.o
  	gcc ${DEFS} ${OPTOPTS} -Wall ${INCPATH} \
 diff --git a/cgi/cgi.c b/cgi/cgi.c
-index 0038379..0270944 100755
+index b63cc5c..106f52b 100755
 --- a/cgi/cgi.c
 +++ b/cgi/cgi.c
-@@ -26,6 +26,7 @@
+@@ -27,6 +27,7 @@
  #include "subfile.h"
  #include "factor.h"
  #include "mkcookie.h"
@@ -60,7 +60,7 @@ index 0038379..0270944 100755
  
  #define SERVICE_MENU	"/services/"
  #define LOOPWINDOW      30 
-@@ -99,8 +100,8 @@ loop_checker( int time, int count, char *cookie )
+@@ -102,8 +103,8 @@ loop_checker( int time, int count, char *cookie )
      char       		new_cookie[ 255 ];
  
      if ( gettimeofday( &tv, NULL ) != 0 ) {
@@ -68,10 +68,10 @@ index 0038379..0270944 100755
 -	sl[ SL_ERROR ].sl_data = "Please try again later.";
 +	sl[ SL_TITLE ].sl_data = _("Error: Loop Breaker");
 +	sl[ SL_ERROR ].sl_data = _("Please try again later.");
- 	subfile( ERROR_HTML, sl, 0 );
+ 	subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
  	exit( 0 );
      }
-@@ -111,8 +112,8 @@ loop_checker( int time, int count, char *cookie )
+@@ -114,8 +115,8 @@ loop_checker( int time, int count, char *cookie )
  	count = 1;
  	if ( snprintf( new_cookie, sizeof( new_cookie ),
  		"%s/%d/%d", cookie, time, count) >= sizeof( new_cookie )) {
@@ -79,10 +79,10 @@ index 0038379..0270944 100755
 -	    sl[ SL_ERROR ].sl_data = "Please try again later.";
 +	    sl[ SL_TITLE ].sl_data = _("Error: Loop Breaker");
 +	    sl[ SL_ERROR ].sl_data = _("Please try again later.");
- 	    subfile( ERROR_HTML, sl, 0 );
+ 	    subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
  	    exit( 0 );
  	}
-@@ -126,8 +127,8 @@ loop_checker( int time, int count, char *cookie )
+@@ -130,8 +131,8 @@ loop_checker( int time, int count, char *cookie )
  	count = 1;
  	if ( snprintf( new_cookie, sizeof( new_cookie ),
  		"%s/%d/%d", cookie, time, count) >= sizeof( new_cookie )) {
@@ -90,10 +90,10 @@ index 0038379..0270944 100755
 -	    sl[ SL_ERROR ].sl_data = "Please try again later.";
 +	    sl[ SL_TITLE ].sl_data = _("Error: Loop Breaker");
 +	    sl[ SL_ERROR ].sl_data = _("Please try again later.");
- 	    subfile( ERROR_HTML, sl, 0 );
+ 	    subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
  	    exit( 0 );
  	}
-@@ -139,8 +140,8 @@ loop_checker( int time, int count, char *cookie )
+@@ -143,8 +144,8 @@ loop_checker( int time, int count, char *cookie )
      count++;
      if ( snprintf( new_cookie, sizeof( new_cookie ),
  	    "%s/%d/%d", cookie, time, count) >= sizeof( new_cookie )) {
@@ -101,35 +101,10 @@ index 0038379..0270944 100755
 -	sl[ SL_ERROR ].sl_data = "Please try again later.";
 +	sl[ SL_TITLE ].sl_data = _("Error: Loop Breaker");
 +	sl[ SL_ERROR ].sl_data = _("Please try again later.");
- 	subfile( ERROR_HTML, sl, 0 );
+ 	subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
  	exit( 0 );
      }
-@@ -178,8 +179,8 @@ kcgi_configure()
- 	} else if ( strcasecmp( val, "off" ) == 0 ) {
- 	    krbtkts = 0;
- 	} else {
--	    fprintf( stderr, "%s: invalid setting for krbtkts:"
--		    " defaulting off.\n", val );
-+	    fprintf( stderr, _("%s: invalid setting for krbtkts:"
-+		    " defaulting off.\n"), val );
- 	    krbtkts = 0;
- 	}
-     }
-@@ -244,11 +245,11 @@ mkscookie( char *service_name, char *new_scookie, int len )
-     char			tmp[ 128 ];
- 
-     if ( mkcookie( sizeof( tmp ), tmp ) != 0 ) {
--	fprintf( stderr, "%s: mkscookie failed.\n", script );
-+	fprintf( stderr, _("%s: mkscookie failed.\n"), script );
- 	return( -1 );
-     }
-     if ( snprintf( new_scookie, len, "%s=%s", service_name, tmp ) >= len ) {
--	fprintf( stderr, "%s: %s=%s: too long\n", script, service_name, tmp );
-+	fprintf( stderr, _("%s: %s=%s: too long\n"), script, service_name, tmp );
- 	return( -1 );
-     }
- 
-@@ -285,6 +286,8 @@ main( int argc, char *argv[] )
+@@ -295,6 +296,8 @@ main( int argc, char *argv[] )
      int				nmatch = 2;
      CGIHANDLE			*cgi;
  
@@ -138,7 +113,7 @@ index 0038379..0270944 100755
      if ( argc == 2 ) {
  	if ( strcmp( argv[ 1 ], "-V" ) == 0 ) {
  	    printf( "%s\n", cosign_version );
-@@ -308,32 +311,32 @@ main( int argc, char *argv[] )
+@@ -322,32 +325,32 @@ main( int argc, char *argv[] )
      }
  
      if (( script = getenv( "SCRIPT_NAME" )) == NULL ) {
@@ -146,7 +121,7 @@ index 0038379..0270944 100755
 -	sl[ SL_ERROR ].sl_data = "Unable to retrieve the script name";
 +	sl[ SL_TITLE ].sl_data = _("Error: Server Configuration");
 +	sl[ SL_ERROR ].sl_data = _("Unable to retrieve the script name");
- 	subfile( ERROR_HTML, sl, 0 );
+ 	subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
  	exit( 0 );
      }
      if (( method = getenv( "REQUEST_METHOD" )) == NULL ) {
@@ -154,7 +129,7 @@ index 0038379..0270944 100755
 -	sl[ SL_ERROR ].sl_data = "Unable to retrieve method";
 +	sl[ SL_TITLE ].sl_data = _("Error: Server Configuration");
 +	sl[ SL_ERROR ].sl_data = _("Unable to retrieve method");
- 	subfile( ERROR_HTML, sl, 0 );
+ 	subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
  	exit(0);
      }
      if (( ip_addr = getenv( "REMOTE_ADDR" )) == NULL ) {
@@ -162,7 +137,7 @@ index 0038379..0270944 100755
 -	sl[ SL_ERROR ].sl_data = "Unable to retrieve IP address";
 +	sl[ SL_TITLE ].sl_data = _("Error: Server Configuration");
 +	sl[ SL_ERROR ].sl_data = _("Unable to retrieve IP address");
- 	subfile( ERROR_HTML, sl, 0 );
+ 	subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
  	exit(0);
      }
      if (( server_name = getenv( "SERVER_NAME" )) == NULL ) {
@@ -170,7 +145,7 @@ index 0038379..0270944 100755
 -	sl[ SL_ERROR ].sl_data = "Unable to retrieve server name";
 +	sl[ SL_TITLE ].sl_data = _("Error: Server Configuration");
 +	sl[ SL_ERROR ].sl_data = _("Unable to retrieve server name");
- 	subfile( ERROR_HTML, sl, 0 );
+ 	subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
  	exit(0);
      }
      if (( sport = getenv( "SERVER_PORT" )) == NULL ) {
@@ -178,10 +153,10 @@ index 0038379..0270944 100755
 -	sl[ SL_ERROR ].sl_data = "Unable to retrieve server port";
 +	sl[ SL_TITLE ].sl_data = _("Error: Server Configuration");
 +	sl[ SL_ERROR ].sl_data = _("Unable to retrieve server port");
- 	subfile( ERROR_HTML, sl, 0 );
+ 	subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
  	exit(0);
      }
-@@ -344,9 +347,9 @@ main( int argc, char *argv[] )
+@@ -358,9 +361,9 @@ main( int argc, char *argv[] )
  
      if ( subject_dn && issuer_dn ) {
  	if ( x509_translate( subject_dn, issuer_dn, &login, &realm ) != 0 ) {
@@ -191,10 +166,10 @@ index 0038379..0270944 100755
 +	    sl[ SL_TITLE ].sl_data = _("Error: X509 failed");
 +	    sl[ SL_ERROR ].sl_data = _("There was an x.509 mutual authentication"
 +		    " configuration error. Contact your administrator.");
- 	    subfile( ERROR_HTML, sl, 0 );
+ 	    subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
  	    exit( 0 );
  	}
-@@ -358,9 +361,9 @@ main( int argc, char *argv[] )
+@@ -372,9 +375,9 @@ main( int argc, char *argv[] )
  	if ( remote_user && auth_type &&
  		strcasecmp( auth_type, "Negotiate" ) == 0 ) {
  	    if ( negotiate_translate( remote_user, &login, &realm ) != 0 ) {
@@ -202,23 +177,21 @@ index 0038379..0270944 100755
 -	 	sl[ SL_ERROR ].sl_data = "There was a problem processing your"
 -			" authentication data. Contact your administrator";
 +		sl[ SL_TITLE ].sl_data = _("Error: Negotiate login failed");
-+		sl[ SL_ERROR ].sl_data = _("There was a problem processing your"
++	 	sl[ SL_ERROR ].sl_data = _("There was a problem processing your"
 +			" authentication data. Contact your administrator");
- 		subfile( ERROR_HTML, sl, 0 );
+ 		subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
  		exit ( 0 );
  	    }
-@@ -372,8 +375,8 @@ main( int argc, char *argv[] )
- 
+@@ -387,7 +390,7 @@ main( int argc, char *argv[] )
      if ( krbtkts ) {
  	if (( krbtkt_path = getenv( "KRB5CCNAME" )) == NULL ) {
--	    fprintf( stderr, "Kerberos ticket transfer is on, "
+ 	    fprintf( stderr, "Kerberos ticket transfer is on, "
 -		     " but no tickets were found in the environment\n" );
-+	    fprintf( stderr, _("Kerberos ticket transfer is on, "
-+			" but no tickets were found in the environment\n") );
++			" but no tickets were found in the environment\n" );
  	} else if ( strncmp( krbtkt_path, "FILE:", 5 ) == 0 ) {
  	    krbtkt_path += 5;
  	}
-@@ -381,9 +384,9 @@ main( int argc, char *argv[] )
+@@ -395,9 +398,9 @@ main( int argc, char *argv[] )
  
      if ((( qs = getenv( "QUERY_STRING" )) != NULL ) && ( *qs != '\0' )) {
  	if (( p = strtok( qs, "&" )) == NULL ) {
@@ -228,10 +201,10 @@ index 0038379..0270944 100755
 +	    sl[ SL_TITLE ].sl_data = _("Error: Unrecognized Service");
 +	    sl[ SL_ERROR ].sl_data = _("Unable to determine referring "
 +		    "service from query string.");
- 	    subfile( ERROR_HTML, sl, 0 );
+ 	    subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 400 );
  	    exit( 0 );
  	}
-@@ -395,9 +398,9 @@ main( int argc, char *argv[] )
+@@ -409,9 +412,9 @@ main( int argc, char *argv[] )
  
  	if ( p != NULL && strncmp( p, "factors=", 8 ) == 0 ) {
  	    if (( factor = strchr( p, '=' )) == NULL ) {
@@ -241,10 +214,10 @@ index 0038379..0270944 100755
 +		sl[ SL_TITLE ].sl_data = _("Error: malformatted factors");
 +		sl[ SL_ERROR ].sl_data = _("Unable to determine required "
 +			"factors from query string.");
- 		subfile( ERROR_HTML, sl, 0 );
+ 		subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 400 );
  		exit( 0 );
  	    }
-@@ -413,17 +416,17 @@ main( int argc, char *argv[] )
+@@ -427,17 +430,17 @@ main( int argc, char *argv[] )
  		service[ len - 1 ] = '\0';
  	    }
  	    if ( strncmp( service, "cosign-", 7 ) != 0 ) {
@@ -252,7 +225,7 @@ index 0038379..0270944 100755
 -		sl[ SL_ERROR ].sl_data = "Bad service in query string.";
 +		sl[ SL_TITLE ].sl_data = _("Error: Unrecognized Service");
 +		sl[ SL_ERROR ].sl_data = _("Bad service in query string.");
- 		subfile( ERROR_HTML, sl, 0 );
+ 		subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 400 );
  		exit( 0 );
  	    }
  	    sl[ SL_SERVICE ].sl_data = service;
@@ -264,10 +237,10 @@ index 0038379..0270944 100755
 +		sl[ SL_TITLE ].sl_data = _("Error: malformatted referrer");
 +		sl[ SL_ERROR ].sl_data = _("Unable to determine referring "
 +			"service from query string.");
- 		subfile( ERROR_HTML, sl, 0 );
+ 		subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 400 );
  		exit( 0 );
  	    }
-@@ -443,9 +446,9 @@ main( int argc, char *argv[] )
+@@ -457,9 +460,9 @@ main( int argc, char *argv[] )
  
      if ( cookie == NULL ) {
  	if (( strcmp( method, "POST" ) == 0 ) || rebasic ) {
@@ -277,10 +250,10 @@ index 0038379..0270944 100755
 +	    sl[ SL_TITLE ].sl_data = _("Error: Cookies Required");
 +	    sl[ SL_ERROR ].sl_data = _("This service requires that "
 +		    "cookies be enabled.");
- 	    subfile( ERROR_HTML, sl, 0 );
+ 	    subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 400 );
  	    exit( 0 );
  	}
-@@ -462,8 +465,8 @@ main( int argc, char *argv[] )
+@@ -476,8 +479,8 @@ main( int argc, char *argv[] )
  	cookietime = atoi( misc );
  
  	if ( gettimeofday( &tv, NULL ) != 0 ) {
@@ -288,10 +261,10 @@ index 0038379..0270944 100755
 -	    sl[ SL_ERROR ].sl_data = "Please try again later.";
 +	    sl[ SL_TITLE ].sl_data = _("Error: Login Screen");
 +	    sl[ SL_ERROR ].sl_data = _("Please try again later.");
- 	    subfile( ERROR_HTML, sl, 0 );
+ 	    subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
  	    exit( 0 );
  	}
-@@ -481,9 +484,9 @@ main( int argc, char *argv[] )
+@@ -495,9 +498,9 @@ main( int argc, char *argv[] )
  
      /* setup conn and ssl and hostlist */
      if (( head = connlist_setup( cosign_host, cosign_port )) == NULL ) {
@@ -301,10 +274,10 @@ index 0038379..0270944 100755
 +	sl[ SL_TITLE ].sl_data = _("Error: Server Configuration");
 +	sl[ SL_ERROR ].sl_data = _("We were unable to contact the "
 +		"authentication server.  Please try again later.");
- 	subfile( ERROR_HTML, sl, 0 );
+ 	subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
  	exit( 0 );
      }
-@@ -492,9 +495,9 @@ main( int argc, char *argv[] )
+@@ -506,9 +509,9 @@ main( int argc, char *argv[] )
      SSL_library_init();
  
      if ( cosign_ssl( cryptofile, certfile, cadir, &ctx ) != 0 ) {
@@ -314,47 +287,38 @@ index 0038379..0270944 100755
 +	sl[ SL_TITLE ].sl_data = _("Error: Server Configuration");
 +	sl[ SL_ERROR ].sl_data = _("Failed to initialise connections "
 +		"to the authentication server. Please try again later");
- 	subfile( ERROR_HTML, sl, 0 );
+ 	subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
  	exit( 0 );
      }
-@@ -504,10 +507,10 @@ main( int argc, char *argv[] )
- 	/* basic's implicit register */
+@@ -519,9 +522,9 @@ main( int argc, char *argv[] )
  	if ( rebasic && cosign_login( head, cookie, ip_addr, remote_user,
  		    realm, krbtkt_path ) < 0 ) {
--	    fprintf( stderr, "cosign_login: basic login failed\n" ) ;
+ 	    fprintf( stderr, "cosign_login: basic login failed\n" ) ;
 -	    sl[ SL_TITLE ].sl_data = "Error: Please try later";
 -	    sl[ SL_ERROR ].sl_data = "We were unable to contact the "
 -		    "authentication server. Please try again later.";
-+	    fprintf( stderr, _("cosign_login: basic login failed\n") ) ;
 +	    sl[ SL_TITLE ].sl_data = _("Error: Please try later");
 +	    sl[ SL_ERROR ].sl_data = _("We were unable to contact the "
 +		    "authentication server. Please try again later.");
- 	    subfile( ERROR_HTML, sl, 0 );
+ 	    subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
  	    exit( 0 );
  	}
-@@ -522,30 +525,30 @@ main( int argc, char *argv[] )
- 	    *p = '=';
+@@ -537,9 +540,9 @@ main( int argc, char *argv[] )
  	}
  	if ( scookie == NULL ) {
--	    fprintf( stderr, "no matching service for %s\n", service );
+ 	    fprintf( stderr, "no matching service for %s\n", service );
 -	    sl[ SL_TITLE ].sl_data = "Error: Unknown service";
 -	    sl[ SL_ERROR ].sl_data = "We were unable to locate a "
 -		    "service matching the one provided.";
--		subfile( ERROR_HTML, sl, 0 );
--		exit( 0 );
--	    }
-+	    fprintf( stderr, _("no matching service for %s\n"), service );
 +	    sl[ SL_TITLE ].sl_data = _("Error: Unknown service");
 +	    sl[ SL_ERROR ].sl_data = _("We were unable to locate a "
 +		    "service matching the one provided.");
-+	    subfile( ERROR_HTML, sl, 0 );
-+	    exit( 0 );
-+	}
- 
- 	if ( match_substitute( scookie->sl_wkurl, sizeof( matchbuf ),
+ 		subfile( ERROR_HTML, sl, SUBF_OPT_SETSTATUS, 500 );
+ 		exit( 0 );
+ 	    }
+@@ -548,18 +551,18 @@ main( int argc, char *argv[] )
  		matchbuf, nmatch, matches, service ) != 0 ) {
--	    fprintf( stderr, "regex substitution failed: %s into %s\n",
-+	    fprintf( stderr, _("regex substitution failed: %s into %s\n"),
+ 	    fprintf( stderr, "regex substitution failed: %s into %s\n",
  		service, scookie->sl_wkurl );
 -	    sl[ SL_TITLE ].sl_data = "Error: Unknown service";
 -	    sl[ SL_ERROR ].sl_data = "We were unable to locate a "
@@ -362,23 +326,22 @@ index 0038379..0270944 100755
 +	    sl[ SL_TITLE ].sl_data = _("Error: Unknown service");
 +	    sl[ SL_ERROR ].sl_data = _("We were unable to locate a "
 +		    "service matching the one provided.");
- 	    subfile( ERROR_HTML, sl, 0 );
+ 	    subfile( ERROR_HTML, sl, SUBF_OPT_SETSTATUS, 500 );
  	    exit( 0 );
  	}
  
  	if ( scheme == 2 && !( scookie->sl_flag & SL_SCHEME_V2 )) {
--	    fprintf( stderr, "requested v2 for v3 service %s\n", service );
+ 	    fprintf( stderr, "requested v2 for v3 service %s\n", service );
 -	    sl[ SL_TITLE ].sl_data = "Error: Unknown service";
 -	    sl[ SL_ERROR ].sl_data = "We were unable to locate a "
 -		    "service matching the one provided.";
-+	    fprintf( stderr, _("requested v2 for v3 service %s\n"), service );
 +	    sl[ SL_TITLE ].sl_data = _("Error: Unknown service");
 +	    sl[ SL_ERROR ].sl_data = _("We were unable to locate a "
 +		    "service matching the one provided.");
- 	    subfile( ERROR_HTML, sl, 0 );
+ 	    subfile( ERROR_HTML, sl, SUBF_OPT_SETSTATUS, 500 );
  	    exit( 0 );
  	}
-@@ -581,8 +584,8 @@ main( int argc, char *argv[] )
+@@ -595,8 +598,8 @@ main( int argc, char *argv[] )
  		}
  	    }
  	    if ( r != NULL ) {
@@ -389,67 +352,59 @@ index 0038379..0270944 100755
  		goto loginscreen;
  	    }
  	}
-@@ -591,10 +594,10 @@ main( int argc, char *argv[] )
- 	    /* cosign3 scheme, must generate new service cookie */
+@@ -606,9 +609,9 @@ main( int argc, char *argv[] )
  	    if ( mkscookie( service, new_scookie,
  			    sizeof( new_scookie )) != 0 ) {
--		fprintf( stderr, "%s: mkscookie failed\n", script );
+ 		fprintf( stderr, "%s: mkscookie failed\n", script );
 -		sl[ SL_TITLE ].sl_data = "Error: Make Service Cookie Failed";
 -		sl[ SL_ERROR ].sl_data = "We were unable to create a service "
 -		    "cookie. Please try again later.";
-+		fprintf( stderr, _("%s: mkscookie failed\n"), script );
 +		sl[ SL_TITLE ].sl_data = _("Error: Make Service Cookie Failed");
 +		sl[ SL_ERROR ].sl_data = _("We were unable to create a service "
 +		    "cookie. Please try again later.");
- 		subfile( ERROR_HTML, sl, 0 );
+ 		subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
  		exit( 0 );
  	    }
-@@ -602,10 +605,10 @@ main( int argc, char *argv[] )
- 	}
+@@ -617,10 +620,11 @@ main( int argc, char *argv[] )
  
  	if (( rc = cosign_register( head, cookie, ip_addr, service )) < 0 ) {
--	    fprintf( stderr, "%s: cosign_register failed\n", script );
+ 	    fprintf( stderr, "%s: cosign_register failed\n", script );
 -	    sl[ SL_TITLE ].sl_data = "Error: Register Failed";
 -	    sl[ SL_ERROR ].sl_data = "We were unable to contact "
 -		    "the authentication server.  Please try again later.";
-+	    fprintf( stderr, _("%s: cosign_register failed\n"), script );
 +	    sl[ SL_TITLE ].sl_data = _("Error: Register Failed");
 +	    sl[ SL_ERROR ].sl_data = _("We were unable to contact "
 +		    "the authentication server.  Please try again later.");
- 	    subfile( ERROR_HTML, sl, 0 );
- 	    exit( 0 );
+ 	    subfile( ERROR_HTML, sl, SUBF_OPT_SETSTATUS, 500 );
++	    exit( 0 );
  	}
-@@ -624,10 +627,10 @@ main( int argc, char *argv[] )
- 	if ( cosign_check( head, cookie, &ui ) != 0 ) {
+ 
+ 	loop_checker( cookietime, cookiecount, cookie );
+@@ -638,9 +642,9 @@ main( int argc, char *argv[] )
  	    if ( rebasic && cosign_login( head, cookie, ip_addr, remote_user,
  			realm, krbtkt_path ) < 0 ) {
--		fprintf( stderr, "cosign_login: basic login failed\n" ) ;
+ 		fprintf( stderr, "cosign_login: basic login failed\n" ) ;
 -		sl[ SL_TITLE ].sl_data = "Error: Please try later";
 -		sl[ SL_ERROR ].sl_data = "We were unable to contact the "
 -			"authentication server. Please try again later.";
-+		fprintf( stderr, _("cosign_login: basic login failed\n") ) ;
 +		sl[ SL_TITLE ].sl_data = _("Error: Please try later");
 +		sl[ SL_ERROR ].sl_data = _("We were unable to contact the "
 +			"authentication server. Please try again later.");
- 		subfile( ERROR_HTML, sl, 0 );
+ 		subfile( ERROR_HTML, sl, SUBF_OPT_SETSTATUS, 500 );
  		exit( 0 );
  	    } else if ( !rebasic ) {
-@@ -649,10 +652,10 @@ main( int argc, char *argv[] )
+@@ -662,8 +666,8 @@ main( int argc, char *argv[] )
      tmpl = LOGIN_ERROR_HTML;
  
      if (( cgi = cgi_init()) == NULL ) {
 -        sl[ SL_TITLE ].sl_data = "Error: Server Error";
 -        sl[ SL_ERROR ].sl_data = "cgi_init failed";
--        subfile( ERROR_HTML, sl, 0 );
--        exit( 0 );
-+	sl[ SL_TITLE ].sl_data = _("Error: Server Error");
-+	sl[ SL_ERROR ].sl_data = _("cgi_init failed");
-+	subfile( ERROR_HTML, sl, 0 );
-+	exit( 0 );
++        sl[ SL_TITLE ].sl_data = _("Error: Server Error");
++        sl[ SL_ERROR ].sl_data = _("cgi_init failed");
+         subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
+         exit( 0 );
      }  
- 
-     /* insert factor form fields into cl */
-@@ -669,8 +672,8 @@ main( int argc, char *argv[] )
+@@ -682,8 +686,8 @@ main( int argc, char *argv[] )
  		}
  	    }
  	    if ( cl[ i ].cl_key == NULL ) {
@@ -457,10 +412,10 @@ index 0038379..0270944 100755
 -		sl[ SL_ERROR ].sl_data = "Too many form fields configured.";
 +		sl[ SL_TITLE ].sl_data = _("Error: Server Configuration");
 +		sl[ SL_ERROR ].sl_data = _("Too many form fields configured.");
- 		subfile( ERROR_HTML, sl, 0 );
+ 		subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
  		exit( 0 );
  	    }
-@@ -701,8 +704,8 @@ main( int argc, char *argv[] )
+@@ -718,8 +722,8 @@ main( int argc, char *argv[] )
  	login = cl[ CL_LOGIN ].cl_data = ui.ui_login;
      } else {
  	if ( cl[ CL_LOGIN ].cl_data == NULL ) {
@@ -471,13 +426,7 @@ index 0038379..0270944 100755
  	    goto loginscreen;
  	}
  	login = sl[ SL_LOGIN ].sl_data = cl[ CL_LOGIN ].cl_data;
-@@ -750,23 +753,23 @@ main( int argc, char *argv[] )
- #endif /* KRB5 */
- 	    {
-                 rc = COSIGN_CGI_ERROR;
--	        fprintf( stderr, "Unknown authentication type '%s'", type );
-+	        fprintf( stderr, _("Unknown authentication type '%s'"), type );
- 	    }
+@@ -772,18 +776,18 @@ main( int argc, char *argv[] )
          }
  
  	if ( rc == COSIGN_CGI_PASSWORD_EXPIRED ) {
@@ -503,7 +452,7 @@ index 0038379..0270944 100755
  	}
  	goto loginscreen;
  
-@@ -795,23 +798,23 @@ loggedin:
+@@ -812,23 +816,23 @@ loggedin:
  	}
  
  	if (( fl->fl_flag == 2 ) && ( *ui.ui_login == '\0' )) {
@@ -538,7 +487,7 @@ index 0038379..0270944 100755
  	    goto loginscreen;
  	}
  
-@@ -838,9 +841,9 @@ loggedin:
+@@ -855,9 +859,9 @@ loggedin:
  	if (( ui.ui_factors[ i ] == NULL ) ||
  		( strcmp( ui.ui_ipaddr, ip_addr ) != 0 )) {
  	    if ( cosign_login( head, cookie, ip_addr, login, msg, NULL ) < 0 ) {
@@ -548,10 +497,10 @@ index 0038379..0270944 100755
 +		sl[ SL_TITLE ].sl_data = _("Error: Please try later");
 +		sl[ SL_ERROR ].sl_data = _("We were unable to contact the "
 +			"authentication server. Please try again later.");
- 		subfile( ERROR_HTML, sl, 0 );
+ 		subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
  		exit( 0 );
  	    }
-@@ -850,8 +853,8 @@ loggedin:
+@@ -867,8 +871,8 @@ loggedin:
      }
  
      if ( *ui.ui_login == '\0' ) {
@@ -562,29 +511,22 @@ index 0038379..0270944 100755
  	goto loginscreen;
      }
  
-@@ -866,30 +869,30 @@ loggedin:
- 	    *p = '=';
+@@ -884,9 +888,9 @@ loggedin:
  	}
  	if ( scookie == NULL ) {
--	    fprintf( stderr, "no matching service for %s\n", service );
+ 	    fprintf( stderr, "no matching service for %s\n", service );
 -	    sl[ SL_TITLE ].sl_data = "Error: Unknown service";
 -	    sl[ SL_ERROR ].sl_data = "We were unable to locate a "
 -		    "service matching the one provided.";
--		subfile( ERROR_HTML, sl, 0 );
--		exit( 0 );
--	    }
-+	    fprintf( stderr, _("no matching service for %s\n"), service );
 +	    sl[ SL_TITLE ].sl_data = _("Error: Unknown service");
 +	    sl[ SL_ERROR ].sl_data = _("We were unable to locate a "
 +		    "service matching the one provided.");
-+	    subfile( ERROR_HTML, sl, 0 );
-+	    exit( 0 );
-+	}
- 
- 	if ( match_substitute( scookie->sl_wkurl, sizeof( matchbuf ),
+ 		subfile( ERROR_HTML, sl, SUBF_OPT_SETSTATUS, 500 );
+ 		exit( 0 );
+ 	    }
+@@ -895,18 +899,18 @@ loggedin:
  		matchbuf, nmatch, matches, service ) != 0 ) {
--	    fprintf( stderr, "regex substitution failed: %s into %s\n",
-+	    fprintf( stderr, _("regex substitution failed: %s into %s\n"),
+ 	    fprintf( stderr, "regex substitution failed: %s into %s\n",
  		service, scookie->sl_wkurl );
 -	    sl[ SL_TITLE ].sl_data = "Error: Unknown service";
 -	    sl[ SL_ERROR ].sl_data = "We were unable to locate a "
@@ -592,23 +534,22 @@ index 0038379..0270944 100755
 +	    sl[ SL_TITLE ].sl_data = _("Error: Unknown service");
 +	    sl[ SL_ERROR ].sl_data = _("We were unable to locate a "
 +		    "service matching the one provided.");
- 	    subfile( ERROR_HTML, sl, 0 );
+ 	    subfile( ERROR_HTML, sl, SUBF_OPT_SETSTATUS, 500 );
  	    exit( 0 );
  	}
  
  	if ( scheme == 2 && !( scookie->sl_flag & SL_SCHEME_V2 )) {
--	    fprintf( stderr, "requested v2 for v3 service %s\n", service );
+ 	    fprintf( stderr, "requested v2 for v3 service %s\n", service );
 -	    sl[ SL_TITLE ].sl_data = "Error: Unknown service";
 -	    sl[ SL_ERROR ].sl_data = "We were unable to locate a "
 -		    "service matching the one provided.";
-+	    fprintf( stderr, _("requested v2 for v3 service %s\n"), service );
 +	    sl[ SL_TITLE ].sl_data = _("Error: Unknown service");
 +	    sl[ SL_ERROR ].sl_data = _("We were unable to locate a "
 +		    "service matching the one provided.");
- 	    subfile( ERROR_HTML, sl, 0 );
+ 	    subfile( ERROR_HTML, sl, SUBF_OPT_SETSTATUS, 500 );
  	    exit( 0 );
  	}
-@@ -907,8 +910,8 @@ loggedin:
+@@ -924,8 +928,8 @@ loggedin:
  		    }
  		}
  		if ( new_factors[ j ] == NULL ) {
@@ -619,57 +560,48 @@ index 0038379..0270944 100755
  		    goto loginscreen;
  		}
  	    }
-@@ -922,10 +925,10 @@ loggedin:
- 	    /* cosign3 scheme, must generate new service cookie */
+@@ -940,9 +944,9 @@ loggedin:
  	    if ( mkscookie( service, new_scookie,
  			    sizeof( new_scookie )) != 0 ) {
--		fprintf( stderr, "%s: mkscookie failed\n", script );
+ 		fprintf( stderr, "%s: mkscookie failed\n", script );
 -		sl[ SL_TITLE ].sl_data = "Error: Make Service Cookie Failed";
 -		sl[ SL_ERROR ].sl_data = "We were unable to create a service "
 -		    "cookie. Please try again later.";
-+		fprintf( stderr, _("%s: mkscookie failed\n"), script );
 +		sl[ SL_TITLE ].sl_data = _("Error: Make Service Cookie Failed");
 +		sl[ SL_ERROR ].sl_data = _("We were unable to create a service "
 +		    "cookie. Please try again later.");
- 		subfile( ERROR_HTML, sl, 0 );
+ 		subfile( ERROR_HTML, sl, SUBF_OPT_SETSTATUS, 500 );
  		exit( 0 );
  	    }
-@@ -933,10 +936,10 @@ loggedin:
- 	}
+@@ -951,9 +955,9 @@ loggedin:
  
          if (( rc = cosign_register( head, cookie, ip_addr, service )) < 0 ) {
--            fprintf( stderr, "%s: implicit cosign_register failed\n", script );
+             fprintf( stderr, "%s: implicit cosign_register failed\n", script );
 -            sl[ SL_TITLE ].sl_data = "Error: Implicit Register Failed";
 -            sl[ SL_ERROR ].sl_data = "We were unable to contact the "
 -		    "authentication server.  Please try again later.";
-+            fprintf( stderr, _("%s: implicit cosign_register failed\n"), script );
 +            sl[ SL_TITLE ].sl_data = _("Error: Implicit Register Failed");
 +            sl[ SL_ERROR ].sl_data = _("We were unable to contact the "
 +		    "authentication server.  Please try again later.");
- 	    subfile( ERROR_HTML, sl, 0 );
+ 	    subfile( ERROR_HTML, sl, SUBF_OPT_SETSTATUS, 500 );
              exit( 0 );
          }
-@@ -968,14 +971,16 @@ loginscreen:
- 	}
- 
- 	if ( mkcookie( sizeof( new_cookiebuf ), new_cookiebuf ) != 0 ) {
--	    fprintf( stderr, "%s: mkcookie: failed\n", script );
-+	    fprintf( stderr, _("%s: mkcookie: failed\n"), script );
- 	    exit( 1 );
- 	}
+@@ -991,10 +995,12 @@ loginscreen:
  	if ( gettimeofday( &tv, NULL ) != 0 ) {
+ 	    fprintf( stderr, "%s: gettimeofday failed: %s\n",
+ 			script, strerror( errno ));
 -	    sl[ SL_TITLE ].sl_data = "Error: Login Screen";
 -	    sl[ SL_ERROR ].sl_data = "Please try again later.";
 +	    sl[ SL_TITLE ].sl_data = _("Error: Login Screen");
 +	    sl[ SL_ERROR ].sl_data = _("Please try again later.");
- 	    subfile( ERROR_HTML, sl, 0 );
+ 	    subfile( ERROR_HTML, sl, SUBF_OPT_SETSTATUS, 500 );
  	    exit( 0 );
 +	} else if ( sl[ SL_TITLE ].sl_data == NULL ) {
 +	    sl[ SL_TITLE ].sl_data = _("Authentication Required");
  	}
  	snprintf( new_cookie, sizeof( new_cookie ), "cosign=%s/%lu",
  		new_cookiebuf, tv.tv_sec );
-@@ -1013,23 +1018,26 @@ loginscreen:
+@@ -1033,23 +1039,26 @@ loginscreen:
  	if (( scookie != NULL ) && ( scookie->sl_flag & SL_REAUTH )) {
  	    sl[ SL_DFACTOR ].sl_data = NULL;
  	    sl[ SL_RFACTOR ].sl_data = smash( scookie->sl_factors );
@@ -701,8 +633,8 @@ index 0038379..0270944 100755
  	    tmpl = LOGIN_ERROR_HTML;
  	}
      }
-@@ -1037,3 +1045,5 @@ loginscreen:
-     subfile( tmpl, sl, 1 );
+@@ -1057,3 +1066,5 @@ loginscreen:
+     subfile( tmpl, sl, SUBF_OPT_NOCACHE );
      exit( 0 );
  }
 +
@@ -1051,7 +983,7 @@ index 2f36465..05bc875 100644
  	exit( 0 );
      }
 diff --git a/cgi/logout.c b/cgi/logout.c
-index 5a0ea54..a050442 100755
+index 39bf26f..7d8bac3 100755
 --- a/cgi/logout.c
 +++ b/cgi/logout.c
 @@ -22,6 +22,7 @@
@@ -1071,7 +1003,7 @@ index 5a0ea54..a050442 100755
      if ( argc == 2 && ( strncmp( argv[ 1 ], "-V", 2 ) == 0 )) {
  	printf( "%s\n", cosign_version );
  	exit( 0 );
-@@ -148,24 +151,24 @@ main( int argc, char *argv[] )
+@@ -152,24 +155,24 @@ main( int argc, char *argv[] )
      }
  
      if (( ip_addr = getenv( "REMOTE_ADDR" )) == NULL ) {
@@ -1102,7 +1034,7 @@ index 5a0ea54..a050442 100755
  	tmpl = ERROR_HTML;
  	subfile( tmpl, sl, 0 );
  	exit( 0 );
-@@ -191,14 +194,14 @@ main( int argc, char *argv[] )
+@@ -195,14 +198,14 @@ main( int argc, char *argv[] )
  	    /* if url check fails, default logout URL will be used */
  	}
  
@@ -1120,7 +1052,7 @@ index 5a0ea54..a050442 100755
          tmpl = ERROR_HTML;
          subfile( tmpl, sl, 0 );
  	exit( 0 );
-@@ -224,7 +227,7 @@ main( int argc, char *argv[] )
+@@ -228,7 +231,7 @@ main( int argc, char *argv[] )
       * screen again.
       */
      if ( cl[ CL_VERIFY ].cl_data == NULL ) {
@@ -1129,7 +1061,7 @@ index 5a0ea54..a050442 100755
  	subfile ( tmpl, sl, 0 );
  	exit( 0 );
      }
-@@ -255,10 +258,10 @@ main( int argc, char *argv[] )
+@@ -259,10 +262,10 @@ main( int argc, char *argv[] )
  
      /* setup conn and ssl and hostlist to tell cosignd we're logged out */
      if (( head = connlist_setup( cosign_host, cosign_port )) == NULL ) {
@@ -1143,7 +1075,7 @@ index 5a0ea54..a050442 100755
          tmpl = ERROR_HTML;
          subfile( tmpl, sl, 0 );
          exit( 0 );
-@@ -268,10 +271,10 @@ main( int argc, char *argv[] )
+@@ -272,10 +275,10 @@ main( int argc, char *argv[] )
      SSL_library_init();
  
      if ( cosign_ssl( cryptofile, certfile, cadir, &ctx )) {
@@ -1157,18 +1089,18 @@ index 5a0ea54..a050442 100755
          tmpl = ERROR_HTML;
          subfile( tmpl, sl, 0 );
          exit( 0 );
-@@ -293,3 +296,5 @@ main( int argc, char *argv[] )
+@@ -297,3 +300,5 @@ main( int argc, char *argv[] )
      printf( "Location: %s\n\n", sl[ SL_URL ].sl_data );
      exit( 0 );
  }
 +
 +// vim: noet ts=8 sw=4
 diff --git a/cgi/subfile.c b/cgi/subfile.c
-index 2b46bef..89b0568 100644
+index a0910cc..c7e682f 100644
 --- a/cgi/subfile.c
 +++ b/cgi/subfile.c
-@@ -24,12 +24,14 @@
- void _subfile( char *, struct subfile_list *, int );
+@@ -30,12 +30,14 @@
+ 
  int _do_macro_include ( char *, struct subfile_list * );
  void do_macro_include ( char *, struct subfile_list * );
 +void do_macro_gettext( char *);
@@ -1182,7 +1114,7 @@ index 2b46bef..89b0568 100644
  
  #endif
  
-@@ -159,6 +161,12 @@ macro_process ( char *str, size_t size, struct subfile_list *sl, char *filename
+@@ -165,6 +167,12 @@ macro_process ( char *str, size_t size, struct subfile_list *sl, char *filename
  #else
  	stub_do_macro_include(incfile, sl);
  #endif
@@ -1195,7 +1127,7 @@ index 2b46bef..89b0568 100644
      } else {
  	p = str;
      }
-@@ -250,6 +258,30 @@ _do_macro_include ( char *incfile, struct subfile_list *sl )
+@@ -256,6 +264,30 @@ _do_macro_include ( char *incfile, struct subfile_list *sl )
      return ret;
  }
  
@@ -1226,7 +1158,7 @@ index 2b46bef..89b0568 100644
  
  /*
   * Substitute template file with multiple language support.
-@@ -404,6 +436,11 @@ stub_do_macro_include( char *str, struct subfile_list *sl )
+@@ -436,6 +468,11 @@ stub_do_macro_include( char *str, struct subfile_list *sl )
      printf(">> include: %s\n", str);
  }
  
@@ -1432,4 +1364,4 @@ index 0000000..72b8ff3
 +
 +# vim: et ts=2 sw=2 paste
 -- 
-tg: (b1bdef1..) t/message_localize (depends on: t/factor_ldap t/factor_invite t/include_macro_for_templates t/auth_log_for_fail2ban)
+tg: (698b5a5..) t/message_localize (depends on: t/include_macro_for_templates t/factor_ldap t/factor_invite t/auth_log_for_fail2ban)

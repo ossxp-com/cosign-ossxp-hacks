@@ -48,12 +48,12 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  39 files changed, 1851 insertions(+), 2 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
-index debfb64..21f6b8d 100755
+index 96db12a..f1f6b94 100755
 --- a/html/Makefile.in
 +++ b/html/Makefile.in
-@@ -11,11 +11,14 @@ SERVICESDIR  = @prefix@/services
+@@ -12,11 +12,14 @@ HTMLDIR  = @prefix@/html
+ SERVICESDIR  = @prefix@/services
  INSTALL	=	@INSTALL@
- DESTDIR=
  
 -all: ${TEMPLATES}
 +all: ${TEMPLATES} templates_google/locale
@@ -65,18 +65,18 @@ index debfb64..21f6b8d 100755
 +	cd $@; ${MAKE} all
 +
  install : all
- 	-mkdir -p $(DESTDIR)${exec_prefix}
- 	-mkdir -p $(DESTDIR)${TMPLDIR}
-@@ -23,6 +26,8 @@ install : all
- 	-for i in ${TEMPLATES}; do \
- 	    [ -e $$i ] && cp -a $$i $(DESTDIR)${TMPLDIR}; \
+ 	-mkdir -p ${DESTDIR}${exec_prefix}
+ 	-mkdir -p ${DESTDIR}${TMPLDIR}
+@@ -25,6 +28,8 @@ install : all
+ 	for i in ${TEMPLATES}; do \
+ 	    [ -e $$i ] && cp -a $$i ${DESTDIR}${TMPLDIR}; \
  	done
 +	# Templates in google style, contains both en and zh_cn style
-+	cp -a templates_google $(DESTDIR)${prefix}
++	cp -a templates_google ${DESTDIR}${prefix}
+ 	# ossxp.com: $(INSTALL) won't install dirs, so use 'cp' instead
  	for i in ${HTML}; do \
- 	    cp -a $$i $(DESTDIR)${HTMLDIR}/; \
- 	done
-@@ -36,4 +41,4 @@ install : all
+ 	    cp -a $$i ${DESTDIR}${HTMLDIR}/; \
+@@ -39,4 +44,4 @@ install : all
  
  clean:
  
@@ -2155,4 +2155,4 @@ index 0000000..c3a1739
 +</body>
 +</html>
 -- 
-tg: (eb1a6d5..) t/templates_google (depends on: t/templates_standard)
+tg: (2630474..) t/templates_google (depends on: t/templates_standard)

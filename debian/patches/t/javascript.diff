@@ -7,7 +7,7 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
  html/js/cosign.js        |  131 +-
- html/js/effects.js       | 1202 +++++----
+ html/js/effects.js       | 1202 ++++----
  html/js/prototype.js     | 6885 ++++++++++++++++++++++++++++++++++++----------
  html/js/scriptaculous.js |   57 +-
  4 files changed, 6345 insertions(+), 1930 deletions(-)
@@ -9195,4 +9195,4 @@ index d5e1d43..2a967fe 100755
 \ No newline at end of file
 +Scriptaculous.load();
 -- 
-tg: (63e4b67..) t/javascript (depends on: master)
+tg: (118a78f..) t/javascript (depends on: master)

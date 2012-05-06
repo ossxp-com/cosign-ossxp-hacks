@@ -9,15 +9,15 @@ ossxp factor extension (flage -3):
 Signed-off-by: Jiang Xin <jiangxin@ossxp.com>
 
 ---
- cgi/cgi.c     |  122 ++++++++++++++++++++++++++++++++++++++++++--------------
- common/conf.c |    2 +
- 2 files changed, 93 insertions(+), 31 deletions(-)
+ cgi/cgi.c     |  105 ++++++++++++++++++++++++++++++++++++++++++++-------------
+ common/conf.c |    2 ++
+ 2 files changed, 84 insertions(+), 23 deletions(-)
 
 diff --git a/cgi/cgi.c b/cgi/cgi.c
-index cc76769..3fd94f6 100755
+index f566083..d30188c 100755
 --- a/cgi/cgi.c
 +++ b/cgi/cgi.c
-@@ -395,8 +395,9 @@ main( int argc, char *argv[] )
+@@ -405,8 +405,9 @@ main( int argc, char *argv[] )
      char			new_scookie[ 255 ];
      char			*data, *ip_addr, *tmpl = NULL, *server_name;
      char			*cookie = NULL, *method, *qs;
@@ -29,7 +29,7 @@ index cc76769..3fd94f6 100755
      char			*ref = NULL, *service = NULL, *login = NULL;
      char			*remote_user = NULL;
      char			*subject_dn = NULL, *issuer_dn = NULL;
-@@ -703,8 +704,15 @@ main( int argc, char *argv[] )
+@@ -717,8 +718,15 @@ main( int argc, char *argv[] )
  	    require = strdup( factor );
  	    for ( r = strtok_r( require, ",", &reqp ); r != NULL;
  		    r = strtok_r( NULL, ",", &reqp )) {
@@ -47,7 +47,7 @@ index cc76769..3fd94f6 100755
  			break;
  		    }
  		}
-@@ -926,7 +934,21 @@ loggedin:
+@@ -944,7 +952,21 @@ loggedin:
  		    " before secondary authentication.");
  	    goto loginscreen;
  	}
@@ -69,7 +69,7 @@ index cc76769..3fd94f6 100755
  	    sl[ SL_ERROR ].sl_data = _(msg);
  	    fprintf( stderr, "CoSign: user %s authentication failure from host [%s]. (factors)\n", login !=NULL ? login : "?", ip_addr);
  	    if ( msg != NULL && strlen( msg ) > 0 )
-@@ -941,24 +963,19 @@ loggedin:
+@@ -959,24 +981,19 @@ loggedin:
  	    goto loginscreen;
  	}
  
@@ -107,19 +107,10 @@ index cc76769..3fd94f6 100755
  	    }
  	}
  
-@@ -971,17 +988,60 @@ loggedin:
+@@ -989,6 +1006,20 @@ loggedin:
  	    sl[ SL_LOGIN ].sl_data = login;
  	}
  
--	if (( ui.ui_factors[ i ] == NULL ) ||
--		( strcmp( ui.ui_ipaddr, ip_addr ) != 0 )) {
--	    if ( cosign_login( head, cookie, ip_addr, login, msg, NULL ) < 0 ) {
--		sl[ SL_TITLE ].sl_data = _("Error: Please try later");
--		sl[ SL_ERROR ].sl_data = _("We were unable to contact the "
--			"authentication server. Please try again later.");
--		subfile( ERROR_HTML, sl, 0 );
--		exit( 0 );
-+
 +	/* ossxp: register each factor from the comma seperated authorized factors. */
 +	authed_factor = strdup( msg );
 +	for ( r = strtok_r( authed_factor, ",", &authp ); r != NULL;
@@ -133,21 +124,19 @@ index cc76769..3fd94f6 100755
 +		    break;
 +		}
 +	    }
-+	    if (( ui.ui_factors[ i ] == NULL ) ||
-+		    ( strcmp( ui.ui_ipaddr, ip_addr ) != 0 )) {
-+		if ( cosign_login( head, cookie, ip_addr, login, r, NULL ) < 0 ) {
-+		    sl[ SL_TITLE ].sl_data = _("Error: Please try later");
-+		    sl[ SL_ERROR ].sl_data = _("We were unable to contact the "
-+			    "authentication server. Please try again later.");
-+		    subfile( ERROR_HTML, sl, 0 );
-+		    exit( 0 );
-+		}
-+		(void)cosign_check( head, cookie, &ui );
- 	    }
 +	}
-+    }
+ 	if (( ui.ui_factors[ i ] == NULL ) ||
+ 		( strcmp( ui.ui_ipaddr, ip_addr ) != 0 )) {
+ 	    if ( cosign_login( head, cookie, ip_addr, login, msg, NULL ) < 0 ) {
+@@ -998,11 +1029,39 @@ loggedin:
+ 		subfile( ERROR_HTML, sl, SUBF_OPT_ERROR, 500 );
+ 		exit( 0 );
+ 	    }
+-
+ 	    (void)cosign_check( head, cookie, &ui );
+ 	}
+     }
  
--	    (void)cosign_check( head, cookie, &ui );
 +    /* ossxp: try to catch not required factors for factor with flag 3. */
 +    if ( factor != NULL ) {
 +	require = strdup( factor );
@@ -174,14 +163,17 @@ index cc76769..3fd94f6 100755
 +	    sl[ SL_ERROR ].sl_data = _("Additional authentication"
 +		    " failed. Please try again later.");
 +	    goto loginscreen;
- 	}
-     }
- 
++	}
++    }
++
+     if ( *ui.ui_login == '\0' ) {
+ 	sl[ SL_TITLE ].sl_data = _("Authentication Required");
+ 	sl[ SL_ERROR ].sl_data = _("Please enter your login and password.");
 diff --git a/common/conf.c b/common/conf.c
-index a8617bf..4f43887 100644
+index 547a7ae..ab314c1 100644
 --- a/common/conf.c
 +++ b/common/conf.c
-@@ -672,6 +672,8 @@ read_config( char *path )
+@@ -671,6 +671,8 @@ read_config( char *path )
  	    for ( i = 2; *av[ i ] == '-'; i++ ) {
  		if ( strcmp( av[ i ], "-2" ) == 0 ) {
  		    fl_new->fl_flag = 2;
@@ -191,4 +183,4 @@ index a8617bf..4f43887 100644
  		    fprintf( stderr, "line %d:"
  			    " unknown flag %s to keyword factor\n",
 -- 
-tg: (b519625..) t/new_factor_with_flag_3 (depends on: t/real_remote_user)
+tg: (0b32341..) t/new_factor_with_flag_3 (depends on: t/real_remote_user)

@@ -6,13 +6,13 @@ Subject: [PATCH] t/multi_language
 Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 
 ---
- cgi/Makefile.in |    7 ++-
+ cgi/Makefile.in |    7 +-
  cgi/lang.c      |  197 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
  cgi/lang.h      |   17 +++++
  3 files changed, 219 insertions(+), 2 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
-index e867410..8c762a8 100755
+index fe9199b..09d4658 100755
 --- a/cgi/Makefile.in
 +++ b/cgi/Makefile.in
 @@ -29,13 +29,16 @@ INSTALL=     @INSTALL@
@@ -41,7 +41,7 @@ index e867410..8c762a8 100755
 +	/bin/rm -rf *.o ${TARGETS} lang
  
  install : all
- 	-mkdir -p ${exec_prefix}
+ 	-mkdir -p ${DESTDIR}${exec_prefix}
 diff --git a/cgi/lang.c b/cgi/lang.c
 new file mode 100644
 index 0000000..85f4d3e
@@ -269,4 +269,4 @@ index 0000000..3b32a78
 +
 +#endif
 -- 
-tg: (63e4b67..) t/multi_language (depends on: master)
+tg: (d3906d0..) t/multi_language (depends on: t/autotools_for_setup)

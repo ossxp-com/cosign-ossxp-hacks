@@ -12,10 +12,10 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
  3 files changed, 36 insertions(+), 44 deletions(-)
 
 diff --git a/filters/apache/mod_cosign.c b/filters/apache/mod_cosign.c
-index 9605889..b44f209 100755
+index 470c888..e7e0e39 100755
 --- a/filters/apache/mod_cosign.c
 +++ b/filters/apache/mod_cosign.c
-@@ -126,27 +126,22 @@ cosign_redirect( request_rec *r, cosign_host_config *cfg )
+@@ -145,27 +145,22 @@ cosign_redirect( request_rec *r, cosign_host_config *cfg )
      if ( cfg->siteentry != NULL && strcasecmp( cfg->siteentry, "none" ) != 0 ) {
  	ref = cfg->siteentry;
      } else {
@@ -60,10 +60,10 @@ index 9605889..b44f209 100755
  
      if ( cfg->reqfc > 0 ) {
 diff --git a/filters/apache2/mod_cosign.c b/filters/apache2/mod_cosign.c
-index 48c1988..fe279ed 100755
+index 2d4e95d..6a1e5d5 100755
 --- a/filters/apache2/mod_cosign.c
 +++ b/filters/apache2/mod_cosign.c
-@@ -131,27 +131,22 @@ cosign_redirect( request_rec *r, cosign_host_config *cfg )
+@@ -152,27 +152,22 @@ cosign_redirect( request_rec *r, cosign_host_config *cfg )
      if ( cfg->siteentry != NULL && strcasecmp( cfg->siteentry, "none" ) != 0 ) {
  	ref = cfg->siteentry;
      } else {
@@ -132,4 +132,4 @@ index b955be5..377fdcc 100644
  		    && !p->conf.noappendport ) {
  		snprintf( pbuf, sizeof( pbuf ) - 1, ":%d", port );
 -- 
-tg: (63e4b67..) t/bugfix_cosign_httponly_quirk (depends on: master)
+tg: (118a78f..) t/bugfix_cosign_httponly_quirk (depends on: master)

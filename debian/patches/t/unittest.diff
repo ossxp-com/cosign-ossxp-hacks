@@ -7,7 +7,7 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
  Makefile.in           |    6 +-
- cgi/lang.c            |   31 ++++-
+ cgi/lang.c            |   31 +++++-
  cgi/lang.h            |    2 +
  cgi/subfile.c         |   14 ++-
  tests/Makefile        |  112 +++++++++++++++++++
@@ -16,7 +16,7 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  7 files changed, 578 insertions(+), 11 deletions(-)
 
 diff --git a/Makefile.in b/Makefile.in
-index 2612e12..49965b9 100755
+index 42dae1f..f77117e 100755
 --- a/Makefile.in
 +++ b/Makefile.in
 @@ -1,7 +1,7 @@
@@ -26,9 +26,9 @@ index 2612e12..49965b9 100755
 -ALL=	common libsnet libcgi cgi html daemon 
 +ALL=	common libsnet libcgi cgi html daemon tests
  FILTERS= @FILTERS@ 
- TARGETS= cgi html daemon ${FILTERS}
- OPTOPTS= @OPTOPTS@ @UNIVERSAL_OPTOPTS@
-@@ -18,14 +18,14 @@ cgi:	libcgi
+ SERVER_TARGETS= cgi html daemon
+ TARGETS= ${SERVER_TARGETS} ${FILTERS}
+@@ -20,14 +20,14 @@ cgi:	libcgi
  ${ALL}:	version.o
  
  ${ALL} filters/apache filters/apache2 filters/lighttpd:	FRC
@@ -44,7 +44,7 @@ index 2612e12..49965b9 100755
 +	    do (${MAKE} -C $$i ${MFLAGS} clean); \
  	done
  
- VERSION=3.1.4
+ VERSION=3.2.0
 diff --git a/cgi/lang.c b/cgi/lang.c
 index 9a81b39..d1b4a40 100644
 --- a/cgi/lang.c
@@ -130,10 +130,10 @@ index 7726787..e93fe1d 100644
  
  #endif
 diff --git a/cgi/subfile.c b/cgi/subfile.c
-index 89b0568..d0beb90 100644
+index c7e682f..1477f25 100644
 --- a/cgi/subfile.c
 +++ b/cgi/subfile.c
-@@ -27,6 +27,7 @@ void do_macro_include ( char *, struct subfile_list * );
+@@ -33,6 +33,7 @@ void do_macro_include ( char *, struct subfile_list * );
  void do_macro_gettext( char *);
  char * str_replace(char *, char *, char *);
  size_t macro_process ( char *, size_t, struct subfile_list *, char *);
@@ -141,7 +141,7 @@ index 89b0568..d0beb90 100644
  
  #ifdef	_DEBUG
  
-@@ -65,6 +66,11 @@ str_replace(char *orig, char *seek, char *rep)
+@@ -71,6 +72,11 @@ str_replace(char *orig, char *seek, char *rep)
     size_t
  macro_process ( char *str, size_t size, struct subfile_list *sl, char *filename )
  {
@@ -153,7 +153,7 @@ index 89b0568..d0beb90 100644
      char	cmd[MAX_CMD+1];
      char	arg[MAX_LINE_BUFF+1]="";
      char	*p, *pa, *pz;
-@@ -157,13 +163,17 @@ macro_process ( char *str, size_t size, struct subfile_list *sl, char *filename
+@@ -163,13 +169,17 @@ macro_process ( char *str, size_t size, struct subfile_list *sl, char *filename
      if ( strcasecmp(cmd, "include") == 0 ) {
  	snprintf(incfile, MAX_FN_LEN, "%s/%s", pdir, arg);
  #ifndef _DEBUG
@@ -728,4 +728,4 @@ index 0000000..dad3393
 +  return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 +}
 -- 
-tg: (8cee6b4..) t/unittest (depends on: t/message_localize)
+tg: (3cba347..) t/unittest (depends on: t/message_localize)

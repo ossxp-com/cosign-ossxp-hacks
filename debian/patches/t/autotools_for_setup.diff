@@ -1,104 +1,48 @@
 From: Jiang Xin <worldhello.net@gmail.com>
-Subject: [PATCH] t/autotools_for_setup
+Subject: [PATCH] Update build scripts for debian packaging
 
-<patch description>
+Update Makefiles so that debian packaging works properly.
+
+ * Do 'make install' can install everything.
+ * Add DESTDIR to filter and others.
 
 Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 
 ---
- Makefile.in                 |    8 +++-----
- cgi/Makefile.in             |    9 +++++----
- daemon/Makefile.in          |   22 +++++++++++-----------
+ Makefile.in                 |   10 ++++++----
  filters/apache/Makefile.in  |    6 +++++-
  filters/apache2/Makefile.in |    5 ++++-
- html/Makefile.in            |   25 +++++++++++++------------
  libsnet/Makefile.in         |   15 ++++++++-------
- 7 files changed, 49 insertions(+), 41 deletions(-)
+ 4 files changed, 23 insertions(+), 13 deletions(-)
 
 diff --git a/Makefile.in b/Makefile.in
-index 2612e12..67df891 100755
+index f5b1ffa..42dae1f 100755
 --- a/Makefile.in
 +++ b/Makefile.in
-@@ -48,12 +48,10 @@ distclean: clean
- 	  common/Makefile version.c filters/common/cosignpaths.h
+@@ -54,17 +54,19 @@ distclean: clean
  	rm -rf autom4te.cache
+ 	( cd tests && rm -rf *.testlog CA certs cosign openssl.cnf tmp )
  
 -install: @FILTERS@
-+install: @FILTERS@ everything
++install: install-all
++
++install-filter: @FILTERS@
  	for i in ${FILTERS}; \
 -	    do (cd $$i; ${MAKE} ${MFLAGS} install); \
 +	    do (cd $$i; ${MAKE} ${MFLAGS} install DESTDIR=$(DESTDIR)); \
  	done
--
--install-all : everything
+ 
+ install-server : server
+ 	for i in ${SERVER_TARGETS}; \
+-	    do (cd $$i; ${MAKE} ${MFLAGS} install); \
++	    do (cd $$i; ${MAKE} ${MFLAGS} install DESTDIR=$(DESTDIR)); \
+ 	done
+ 
+ install-all : everything
  	for i in ${TARGETS}; \
 -	    do (cd $$i; ${MAKE} ${MFLAGS} install); \
 +	    do (cd $$i; ${MAKE} ${MFLAGS} install DESTDIR=$(DESTDIR)); \
  	done
-diff --git a/cgi/Makefile.in b/cgi/Makefile.in
-index e867410..f80ef24 100755
---- a/cgi/Makefile.in
-+++ b/cgi/Makefile.in
-@@ -17,6 +17,7 @@ KEYTABPATH = @keytabpath@
- FRIEND_MYSQL_DB = @frienddbhost@
- FRIEND_MYSQL_LOGIN = @frienddblogin@
- FRIEND_MYSQL_PASSWD = @frienddbpasswd@
-+DESTDIR=
- 
- INCPATH=     @CPPFLAGS@ @KINC@ @MYSQLINC@ -I../common -I../libsnet -I../libcgi
- OPTOPTS=     @OPTOPTS@ @UNIVERSAL_OPTOPTS@
-@@ -78,7 +79,7 @@ clean:
- 	/bin/rm -rf *.o ${TARGETS}
- 
- install : all
--	-mkdir -p ${exec_prefix}
--	-mkdir -p ${CGIDIR};
--	${INSTALL} -m 0755 -c cosign.cgi ${CGIDIR}/;
--	${INSTALL} -m 0755 -c logout ${CGIDIR}/;
-+	-mkdir -p $(DESTDIR)${exec_prefix}
-+	-mkdir -p $(DESTDIR)${CGIDIR};
-+	${INSTALL} -m 0755 -c cosign.cgi $(DESTDIR)${CGIDIR}/;
-+	${INSTALL} -m 0755 -c logout $(DESTDIR)${CGIDIR}/;
-diff --git a/daemon/Makefile.in b/daemon/Makefile.in
-index f03cd51..1c84bc1 100755
---- a/daemon/Makefile.in
-+++ b/daemon/Makefile.in
-@@ -4,6 +4,7 @@ prefix=@prefix@
- exec_prefix=@exec_prefix@
- SBINDIR=@sbindir@
- MANDIR=@mandir@
-+DESTDIR=
- 
- COSIGNCONF=@cosignconf@
- COSIGNDB=@cosigndb@
-@@ -95,17 +96,16 @@ man : FRC
- 	done
- 
- install : all man
--	-mkdir -p ${exec_prefix}
--	-mkdir -p ${SBINDIR}
--	${INSTALL} -m 0755 -c cosignd ${SBINDIR}/
--	${INSTALL} -m 0755 -c monster ${SBINDIR}/
--	-mkdir -p ${prefix}
--	-mkdir -p ${MANDIR}
--	-mkdir ${MANDIR}/man5
--	${INSTALL} -m 0644 -c tmp/man/cosign.conf.5 ${MANDIR}/man5/
--	-mkdir ${MANDIR}/man8
--	${INSTALL} -m 0644 -c tmp/man/cosignd.8 ${MANDIR}/man8/
--	${INSTALL} -m 0644 -c tmp/man/monster.8 ${MANDIR}/man8/
-+	-mkdir -p $(DESTDIR)${exec_prefix}
-+	-mkdir -p $(DESTDIR)${SBINDIR}
-+	${INSTALL} -m 0755 -c cosignd $(DESTDIR)${SBINDIR}/
-+	${INSTALL} -m 0755 -c monster $(DESTDIR)${SBINDIR}/
-+	-mkdir -p $(DESTDIR)${prefix}
-+	-mkdir -p $(DESTDIR)${MANDIR}/man5
-+	${INSTALL} -m 0644 -c tmp/man/cosign.conf.5 $(DESTDIR)${MANDIR}/man5/
-+	-mkdir -p $(DESTDIR)${MANDIR}/man8
-+	${INSTALL} -m 0644 -c tmp/man/cosignd.8 $(DESTDIR)${MANDIR}/man8/
-+	${INSTALL} -m 0644 -c tmp/man/monster.8 $(DESTDIR)${MANDIR}/man8/
- 
- clean :
- 	rm -f a.out core* *.o *.bak *[Ee]rrs tags
 diff --git a/filters/apache/Makefile.in b/filters/apache/Makefile.in
 index 1c3f53a..27ca53d 100755
 --- a/filters/apache/Makefile.in
@@ -146,49 +90,6 @@ index e6deae2..efab3f8 100755
  
  #   cleanup
  clean:
-diff --git a/html/Makefile.in b/html/Makefile.in
-index f72b6b5..8785b78 100755
---- a/html/Makefile.in
-+++ b/html/Makefile.in
-@@ -6,25 +6,26 @@ TMPLDIR  = @prefix@/templates
- HTMLDIR  = @prefix@/html
- SERVICESDIR  = @prefix@/services
- INSTALL	=	@INSTALL@
-+DESTDIR=
- 
- all: ${TEMPLATES}
- 
- install : all
--	-mkdir -p ${exec_prefix}
--	-mkdir -p ${TMPLDIR}
--	-mkdir -p ${HTMLDIR}
-+	-mkdir -p $(DESTDIR)${exec_prefix}
-+	-mkdir -p $(DESTDIR)${TMPLDIR}
-+	-mkdir -p $(DESTDIR)${HTMLDIR}
- 	for i in ${TEMPLATES}; do \
--	    ${INSTALL} -m 0644 -c $$i ${TMPLDIR}/; \
-+	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${TMPLDIR}/; \
- 	done
- 	for i in ${HTML}; do \
--	    ${INSTALL} -m 0644 -c $$i ${HTMLDIR}/; \
-+	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${HTMLDIR}/; \
- 	done
--	-mkdir -p ${HTMLDIR}/images
--	cp images/*.gif ${HTMLDIR}/images/
--	cp images/*.png ${HTMLDIR}/images/
--	-mkdir -p ${HTMLDIR}/js
--	cp js/*.js ${HTMLDIR}/js/
--	-mkdir -p ${SERVICESDIR}
--	cp services/*.html ${SERVICESDIR}/
-+	-mkdir -p $(DESTDIR)${HTMLDIR}/images
-+	cp images/*.gif $(DESTDIR)${HTMLDIR}/images/
-+	cp images/*.png $(DESTDIR)${HTMLDIR}/images/
-+	-mkdir -p $(DESTDIR)${HTMLDIR}/js
-+	cp js/*.js $(DESTDIR)${HTMLDIR}/js/
-+	-mkdir -p $(DESTDIR)${SERVICESDIR}
-+	cp services/*.html $(DESTDIR)${SERVICESDIR}/
- 
- clean:
 diff --git a/libsnet/Makefile.in b/libsnet/Makefile.in
 index 43205f8..8914dd9 100755
 --- a/libsnet/Makefile.in
@@ -228,4 +129,4 @@ index 43205f8..8914dd9 100755
  clean:
  	rm -f *.o *.lo *.slo libsnet.la
 -- 
-tg: (63e4b67..) t/autotools_for_setup (depends on: master)
+tg: (118a78f..) t/autotools_for_setup (depends on: master)

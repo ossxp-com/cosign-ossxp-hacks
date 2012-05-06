@@ -7,7 +7,7 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
  scripts/factors/invite |  182 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 182 insertions(+), 0 deletions(-)
+ 1 file changed, 182 insertions(+)
 
 diff --git a/scripts/factors/invite b/scripts/factors/invite
 new file mode 100755
@@ -198,4 +198,4 @@ index 0000000..067f751
 +
 +# vim: et ts=4 sw=4
 -- 
-tg: (63e4b67..) t/factor_invite (depends on: master)
+tg: (118a78f..) t/factor_invite (depends on: master)

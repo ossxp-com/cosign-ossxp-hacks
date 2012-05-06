@@ -10,18 +10,18 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
  html/services/config_inc.php |   18 +++
  html/services/index.php      |  270 ++++++++++++++++++++++++++++++++++++++++++
  html/services/ldap_api.php   |  107 +++++++++++++++++
- 4 files changed, 396 insertions(+), 1 deletions(-)
+ 4 files changed, 396 insertions(+), 1 deletion(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
-index 8785b78..87cfa6e 100755
+index d9ac434..e0057ad 100755
 --- a/html/Makefile.in
 +++ b/html/Makefile.in
-@@ -26,6 +26,6 @@ install : all
- 	-mkdir -p $(DESTDIR)${HTMLDIR}/js
- 	cp js/*.js $(DESTDIR)${HTMLDIR}/js/
- 	-mkdir -p $(DESTDIR)${SERVICESDIR}
--	cp services/*.html $(DESTDIR)${SERVICESDIR}/
-+	cp services/*.html services/*.php $(DESTDIR)${SERVICESDIR}/
+@@ -28,6 +28,6 @@ install : all
+ 	-mkdir -p ${DESTDIR}${HTMLDIR}/js
+ 	cp js/*.js ${DESTDIR}${HTMLDIR}/js/
+ 	-mkdir -p ${DESTDIR}${SERVICESDIR}
+-	cp services/*.html ${DESTDIR}${SERVICESDIR}/
++	cp services/*.html services/*.php ${DESTDIR}${SERVICESDIR}/
  
  clean:
 diff --git a/html/services/config_inc.php b/html/services/config_inc.php
@@ -438,4 +438,4 @@ index 0000000..6a8d92d
 +
 +?>
 -- 
-tg: (a594ead..) t/services_template (depends on: t/custom_cosign_path)
+tg: (56c061e..) t/services_template (depends on: t/static_htmls_to_templates)

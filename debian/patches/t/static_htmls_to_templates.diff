@@ -7,25 +7,25 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
  cgi/Makefile.in            |   13 +++-
- cgi/cgi.c                  |  144 +++++++++++++++++++++++++++++++---
+ cgi/cgi.c                  |  144 ++++++++++++++++++++++++++++++----
  cgi/cosigncgi.h            |   11 +++
  cgi/info.c                 |  185 ++++++++++++++++++++++++++++++++++++++++++++
  cgi/login.c                |    6 ++
  cgi/logout.c               |    4 +
- cgi/subfile.c              |   22 +++++
+ cgi/subfile.c              |   20 +++++
  common/conf.h              |    1 +
  html/Makefile.in           |    5 +-
  html/looping.html          |   14 ++--
  html/post_error.html       |   37 +++++++--
  html/services.html         |   45 +++++++++++
  html/validation_error.html |   54 +++++++++++++
- 13 files changed, 510 insertions(+), 31 deletions(-)
+ 13 files changed, 508 insertions(+), 31 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
-index a21c499..3a0b3b2 100755
+index 547129a..df9fe59 100755
 --- a/cgi/Makefile.in
 +++ b/cgi/Makefile.in
-@@ -34,7 +34,7 @@ CFLAGS=      ${DEFS} ${OPTOPTS} @CFLAGS@ ${INCPATH}
+@@ -33,7 +33,7 @@ CFLAGS=      ${DEFS} ${OPTOPTS} @CFLAGS@ ${INCPATH}
  OBJ     = network.o subfile.o lang.o ../common/mkcookie.o ../common/fbase64.o \
  	../common/conf.o ../common/wildcard.o ../common/argcargv.o \
  	../version.o 
@@ -34,7 +34,7 @@ index a21c499..3a0b3b2 100755
  
  all: ${TARGETS}
  
-@@ -92,6 +92,16 @@ logout.o:	logout.c
+@@ -91,6 +91,16 @@ logout.o:	logout.c
  logout: logout.o $(OBJ)
  	${CC} ${CFLAGS} -o logout logout.o $(OBJ) $(LDFLAGS)
  
@@ -51,16 +51,16 @@ index a21c499..3a0b3b2 100755
  clean:
  	/bin/rm -rf *.o ${TARGETS} lang subfile
  
-@@ -100,3 +110,4 @@ install : all
- 	-mkdir -p $(DESTDIR)${CGIDIR};
- 	${INSTALL} -m 0755 -c cosign.cgi $(DESTDIR)${CGIDIR}/;
- 	${INSTALL} -m 0755 -c logout $(DESTDIR)${CGIDIR}/;
-+	${INSTALL} -m 0755 -c info $(DESTDIR)${CGIDIR}/;
+@@ -99,3 +109,4 @@ install : all
+ 	-mkdir -p ${DESTDIR}${CGIDIR};
+ 	${INSTALL} -m 0755 -c cosign.cgi ${DESTDIR}${CGIDIR}/;
+ 	${INSTALL} -m 0755 -c logout ${DESTDIR}${CGIDIR}/;
++	${INSTALL} -m 0755 -c info ${DESTDIR}${CGIDIR}/;
 diff --git a/cgi/cgi.c b/cgi/cgi.c
-index 0270944..bed7dae 100755
+index 106f52b..d13d0c9 100755
 --- a/cgi/cgi.c
 +++ b/cgi/cgi.c
-@@ -90,9 +90,136 @@ static struct subfile_list sl[] = {
+@@ -93,9 +93,136 @@ static struct subfile_list sl[] = {
          { 'f', SUBF_STR_ESC, NULL },
  #define SL_DFACTOR	6
          { 'd', SUBF_STR_ESC, NULL },
@@ -197,7 +197,7 @@ index 0270944..bed7dae 100755
      static void
  loop_checker( int time, int count, char *cookie )
  {
-@@ -288,6 +415,8 @@ main( int argc, char *argv[] )
+@@ -298,6 +425,8 @@ main( int argc, char *argv[] )
  
      init_locale();
  
@@ -206,7 +206,7 @@ index 0270944..bed7dae 100755
      if ( argc == 2 ) {
  	if ( strcmp( argv[ 1 ], "-V" ) == 0 ) {
  	    printf( "%s\n", cosign_version );
-@@ -638,13 +767,7 @@ main( int argc, char *argv[] )
+@@ -652,13 +781,7 @@ main( int argc, char *argv[] )
  	    }
  	}
  
@@ -221,7 +221,7 @@ index 0270944..bed7dae 100755
  	exit( 0 );
      }
  
-@@ -956,12 +1079,7 @@ loggedin:
+@@ -974,12 +1097,7 @@ loggedin:
  	exit( 0 );
      }
  
@@ -256,7 +256,7 @@ index 2264fc9..f4bae00 100755
 +#define VALIDATION_ERROR_HTML "validation_error.html"
 diff --git a/cgi/info.c b/cgi/info.c
 new file mode 100644
-index 0000000..7c3bbcd
+index 0000000..a83cd57
 --- /dev/null
 +++ b/cgi/info.c
 @@ -0,0 +1,185 @@
@@ -357,7 +357,7 @@ index 0000000..7c3bbcd
 +	sl[ SL_TITLE ].sl_data = _("Error: Server Error");
 +	sl[ SL_ERROR ].sl_data = _("REMOTE_ADDR not set");
 +	tmpl = ERROR_HTML;
-+	subfile( tmpl, sl, 0 );
++	subfile( tmpl, sl, SUBF_OPT_ERROR, 500 );
 +	exit( 0 );
 +    }
 +
@@ -365,7 +365,7 @@ index 0000000..7c3bbcd
 +	sl[ SL_TITLE ].sl_data = _("Error: Server Error");
 +	sl[ SL_ERROR ].sl_data = _("SCRIPT_NAME not set");
 +	tmpl = ERROR_HTML;
-+	subfile( tmpl, sl, 0 );
++	subfile( tmpl, sl, SUBF_OPT_ERROR, 500 );
 +	exit( 0 );
 +    }
 +
@@ -373,7 +373,7 @@ index 0000000..7c3bbcd
 +	sl[ SL_TITLE ].sl_data = _("Error: Server Error");
 +	sl[ SL_ERROR ].sl_data = _("REQUEST_METHOD not set");
 +	tmpl = ERROR_HTML;
-+	subfile( tmpl, sl, 0 );
++	subfile( tmpl, sl, SUBF_OPT_ERROR, 500 );
 +	exit( 0 );
 +    }
 +
@@ -433,14 +433,14 @@ index 0000000..7c3bbcd
 +		sl[ SL_ERROR ].sl_data = _("Unable to determine template from query string.");
 +		tmpl = ERROR_HTML;
 +	    }
-+	    subfile ( tmpl, sl, 0 );
++	    subfile( tmpl, sl, SUBF_OPT_ERROR, 500 );
 +	    exit( 0 );
 +	}
 +    }
 +
 +    tmpl = LOGIN_HTML;
 +    sl[ SL_TITLE ].sl_data = _("Authentication Required");
-+    subfile( tmpl, sl, 0 );
++    subfile( tmpl, sl, SUBF_OPT_NOCACHE );
 +    exit( 0 );
 +}
 +
@@ -477,7 +477,7 @@ index 05bc875..204c852 100644
  	sl[ SL_ERROR ].sl_data = _( (char *)error_message( kerror ) );
  	sl[ SL_TITLE ].sl_data = _("Authentication Required ( kerberos error )");
 diff --git a/cgi/logout.c b/cgi/logout.c
-index a050442..7313765 100755
+index 7d8bac3..62002a5 100755
 --- a/cgi/logout.c
 +++ b/cgi/logout.c
 @@ -51,6 +51,8 @@ static struct subfile_list sl[] = {
@@ -499,10 +499,10 @@ index a050442..7313765 100755
  	printf( "%s\n", cosign_version );
  	exit( 0 );
 diff --git a/cgi/subfile.c b/cgi/subfile.c
-index 89b0568..69d89cb 100644
+index c7e682f..ee121a3 100644
 --- a/cgi/subfile.c
 +++ b/cgi/subfile.c
-@@ -326,6 +326,28 @@ subfile( char *filename, struct subfile_list *sl, int nocache )
+@@ -338,6 +338,26 @@ subfile( char *filename, struct subfile_list *sl, int opts, ... )
          }
      }
  
@@ -510,29 +510,27 @@ index 89b0568..69d89cb 100644
 +    if (access(filename, F_OK)!=0)
 +    {
 +	if ( strcmp(filename, LOGIN_ERROR_HTML) == 0 )
-+	    return subfile( LOGIN_HTML, sl, nocache );
-+
++	    snprintf(newfile, MAX_FN_LEN, LOGIN_HTML);
 +	else if ( strcmp(filename, EXPIRED_ERROR_HTML) == 0 )
-+	    return subfile( LOGIN_HTML, sl, nocache );
-+
++	    snprintf(newfile, MAX_FN_LEN, LOGIN_HTML);
 +	else if ( strcmp(filename, REDIRECT_HTML) == 0 )
-+	    return subfile( ERROR_HTML, sl, nocache );
-+
++	    snprintf(newfile, MAX_FN_LEN, ERROR_HTML);
 +	else if ( strcmp(filename, LOOPING_HTML) == 0 )
-+	    return subfile( ERROR_HTML, sl, nocache );
-+
++	    snprintf(newfile, MAX_FN_LEN, ERROR_HTML);
 +	else if ( strcmp(filename, POST_ERROR_HTML) == 0 )
-+	    return subfile( ERROR_HTML, sl, nocache );
-+
++	    snprintf(newfile, MAX_FN_LEN, ERROR_HTML);
 +	else if ( strcmp(filename, VALIDATION_ERROR_HTML) == 0 )
-+	    return subfile( ERROR_HTML, sl, nocache );
++	    snprintf(newfile, MAX_FN_LEN, ERROR_HTML);
++	else
++	    snprintf(newfile, MAX_FN_LEN, ERROR_HTML);
++	filename = newfile;
 +    }
 +
-     _subfile( filename, sl, nocache );
- 
-     return;
+     /*
+      * close stdin to avoid "ap_content_length_filter: apr_bucket_read()"
+      * errors, which occur in apache2 environments when a cgi starts
 diff --git a/common/conf.h b/common/conf.h
-index 7299e15..a9b41d2 100644
+index 1005c66..65b3252 100644
 --- a/common/conf.h
 +++ b/common/conf.h
 @@ -75,6 +75,7 @@ struct matchlist {
@@ -544,7 +542,7 @@ index 7299e15..a9b41d2 100644
  #define COSIGNKRBTKTSKEY	"cosignkrbtkts"
  #define COSIGNDBHASHLENKEY	"cosigndbhashlen"
 diff --git a/html/Makefile.in b/html/Makefile.in
-index 8785b78..a0de08f 100755
+index 1692351..d9ac434 100755
 --- a/html/Makefile.in
 +++ b/html/Makefile.in
 @@ -1,5 +1,8 @@
@@ -759,4 +757,4 @@ index 0000000..a667522
 +</body>
 +</html>
 -- 
-tg: (ee4fdab..) t/static_htmls_to_templates (depends on: t/message_localize t/autotools_for_setup)
+tg: (3cba347..) t/static_htmls_to_templates (depends on: t/message_localize)

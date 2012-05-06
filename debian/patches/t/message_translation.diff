@@ -16,19 +16,19 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  7 files changed, 1322 insertions(+), 2 deletions(-)
 
 diff --git a/Makefile.in b/Makefile.in
-index 67df891..51e3f7e 100755
+index 42dae1f..1a6a370 100755
 --- a/Makefile.in
 +++ b/Makefile.in
 @@ -3,7 +3,7 @@ srcdir=		@srcdir@
  CC=	@CC@
  ALL=	common libsnet libcgi cgi html daemon 
  FILTERS= @FILTERS@ 
--TARGETS= cgi html daemon ${FILTERS}
-+TARGETS= cgi html daemon locale ${FILTERS}
+-SERVER_TARGETS= cgi html daemon
++SERVER_TARGETS= cgi html daemon locale
+ TARGETS= ${SERVER_TARGETS} ${FILTERS}
  OPTOPTS= @OPTOPTS@ @UNIVERSAL_OPTOPTS@
  CFLAGS=	${OPTOPTS} @CFLAGS@
- LDFLAGS= @LDFLAGS@
-@@ -43,7 +43,7 @@ distclean: clean
+@@ -48,7 +48,7 @@ distclean: clean
  	( cd libsnet ; make distclean )
  	( cd libcgi ; make distclean )
  	rm -f config.log config.status config.cache Makefile \
@@ -38,7 +38,7 @@ index 67df891..51e3f7e 100755
  	  common/Makefile version.c filters/common/cosignpaths.h
  	rm -rf autom4te.cache
 diff --git a/configure.ac b/configure.ac
-index 12d07e7..54b10cf 100755
+index 0873a39..efd4310 100755
 --- a/configure.ac
 +++ b/configure.ac
 @@ -131,6 +131,7 @@ AC_CONFIG_FILES([Makefile
@@ -1399,4 +1399,4 @@ index 0000000..db933e2
 +msgstr "单点登录：URL 校验失败"
 +
 -- 
-tg: (bf6efa0..) t/message_translation (depends on: t/message_localize t/static_htmls_to_templates)
+tg: (72e94dd..) t/message_translation (depends on: t/static_htmls_to_templates)

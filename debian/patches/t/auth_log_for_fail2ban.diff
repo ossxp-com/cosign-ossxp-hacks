@@ -7,13 +7,13 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
  cgi/cgi.c |   15 +++++++++++++--
- 1 files changed, 13 insertions(+), 2 deletions(-)
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
 diff --git a/cgi/cgi.c b/cgi/cgi.c
-index ae4ec41..0038379 100755
+index a2d8a0f..b63cc5c 100755
 --- a/cgi/cgi.c
 +++ b/cgi/cgi.c
-@@ -728,7 +728,11 @@ main( int argc, char *argv[] )
+@@ -745,7 +745,11 @@ main( int argc, char *argv[] )
  					cl[ CL_PASSWORD ].cl_data, ip_addr,
  					cookie, &sp, &msg )) == COSIGN_CGI_OK) {
  		    goto loggedin;
@@ -26,7 +26,7 @@ index ae4ec41..0038379 100755
  	    } else
  # endif  /* SQL_FRIEND */
  # ifdef KRB
-@@ -737,7 +741,11 @@ main( int argc, char *argv[] )
+@@ -754,7 +758,11 @@ main( int argc, char *argv[] )
  				        cl[ CL_PASSWORD ].cl_data, ip_addr,
  					cookie, &sp, &msg )) == COSIGN_CGI_OK) {
  		    goto loggedin;
@@ -39,7 +39,7 @@ index ae4ec41..0038379 100755
  	    } else
  #endif /* KRB5 */
  	    {
-@@ -794,6 +802,9 @@ loggedin:
+@@ -811,6 +819,9 @@ loggedin:
  	}
  	if (( rc = execfactor( fl, cl, &msg )) != COSIGN_CGI_OK ) {
  	    sl[ SL_ERROR ].sl_data = msg;
@@ -50,4 +50,4 @@ index ae4ec41..0038379 100755
  	        sl[ SL_TITLE ].sl_data = "Password Expired";
                  subfile( EXPIRED_ERROR_HTML, sl, 0 );
 -- 
-tg: (63e4b67..) t/auth_log_for_fail2ban (depends on: master)
+tg: (118a78f..) t/auth_log_for_fail2ban (depends on: master)

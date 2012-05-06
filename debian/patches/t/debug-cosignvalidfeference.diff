@@ -7,13 +7,13 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 
 ---
  filters/apache2/mod_cosign.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/filters/apache2/mod_cosign.c b/filters/apache2/mod_cosign.c
-index 48c1988..1030a30 100755
+index 2d4e95d..5159136 100755
 --- a/filters/apache2/mod_cosign.c
 +++ b/filters/apache2/mod_cosign.c
-@@ -250,7 +250,8 @@ cosign_handler( request_rec *r )
+@@ -275,7 +275,8 @@ cosign_handler( request_rec *r )
      }
      if ( matches[ 0 ].rm_so != 0 || matches[ 0 ].rm_eo != strlen( dest )) {
  	cosign_log( APLOG_NOTICE, r->server, "mod_cosign: "
@@ -24,4 +24,4 @@ index 48c1988..1030a30 100755
      }
  
 -- 
-tg: (63e4b67..) t/debug-cosignvalidfeference (depends on: master)
+tg: (118a78f..) t/debug-cosignvalidfeference (depends on: master)

@@ -8,32 +8,32 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
 ---
  html/Makefile.in                       |   13 +-
  html/cosign_base.css                   |   13 +-
- html/error.html                        |   30 ++--
+ html/error.html                        |   30 ++-
  html/expired_error.html                |  167 -----------------
  html/inc/css.inc                       |    1 +
  html/inc/en/0000.html                  |    2 +
  html/inc/en/0010_wiki.html             |   15 ++
  html/inc/en/0015_blog.html             |   15 ++
- html/inc/en/0020_scm.html              |   21 ++
+ html/inc/en/0020_scm.html              |   21 +++
  html/inc/en/0030_bugtrac.html          |   19 ++
  html/inc/en/0035_testlink.html         |   15 ++
  html/inc/en/0040_comm.html             |   15 ++
  html/inc/en/1000_account.html          |   16 ++
  html/inc/en/9000.html                  |    2 +
  html/inc/factor_invite.inc             |   74 ++++++++
- html/inc/factor_kx509.inc              |   11 +
+ html/inc/factor_kx509.inc              |   11 ++
  html/inc/factor_login.inc              |   24 +++
- html/inc/factor_login_reauth.inc       |   21 ++
+ html/inc/factor_login_reauth.inc       |   21 +++
  html/inc/factor_otp.inc                |   16 ++
  html/inc/footer.inc                    |    3 +
  html/inc/header.inc                    |    3 +
  html/inc/help_hotkey.inc               |    7 +
  html/inc/help_infobox.inc              |   60 ++++++
- html/inc/js_config.inc                 |   11 +
+ html/inc/js_config.inc                 |   11 ++
  html/inc/zh/0000.html                  |    2 +
  html/inc/zh/0010_wiki.html             |   15 ++
  html/inc/zh/0015_blog.html             |   15 ++
- html/inc/zh/0020_scm.html              |   21 ++
+ html/inc/zh/0020_scm.html              |   21 +++
  html/inc/zh/0030_bugtrac.html          |   19 ++
  html/inc/zh/0035_testlink.html         |   15 ++
  html/inc/zh/0040_comm.html             |   15 ++
@@ -47,24 +47,25 @@ Signed-off-by: Jiang <jiangxin@ossxp.com>
  html/login_error.html                  |  168 -----------------
  html/looping.html                      |   54 ------
  html/post_error.html                   |   54 ------
- html/reauth.html                       |  147 +++-------------
+ html/reauth.html                       |  147 +++------------
  html/services.html                     |    6 +-
  html/services/index.php                |    2 +-
  html/validation_error.html             |   54 ------
- html/verify-logout.html                |   30 ++--
- 46 files changed, 1203 insertions(+), 779 deletions(-)
+ html/verify-logout.html                |   30 +--
+ 46 files changed, 1205 insertions(+), 777 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
-index 890c3fd..debfb64 100755
+index e0057ad..96db12a 100755
 --- a/html/Makefile.in
 +++ b/html/Makefile.in
-@@ -1,4 +1,4 @@
--TEMPLATES = error.html expired_error.html login.html login_error.html verify-logout.html reauth.html
-+TEMPLATES = error.html expired_error.html login.html login_error.html verify-logout.html reauth.html inc locale
+@@ -1,4 +1,6 @@
+ TEMPLATES = error.html expired_error.html login.html login_error.html verify-logout.html reauth.html
++## Also copy include files and locales in below directories.
++TEMPLATES += inc locale
  ## static html also serve as template (jiangxin@ossxp.com)
  TEMPLATES += post_error.html looping.html validation_error.html
  TEMPLATES += services.html
-@@ -13,15 +13,18 @@ DESTDIR=
+@@ -12,15 +14,20 @@ INSTALL	=	@INSTALL@
  
  all: ${TEMPLATES}
  
@@ -72,22 +73,23 @@ index 890c3fd..debfb64 100755
 +	cd $@; ${MAKE} all
 +
  install : all
- 	-mkdir -p $(DESTDIR)${exec_prefix}
- 	-mkdir -p $(DESTDIR)${TMPLDIR}
- 	-mkdir -p $(DESTDIR)${HTMLDIR}
--	for i in ${TEMPLATES}; do \
--	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${TMPLDIR}/; \
-+	-for i in ${TEMPLATES}; do \
-+	    [ -e $$i ] && cp -a $$i $(DESTDIR)${TMPLDIR}; \
+ 	-mkdir -p ${DESTDIR}${exec_prefix}
+ 	-mkdir -p ${DESTDIR}${TMPLDIR}
+ 	-mkdir -p ${DESTDIR}${HTMLDIR}
++	# ossxp.com: $(INSTALL) won't install dirs, so use 'cp' instead
+ 	for i in ${TEMPLATES}; do \
+-	    ${INSTALL} -m 0644 -c $$i ${DESTDIR}${TMPLDIR}/; \
++	    [ -e $$i ] && cp -a $$i ${DESTDIR}${TMPLDIR}; \
  	done
++	# ossxp.com: $(INSTALL) won't install dirs, so use 'cp' instead
  	for i in ${HTML}; do \
--	    ${INSTALL} -m 0644 -c $$i $(DESTDIR)${HTMLDIR}/; \
-+	    cp -a $$i $(DESTDIR)${HTMLDIR}/; \
+-	    ${INSTALL} -m 0644 -c $$i ${DESTDIR}${HTMLDIR}/; \
++	    cp -a $$i ${DESTDIR}${HTMLDIR}/; \
  	done
- 	-mkdir -p $(DESTDIR)${HTMLDIR}/images
- 	cp images/*.gif $(DESTDIR)${HTMLDIR}/images/
-@@ -32,3 +35,5 @@ install : all
- 	cp services/*.html services/*.php $(DESTDIR)${SERVICESDIR}/
+ 	-mkdir -p ${DESTDIR}${HTMLDIR}/images
+ 	cp images/*.gif ${DESTDIR}${HTMLDIR}/images/
+@@ -31,3 +38,5 @@ install : all
+ 	cp services/*.html services/*.php ${DESTDIR}${SERVICESDIR}/
  
  clean:
 +
@@ -2510,4 +2512,4 @@ index ea68776..c3a1739 100755
  </body>
  </html>
 -- 
-tg: (3074515..) t/templates_standard (depends on: master t/autotools_for_setup t/static_htmls_to_templates t/javascript t/services_template)
+tg: (099a1c5..) t/templates_standard (depends on: t/services_template t/javascript)

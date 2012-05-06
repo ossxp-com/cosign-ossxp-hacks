@@ -54,7 +54,7 @@ common-install-impl::
 debian/patches/: debian/patches
 debian/patches:
 	rm -rf debian/patches
-	tg export --all --quilt debian/patches
+	LC_ALL=C tg export --all --quilt debian/patches
 	cd debian && git status || true
 
 clean::

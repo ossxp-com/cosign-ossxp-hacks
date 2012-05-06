@@ -25,6 +25,10 @@ CosignCheckIP never
 ## Eg: CosignValidReference  ^https?:\/\/.*\.umich\.edu(/.*)?
 CosignValidReference  ^https?:\/\/.*(/.*)?
 CosignValidationErrorRedirect  https://weblogin.foo.bar/cgi-bin/info/validation_error
+## If set CosignAllowValidationRedirect On, /cosign/valid will format a new valid url
+## for which url match with CosignValidReference but not the canonical domain name,
+## and redirect to the new generated valid url. So a service can have many domain name.
+CosignAllowValidationRedirect  On
 
 <Location /cosign/valid>
     SetHandler  cosign

@@ -7,9 +7,9 @@ Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 
 ---
  filters/apache/mod_cosign.c   |   37 ++++++++++++++++---------------------
- filters/apache2/mod_cosign.c  |   37 ++++++++++++++++---------------------
+ filters/apache2/mod_cosign.c  |   41 ++++++++++++++++++-----------------------
  filters/lighttpd/mod_cosign.c |    6 ++++--
- 3 files changed, 36 insertions(+), 44 deletions(-)
+ 3 files changed, 38 insertions(+), 46 deletions(-)
 
 diff --git a/filters/apache/mod_cosign.c b/filters/apache/mod_cosign.c
 index 470c888..e7e0e39 100755
@@ -60,7 +60,7 @@ index 470c888..e7e0e39 100755
  
      if ( cfg->reqfc > 0 ) {
 diff --git a/filters/apache2/mod_cosign.c b/filters/apache2/mod_cosign.c
-index 2d4e95d..6a1e5d5 100755
+index 2d4e95d..e0650ef 100755
 --- a/filters/apache2/mod_cosign.c
 +++ b/filters/apache2/mod_cosign.c
 @@ -152,27 +152,22 @@ cosign_redirect( request_rec *r, cosign_host_config *cfg )
@@ -107,6 +107,21 @@ index 2d4e95d..6a1e5d5 100755
      }
  
      if ( cfg->reqfc > 0 ) {
+@@ -314,12 +309,12 @@ cosign_handler( request_rec *r )
+ 		( port != uri.port && cfg->noappendport != 1 )) {
+ 	if ( cfg->validredir == 1 ) {
+ 	    /* always redirect to https unless CosignHttpOnly is enabled. */
+-	    if ( cfg->http == 1 ) {
++	    if ( cfg->http == 1 && uri.port == 80 ) {
+ 		scheme = "http";
+ 	    } else {
+ 		scheme = "https";
+ 	    }
+-	    if ( port != uri.port ) {
++	    if ( port != uri.port && uri.port != 80 && uri.port != 443 ) {
+ 		dest = apr_psprintf( r->pool, "%s://%s:%d%s",
+ 			    scheme, uri.hostname, uri.port, r->unparsed_uri );
+ 	    } else {
 diff --git a/filters/lighttpd/mod_cosign.c b/filters/lighttpd/mod_cosign.c
 index b955be5..377fdcc 100644
 --- a/filters/lighttpd/mod_cosign.c

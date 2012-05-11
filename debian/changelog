@@ -1,3 +1,9 @@
+ossxp-cosign3 (3.2.0-26) unstable; urgency=low
+
+  * Smart protocol detect for CosignAllowValidationRedirect implement.
+
+ -- Jiang Xin <jiangxin@ossxp.com>  Fri, 11 May 2012 15:00:18 +0800
+
 ossxp-cosign3 (3.2.0-25) unstable; urgency=low
 
   * Set CosignAllowValidationRedirect and other config variables
@@ -8,13 +14,13 @@ ossxp-cosign3 (3.2.0-25) unstable; urgency=low
     the canonical domain name, and redirect to the new generated valid url.
     Since that a service can have many domain name.
 
- -- Jiang Xin <jiangxin@ossxp.com>  Sun, 06 May 2012 21:14:08 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Fri, 11 May 2012 14:00:29 +0800
 
 ossxp-cosign3 (3.2.0-24) unstable; urgency=low
 
   * Upgrade to cosign 3.2.0
 
- -- Jiang Xin <jiangxin@ossxp.com>  Sun, 06 May 2012 21:14:08 +0800
+ -- Jiang Xin <jiangxin@ossxp.com>  Fri, 11 May 2012 09:00:42 +0800
 
 ossxp-cosign3 (3.1.4-24) unstable; urgency=low
 

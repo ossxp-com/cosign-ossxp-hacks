@@ -6,19 +6,19 @@ New cgi: info. Which use templates to show static htmls.
 Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
- cgi/Makefile.in            |   13 +++-
- cgi/cgi.c                  |  144 ++++++++++++++++++++++++++++++----
- cgi/cosigncgi.h            |   11 +++
- cgi/info.c                 |  185 ++++++++++++++++++++++++++++++++++++++++++++
- cgi/login.c                |    6 ++
- cgi/logout.c               |    4 +
- cgi/subfile.c              |   20 +++++
- common/conf.h              |    1 +
- html/Makefile.in           |    5 +-
- html/looping.html          |   14 ++--
- html/post_error.html       |   37 +++++++--
- html/services.html         |   45 +++++++++++
- html/validation_error.html |   54 +++++++++++++
+ cgi/Makefile.in            |  13 +++-
+ cgi/cgi.c                  | 144 +++++++++++++++++++++++++++++++----
+ cgi/cosigncgi.h            |  11 +++
+ cgi/info.c                 | 185 +++++++++++++++++++++++++++++++++++++++++++++
+ cgi/login.c                |   6 ++
+ cgi/logout.c               |   4 +
+ cgi/subfile.c              |  20 +++++
+ common/conf.h              |   1 +
+ html/Makefile.in           |   5 +-
+ html/looping.html          |  14 ++--
+ html/post_error.html       |  37 +++++++--
+ html/services.html         |  45 +++++++++++
+ html/validation_error.html |  54 +++++++++++++
  13 files changed, 508 insertions(+), 31 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
@@ -757,4 +757,4 @@ index 0000000..a667522
 +</body>
 +</html>
 -- 
-tg: (3cba347..) t/static_htmls_to_templates (depends on: t/message_localize)
+tg: (d9452b1..) t/static_htmls_to_templates (depends on: t/message_localize)

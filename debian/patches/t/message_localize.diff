@@ -6,15 +6,15 @@ Translate CoSign error message using javascript.
 Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
- cgi/Makefile.in           |   12 ++-
- cgi/cgi.c                 |  257 +++++++++++++++++++++++----------------------
- cgi/lang.c                |   65 +++++++++++-
- cgi/lang.h                |    1 +
- cgi/login.c               |   87 +++++++--------
- cgi/logout.c              |   37 ++++---
- cgi/subfile.c             |   37 +++++++
- html/js/js_locale.js      |   48 +++++++++
- locale/xgettext_format.rb |  133 +++++++++++++++++++++++
+ cgi/Makefile.in           |  12 ++-
+ cgi/cgi.c                 | 257 ++++++++++++++++++++++++----------------------
+ cgi/lang.c                |  65 +++++++++++-
+ cgi/lang.h                |   1 +
+ cgi/login.c               |  87 ++++++++--------
+ cgi/logout.c              |  37 ++++---
+ cgi/subfile.c             |  37 +++++++
+ html/js/js_locale.js      |  48 +++++++++
+ locale/xgettext_format.rb | 133 ++++++++++++++++++++++++
  9 files changed, 493 insertions(+), 184 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in
@@ -1364,4 +1364,4 @@ index 0000000..72b8ff3
 +
 +# vim: et ts=2 sw=2 paste
 -- 
-tg: (698b5a5..) t/message_localize (depends on: t/include_macro_for_templates t/factor_ldap t/factor_invite t/auth_log_for_fail2ban)
+tg: (0166733..) t/message_localize (depends on: t/include_macro_for_templates t/factor_ldap t/factor_invite t/auth_log_for_fail2ban)

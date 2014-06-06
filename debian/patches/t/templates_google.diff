@@ -6,45 +6,45 @@ Subject: [PATCH] t/templates_google
 Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
- html/Makefile.in                                   |    9 +-
- html/templates_google/error.html                   |   50 +++
- html/templates_google/inc/css.inc                  |  377 ++++++++++++++++++++
- html/templates_google/inc/en/0000.html             |    2 +
- html/templates_google/inc/en/0010_wiki.html        |   15 +
- html/templates_google/inc/en/0015_blog.html        |   15 +
- html/templates_google/inc/en/0020_scm.html         |   21 ++
- html/templates_google/inc/en/0030_bugtrac.html     |   19 +
- html/templates_google/inc/en/0035_testlink.html    |   15 +
- html/templates_google/inc/en/0040_comm.html        |   15 +
- html/templates_google/inc/en/1000_account.html     |   16 +
- html/templates_google/inc/en/9000.html             |    2 +
- html/templates_google/inc/factor_invite.inc        |   74 ++++
- html/templates_google/inc/factor_kx509.inc         |   11 +
- html/templates_google/inc/factor_login.inc         |   24 ++
- html/templates_google/inc/factor_login_reauth.inc  |   21 ++
- html/templates_google/inc/factor_otp.inc           |   16 +
- html/templates_google/inc/footer.inc               |    3 +
- html/templates_google/inc/header.inc               |   34 ++
- html/templates_google/inc/help_hotkey.inc          |    7 +
- html/templates_google/inc/help_infobox.inc         |   62 ++++
- html/templates_google/inc/js_config.inc            |   11 +
- html/templates_google/inc/zh/0000.html             |    2 +
- html/templates_google/inc/zh/0010_wiki.html        |   15 +
- html/templates_google/inc/zh/0015_blog.html        |   15 +
- html/templates_google/inc/zh/0020_scm.html         |   21 ++
- html/templates_google/inc/zh/0030_bugtrac.html     |   19 +
- html/templates_google/inc/zh/0035_testlink.html    |   15 +
- html/templates_google/inc/zh/0040_comm.html        |   15 +
- html/templates_google/inc/zh/1000_account.html     |   16 +
- html/templates_google/inc/zh/9000.html             |    2 +
- html/templates_google/locale/.gitignore            |    1 +
- html/templates_google/locale/Makefile              |   33 ++
- html/templates_google/locale/template.pot          |  316 ++++++++++++++++
- .../locale/zh/LC_MESSAGES/template.po              |  337 +++++++++++++++++
- html/templates_google/login.html                   |   63 ++++
- html/templates_google/reauth.html                  |   72 ++++
- html/templates_google/services.html                |   45 +++
- html/templates_google/verify-logout.html           |   47 +++
+ html/Makefile.in                                   |   9 +-
+ html/templates_google/error.html                   |  50 +++
+ html/templates_google/inc/css.inc                  | 377 +++++++++++++++++++++
+ html/templates_google/inc/en/0000.html             |   2 +
+ html/templates_google/inc/en/0010_wiki.html        |  15 +
+ html/templates_google/inc/en/0015_blog.html        |  15 +
+ html/templates_google/inc/en/0020_scm.html         |  21 ++
+ html/templates_google/inc/en/0030_bugtrac.html     |  19 ++
+ html/templates_google/inc/en/0035_testlink.html    |  15 +
+ html/templates_google/inc/en/0040_comm.html        |  15 +
+ html/templates_google/inc/en/1000_account.html     |  16 +
+ html/templates_google/inc/en/9000.html             |   2 +
+ html/templates_google/inc/factor_invite.inc        |  74 ++++
+ html/templates_google/inc/factor_kx509.inc         |  11 +
+ html/templates_google/inc/factor_login.inc         |  24 ++
+ html/templates_google/inc/factor_login_reauth.inc  |  21 ++
+ html/templates_google/inc/factor_otp.inc           |  16 +
+ html/templates_google/inc/footer.inc               |   3 +
+ html/templates_google/inc/header.inc               |  34 ++
+ html/templates_google/inc/help_hotkey.inc          |   7 +
+ html/templates_google/inc/help_infobox.inc         |  62 ++++
+ html/templates_google/inc/js_config.inc            |  11 +
+ html/templates_google/inc/zh/0000.html             |   2 +
+ html/templates_google/inc/zh/0010_wiki.html        |  15 +
+ html/templates_google/inc/zh/0015_blog.html        |  15 +
+ html/templates_google/inc/zh/0020_scm.html         |  21 ++
+ html/templates_google/inc/zh/0030_bugtrac.html     |  19 ++
+ html/templates_google/inc/zh/0035_testlink.html    |  15 +
+ html/templates_google/inc/zh/0040_comm.html        |  15 +
+ html/templates_google/inc/zh/1000_account.html     |  16 +
+ html/templates_google/inc/zh/9000.html             |   2 +
+ html/templates_google/locale/.gitignore            |   1 +
+ html/templates_google/locale/Makefile              |  33 ++
+ html/templates_google/locale/template.pot          | 316 +++++++++++++++++
+ .../locale/zh/LC_MESSAGES/template.po              | 337 ++++++++++++++++++
+ html/templates_google/login.html                   |  63 ++++
+ html/templates_google/reauth.html                  |  72 ++++
+ html/templates_google/services.html                |  45 +++
+ html/templates_google/verify-logout.html           |  47 +++
  39 files changed, 1851 insertions(+), 2 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
@@ -2155,4 +2155,4 @@ index 0000000..c3a1739
 +</body>
 +</html>
 -- 
-tg: (2630474..) t/templates_google (depends on: t/templates_standard)
+tg: (1c375f4..) t/templates_google (depends on: t/templates_standard)

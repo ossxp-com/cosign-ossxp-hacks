@@ -6,13 +6,13 @@ CUnit test framework.
 Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
- Makefile.in           |    6 +-
- cgi/lang.c            |   31 +++++-
- cgi/lang.h            |    2 +
- cgi/subfile.c         |   14 ++-
- tests/Makefile        |  112 +++++++++++++++++++
- tests/check_lang.c    |  296 +++++++++++++++++++++++++++++++++++++++++++++++++
- tests/check_subfile.c |  128 +++++++++++++++++++++
+ Makefile.in           |   6 +-
+ cgi/lang.c            |  31 +++++-
+ cgi/lang.h            |   2 +
+ cgi/subfile.c         |  14 ++-
+ tests/Makefile        | 112 +++++++++++++++++++
+ tests/check_lang.c    | 296 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ tests/check_subfile.c | 128 ++++++++++++++++++++++
  7 files changed, 578 insertions(+), 11 deletions(-)
 
 diff --git a/Makefile.in b/Makefile.in
@@ -728,4 +728,4 @@ index 0000000..dad3393
 +  return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 +}
 -- 
-tg: (3cba347..) t/unittest (depends on: t/message_localize)
+tg: (d9452b1..) t/unittest (depends on: t/message_localize)

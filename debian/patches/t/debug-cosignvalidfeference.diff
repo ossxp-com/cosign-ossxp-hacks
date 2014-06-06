@@ -6,7 +6,7 @@ Subject: [PATCH] t/debug-cosignvalidfeference
 Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 
 ---
- filters/apache2/mod_cosign.c |    3 ++-
+ filters/apache2/mod_cosign.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/filters/apache2/mod_cosign.c b/filters/apache2/mod_cosign.c

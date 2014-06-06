@@ -6,9 +6,9 @@ Subject: [PATCH] t/bugfix_cosign_httponly_quirk
 Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 
 ---
- filters/apache/mod_cosign.c   |   37 ++++++++++++++++---------------------
- filters/apache2/mod_cosign.c  |   41 ++++++++++++++++++-----------------------
- filters/lighttpd/mod_cosign.c |    6 ++++--
+ filters/apache/mod_cosign.c   | 37 ++++++++++++++++---------------------
+ filters/apache2/mod_cosign.c  | 41 ++++++++++++++++++-----------------------
+ filters/lighttpd/mod_cosign.c |  6 ++++--
  3 files changed, 38 insertions(+), 46 deletions(-)
 
 diff --git a/filters/apache/mod_cosign.c b/filters/apache/mod_cosign.c

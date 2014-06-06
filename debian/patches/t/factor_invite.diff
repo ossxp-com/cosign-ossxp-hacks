@@ -6,7 +6,7 @@ Login using invite code.
 Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
- scripts/factors/invite |  182 ++++++++++++++++++++++++++++++++++++++++++++++++
+ scripts/factors/invite | 182 +++++++++++++++++++++++++++++++++++++++++++++++++
  1 file changed, 182 insertions(+)
 
 diff --git a/scripts/factors/invite b/scripts/factors/invite

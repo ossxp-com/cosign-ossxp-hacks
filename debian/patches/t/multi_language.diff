@@ -6,9 +6,9 @@ Subject: [PATCH] t/multi_language
 Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 
 ---
- cgi/Makefile.in |    7 +-
- cgi/lang.c      |  197 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- cgi/lang.h      |   17 +++++
+ cgi/Makefile.in |   7 +-
+ cgi/lang.c      | 197 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ cgi/lang.h      |  17 +++++
  3 files changed, 219 insertions(+), 2 deletions(-)
 
 diff --git a/cgi/Makefile.in b/cgi/Makefile.in

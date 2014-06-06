@@ -6,10 +6,10 @@ Subject: [PATCH] t/services_template
 Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 
 ---
- html/Makefile.in             |    2 +-
- html/services/config_inc.php |   18 +++
- html/services/index.php      |  270 ++++++++++++++++++++++++++++++++++++++++++
- html/services/ldap_api.php   |  107 +++++++++++++++++
+ html/Makefile.in             |   2 +-
+ html/services/config_inc.php |  18 +++
+ html/services/index.php      | 270 +++++++++++++++++++++++++++++++++++++++++++
+ html/services/ldap_api.php   | 107 +++++++++++++++++
  4 files changed, 396 insertions(+), 1 deletion(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
@@ -438,4 +438,4 @@ index 0000000..6a8d92d
 +
 +?>
 -- 
-tg: (56c061e..) t/services_template (depends on: t/static_htmls_to_templates)
+tg: (b3dba5b..) t/services_template (depends on: t/static_htmls_to_templates)

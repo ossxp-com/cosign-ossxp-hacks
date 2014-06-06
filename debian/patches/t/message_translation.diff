@@ -6,13 +6,13 @@ New locale dir and translate pot into po files.
 Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
- Makefile.in                     |    4 +-
- configure.ac                    |    1 +
- locale/Makefile.in              |   42 +++
- locale/addition-template.pot    |  243 +++++++++++++++
- locale/addition.pot             |   32 ++
- locale/cosign.pot               |  366 ++++++++++++++++++++++
- locale/zh/LC_MESSAGES/cosign.po |  636 +++++++++++++++++++++++++++++++++++++++
+ Makefile.in                     |   4 +-
+ configure.ac                    |   1 +
+ locale/Makefile.in              |  42 +++
+ locale/addition-template.pot    | 243 +++++++++++++++
+ locale/addition.pot             |  32 ++
+ locale/cosign.pot               | 366 +++++++++++++++++++++++
+ locale/zh/LC_MESSAGES/cosign.po | 636 ++++++++++++++++++++++++++++++++++++++++
  7 files changed, 1322 insertions(+), 2 deletions(-)
 
 diff --git a/Makefile.in b/Makefile.in
@@ -1399,4 +1399,4 @@ index 0000000..db933e2
 +msgstr "单点登录：URL 校验失败"
 +
 -- 
-tg: (72e94dd..) t/message_translation (depends on: t/static_htmls_to_templates)
+tg: (fc973eb..) t/message_translation (depends on: t/static_htmls_to_templates)

@@ -7,7 +7,7 @@ This factor is used as factor with new "-3" flag (ossxp extension).
 Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
- scripts/factors/admin |  274 +++++++++++++++++++++++++++++++++++++++++++++++++
+ scripts/factors/admin | 274 ++++++++++++++++++++++++++++++++++++++++++++++++++
  1 file changed, 274 insertions(+)
 
 diff --git a/scripts/factors/admin b/scripts/factors/admin

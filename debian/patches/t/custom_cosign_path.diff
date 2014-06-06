@@ -6,12 +6,12 @@ Subject: [PATCH] t/custom_cosign_path
 Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 
 ---
- html/expired_error.html  |    2 +-
- html/login.html          |    2 +-
- html/login_error.html    |    2 +-
- html/reauth.html         |    8 ++++----
- html/services/index.html |    2 +-
- html/verify-logout.html  |    2 +-
+ html/expired_error.html  | 2 +-
+ html/login.html          | 2 +-
+ html/login_error.html    | 2 +-
+ html/reauth.html         | 8 ++++----
+ html/services/index.html | 2 +-
+ html/verify-logout.html  | 2 +-
  6 files changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/html/expired_error.html b/html/expired_error.html

@@ -9,10 +9,10 @@ Update Makefiles so that debian packaging works properly.
 Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
 
 ---
- Makefile.in                 |   10 ++++++----
- filters/apache/Makefile.in  |    6 +++++-
- filters/apache2/Makefile.in |    5 ++++-
- libsnet/Makefile.in         |   15 ++++++++-------
+ Makefile.in                 | 10 ++++++----
+ filters/apache/Makefile.in  |  6 +++++-
+ filters/apache2/Makefile.in |  5 ++++-
+ libsnet/Makefile.in         | 15 ++++++++-------
  4 files changed, 23 insertions(+), 13 deletions(-)
 
 diff --git a/Makefile.in b/Makefile.in

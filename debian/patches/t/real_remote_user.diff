@@ -10,7 +10,7 @@ remote_user.
 Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
- cgi/cgi.c |   10 ++++++++++
+ cgi/cgi.c | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
 diff --git a/cgi/cgi.c b/cgi/cgi.c
@@ -35,4 +35,4 @@ index d13d0c9..f566083 100755
  		( strcmp( ui.ui_ipaddr, ip_addr ) != 0 )) {
  	    if ( cosign_login( head, cookie, ip_addr, login, msg, NULL ) < 0 ) {
 -- 
-tg: (56c061e..) t/real_remote_user (depends on: t/static_htmls_to_templates)
+tg: (b3dba5b..) t/real_remote_user (depends on: t/static_htmls_to_templates)

@@ -1,3 +1,9 @@
+ossxp-cosign3 (3.2.0-27) unstable; urgency=low
+
+  * Update default ldap filter, so that admin can login
+
+ -- Jiang Xin <jiangxin@ossxp.com>  Fri, 06 Jun 2014 16:41:29 +0800
+
 ossxp-cosign3 (3.2.0-26) unstable; urgency=low
 
   * Smart protocol detect for CosignAllowValidationRedirect implement.

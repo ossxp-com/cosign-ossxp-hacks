@@ -6,13 +6,13 @@ Subject: [PATCH] t/factor_ldap
 Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
- scripts/factors/ldap  |   92 ++++++++++++
- scripts/factors/ldap2 |  374 +++++++++++++++++++++++++++++++++++++++++++++++++
+ scripts/factors/ldap  |  92 +++++++++++++
+ scripts/factors/ldap2 | 374 ++++++++++++++++++++++++++++++++++++++++++++++++++
  2 files changed, 466 insertions(+)
 
 diff --git a/scripts/factors/ldap b/scripts/factors/ldap
 new file mode 100755
-index 0000000..21fd6cc
+index 0000000..82f2734
 --- /dev/null
 +++ b/scripts/factors/ldap
 @@ -0,0 +1,92 @@
@@ -46,7 +46,7 @@ index 0000000..21fd6cc
 +# Base configuration
 +my $base = "dc=foo,dc=bar";
 +my $host = "ldap://localhost:389";
-+my $user_filter = "(ossxpConfirmed=TRUE)";
++my $user_filter = "(|(!(objectClass=ossxpSignup))(ossxpConfirmed=TRUE))";
 +
 +# -----
 +
@@ -110,7 +110,7 @@ index 0000000..21fd6cc
 +
 diff --git a/scripts/factors/ldap2 b/scripts/factors/ldap2
 new file mode 100755
-index 0000000..7aa42d0
+index 0000000..23a9bbc
 --- /dev/null
 +++ b/scripts/factors/ldap2
 @@ -0,0 +1,374 @@
@@ -144,7 +144,7 @@ index 0000000..7aa42d0
 +    ldap_bindpw = ''
 +    ldap_base = 'dc=foo,dc=bar'
 +    ldap_scope = 2 # 2 - ldap.SCOPE_SUBTREE
-+    ldap_filter = '(ossxpConfirmed=TRUE)'
++    ldap_filter = '(|(!(objectClass=ossxpSignup))(ossxpConfirmed=TRUE))'
 +    ldap_timeout = 10 # how long we wait for the ldap server [s]
 +    ldap_coding = 'utf-8' # coding used for ldap queries and result values
 +    ldap_start_tls = False

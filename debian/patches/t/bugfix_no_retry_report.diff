@@ -7,7 +7,7 @@ Generate only necessary with the server IP.
 Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
- cgi/network.c |   14 ++++++++++----
+ cgi/network.c | 14 ++++++++++----
  1 file changed, 10 insertions(+), 4 deletions(-)
 
 diff --git a/cgi/network.c b/cgi/network.c

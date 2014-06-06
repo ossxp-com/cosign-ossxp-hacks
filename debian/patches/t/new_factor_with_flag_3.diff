@@ -9,8 +9,8 @@ ossxp factor extension (flage -3):
 Signed-off-by: Jiang Xin <jiangxin@ossxp.com>
 
 ---
- cgi/cgi.c     |  105 ++++++++++++++++++++++++++++++++++++++++++++-------------
- common/conf.c |    2 ++
+ cgi/cgi.c     | 105 +++++++++++++++++++++++++++++++++++++++++++++-------------
+ common/conf.c |   2 ++
  2 files changed, 84 insertions(+), 23 deletions(-)
 
 diff --git a/cgi/cgi.c b/cgi/cgi.c
@@ -183,4 +183,4 @@ index 547a7ae..ab314c1 100644
  		    fprintf( stderr, "line %d:"
  			    " unknown flag %s to keyword factor\n",
 -- 
-tg: (0b32341..) t/new_factor_with_flag_3 (depends on: t/real_remote_user)
+tg: (2359520..) t/new_factor_with_flag_3 (depends on: t/real_remote_user)

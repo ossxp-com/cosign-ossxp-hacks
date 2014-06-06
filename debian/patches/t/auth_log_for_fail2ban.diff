@@ -6,7 +6,7 @@ Generate error if auth failed, used for fail2ban.
 Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
- cgi/cgi.c |   15 +++++++++++++--
+ cgi/cgi.c | 15 +++++++++++++--
  1 file changed, 13 insertions(+), 2 deletions(-)
 
 diff --git a/cgi/cgi.c b/cgi/cgi.c

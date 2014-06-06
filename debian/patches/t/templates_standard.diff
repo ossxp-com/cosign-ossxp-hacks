@@ -6,52 +6,52 @@ Subject: [PATCH] t/templates_standard
 Signed-off-by: Jiang <jiangxin@ossxp.com>
 
 ---
- html/Makefile.in                       |   13 +-
- html/cosign_base.css                   |   13 +-
- html/error.html                        |   30 ++-
- html/expired_error.html                |  167 -----------------
- html/inc/css.inc                       |    1 +
- html/inc/en/0000.html                  |    2 +
- html/inc/en/0010_wiki.html             |   15 ++
- html/inc/en/0015_blog.html             |   15 ++
- html/inc/en/0020_scm.html              |   21 +++
- html/inc/en/0030_bugtrac.html          |   19 ++
- html/inc/en/0035_testlink.html         |   15 ++
- html/inc/en/0040_comm.html             |   15 ++
- html/inc/en/1000_account.html          |   16 ++
- html/inc/en/9000.html                  |    2 +
- html/inc/factor_invite.inc             |   74 ++++++++
- html/inc/factor_kx509.inc              |   11 ++
- html/inc/factor_login.inc              |   24 +++
- html/inc/factor_login_reauth.inc       |   21 +++
- html/inc/factor_otp.inc                |   16 ++
- html/inc/footer.inc                    |    3 +
- html/inc/header.inc                    |    3 +
- html/inc/help_hotkey.inc               |    7 +
- html/inc/help_infobox.inc              |   60 ++++++
- html/inc/js_config.inc                 |   11 ++
- html/inc/zh/0000.html                  |    2 +
- html/inc/zh/0010_wiki.html             |   15 ++
- html/inc/zh/0015_blog.html             |   15 ++
- html/inc/zh/0020_scm.html              |   21 +++
- html/inc/zh/0030_bugtrac.html          |   19 ++
- html/inc/zh/0035_testlink.html         |   15 ++
- html/inc/zh/0040_comm.html             |   15 ++
- html/inc/zh/1000_account.html          |   16 ++
- html/inc/zh/9000.html                  |    2 +
- html/locale/.gitignore                 |    1 +
- html/locale/Makefile                   |   33 ++++
- html/locale/template.pot               |  296 ++++++++++++++++++++++++++++++
- html/locale/zh/LC_MESSAGES/template.po |  312 ++++++++++++++++++++++++++++++++
- html/login.html                        |  131 ++------------
- html/login_error.html                  |  168 -----------------
- html/looping.html                      |   54 ------
- html/post_error.html                   |   54 ------
- html/reauth.html                       |  147 +++------------
- html/services.html                     |    6 +-
- html/services/index.php                |    2 +-
- html/validation_error.html             |   54 ------
- html/verify-logout.html                |   30 +--
+ html/Makefile.in                       |  13 +-
+ html/cosign_base.css                   |  13 +-
+ html/error.html                        |  30 ++--
+ html/expired_error.html                | 167 ------------------
+ html/inc/css.inc                       |   1 +
+ html/inc/en/0000.html                  |   2 +
+ html/inc/en/0010_wiki.html             |  15 ++
+ html/inc/en/0015_blog.html             |  15 ++
+ html/inc/en/0020_scm.html              |  21 +++
+ html/inc/en/0030_bugtrac.html          |  19 ++
+ html/inc/en/0035_testlink.html         |  15 ++
+ html/inc/en/0040_comm.html             |  15 ++
+ html/inc/en/1000_account.html          |  16 ++
+ html/inc/en/9000.html                  |   2 +
+ html/inc/factor_invite.inc             |  74 ++++++++
+ html/inc/factor_kx509.inc              |  11 ++
+ html/inc/factor_login.inc              |  24 +++
+ html/inc/factor_login_reauth.inc       |  21 +++
+ html/inc/factor_otp.inc                |  16 ++
+ html/inc/footer.inc                    |   3 +
+ html/inc/header.inc                    |   3 +
+ html/inc/help_hotkey.inc               |   7 +
+ html/inc/help_infobox.inc              |  60 +++++++
+ html/inc/js_config.inc                 |  11 ++
+ html/inc/zh/0000.html                  |   2 +
+ html/inc/zh/0010_wiki.html             |  15 ++
+ html/inc/zh/0015_blog.html             |  15 ++
+ html/inc/zh/0020_scm.html              |  21 +++
+ html/inc/zh/0030_bugtrac.html          |  19 ++
+ html/inc/zh/0035_testlink.html         |  15 ++
+ html/inc/zh/0040_comm.html             |  15 ++
+ html/inc/zh/1000_account.html          |  16 ++
+ html/inc/zh/9000.html                  |   2 +
+ html/locale/.gitignore                 |   1 +
+ html/locale/Makefile                   |  33 ++++
+ html/locale/template.pot               | 296 +++++++++++++++++++++++++++++++
+ html/locale/zh/LC_MESSAGES/template.po | 312 +++++++++++++++++++++++++++++++++
+ html/login.html                        | 131 ++------------
+ html/login_error.html                  | 168 ------------------
+ html/looping.html                      |  54 ------
+ html/post_error.html                   |  54 ------
+ html/reauth.html                       | 147 +++-------------
+ html/services.html                     |   6 +-
+ html/services/index.php                |   2 +-
+ html/validation_error.html             |  54 ------
+ html/verify-logout.html                |  30 ++--
  46 files changed, 1205 insertions(+), 777 deletions(-)
 
 diff --git a/html/Makefile.in b/html/Makefile.in
@@ -2512,4 +2512,4 @@ index ea68776..c3a1739 100755
  </body>
  </html>
 -- 
-tg: (099a1c5..) t/templates_standard (depends on: t/services_template t/javascript)
+tg: (eb6f36c..) t/templates_standard (depends on: t/services_template t/javascript)

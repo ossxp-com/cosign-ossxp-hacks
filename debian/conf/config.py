@@ -5,7 +5,7 @@ class LdapConfig:
     ldap_bindpw = ''
     ldap_base = 'dc=foo,dc=bar'
     ldap_scope = 2 # 2 - ldap.SCOPE_SUBTREE
-    ldap_filter = '(ossxpConfirmed=TRUE)'
+    ldap_filter = '(|(!(objectClass=ossxpSignup))(ossxpConfirmed=TRUE))'
     ldap_timeout = 10 # how long we wait for the ldap server [s]
     ldap_coding = 'utf-8' # coding used for ldap queries and result values
     ldap_start_tls = False
